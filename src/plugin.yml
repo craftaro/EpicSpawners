@@ -2,7 +2,7 @@ name: EpicSpawners
 description: EpicSpawners
 version: 4.0.7
 depend: [Arconix]
-softdepend: [Towny, Kingdoms, PlotsSquared, GriefPrevention, USkyBlock, ASkyBlock, WorldGuard, Factions, Vault, PlaceholderAPI]
+softdepend: [Towny, RedProtect Kingdoms, PlotsSquared, GriefPrevention, USkyBlock, ASkyBlock, WorldGuard, Factions, Vault, PlaceholderAPI]
 main: com.songoda.epicspawners.EpicSpawners
 author: songoda
 commands:
