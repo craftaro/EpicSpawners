@@ -19,28 +19,16 @@
     <file url="file://$PROJECT_DIR$/src/com/songoda/epicspawners/Handlers/ItemHandler.java" charset="UTF-16" />
     <file url="file://$PROJECT_DIR$/src/com/songoda/epicspawners/Handlers/OmniHandler.java" charset="UTF-16" />
     <file url="file://$PROJECT_DIR$/src/com/songoda/epicspawners/Hooks/ASkyBlockHook.java" charset="UTF-16" />
-    <file url="file://$PROJECT_DIR$/src/com/songoda/epicspawners/Hooks/ASkyBlockHook.java" charset="UTF-16" />
-    <file url="file://$PROJECT_DIR$/src/com/songoda/epicspawners/Hooks/FactionsHook.java" charset="UTF-16" />
     <file url="file://$PROJECT_DIR$/src/com/songoda/epicspawners/Hooks/FactionsHook.java" charset="UTF-16" />
     <file url="file://$PROJECT_DIR$/src/com/songoda/epicspawners/Hooks/FactionsOldHook.java" charset="UTF-16" />
-    <file url="file://$PROJECT_DIR$/src/com/songoda/epicspawners/Hooks/FactionsOldHook.java" charset="UTF-16" />
-    <file url="file://$PROJECT_DIR$/src/com/songoda/epicspawners/Hooks/GriefPreventionHook.java" charset="UTF-16" />
     <file url="file://$PROJECT_DIR$/src/com/songoda/epicspawners/Hooks/GriefPreventionHook.java" charset="UTF-16" />
     <file url="file://$PROJECT_DIR$/src/com/songoda/epicspawners/Hooks/HookHandler.java" charset="UTF-16" />
-    <file url="file://$PROJECT_DIR$/src/com/songoda/epicspawners/Hooks/HookHandler.java" charset="UTF-16" />
-    <file url="file://$PROJECT_DIR$/src/com/songoda/epicspawners/Hooks/Hooks.java" charset="UTF-16" />
     <file url="file://$PROJECT_DIR$/src/com/songoda/epicspawners/Hooks/Hooks.java" charset="UTF-16" />
     <file url="file://$PROJECT_DIR$/src/com/songoda/epicspawners/Hooks/KingdomsHook.java" charset="UTF-16" />
-    <file url="file://$PROJECT_DIR$/src/com/songoda/epicspawners/Hooks/KingdomsHook.java" charset="UTF-16" />
-    <file url="file://$PROJECT_DIR$/src/com/songoda/epicspawners/Hooks/PlotSquaredHook.java" charset="UTF-16" />
     <file url="file://$PROJECT_DIR$/src/com/songoda/epicspawners/Hooks/PlotSquaredHook.java" charset="UTF-16" />
     <file url="file://$PROJECT_DIR$/src/com/songoda/epicspawners/Hooks/RedProtectHook.java" charset="UTF-16" />
-    <file url="file://$PROJECT_DIR$/src/com/songoda/epicspawners/Hooks/RedProtectHook.java" charset="UTF-16" />
-    <file url="file://$PROJECT_DIR$/src/com/songoda/epicspawners/Hooks/TownyHook.java" charset="UTF-16" />
     <file url="file://$PROJECT_DIR$/src/com/songoda/epicspawners/Hooks/TownyHook.java" charset="UTF-16" />
     <file url="file://$PROJECT_DIR$/src/com/songoda/epicspawners/Hooks/USkyBlockHook.java" charset="UTF-16" />
-    <file url="file://$PROJECT_DIR$/src/com/songoda/epicspawners/Hooks/USkyBlockHook.java" charset="UTF-16" />
-    <file url="file://$PROJECT_DIR$/src/com/songoda/epicspawners/Hooks/WorldGuardHook.java" charset="UTF-16" />
     <file url="file://$PROJECT_DIR$/src/com/songoda/epicspawners/Hooks/WorldGuardHook.java" charset="UTF-16" />
     <file url="file://$PROJECT_DIR$/src/com/songoda/epicspawners/Lang.java" charset="UTF-16" />
     <file url="file://$PROJECT_DIR$/src/com/songoda/epicspawners/References.java" charset="UTF-16" />
@@ -57,5 +45,6 @@
     <file url="file://$PROJECT_DIR$/src/com/songoda/epicspawners/Utils/Methods.java" charset="UTF-16" />
     <file url="file://$PROJECT_DIR$/src/com/songoda/epicspawners/Utils/Reflection.java" charset="UTF-16" />
     <file url="file://$PROJECT_DIR$/src/com/songoda/epicspawners/Utils/SettingsManager.java" charset="UTF-16" />
+    <file url="file://$PROJECT_DIR$/src/plugin.yml" charset="UTF-16" />
   </component>
 </project>
