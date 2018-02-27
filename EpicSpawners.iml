@@ -28,5 +28,6 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="Lib" level="project" />
+    <orderEntry type="library" name="spigot-1.12.1" level="project" />
   </component>
 </module>

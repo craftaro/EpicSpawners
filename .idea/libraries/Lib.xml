@@ -1,8 +1,5 @@
 <component name="libraryTable">
   <library name="Lib">
-    <ANNOTATIONS>
-      <root url="file://$PROJECT_DIR$/../RoboticCraft" />
-    </ANNOTATIONS>
     <CLASSES>
       <root url="file://$PROJECT_DIR$/../Lib" />
     </CLASSES>
