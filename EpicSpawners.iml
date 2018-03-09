@@ -28,6 +28,7 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="Lib" level="project" />
-    <orderEntry type="library" name="spigot-1.12.1" level="project" />
+    <orderEntry type="library" name="spigot-1.12.2" level="project" />
+    <orderEntry type="library" name="Factions" level="project" />
   </component>
 </module>
