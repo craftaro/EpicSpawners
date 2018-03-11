@@ -20,7 +20,7 @@
     <file url="file://$PROJECT_DIR$/src/com/songoda/epicspawners/Handlers/OmniHandler.java" charset="UTF-16" />
     <file url="file://$PROJECT_DIR$/src/com/songoda/epicspawners/Hooks/ASkyBlockHook.java" charset="UTF-16" />
     <file url="file://$PROJECT_DIR$/src/com/songoda/epicspawners/Hooks/FactionsHook.java" charset="UTF-16" />
-    <file url="file://$PROJECT_DIR$/src/com/songoda/epicspawners/Hooks/FactionsOldHook.java" charset="UTF-16" />
+    <file url="file://$PROJECT_DIR$/src/com/songoda/epicspawners/Hooks/FactionsHook.java" charset="UTF-16" />
     <file url="file://$PROJECT_DIR$/src/com/songoda/epicspawners/Hooks/GriefPreventionHook.java" charset="UTF-16" />
     <file url="file://$PROJECT_DIR$/src/com/songoda/epicspawners/Hooks/HookHandler.java" charset="UTF-16" />
     <file url="file://$PROJECT_DIR$/src/com/songoda/epicspawners/Hooks/Hooks.java" charset="UTF-16" />
