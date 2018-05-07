@@ -1,0 +1,224 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.songoda</groupId>
+    <artifactId>EpicSpawners</artifactId>
+    <version>4.2.5</version>
+
+    <packaging>jar</packaging>
+    <build>
+        <finalName>EpicSpawners</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>1.4</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+    <repositories>
+        <repository>
+            <id>jcenter</id>
+            <url>http://jcenter.bintray.com</url>
+        </repository>
+        <!--Bukkit Repo-->
+        <repository>
+            <id>bukkit-repo</id>
+            <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
+        </repository>
+        <!--Songoda Repo-->
+        <repository>
+            <id>songoda-public</id>
+            <url>http://jenkins.songoda.com:8081/repository/songoda-public/</url>
+        </repository>
+        <repository>
+            <id>songoda-private</id>
+            <url>http://jenkins.songoda.com:8081/repository/songoda-private/</url>
+        </repository>
+        <!--WorldGuard Repo-->
+        <repository>
+            <id>sk89q-repo</id>
+            <url>http://maven.sk89q.com/repo/</url>
+        </repository>
+        <!--Vault Repo-->
+        <repository>
+            <id>vault-repo</id>
+            <url>http://nexus.hc.to/content/repositories/pub_releases</url>
+        </repository>
+        <!--uSkyBlock Repo-->
+        <repository>
+            <id>uSkyBlock-mvn-repo</id>
+            <url>https://raw.github.com/rlf/uSkyBlock/mvn-repo/</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+        <!--aAkyBlock Repo-->
+        <repository>
+            <id>bintray-tastybento-maven-repo</id>
+            <name>bintray</name>
+            <url>http://dl.bintray.com/tastybento/maven-repo</url>
+        </repository>
+        <!--PlaceHolderAPI Repo-->
+        <repository>
+            <id>placeholderapi</id>
+            <url>http://repo.extendedclip.com/content/repositories/placeholderapi/</url>
+        </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <!--Bukkit API-->
+        <dependency>
+            <groupId>org.bukkit</groupId>
+            <artifactId>bukkit</artifactId>
+            <version>1.12.2-R0.1-SNAPSHOT</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+        <!--Spigot API-->
+        <dependency>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
+            <version>1.12.2-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <!--Arconix API-->
+        <dependency>
+            <groupId>com.songoda.arconix</groupId>
+            <artifactId>api</artifactId>
+            <version>2.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.songoda.arconix</groupId>
+            <artifactId>plugin</artifactId>
+            <version>2.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <!--WorldGuard API-->
+        <dependency>
+            <groupId>com.sk89q</groupId>
+            <artifactId>worldguard</artifactId>
+            <version>6.1.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <!--Vault API-->
+        <dependency>
+            <groupId>net.milkbowl.vault</groupId>
+            <artifactId>VaultAPI</artifactId>
+            <version>1.6</version>
+            <scope>provided</scope>
+        </dependency>
+        <!--Towny API-->
+        <dependency>
+            <groupId>com.palmergames</groupId>
+            <artifactId>Towny</artifactId>
+            <version>0.92.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <!--uSkyBlock API-->
+        <dependency>
+            <groupId>com.github.rlf</groupId>
+            <artifactId>uSkyBlock-API</artifactId>
+            <version>2.6.4</version>
+            <scope>provided</scope>
+        </dependency>
+        <!--RedProtect API-->
+        <dependency>
+            <groupId>br.net.fabiozumbi12</groupId>
+            <artifactId>RedProtect</artifactId>
+            <version>7.3.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <!--PlotSquared API-->
+        <dependency>
+            <groupId>com.intellectualcrafters</groupId>
+            <artifactId>PlotSquared</artifactId>
+            <version>18.05.01</version>
+            <scope>provided</scope>
+        </dependency>
+        <!--Kingdoms API-->
+        <dependency>
+            <groupId>org.kingdoms</groupId>
+            <artifactId>Kingdoms</artifactId>
+            <version>13.3.40</version>
+            <scope>provided</scope>
+        </dependency>
+        <!--GriefPrevention API-->
+        <dependency>
+            <groupId>com.github.TechFortress</groupId>
+            <artifactId>GriefPrevention</artifactId>
+            <version>16.7.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <!--FactionsFramework API-->
+        <dependency>
+            <groupId>me.markeh</groupId>
+            <artifactId>factionsframework</artifactId>
+            <version>1.2.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <!--aSkyBlock API-->
+        <dependency>
+            <groupId>com.wasteofplastic</groupId>
+            <artifactId>askyblock</artifactId>
+            <version>3.0.8.2</version>
+            <scope>provided</scope>
+        </dependency>
+        <!--StackMob API-->
+        <dependency>
+            <groupId>uk.antiperson</groupId>
+            <artifactId>StackMob</artifactId>
+            <version>2.2.9-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <!--PlaceHolder API-->
+        <dependency>
+            <groupId>me.clip</groupId>
+            <artifactId>placeholderapi</artifactId>
+            <version>2.8.4</version>
+            <scope>provided</scope>
+        </dependency>
+        <!--CB 1.7 R4-->
+        <dependency>
+            <groupId>org.bukkit</groupId>
+            <artifactId>craftbukkit</artifactId>
+            <version>1.7.10</version>
+            <scope>provided</scope>
+        </dependency>
+        <!--https://mvnrepository.com/artifact/commons-lang/commons-lang -->
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.6</version>
+            <scope>compile</scope>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.6</version>
+        </dependency>
+    </dependencies>
+</project>

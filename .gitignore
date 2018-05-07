@@ -2,3 +2,5 @@
 out/
 
 \.idea/
+/EpicSpawners.iml
+/src/main/resources/META-INF/MANIFEST.MF

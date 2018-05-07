@@ -1,0 +1,21 @@
+name: EpicSpawners
+description: EpicSpawners
+version: 4.2.5
+depend: [Arconix]
+softdepend: [Towny, RedProtect Kingdoms, PlotSquared, GriefPrevention, USkyBlock, ASkyBlock, WorldGuard, Factions, Vault, PlaceholderAPI]
+main: com.songoda.epicspawners.EpicSpawners
+author: songoda
+commands:
+  EpicSpawners:
+    description: I have no idea.
+    default: true
+    aliases: [es]
+    usage: /<command> [reload]
+  SpawnerStats:
+    description: I have no idea.
+    default: false
+    usage: /<command> [reload]
+  SpawnerShop:
+    description: I have no idea.
+    default: false
+    usage: /<command> [reload]
