@@ -2,14 +2,14 @@ package com.songoda.epicspawners;
 
 import com.songoda.arconix.api.utils.ConfigWrapper;
 import com.songoda.arconix.plugin.Arconix;
-import com.songoda.epicspawners.api.EpicSpawnersAPI;
-import com.songoda.epicspawners.handlers.*;
-import com.songoda.epicspawners.listeners.*;
-import com.songoda.epicspawners.spawners.Shop;
-import com.songoda.epicspawners.spawners.SpawnerEditor;
-import com.songoda.epicspawners.utils.Heads;
-import com.songoda.epicspawners.utils.Methods;
-import com.songoda.epicspawners.utils.SettingsManager;
+import com.songoda.epicspawners.API.EpicSpawnersAPI;
+import com.songoda.epicspawners.Events.*;
+import com.songoda.epicspawners.Handlers.*;
+import com.songoda.epicspawners.Spawners.Shop;
+import com.songoda.epicspawners.Spawners.SpawnerEditor;
+import com.songoda.epicspawners.Utils.Heads;
+import com.songoda.epicspawners.Utils.Methods;
+import com.songoda.epicspawners.Utils.SettingsManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -171,7 +171,7 @@ public class EpicSpawners extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new SpawnerListeners(), this);
 
         if (!v1_7) {
-            getServer().getPluginManager().registerEvents(new com.songoda.epicspawners.listeners.TestListeners(), this);
+            getServer().getPluginManager().registerEvents(new com.songoda.epicspawners.Events.TestListeners(), this);
         }
         console.sendMessage(Arconix.pl().getApi().format().formatText("&a============================="));
     }
