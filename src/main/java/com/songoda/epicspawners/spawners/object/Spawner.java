@@ -1101,7 +1101,9 @@ public class Spawner {
                 int min = 0;
                 for (SpawnerStack stack : spawnerStacks) { //ToDo: You can probably do this only on spawner stack or upgrade.
                     String tickRate = stack.getSpawnerData().getTickRate();
-                    String[] tick = tickRate.split(":");
+
+                    String[] tick = tickRate.contains(":") ? tickRate.split(":") : new String[]{tickRate, tickRate};
+
                     int tickMin = Integer.parseInt(tick[1]);
                     int tickMax = Integer.parseInt(tick[0]);
                     if (max == 0 && min == 0) {
