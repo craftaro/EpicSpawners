@@ -45,11 +45,11 @@
         <!--Songoda Repo-->
         <repository>
             <id>songoda-public</id>
-            <url>http://jenkins.songoda.com:8081/repository/songoda-public/</url>
+            <url>http://repo.songoda.com/repository/songoda-public/</url>
         </repository>
         <repository>
             <id>songoda-private</id>
-            <url>http://jenkins.songoda.com:8081/repository/songoda-private/</url>
+            <url>http://repo.songoda.com/repository/songoda-private/</url>
         </repository>
         <!--WorldGuard Repo-->
         <repository>
