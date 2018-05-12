@@ -4,3 +4,5 @@ out/
 \.idea/
 /EpicSpawners.iml
 /src/main/resources/META-INF/MANIFEST.MF
+/EpicSpawners-API/EpicSpawners-API.iml
+/EpicSpawners-Plugin/EpicSpawners-Plugin.iml
