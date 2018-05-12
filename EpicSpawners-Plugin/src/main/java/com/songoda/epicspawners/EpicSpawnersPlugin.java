@@ -191,7 +191,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
                 data.setEntitySpawnParticle(ParticleType.valueOf(spawnerFile.getConfig().getString("Entities." + key + ".Entity-Spawn-Particle", "SMOKE")));
                 data.setSpawnerSpawnParticle(ParticleType.valueOf(spawnerFile.getConfig().getString("Entities." + key + ".Spawner-Spawn-Particle", "FIRE")));
 
-                data.setParticleDensity(ParticleDensity.valueOf(spawnerFile.getConfig().getString("Entities." + key + ".Particle-Amount")));
+                data.setParticleDensity(ParticleDensity.valueOf(spawnerFile.getConfig().getString("Entities." + key + ".Particle-Amount", ParticleDensity.NORMAL.toString())));
 
                 data.setParticleEffectBoostedOnly(spawnerFile.getConfig().getBoolean("Entities." + key + ".Particle-Effect-Boosted-Only"));
 
@@ -424,7 +424,6 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
                 if (spawner.getPlacedBy() != null)
                     dataFile.getConfig().set("data.spawners." + key + ".PlacedBy", spawner.getPlacedBy().getUniqueId().toString());
             } catch (Exception e) {
-                System.out.println("Failed to save spawner.");
             }
         }
 

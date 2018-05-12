@@ -77,8 +77,6 @@ public class AppearanceHandler {
 
     public void updateDisplayItem(Spawner spawner, SpawnerData spawnerData) {
         try {
-            spawner.getCreatureSpawner().setSpawnedType(EntityType.DROPPED_ITEM);
-            spawner.getCreatureSpawner().update();
 
             Location nloc = spawner.getLocation();
             nloc.add(.5, -.4, .5);
@@ -87,8 +85,8 @@ public class AppearanceHandler {
             try {
                 EntityType next = EntityType.valueOf(Methods.restoreType(spawnerData.getIdentifyingName()));
                 spawner.getCreatureSpawner().setSpawnedType(next);
-                spawner.getCreatureSpawner().update();
             } catch (Exception ex) {
+                spawner.getCreatureSpawner().setSpawnedType(EntityType.DROPPED_ITEM);
 
                 Location location = spawner.getLocation();
 

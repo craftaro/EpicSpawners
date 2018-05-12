@@ -11,6 +11,7 @@ import com.songoda.epicspawners.spawners.object.ESpawner;
 import com.songoda.epicspawners.utils.Debugger;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -55,6 +56,9 @@ public class SpawnerListeners implements Listener {
 
             // Remove entity so we can do our own method.
             e.getEntity().remove();
+            for (Entity ee : e.getEntity().getPassengers()) {
+                ee.remove();
+            }
 
             if (location.getBlock().isBlockPowered() && instance.getConfig().getBoolean("Main.Redstone Power Deactivates Spawners"))
                 return;
