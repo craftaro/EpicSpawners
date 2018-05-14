@@ -42,6 +42,7 @@ public class Shop {
             for (SpawnerData spawnerData : instance.getSpawnerManager().getRegisteredSpawnerData().values()) {
                 if (!spawnerData.getIdentifyingName().toLowerCase().equals("omni")
                         && spawnerData.isInShop()
+                        && spawnerData.isActive()
                         && p.hasPermission("epicspawners.shop." + Methods.getTypeFromString(spawnerData.getIdentifyingName()).replaceAll(" ", "_"))) {
                     if (num >= start && show <= 32) {
                         entities.add(spawnerData);
@@ -77,7 +78,7 @@ public class Shop {
 
                 ItemStack it = new ItemStack(Material.SKULL_ITEM, 1, (byte) 3);
 
-                ItemStack item = instance.getHeads().addTexture(it, Methods.getTypeFromString(spawnerData.getIdentifyingName()));
+                ItemStack item = instance.getHeads().addTexture(it, spawnerData);
 
 
                 if (spawnerData.getDisplayItem() != null) {
@@ -216,7 +217,7 @@ public class Shop {
 
             ItemStack it = new ItemStack(Material.SKULL_ITEM, amt, (byte) 3);
 
-            ItemStack item = EpicSpawnersPlugin.getInstance().getHeads().addTexture(it, Methods.getTypeFromString(spawnerData.getIdentifyingName()));
+            ItemStack item = EpicSpawnersPlugin.getInstance().getHeads().addTexture(it, spawnerData);
 
 
             if (spawnerData.getDisplayItem() != null) {
@@ -314,7 +315,7 @@ public class Shop {
         }
     }
 
-    public void confirm(Player p, int amt) {
+    public void confirm(Player p, int amount) {
         try {
             SpawnerData spawnerData = EpicSpawnersPlugin.getInstance().inShow.get(p);
             if (EpicSpawnersPlugin.getInstance().getServer().getPluginManager().getPlugin("Vault") == null) {
@@ -323,12 +324,12 @@ public class Shop {
             }
             RegisteredServiceProvider<Economy> rsp = EpicSpawnersPlugin.getInstance().getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
             net.milkbowl.vault.economy.Economy econ = rsp.getProvider();
-            double price = spawnerData.getShopPrice() * amt;
+            double price = spawnerData.getShopPrice() * amount;
             if (!p.isOp() && !econ.has(p, price)) {
                 p.sendMessage(EpicSpawnersPlugin.getInstance().references.getPrefix() + instance.getLocale().getMessage("event.shop.cannotafford"));
                 return;
             }
-            ItemStack item = Methods.newSpawnerItem(spawnerData.getIdentifyingName(), amt);
+            ItemStack item = spawnerData.toItemStack(amount);
 
 
             p.getInventory().addItem(item);

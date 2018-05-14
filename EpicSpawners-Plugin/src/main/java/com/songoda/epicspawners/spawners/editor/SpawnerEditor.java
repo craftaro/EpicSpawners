@@ -109,7 +109,7 @@ public class SpawnerEditor {
                     place++;
                 ItemStack it = new ItemStack(Material.SKULL_ITEM, 1, (byte) 3);
 
-                ItemStack item = EpicSpawnersPlugin.getInstance().getHeads().addTexture(it, spawnerData.getIdentifyingName());
+                ItemStack item = EpicSpawnersPlugin.getInstance().getHeads().addTexture(it, spawnerData);
                 if (spawnerData.getDisplayItem() != null) {
                     item.setType(spawnerData.getDisplayItem());
                 }
@@ -264,7 +264,7 @@ public class SpawnerEditor {
 
             ItemStack it = new ItemStack(Material.SKULL_ITEM, 1, (byte) 3);
 
-            ItemStack item = EpicSpawnersPlugin.getInstance().getHeads().addTexture(it, type);
+            ItemStack item = EpicSpawnersPlugin.getInstance().getHeads().addTexture(it, spawnerData);
             if (spawnerData.getDisplayItem() != null) {
                 item.setType(spawnerData.getDisplayItem());
             }
@@ -330,7 +330,7 @@ public class SpawnerEditor {
 
             ItemStack it2 = new ItemStack(Material.SKULL_ITEM, 1, (byte) 3);
 
-            ItemStack entity = EpicSpawnersPlugin.getInstance().getHeads().addTexture(it2, "OMNI");
+            ItemStack entity = EpicSpawnersPlugin.getInstance().getHeads().addTexture(it2, instance.getSpawnerManager().getSpawnerData("omni"));
             ItemMeta entitymeta = entity.getItemMeta();
             entitymeta.setDisplayName(Arconix.pl().getApi().format().formatText("&a&lEntity Settings"));
             entity.setItemMeta(entitymeta);
@@ -504,7 +504,8 @@ public class SpawnerEditor {
                     i.setItem(num, new ItemStack(spawnerData.getBlocks().get(spot)));
                 } else if (spawnerData.getEntities().size() >= spot + 1 && editingMenu == EditingMenu.ENTITY) {
                     ItemStack it = new ItemStack(Material.SKULL_ITEM, 1, (byte) 3);
-                    ItemStack item = EpicSpawnersPlugin.getInstance().getHeads().addTexture(it, spawnerData.getEntities().get(spot).name());
+                    ItemStack item = EpicSpawnersPlugin.getInstance().getHeads().addTexture(it,
+                            instance.getSpawnerManager().getSpawnerData(spawnerData.getEntities().get(spot)));
                     ItemMeta meta = item.getItemMeta();
                     meta.setDisplayName(Arconix.pl().getApi().format().formatText("&e" + Methods.getTypeFromString(spawnerData.getEntities().get(spot).name())));
                     item.setItemMeta(meta);

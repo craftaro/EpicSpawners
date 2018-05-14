@@ -65,7 +65,7 @@ public class EntityListeners implements Listener {
                         double rand = Math.random() * 100;
                         if (rand - ch < 0 || ch == 100) {
                             for (SpawnerStack stack : spawner.getSpawnerStacks()) {
-                                ItemStack item = Methods.newSpawnerItem(stack.getSpawnerData().getIdentifyingName(), stack.getStackSize(), 1);
+                                ItemStack item = stack.getSpawnerData().toItemStack(1, stack.getStackSize());
                                 spawnLocation.getWorld().dropItemNaturally(spawnLocation.clone().add(.5, 0, .5), item);
                             }
                             instance.getSpawnerManager().removeSpawnerFromWorld(spawnLocation);
@@ -115,21 +115,21 @@ public class EntityListeners implements Listener {
             int amt = instance.getPlayerActionManager().getPlayerAction(player).addKilledEntity(event.getEntityType());
             int goal = instance.getConfig().getInt("Spawner Drops.Kills Needed for Drop");
 
-            int customGoal = instance.getSpawnerManager().getSpawnerData(Methods.getType(event.getEntityType())).getKillGoal();
-            if (customGoal != 0) goal = customGoal;
+            SpawnerData spawnerData = instance.getSpawnerManager().getSpawnerData(event.getEntityType());
 
-            String type = Methods.getType(event.getEntity().getType());
+            int customGoal = spawnerData.getKillGoal();
+            if (customGoal != 0) goal = customGoal;
 
             if (instance.getConfig().getInt("Spawner Drops.Alert Every X Before Drop") != 0
                     && amt % instance.getConfig().getInt("Spawner Drops.Alert Every X Before Drop") == 0
                     && amt != goal) {
-                Arconix.pl().getApi().packetLibrary.getActionBarManager().sendActionBar(player, instance.getLocale().getMessage("event.goal.alert", goal - amt, type));
+                Arconix.pl().getApi().packetLibrary.getActionBarManager().sendActionBar(player, instance.getLocale().getMessage("event.goal.alert", goal - amt, spawnerData.getIdentifyingName()));
             }
 
             if (amt % goal == 0) {
-                ItemStack item = Methods.newSpawnerItem(type, 1, 1);
+                ItemStack item = spawnerData.toItemStack();
                 event.getEntity().getLocation().getWorld().dropItemNaturally(event.getEntity().getLocation(), item);
-                Arconix.pl().getApi().packetLibrary.getActionBarManager().sendActionBar(player, instance.getLocale().getMessage("event.goal.reached", type));
+                Arconix.pl().getApi().packetLibrary.getActionBarManager().sendActionBar(player, instance.getLocale().getMessage("event.goal.reached", spawnerData.getIdentifyingName()));
             }
 
         } catch (Exception ex) {

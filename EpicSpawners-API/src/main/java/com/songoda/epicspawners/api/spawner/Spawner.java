@@ -21,7 +21,7 @@ public interface Spawner {
 
     /**
      * Get identifying name of this spawner.
-     *
+     * <p>
      * <p>Will return Omni if multiple {@link SpawnerData}
      * objects are present.</p>
      *
@@ -32,7 +32,7 @@ public interface Spawner {
     /**
      * Get custom display name as to be used when
      * displaying this spawner.
-     *
+     * <p>
      * <p>Will return Omni if multiple {@link SpawnerData}
      * objects are present.</p>
      *
@@ -142,8 +142,21 @@ public interface Spawner {
      * @param type   the type of spawner to stack
      * @param amt    the amount of that spawner type to stack
      * @return true if successful, false otherwise
+     * @deprecated see {@link #stack(Player, SpawnerData, int)}
      */
+    @Deprecated
     boolean stack(Player player, String type, int amt);
+
+    /**
+     * Converts the provided ItemStack to a Spawner stack and
+     * adds it to this Spawner.
+     *
+     * @param player the player performing the stacking
+     * @param data   the type of spawner to stack
+     * @param amount the amount of that spawner type to stack
+     * @return true if successful, false otherwise
+     */
+    boolean stack(Player player, SpawnerData data, int amount);
 
     /**
      * Removes the topmost {@link SpawnerData} from this
@@ -180,4 +193,8 @@ public interface Spawner {
      */
     int updateDelay(); // Updates delay of the spawner
 
+    /**
+     * You can use this method to force a spawn of this spawner.
+     */
+    void spawn();
 }

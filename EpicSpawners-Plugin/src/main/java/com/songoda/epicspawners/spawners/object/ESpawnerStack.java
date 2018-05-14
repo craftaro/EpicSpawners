@@ -18,6 +18,10 @@ public class ESpawnerStack implements SpawnerStack {
     private int stackSize;
 
     //Construct the class and define values.
+    public ESpawnerStack(SpawnerData spawnerData) {
+        this(spawnerData, 1);
+    }
+
     public ESpawnerStack(SpawnerData spawnerData, int stackSize) {
         this.spawnerData = spawnerData;
         this.stackSize = stackSize;

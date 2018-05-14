@@ -4,6 +4,7 @@ import com.songoda.epicspawners.api.spawner.Spawner;
 import com.songoda.epicspawners.api.spawner.SpawnerData;
 import com.songoda.epicspawners.api.spawner.SpawnerManager;
 import org.bukkit.Location;
+import org.bukkit.entity.EntityType;
 
 import java.util.*;
 
@@ -24,6 +25,11 @@ public class ESpawnerManager implements SpawnerManager {
     }
 
     @Override
+    public SpawnerData getSpawnerData(EntityType type) {
+        return getSpawnerData(type.name().replaceAll("_", " "));
+    }
+
+    @Override
     public void addSpawnerData(String name, SpawnerData spawnerData) {
         spawners.put(name.toLowerCase(), spawnerData);
     }
@@ -36,6 +42,11 @@ public class ESpawnerManager implements SpawnerManager {
     @Override
     public Map<String, SpawnerData> getRegisteredSpawnerData() {
         return Collections.unmodifiableMap(spawners);
+    }
+
+    @Override
+    public Collection<SpawnerData> getAllSpawnerData() {
+        return Collections.unmodifiableCollection(spawners.values());
     }
 
     @Override
@@ -66,6 +77,11 @@ public class ESpawnerManager implements SpawnerManager {
     @Override
     public Map<Location, Spawner> getSpawnersInWorld() {
         return Collections.unmodifiableMap(spawnersInWorld);
+    }
+
+    @Override
+    public Collection<Spawner> getSpawners() {
+        return Collections.unmodifiableCollection(spawnersInWorld.values());
     }
 
     public void addCooldown(Spawner spawner) {

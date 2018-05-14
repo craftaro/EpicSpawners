@@ -5,17 +5,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.EntityType;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class PlayerData {
 
     private final UUID playerUUID;
     private ESpawner lastSpawner = null;
     private MenuType inMenu = MenuType.NOTIN;
-    private Map<EntityType, Integer> entityKills = new HashMap<>();
+    private Map<EntityType, Integer> entityKills = new EnumMap<>(EntityType.class);
     private int infoPage = 1;
 
     public PlayerData(UUID playerUUID) {
@@ -55,14 +52,8 @@ public class PlayerData {
     }
 
     public int addKilledEntity(EntityType type) {
-        if (entityKills.containsKey(type)) {
-            int amt = entityKills.get(type) + 1;
-            entityKills.remove(type);
-            entityKills.put(type, amt);
-            return amt++;
-        } else {
-            return entityKills.put(type, 1);
-        }
+        if (entityKills == null) entityKills = new EnumMap<>(EntityType.class);
+        return entityKills.merge(type,1, Integer::sum);
     }
 
     public Map<EntityType, Integer> getEntityKills() {

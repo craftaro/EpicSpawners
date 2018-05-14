@@ -1,6 +1,7 @@
 package com.songoda.epicspawners.spawners.object;
 
 import com.google.common.base.Preconditions;
+import com.songoda.epicspawners.api.EpicSpawnersAPI;
 import com.songoda.epicspawners.api.particles.ParticleDensity;
 import com.songoda.epicspawners.api.particles.ParticleEffect;
 import com.songoda.epicspawners.api.particles.ParticleType;
@@ -95,6 +96,21 @@ public class ESpawnerData implements SpawnerData {
         for (SpawnOption spawnOption : spawnOptions) {
             spawnOption.spawn(this, stack, spawner);
         }
+    }
+
+    @Override
+    public ItemStack toItemStack() {
+        return toItemStack(1);
+    }
+
+    @Override
+    public ItemStack toItemStack(int amount) {
+        return toItemStack(amount, 1);
+    }
+
+    @Override
+    public ItemStack toItemStack(int amount, int stackSize) {
+        return EpicSpawnersAPI.newSpawnerItem(this, amount, stackSize);
     }
 
     @Override

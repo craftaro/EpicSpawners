@@ -1,5 +1,6 @@
 package com.songoda.epicspawners;
 
+import com.google.common.base.Preconditions;
 import com.songoda.arconix.api.mcupdate.MCUpdate;
 import com.songoda.arconix.api.utils.ConfigWrapper;
 import com.songoda.arconix.plugin.Arconix;
@@ -25,10 +26,13 @@ import com.songoda.epicspawners.spawners.object.ESpawner;
 import com.songoda.epicspawners.spawners.object.ESpawnerData;
 import com.songoda.epicspawners.spawners.object.ESpawnerManager;
 import com.songoda.epicspawners.spawners.object.ESpawnerStack;
+import com.songoda.epicspawners.tasks.SpawnerParticleTask;
 import com.songoda.epicspawners.utils.Heads;
 import com.songoda.epicspawners.utils.Methods;
 import com.songoda.epicspawners.utils.SettingsManager;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.CreatureSpawner;
@@ -36,6 +40,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -76,25 +81,26 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
     public References references = null;
 
 
-    private BlacklistHandler blacklistHandler;
-    private HookHandler hookHandler;
-    private SpawnerEditor spawnerEditor;
-    private Heads heads;
-    private SettingsManager settingsManager;
-    private Shop shop;
-
-    private Locale locale;
-
     private SpawnManager spawnManager;
     private PlayerActionManager playerActionManager;
     private SpawnerManager spawnerManager;
-    private HologramHandler hologramHandler;
-    private ParticleHandler particleHandler;
     private BoostManager boostManager;
+    private SettingsManager settingsManager;
+
+    private BlacklistHandler blacklistHandler;
+    private HookHandler hookHandler;
+    private HologramHandler hologramHandler;
     private AppearanceHandler appearanceHandler;
 
+    private SpawnerParticleTask particleTask;
+    private SpawnerEditor spawnerEditor;
+    private Heads heads;
+    private Shop shop;
+    private Locale locale;
+
     public void onDisable() {
-        saveToFile();
+        this.saveToFile();
+        this.particleTask.cancel();
         // TODO: Save SpawnerRegistryData contents to file
         //this.spawnerRegistry.clearRegistry();
         console.sendMessage(Arconix.pl().getApi().format().formatText("&a============================="));
@@ -140,7 +146,6 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         this.playerActionManager = new PlayerActionManager();
         this.boostManager = new BoostManager();
         this.spawnerManager = new ESpawnerManager();
-        this.particleHandler = new ParticleHandler(this);
 
         hologramHandler = new HologramHandler(this);
 
@@ -219,7 +224,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
 
                 CreatureSpawner spawnerState = (CreatureSpawner) location.getBlock().getState();
 
-                String type = Methods.getType(spawnerState.getSpawnedType()).toLowerCase();
+                String type = spawnerState.getSpawnedType().name().toLowerCase().replace("_", " ");
 
                 // Is custom spawner.
                 if (dataFile.getConfig().contains("data.spawnerstats." + key + ".type"))
@@ -351,12 +356,14 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         manager.registerEvents(new InventoryListeners(this), this);
         manager.registerEvents(new SpawnerListeners(this), this);
 
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, this::saveToFile, 6000, 6000);
+        Bukkit.getScheduler().runTaskTimerAsynchronously(this, this::saveToFile, 6000, 6000);
 
         if (!v1_7) {
             getServer().getPluginManager().registerEvents(new TestListeners(), this);
         }
         console.sendMessage(Arconix.pl().getApi().format().formatText("&a============================="));
+
+        this.particleTask = SpawnerParticleTask.startTask(this);
     }
 
     private void saveToFile() {
@@ -429,7 +436,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
 
         for (BoostData boostData : boostManager.getBoosts()) {
 
-            String key = boostData.getEndTime().toString();
+            String key = String.valueOf(boostData.getEndTime());
 
             dataFile.getConfig().set("data.boosts." + key + ".BoostType", boostData.getBoostType().name());
 
@@ -592,11 +599,6 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         return spawnManager;
     }
 
-    @Override
-    public SpawnerManager getSpawnerManager() {
-        return spawnerManager;
-    }
-
     public BoostManager getBoostManager() {
         return boostManager;
     }
@@ -636,4 +638,63 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
     public Heads getHeads() {
         return heads;
     }
+
+    @Override
+    public SpawnerManager getSpawnerManager() {
+        return spawnerManager;
+    }
+
+    @Override
+    public ItemStack newSpawnerItem(SpawnerData data, int amount) {
+        return newSpawnerItem(data, amount, 1);
+    }
+
+    @Override
+    public ItemStack newSpawnerItem(SpawnerData data, int amount, int stackSize) {
+        Preconditions.checkArgument(stackSize > 0, "Stack size must be greater than or equal to 0");
+
+        ItemStack item = new ItemStack(Material.MOB_SPAWNER, amount);
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName(Methods.compileName(data.getIdentifyingName(), stackSize, true));
+        item.setItemMeta(meta);
+
+        return item;
+    }
+
+    @Override
+    public SpawnerData getSpawnerDataFromItem(ItemStack item) {
+        if (item == null || !item.hasItemMeta()) return null;
+
+        String name = item.getItemMeta().getDisplayName();
+        if (name == null) return null;
+
+        if (name.contains(":")) {
+            String value = name.replace(String.valueOf(ChatColor.COLOR_CHAR), "").split(":")[0];
+            return spawnerManager.getSpawnerData(value.toLowerCase().replace("_", " "));
+        }
+
+        String typeName = name.replace("_", " ");
+        for (EntityType type : EntityType.values()) {
+            if (!type.isSpawnable() || !type.isAlive()) continue;
+
+            if (typeName.contains(type.name().toLowerCase())) {
+                return spawnerManager.getSpawnerData(type.name().toLowerCase().replace("_", " "));
+            }
+        }
+
+        return null;
+    }
+
+    @Override
+    public int getStackSizeFromItem(ItemStack item) {
+        Preconditions.checkNotNull(item, "Cannot get stack size of null item");
+        if (!item.hasItemMeta()) return 1;
+
+        String name = item.getItemMeta().getDisplayName();
+        if (name == null) return 1;
+
+        String amount = name.replace(String.valueOf(ChatColor.COLOR_CHAR), "").split(":")[1];
+        return NumberUtils.toInt(amount, 1);
+    }
+
 }

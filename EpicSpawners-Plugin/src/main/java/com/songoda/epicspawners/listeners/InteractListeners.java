@@ -4,6 +4,8 @@ import com.songoda.arconix.plugin.Arconix;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.api.spawner.Spawner;
 import com.songoda.epicspawners.api.events.SpawnerChangeEvent;
+import com.songoda.epicspawners.api.spawner.SpawnerData;
+import com.songoda.epicspawners.api.spawner.SpawnerManager;
 import com.songoda.epicspawners.spawners.object.ESpawnerStack;
 import com.songoda.epicspawners.spawners.object.ESpawner;
 import com.songoda.epicspawners.utils.Debugger;
@@ -75,11 +77,13 @@ public class InteractListeners implements Listener {
             if (!(e.getClickedBlock().getType() == Material.MOB_SPAWNER && is == Material.MONSTER_EGG && !EpicSpawnersPlugin.getInstance().getBlacklistHandler().isBlacklisted(p, true))) {
                 return;
             }
-            Spawner spawner = instance.getSpawnerManager().getSpawnerFromWorld(b.getLocation());
-            String btype = Methods.getType(spawner.getCreatureSpawner().getSpawnedType());
+            SpawnerManager spawnerManager = instance.getSpawnerManager();
+            Spawner spawner = spawnerManager.getSpawnerFromWorld(b.getLocation());
+
+            SpawnerData blockType = spawnerManager.getSpawnerData(spawner.getCreatureSpawner().getSpawnedType());
 
             if (!EpicSpawnersPlugin.getInstance().getConfig().getBoolean("Main.Convert Spawners With Eggs")
-                    || !EpicSpawnersPlugin.getInstance().spawnerFile.getConfig().getBoolean("Entities." + btype + ".Allowed")) {  //ToDo When you redo eggs make it so that if you use one on an omni
+                    || !EpicSpawnersPlugin.getInstance().spawnerFile.getConfig().getBoolean("Entities." + blockType + ".Allowed")) {  //ToDo When you redo eggs make it so that if you use one on an omni
                 e.setCancelled(true);
                 return;
             }
@@ -100,6 +104,8 @@ public class InteractListeners implements Listener {
                     itype = EntityType.fromName(str.substring(str.indexOf("EntityTag:{id:") + 15, str.indexOf("\"}")));
             }
 
+            SpawnerData itemType = instance.getSpawnerManager().getSpawnerData(itype);
+
             if (!p.hasPermission("epicspawners.egg." + itype) && !p.hasPermission("epicspawners.egg.*")) {
                 return;
             }
@@ -108,13 +114,13 @@ public class InteractListeners implements Listener {
                 e.setCancelled(true);
                 return;
             }
-            SpawnerChangeEvent event = new SpawnerChangeEvent(b.getLocation(), p, btype, itype.name());
+            SpawnerChangeEvent event = new SpawnerChangeEvent(b.getLocation(), p, blockType, itemType);
             Bukkit.getPluginManager().callEvent(event);
             if (event.isCancelled()) {
                 return;
             }
-            if (btype.equals(Methods.getType(itype))) {
-                p.sendMessage(instance.getLocale().getMessage("event.egg.sametype", btype));
+            if (blockType.equals(itemType)) {
+                p.sendMessage(instance.getLocale().getMessage("event.egg.sametype", blockType));
                 return;
             }
             spawner.getCreatureSpawner().setSpawnedType(itype);
@@ -142,7 +148,7 @@ public class InteractListeners implements Listener {
                 if (!instance.getSpawnerManager().isSpawner(location)) {
                     ESpawner spawner = new ESpawner(location);
 
-                    spawner.addSpawnerStack(new ESpawnerStack(instance.getSpawnerManager().getSpawnerData(Methods.getType(spawner.getCreatureSpawner().getSpawnedType())), 1));
+                    spawner.addSpawnerStack(new ESpawnerStack(instance.getSpawnerManager().getSpawnerData(spawner.getCreatureSpawner().getSpawnedType()), 1));
                     instance.getSpawnerManager().addSpawnerToWorld(location, spawner);
                 }
             }

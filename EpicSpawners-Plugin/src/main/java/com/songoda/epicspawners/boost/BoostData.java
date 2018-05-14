@@ -3,18 +3,18 @@ package com.songoda.epicspawners.boost;
 public class BoostData {
 
     // The type of boost.
-    private BoostType boostType;
+    private final BoostType boostType;
 
     // Mount to add to each spawn.
-    private int amtBoosted;
+    private final int amtBoosted;
 
     // Amount to add to
-    private Long endTime;
+    private final long endTime;
 
     // The data stored in the boost.
-    private Object data;
+    private final Object data;
 
-    public BoostData(BoostType boostType, int amtBoosted, Long endTime, Object data) {
+    public BoostData(BoostType boostType, int amtBoosted, long endTime, Object data) {
         this.boostType = boostType;
         this.amtBoosted = amtBoosted;
         this.endTime = endTime;
@@ -33,7 +33,7 @@ public class BoostData {
         return data;
     }
 
-    public Long getEndTime() {
+    public long getEndTime() {
         return endTime;
     }
 }

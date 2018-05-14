@@ -2,6 +2,7 @@ package com.songoda.epicspawners.utils;
 
 import com.songoda.arconix.plugin.Arconix;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
+import com.songoda.epicspawners.api.spawner.SpawnerData;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -28,9 +29,9 @@ public class Heads {
         }
     }
 
-    public ItemStack addTexture(ItemStack item, String name) {
+    public ItemStack addTexture(ItemStack item, SpawnerData spawnerData) {
         try {
-            String headURL = textureURL.get(name.toUpperCase().replace(" ", "_"));
+            String headURL = textureURL.get(spawnerData.getIdentifyingName().toUpperCase().replace(" ", "_"));
             if (headURL == null) {
                 headURL = textureURL.get("DROPPED_ITEM");
             }

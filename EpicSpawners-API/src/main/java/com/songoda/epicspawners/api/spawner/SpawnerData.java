@@ -1,5 +1,6 @@
 package com.songoda.epicspawners.api.spawner;
 
+import com.songoda.epicspawners.api.EpicSpawnersAPI;
 import com.songoda.epicspawners.api.particles.ParticleDensity;
 import com.songoda.epicspawners.api.particles.ParticleEffect;
 import com.songoda.epicspawners.api.particles.ParticleType;
@@ -18,6 +19,38 @@ public interface SpawnerData {
      * lists.
      */
     void reloadSpawnMethods();
+
+    /**
+     * Create an item representation of this SpawnerData.
+     *
+     * @return new spawner item
+     *
+     * @see EpicSpawnersAPI#newSpawnerItem(SpawnerData, int, int)
+     */
+    ItemStack toItemStack();
+
+    /**
+     * Create an item representation of this SpawnerData.
+     *
+     * @param amount the amount of items to create
+     *
+     * @return new spawner item
+     *
+     * @see EpicSpawnersAPI#newSpawnerItem(SpawnerData, int, int)
+     */
+    ItemStack toItemStack(int amount);
+
+    /**
+     * Create an item representation of this SpawnerData.
+     *
+     * @param amount the amount of items to create
+     * @param stackSize the amount of stacked spawners
+     *
+     * @return new spawner item
+     *
+     * @see EpicSpawnersAPI#newSpawnerItem(SpawnerData, int, int)
+     */
+    ItemStack toItemStack(int amount, int stackSize);
 
     /**
      * Get identifying name for this spawner type.

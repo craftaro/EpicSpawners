@@ -34,34 +34,11 @@ public class SpawnerListeners implements Listener {
         this.instance = instance;
     }
 
-    //ToDO: Boosting isn't implemented at all.
-    //ToDo: Use this for all spawner things (Like items, commands and what not) instead of the old shit
-    //ToDO: There is a weird error that is triggered when a spawner is not found in the config.
-    private Map<Location, Date> lastSpawns = new HashMap<>();
-    private Map<Location, Integer> timer = new HashMap<>();
-
     @EventHandler
     public void onSpawn(SpawnerSpawnEvent e) {
         try {
             e.setCancelled(true);
-            long lastSpawn = 1001;
-            if (lastSpawns.containsKey(e.getSpawner().getLocation())) {
-                lastSpawn = (new Date()).getTime() - lastSpawns.get(e.getSpawner().getLocation()).getTime();
-            }
-            if (lastSpawn >= 1000) {
-                lastSpawns.put(e.getSpawner().getLocation(), new Date());
-            } else return;
-
             Location location = e.getSpawner().getLocation();
-
-            // Remove entity so we can do our own method.
-            e.getEntity().remove();
-            for (Entity ee : e.getEntity().getPassengers()) {
-                ee.remove();
-            }
-
-            if (location.getBlock().isBlockPowered() && instance.getConfig().getBoolean("Main.Redstone Power Deactivates Spawners"))
-                return;
 
             if (!instance.getSpawnerManager().isSpawner(location)) {
                 Spawner spawner = new ESpawner(location);
@@ -72,40 +49,16 @@ public class SpawnerListeners implements Listener {
 
             Spawner spawner = instance.getSpawnerManager().getSpawnerFromWorld(e.getSpawner().getLocation());
 
-            if (e.getSpawner().getSpawnedType() == EntityType.DROPPED_ITEM) {
-                int amt = 0;
-                if (!timer.containsKey(location)) {
-                    timer.put(location, amt);
-                    return;
-                } else {
-                    amt = timer.get(location);
-                    amt = amt + 30;
-                    timer.put(location, amt);
+            // Remove entity so we can do our own method.
+            e.getEntity().remove();
+
+            if (!instance.v1_8 && !instance.v1_7) {
+                for (Entity ee : e.getEntity().getPassengers()) {
+                    ee.remove();
                 }
-                int delay = spawner.updateDelay();
-                if (amt < delay) {
-                    return;
-                }
-                timer.remove(location);
             }
 
-            if (spawner.getFirstStack().getSpawnerData() == null) return;
-
-            float x = (float) (0 + (Math.random() * .8));
-            float y = (float) (0 + (Math.random() * .8));
-            float z = (float) (0 + (Math.random() * .8));
-
-            Location particleLocation = location.clone();
-            particleLocation.add(.5, .5, .5);
-            //ToDo: Only currently works for the first spawner type in the stack. this is not how it should work.
-            SpawnerData spawnerData = spawner.getFirstStack().getSpawnerData();
-            Arconix.pl().getApi().packetLibrary.getParticleManager().broadcastParticle(particleLocation, x, y, z, 0, spawnerData.getSpawnerSpawnParticle().getEffect(), spawnerData.getParticleDensity().getSpawnerSpawn());
-
-            for (SpawnerStack stack : spawner.getSpawnerStacks()) {
-                ((ESpawnerData)stack.getSpawnerData()).spawn(spawner, stack);
-                //stack.getSpawnerData().spawn(location); // This method will spawn all methods at once.
-            }
-            Bukkit.getScheduler().runTaskLater(instance, spawner::updateDelay, 10);
+            spawner.spawn();
         } catch (Exception ex) {
             Debugger.runReport(ex);
         }

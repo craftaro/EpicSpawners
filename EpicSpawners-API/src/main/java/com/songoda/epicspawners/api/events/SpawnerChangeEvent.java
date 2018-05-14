@@ -1,5 +1,8 @@
 package com.songoda.epicspawners.api.events;
 
+import com.songoda.epicspawners.api.EpicSpawnersAPI;
+import com.songoda.epicspawners.api.spawner.SpawnerData;
+import com.songoda.epicspawners.api.spawner.SpawnerManager;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -16,46 +19,46 @@ public class SpawnerChangeEvent extends Event implements Cancellable {
 
     private Player player;
 
-    private int multi;
-    private int oldMulti;
+    private int stackSize;
+    private int oldStackSize;
 
-    private String type;
-    private String oldType;
+    private SpawnerData spawnerData, oldSpawnerData;
 
     private boolean canceled = false;
 
-    public SpawnerChangeEvent(Location location, Player player, int multi, int oldMulti) {
+    public SpawnerChangeEvent(Location location, Player player, int stackSize, int oldStackSize) {
         this.location = location;
         this.player = player;
-        this.multi = multi;
-        this.oldMulti = oldMulti;
+        this.stackSize = stackSize;
+        this.oldStackSize = oldStackSize;
     }
 
+    public SpawnerChangeEvent(Location location, Player player, SpawnerData data, SpawnerData oldSpawnerData) {
+        this.location = location;
+        this.player = player;
+        this.spawnerData = data;
+        this.oldSpawnerData = oldSpawnerData;
+    }
+
+    @Deprecated
     public SpawnerChangeEvent(Location location, Player player, String type, String oldType) {
         this.location = location;
         this.player = player;
-        this.type = type;
-        this.oldType = oldType;
+        SpawnerManager spawnerManager = EpicSpawnersAPI.getSpawnerManager();
+        this.spawnerData = spawnerManager.getSpawnerData(type);
+        this.oldSpawnerData = spawnerManager.getSpawnerData(oldType);
     }
 
     public Block getSpawner() {
         return location.getBlock();
     }
 
-    public int getCurrentMulti() {
-        return multi;
+    public int getStackSize() {
+        return stackSize;
     }
 
-    public int getOldMulti() {
-        return oldMulti;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public String getOldType() {
-        return oldType;
+    public int getOldStackSize() {
+        return oldStackSize;
     }
 
     public Player getPlayer() {
@@ -79,5 +82,33 @@ public class SpawnerChangeEvent extends Event implements Cancellable {
     @Override
     public void setCancelled(boolean canceled) {
         this.canceled = canceled;
+    }
+
+    public SpawnerData getSpawnerData() {
+        return spawnerData;
+    }
+
+    public SpawnerData getOldSpawnerData() {
+        return oldSpawnerData;
+    }
+
+    @Deprecated
+    public int getCurrentMulti() {
+        return stackSize;
+    }
+
+    @Deprecated
+    public int getOldMulti() {
+        return oldStackSize;
+    }
+
+    @Deprecated
+    public String getType() {
+        return spawnerData.getIdentifyingName();
+    }
+
+    @Deprecated
+    public String getOldType() {
+        return oldSpawnerData.getIdentifyingName();
     }
 }

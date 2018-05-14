@@ -178,17 +178,6 @@ public class Methods {
         return null;
     }
 
-    public static String getType(EntityType typ) {
-        try {
-            String type = typ.toString().replaceAll("_", " ");
-            type = ChatColor.stripColor(type.substring(0, 1).toUpperCase() + type.toLowerCase().substring(1));
-            return type;
-        } catch (Exception e) {
-            Debugger.runReport(e);
-        }
-        return null;
-    }
-
     public static String getTypeFromString(String typ) {
         try {
             if (typ == null)
@@ -270,31 +259,6 @@ public class Methods {
         return 0;
     }
 
-    public static ItemStack newSpawnerItem(String type, int amount) {
-        try {
-            return newSpawnerItem(type, 0, amount);
-        } catch (Exception e) {
-            Debugger.runReport(e);
-        }
-        return null;
-    }
-
-    public static ItemStack newSpawnerItem(String type, int multi, int amount) {
-        try {
-            if (multi == 0) multi = 1;
-            ItemStack item = new ItemStack(Material.MOB_SPAWNER, amount);
-            ItemMeta itemmeta = item.getItemMeta();
-            String name = Methods.compileName(type, multi, true);
-            itemmeta.setDisplayName(name);
-
-            item.setItemMeta(itemmeta);
-            return item;
-        } catch (Exception e) {
-            Debugger.runReport(e);
-        }
-        return null;
-    }
-
     public static int getIMulti(ItemStack item) {
         try {
             String arr[] = (item.getItemMeta().getDisplayName().replace("§", "")).split(":");
@@ -304,12 +268,14 @@ public class Methods {
         }
     }
 
+    /*
+
     public static String getType(ItemStack item) {
         if (getIType(item) != null && !getIType(item).equals(""))
             return Methods.restoreType(getIType(item));
         else
             return null;
-    }
+    }*/
 
     public static String getIType(ItemStack item) {
         try {

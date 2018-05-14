@@ -160,7 +160,7 @@ public class SpawnOptionEntity implements SpawnOption {
     public boolean canSpawn(EntityType type, Location location) {
         boolean canSpawn = true;
         try {
-            String spawnBlocks = instance.spawnerFile.getConfig().getString("Entities." + Methods.getTypeFromString(Methods.getType(type)) + ".Spawn-Block");
+            String spawnBlocks = instance.spawnerFile.getConfig().getString("Entities." + instance.getSpawnerManager().getSpawnerData(type).getIdentifyingName() + ".Spawn-Block");
 
             List<String> blocks = Arrays.asList(spawnBlocks.split("\\s*,\\s*"));
 

@@ -4,6 +4,8 @@ package com.songoda.epicspawners.spawners.object;
 import com.songoda.arconix.plugin.Arconix;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.api.CostType;
+import com.songoda.epicspawners.api.EpicSpawners;
+import com.songoda.epicspawners.api.EpicSpawnersAPI;
 import com.songoda.epicspawners.api.spawner.Spawner;
 import com.songoda.epicspawners.api.spawner.SpawnerData;
 import com.songoda.epicspawners.api.spawner.SpawnerStack;
@@ -17,6 +19,7 @@ import net.milkbowl.vault.economy.Economy;
 import org.bukkit.*;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -59,6 +62,61 @@ public class ESpawner implements Spawner {
         this.engine = mgr.getEngineByName("JavaScript");
     }
 
+    //ToDo: Use this for all spawner things (Like items, commands and what not) instead of the old shit
+    //ToDO: There is a weird error that is triggered when a spawner is not found in the config.
+    private Map<Location, Date> lastSpawns = new HashMap<>();
+    private Map<Location, Integer> timer = new HashMap<>();
+
+    @Override
+    public void spawn() {
+        EpicSpawnersPlugin instance = EpicSpawnersPlugin.getInstance();
+        long lastSpawn = 1001;
+        if (lastSpawns.containsKey(location)) {
+            lastSpawn = (new Date()).getTime() - lastSpawns.get(location).getTime();
+        }
+        if (lastSpawn >= 1000) {
+            lastSpawns.put(location, new Date());
+        } else return;
+
+        if (location.getBlock().isBlockPowered() && instance.getConfig().getBoolean("Main.Redstone Power Deactivates Spawners"))
+            return;
+
+        if (getCreatureSpawner().getSpawnedType() == EntityType.DROPPED_ITEM) {
+            int amt = 0;
+            if (!timer.containsKey(location)) {
+                timer.put(location, amt);
+                return;
+            } else {
+                amt = timer.get(location);
+                amt = amt + 30;
+                timer.put(location, amt);
+            }
+            int delay = updateDelay();
+            if (amt < delay) {
+                return;
+            }
+            timer.remove(location);
+        }
+
+        if (getFirstStack().getSpawnerData() == null) return;
+
+        float x = (float) (0 + (Math.random() * .8));
+        float y = (float) (0 + (Math.random() * .8));
+        float z = (float) (0 + (Math.random() * .8));
+
+        Location particleLocation = location.clone();
+        particleLocation.add(.5, .5, .5);
+        //ToDo: Only currently works for the first spawner type in the stack. this is not how it should work.
+        SpawnerData spawnerData = getFirstStack().getSpawnerData();
+        Arconix.pl().getApi().packetLibrary.getParticleManager().broadcastParticle(particleLocation, x, y, z, 0, spawnerData.getSpawnerSpawnParticle().getEffect(), spawnerData.getParticleDensity().getSpawnerSpawn());
+
+        for (SpawnerStack stack : getSpawnerStacks()) {
+            ((ESpawnerData)stack.getSpawnerData()).spawn(this, stack);
+            //stack.getSpawnerData().spawn(location); // This method will spawn all methods at once.
+        }
+        Bukkit.getScheduler().runTaskLater(instance, this::updateDelay, 10);
+    }
+
     @Override
     public void addSpawnerStack(SpawnerStack spawnerStack) {
         this.spawnerStacks.addFirst(spawnerStack);
@@ -94,7 +152,7 @@ public class ESpawner implements Spawner {
             if (!p.hasPermission("epicspawners.overview")) return;
             Inventory i = Bukkit.createInventory(null, 27, Arconix.pl().getApi().format().formatTitle(Methods.compileName(getIdentifyingName(), getSpawnerDataCount(), false)));
 
-            String type = getFirstStack().getSpawnerData().getIdentifyingName();
+            SpawnerData spawnerData = getFirstStack().getSpawnerData();
 
             int showAmt = getSpawnerDataCount();
             if (showAmt > 64)
@@ -104,10 +162,10 @@ public class ESpawner implements Spawner {
 
             ItemStack item = new ItemStack(Material.SKULL_ITEM, showAmt, (byte) 3);
             if (spawnerStacks.size() != 1) {
-                item = EpicSpawnersPlugin.getInstance().getHeads().addTexture(item, "omni");
+                item = EpicSpawnersPlugin.getInstance().getHeads().addTexture(item, instance.getSpawnerManager().getSpawnerData("omni"));
             } else {
                 try {
-                    item = EpicSpawnersPlugin.getInstance().getHeads().addTexture(item, Methods.restoreType(type));
+                    item = EpicSpawnersPlugin.getInstance().getHeads().addTexture(item, spawnerData);
                 } catch (Exception e) {
                     item = new ItemStack(Material.MOB_SPAWNER, showAmt);
                 }
@@ -163,7 +221,7 @@ public class ESpawner implements Spawner {
             if (getBoost() != 0) {
 
                 // ToDo: Make it display all boosts.
-                String[] parts = instance.getLocale().getMessage("interface.spawner.boostedstats", Integer.toString(getBoost()), type, Arconix.pl().getApi().format().readableTime(getBoostEnd().toEpochMilli() - System.currentTimeMillis())).split("\\|");
+                String[] parts = instance.getLocale().getMessage("interface.spawner.boostedstats", Integer.toString(getBoost()), spawnerData, Arconix.pl().getApi().format().readableTime(getBoostEnd().toEpochMilli() - System.currentTimeMillis())).split("\\|");
                 lore.add("");
                 for (String line : parts)
                     lore.add(Arconix.pl().getApi().format().formatText(line));
@@ -516,7 +574,7 @@ public class ESpawner implements Spawner {
                     place++;
                 ItemStack it = new ItemStack(Material.SKULL_ITEM, 1, (byte) 3);
 
-                ItemStack item = EpicSpawnersPlugin.getInstance().getHeads().addTexture(it, Methods.getTypeFromString(spawnerData.getIdentifyingName()));
+                ItemStack item = EpicSpawnersPlugin.getInstance().getHeads().addTexture(it, spawnerData);
 
                 if (spawnerData.getDisplayItem() != null) {
                     Material mat = spawnerData.getDisplayItem();
@@ -814,11 +872,11 @@ public class ESpawner implements Spawner {
         EpicSpawnersPlugin instance = EpicSpawnersPlugin.getInstance();
         SpawnerStack stack = spawnerStacks.getFirst();
 
-        int amtToUnstack = 1;
+        int stackSize = 1;
 
         if (player.isSneaking() && EpicSpawnersPlugin.getInstance().getConfig().getBoolean("Main.Sneak To Receive A Stacked Spawner")
                 || instance.getConfig().getBoolean("Spawner Drops.Only Drop Stacked Spawners")) {
-            amtToUnstack = stack.getStackSize();
+            stackSize = stack.getStackSize();
         }
 
         if (instance.getConfig().getBoolean("Main.Sounds Enabled")) {
@@ -828,7 +886,7 @@ public class ESpawner implements Spawner {
                 player.playSound(player.getLocation(), Sound.valueOf("ARROW_HIT"), 0.6F, 15.0F);
             }
         }
-        ItemStack item = Methods.newSpawnerItem(stack.getSpawnerData().getIdentifyingName(), amtToUnstack, 1);
+        ItemStack item = stack.getSpawnerData().toItemStack(1, stackSize);
 
 
         if (EpicSpawnersPlugin.getInstance().getConfig().getBoolean("Main.Add Spawners To Inventory On Drop") && player.getInventory().firstEmpty() == -1)
@@ -855,7 +913,7 @@ public class ESpawner implements Spawner {
             }
         }
 
-        if (stack.getStackSize() != amtToUnstack) {
+        if (stack.getStackSize() != stackSize) {
             stack.setStackSize(stack.getStackSize() - 1);
             return true;
         }
@@ -880,6 +938,11 @@ public class ESpawner implements Spawner {
 
     @Override
     public boolean stack(Player player, String type, int amt) {
+        return stack(player, EpicSpawnersAPI.getSpawnerManager().getSpawnerData(type), amt);
+    }
+
+    @Override
+    public boolean stack(Player player, SpawnerData data, int amount) {
         EpicSpawnersPlugin instance = EpicSpawnersPlugin.getInstance();
 
         int max = instance.getConfig().getInt("Main.Spawner Max Upgrade");
@@ -890,32 +953,30 @@ public class ESpawner implements Spawner {
             return false;
         }
 
-        if ((getSpawnerDataCount() + amt) > max) {
-            ItemStack item = Methods.newSpawnerItem(type, (getSpawnerDataCount() + amt) - max, 1);
+        if ((getSpawnerDataCount() + amount) > max) {
+            ItemStack item = data.toItemStack( 1, (getSpawnerDataCount() + amount) - max);
             if (player.getInventory().firstEmpty() == -1)
                 location.getWorld().dropItemNaturally(location.clone().add(.5, 0, .5), item);
             else
                 player.getInventory().addItem(item);
 
-            amt = max - currentStackSize;
+            amount = max - currentStackSize;
         }
 
         if (player.getGameMode() != GameMode.CREATIVE)
             Methods.takeItem(player, currentStackSize);
 
         for (SpawnerStack stack : spawnerStacks) {
-            if (!stack.getSpawnerData().getIdentifyingName().toLowerCase().equals(type.toLowerCase())) continue;
-            stack.setStackSize(stack.getStackSize() + amt);
+            if (!stack.getSpawnerData().equals(data)) continue;
+            stack.setStackSize(stack.getStackSize() + amount);
             upgradeFinal(player, currentStackSize);
             return true;
         }
 
         if (!instance.getConfig().getBoolean("Main.OmniSpawners Enabled")) return false;
 
-        ESpawnerStack stack = new ESpawnerStack(instance.getSpawnerManager().getSpawnerData(type), amt);
-
+        ESpawnerStack stack = new ESpawnerStack(data, amount);
         spawnerStacks.push(stack);
-
         return true;
     }
 
@@ -1125,7 +1186,7 @@ public class ESpawner implements Spawner {
 
             int delay;
             if (!EpicSpawnersPlugin.getInstance().cache.containsKey(equation) || (max + min) != lastDelay || getSpawnerDataCount() != lastMulti) {
-                equation = equation.replace("{DEFAULT}", Integer.toString(rand.nextInt(max) + min));
+                equation = equation.replace("{DEFAULT}", Integer.toString(rand.nextInt(Math.max(max, 0) + min)));
                 equation = equation.replace("{MULTI}", Integer.toString(getSpawnerDataCount()));
                 try {
                     delay = (int) Math.round(Double.parseDouble(engine.eval(equation).toString()));
@@ -1149,7 +1210,6 @@ public class ESpawner implements Spawner {
         }
         return 999999;
     }
-
 
     @Override
     public String getIdentifyingName() {

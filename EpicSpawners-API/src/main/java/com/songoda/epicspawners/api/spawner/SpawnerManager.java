@@ -1,7 +1,9 @@
 package com.songoda.epicspawners.api.spawner;
 
 import org.bukkit.Location;
+import org.bukkit.entity.EntityType;
 
+import java.util.Collection;
 import java.util.Map;
 
 public interface SpawnerManager {
@@ -14,6 +16,15 @@ public interface SpawnerManager {
      * @return spawner data
      */
     SpawnerData getSpawnerData(String name);
+
+    /**
+     * Get {@link SpawnerData} from EntityType.
+     *
+     * @param type the EntityType to convert
+     *
+     * @return spawner data
+     */
+    SpawnerData getSpawnerData(EntityType type);
 
     /**
      * Add spawner data to memory.
@@ -37,8 +48,19 @@ public interface SpawnerManager {
      * Get a map of all SpawnerData registered to memory.
      *
      * @return map of SpawnerData
+     *
+     * @deprecated see {@link #getAllSpawnerData()}
      */
+    @Deprecated
     Map<String, SpawnerData> getRegisteredSpawnerData();
+
+    /**
+     * Get an immutable collection of all SpawnerData
+     * registered to memory
+     *
+     * @return all registered spawner data
+     */
+    Collection<SpawnerData> getAllSpawnerData();
 
     /**
      * Whether or not this location contains a registered
@@ -90,7 +112,19 @@ public interface SpawnerManager {
      * memory.
      *
      * @return all registered spawners.
+     *
+     * @deprecated see {@link #getSpawners()} for a more proper
+     * return value. This method will be removed in the near future
      */
+    @Deprecated
     Map<Location, Spawner> getSpawnersInWorld();
+
+    /**
+     * Get an immutable collection of all spawners currently
+     * registered into memory
+     *
+     * @return all registered spawners
+     */
+    Collection<Spawner> getSpawners();
 
 }

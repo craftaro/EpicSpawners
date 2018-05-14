@@ -17,7 +17,7 @@ public class SpawnerDropEvent extends Event implements Cancellable {
 
     private Location location;
     private Player player;
-    private int multi;
+    private int stackSize;
     private EntityType type;
 
     private boolean canceled = false;
@@ -26,7 +26,7 @@ public class SpawnerDropEvent extends Event implements Cancellable {
         Spawner spawner = EpicSpawnersAPI.getSpawnerManager().getSpawnerFromWorld(location);
         this.location = location;
         this.player = player;
-        this.multi = spawner.getSpawnerDataCount();
+        this.stackSize = spawner.getSpawnerDataCount();
         if (spawner.getCreatureSpawner() == null)
             this.type = null;
         else
@@ -41,8 +41,8 @@ public class SpawnerDropEvent extends Event implements Cancellable {
         return player;
     }
 
-    public int getMulti() {
-        return multi;
+    public int getStackSize() {
+        return stackSize;
     }
 
     public EntityType getType() {
@@ -66,6 +66,10 @@ public class SpawnerDropEvent extends Event implements Cancellable {
     @Override
     public void setCancelled(boolean canceled) {
         this.canceled = canceled;
+    }
 
+    @Deprecated
+    public int getMultiSize() {
+        return stackSize;
     }
 }

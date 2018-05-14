@@ -175,7 +175,7 @@ public class BlockListeners implements Listener {
             if (!instance.getSpawnerManager().isSpawner(location)) {
                 ESpawner spawner = new ESpawner(location);
 
-                spawner.addSpawnerStack(new ESpawnerStack(instance.getSpawnerManager().getSpawnerData(Methods.getType(spawner.getCreatureSpawner().getSpawnedType())), 1));
+                spawner.addSpawnerStack(new ESpawnerStack(instance.getSpawnerManager().getSpawnerData(spawner.getCreatureSpawner().getSpawnedType())));
                 instance.getSpawnerManager().addSpawnerToWorld(location, spawner);
             }
 
