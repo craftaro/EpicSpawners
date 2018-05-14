@@ -964,7 +964,7 @@ public class ESpawner implements Spawner {
         }
 
         if (player.getGameMode() != GameMode.CREATIVE)
-            Methods.takeItem(player, currentStackSize);
+            Methods.takeItem(player, amount);
 
         for (SpawnerStack stack : spawnerStacks) {
             if (!stack.getSpawnerData().equals(data)) continue;
