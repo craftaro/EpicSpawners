@@ -34,7 +34,8 @@ public class SpawnerParticleTask extends BukkitRunnable {
     @Override
     public void run() {
         for (Spawner spawner : manager.getSpawnersInWorld().values()) {
-            if (spawner == null || spawner.getLocation() == null || spawner.getSpawnerDataCount() == 0) continue;
+            if (spawner == null || spawner.getLocation() == null || spawner.getSpawnerDataCount() == 0 || spawner.getFirstStack().getSpawnerData() == null)
+                continue;
 
             SpawnerData data = spawner.getFirstStack().getSpawnerData();
             ParticleEffect effect = data.getParticleEffect();
