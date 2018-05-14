@@ -1015,7 +1015,7 @@ public class ESpawner implements Spawner {
                     player.playSound(player.getLocation(), Sound.valueOf("LEVEL_UP"), 2F, 15.0F);
                 }
             } else {
-                if (!EpicSpawnersPlugin.getInstance().v1_10 && !EpicSpawnersPlugin.getInstance().v1_9 && !EpicSpawnersPlugin.getInstance().v1_8 && !EpicSpawnersPlugin.getInstance().v1_7) {
+                if (!EpicSpawnersPlugin.getInstance().v1_11 && !EpicSpawnersPlugin.getInstance().v1_10 && !EpicSpawnersPlugin.getInstance().v1_9 && !EpicSpawnersPlugin.getInstance().v1_8 && !EpicSpawnersPlugin.getInstance().v1_7) {
                     player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 2F, 25.0F);
                     player.playSound(player.getLocation(), Sound.BLOCK_NOTE_CHIME, 2F, 25.0F);
                     Bukkit.getScheduler().scheduleSyncDelayedTask(EpicSpawnersPlugin.getInstance(), () -> player.playSound(player.getLocation(), Sound.BLOCK_NOTE_CHIME, 1.2F, 35.0F), 5L);

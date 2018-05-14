@@ -4,7 +4,8 @@ import com.google.common.base.Preconditions;
 import com.songoda.arconix.api.mcupdate.MCUpdate;
 import com.songoda.arconix.api.utils.ConfigWrapper;
 import com.songoda.arconix.plugin.Arconix;
-import com.songoda.epicspawners.api.*;
+import com.songoda.epicspawners.api.EpicSpawners;
+import com.songoda.epicspawners.api.EpicSpawnersAPI;
 import com.songoda.epicspawners.api.particles.ParticleDensity;
 import com.songoda.epicspawners.api.particles.ParticleEffect;
 import com.songoda.epicspawners.api.particles.ParticleType;
@@ -64,8 +65,8 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
     public boolean v1_8 = Bukkit.getServer().getClass().getPackage().getName().contains("1_8");
     public boolean v1_9 = Bukkit.getServer().getClass().getPackage().getName().contains("1_9");
     public boolean v1_10 = Bukkit.getServer().getClass().getPackage().getName().contains("1_10");
-    public boolean v1_11 = Bukkit.getServer().getClass().getPackage().getName().contains("1_12");
-    public boolean v1_12 = Bukkit.getServer().getClass().getPackage().getName().contains("1_11");
+    public boolean v1_11 = Bukkit.getServer().getClass().getPackage().getName().contains("1_11");
+    public boolean v1_12 = Bukkit.getServer().getClass().getPackage().getName().contains("1_12");
 
     public String newSpawnerName = "";
 
