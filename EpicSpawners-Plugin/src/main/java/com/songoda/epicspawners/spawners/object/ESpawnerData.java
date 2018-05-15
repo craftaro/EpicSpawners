@@ -25,22 +25,17 @@ import java.util.*;
  */
 public class ESpawnerData implements SpawnerData {
 
+    private final String name;
     private double pickupCost = 0.0;
-
     private List<Material> spawnBlocks = Collections.singletonList(Material.DIRT);
-
     private boolean active = true, inShop = true;
     private boolean spawnOnFire = false, upgradeable = true, convertible = true;
-
     private double shopPrice = 1000.0;
     private String convertRatio = "45%";
     private double upgradeCostEconomy = 0.0;
     private int upgradeCostExperience = 0;
-
     private int killGoal = 0;
     private String displayName;
-
-    private final String name;
     private Material displayItem = null;
 
     private String tickRate = "800:200";
@@ -133,6 +128,14 @@ public class ESpawnerData implements SpawnerData {
         return (Material[]) spawnBlocks.toArray();
     }
 
+    public void setSpawnBlocks(String[] spawnBlock) {
+        this.spawnBlocks = new ArrayList<>();
+        for (String block : spawnBlock) {
+            if (block.toUpperCase().trim().equals("")) continue;
+            this.spawnBlocks.add(Material.valueOf(block.toUpperCase().trim()));
+        }
+    }
+
     @Override
     public List<Material> getSpawnBlocksList() {
         return spawnBlocks;
@@ -141,14 +144,6 @@ public class ESpawnerData implements SpawnerData {
     @Override
     public void setSpawnBlocks(List<Material> spawnBlock) {
         this.spawnBlocks = spawnBlock;
-    }
-
-    public void setSpawnBlocks(String[] spawnBlock) {
-        this.spawnBlocks = new ArrayList<>();
-        for (String block : spawnBlock) {
-            if (block.toUpperCase().trim().equals("")) continue;
-            this.spawnBlocks.add(Material.valueOf(block.toUpperCase().trim()));
-        }
     }
 
     @Override
@@ -263,7 +258,10 @@ public class ESpawnerData implements SpawnerData {
 
     @Override
     public Material getDisplayItem() {
-        return displayItem;
+        if (displayItem == Material.AIR)
+            return Material.DIRT;
+        else
+            return displayItem;
     }
 
     @Override
@@ -277,13 +275,13 @@ public class ESpawnerData implements SpawnerData {
     }
 
     @Override
-    public double getConvertPrice() {
-        return (int) (shopPrice * (Double.valueOf(convertRatio.substring(0, convertRatio.length() - 1)) / 100.0f));
+    public void setEntities(List<EntityType> entities) {
+        this.entities = entities;
     }
 
     @Override
-    public void setEntities(List<EntityType> entities) {
-        this.entities = entities;
+    public double getConvertPrice() {
+        return (int) (shopPrice * (Double.valueOf(convertRatio.substring(0, convertRatio.length() - 1)) / 100.0f));
     }
 
     @Override

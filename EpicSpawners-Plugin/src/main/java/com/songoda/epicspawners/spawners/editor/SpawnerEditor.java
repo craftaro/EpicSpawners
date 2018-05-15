@@ -55,7 +55,7 @@ public class SpawnerEditor {
                 num++;
             }
 
-            int max = (int) Math.ceil((double) num / (double) 36);
+            int max = (int) Math.ceil((double) num / (double) 32);
             int amt = entities.size();
             Inventory i = Bukkit.createInventory(null, 54, Arconix.pl().getApi().format().formatTitle("Spawner Editor"));
             int max2 = 54;
@@ -115,7 +115,7 @@ public class SpawnerEditor {
                 }
 
                 ItemMeta itemmeta = item.getItemMeta();
-                String name = Methods.compileName(spawnerData.getIdentifyingName(), 0, false);
+                String name = Methods.compileName(spawnerData.getIdentifyingName(), 1, false);
                 ArrayList<String> lore = new ArrayList<>();
                 lore.add(Arconix.pl().getApi().format().formatText("&7Click to &a&lEdit&7."));
                 lore.add(Arconix.pl().getApi().format().convertToInvisibleString(Integer.toString(dis)));
@@ -205,7 +205,7 @@ public class SpawnerEditor {
             }
             spawnerData = instance.getSpawnerManager().getSpawnerData(type);
 
-            name = Methods.compileName(type, 0, false);
+            name = Methods.compileName(type, 1, false);
             Inventory i = Bukkit.createInventory(null, 54, Arconix.pl().getApi().format().formatTitle(Arconix.pl().getApi().format().formatText("&8Editing: " + name + "&8.")));
 
             int num = 0;
@@ -375,7 +375,7 @@ public class SpawnerEditor {
     public SpawnerData getType(int id) {
         SpawnerData type = EpicSpawnersPlugin.getInstance().getSpawnerManager().getSpawnerData("pig");
         try {
-            if (id >= 32) id++;
+            if (id > 32) id++;
             int num = 1;
             for (SpawnerData spawnerData : EpicSpawnersPlugin.getInstance().getSpawnerManager().getRegisteredSpawnerData().values()) {
                 if (spawnerData.getIdentifyingName().toLowerCase().equals("omni")) continue;
@@ -394,7 +394,7 @@ public class SpawnerEditor {
         EditingData editingData = userEditingData.get(player.getUniqueId());
         SpawnerData spawnerData = getType(editingData.getSpawnerSlot());
 
-        String name = Methods.compileName(spawnerData.getIdentifyingName(), 0, false);
+        String name = Methods.compileName(spawnerData.getIdentifyingName(), 1, false);
         Inventory i = Bukkit.createInventory(null, 45, Arconix.pl().getApi().format().formatTitle(Arconix.pl().getApi().format().formatText(name + " &8Particle &8Settings.")));
 
         int num = 0;
@@ -481,7 +481,7 @@ public class SpawnerEditor {
             EditingData editingData = userEditingData.get(player.getUniqueId());
             SpawnerData spawnerData = getType(editingData.getSpawnerSlot());
 
-            String name = Methods.compileName(spawnerData.getIdentifyingName(), 0, false);
+            String name = Methods.compileName(spawnerData.getIdentifyingName(), 1, false);
             Inventory i = Bukkit.createInventory(null, 54, Arconix.pl().getApi().format().formatTitle(Arconix.pl().getApi().format().formatText(name + "&8 " + editingMenu + " &8Settings.")));
 
             int num = 0;
@@ -502,14 +502,16 @@ public class SpawnerEditor {
                     i.setItem(num, spawnerData.getItems().get(spot));
                 } else if (spawnerData.getBlocks().size() >= spot + 1 && editingMenu == EditingMenu.BLOCK) {
                     i.setItem(num, new ItemStack(spawnerData.getBlocks().get(spot)));
-                } else if (spawnerData.getEntities().size() >= spot + 1 && editingMenu == EditingMenu.ENTITY) {
+                } else if (spawnerData.getEntities().size() >= spot + 1 && editingMenu == EditingMenu.ENTITY && spawnerData.getEntities().get(spot) != EntityType.GIANT) {
                     ItemStack it = new ItemStack(Material.SKULL_ITEM, 1, (byte) 3);
+                    player.sendMessage(spot + ":" + spawnerData.getEntities().get(spot).toString());
                     ItemStack item = EpicSpawnersPlugin.getInstance().getHeads().addTexture(it,
                             instance.getSpawnerManager().getSpawnerData(spawnerData.getEntities().get(spot)));
                     ItemMeta meta = item.getItemMeta();
                     meta.setDisplayName(Arconix.pl().getApi().format().formatText("&e" + Methods.getTypeFromString(spawnerData.getEntities().get(spot).name())));
                     item.setItemMeta(meta);
                     i.setItem(num, item);
+
                 } else if (spawnerData.getCommands().size() >= spot + 1 && editingMenu == EditingMenu.COMMAND) {
                     ItemStack parseStack = new ItemStack(Material.PAPER, 1);
                     ItemMeta meta = parseStack.getItemMeta();
@@ -611,7 +613,7 @@ public class SpawnerEditor {
         try {
             EditingData editingData = userEditingData.get(p.getUniqueId());
             SpawnerData spawnerData = getType(editingData.getSpawnerSlot());
-            String name = Methods.compileName(spawnerData.getIdentifyingName(), 0, false);
+            String name = Methods.compileName(spawnerData.getIdentifyingName(), 1, false);
             Inventory i = Bukkit.createInventory(null, 45, Arconix.pl().getApi().format().formatTitle(Arconix.pl().getApi().format().formatText(name + " &8Settings.")));
             int num = 0;
             while (num != 45) {

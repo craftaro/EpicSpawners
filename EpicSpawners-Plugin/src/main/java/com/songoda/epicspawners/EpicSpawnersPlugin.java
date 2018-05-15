@@ -102,7 +102,6 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
     public void onDisable() {
         this.saveToFile();
         this.particleTask.cancel();
-        // TODO: Save SpawnerRegistryData contents to file
         //this.spawnerRegistry.clearRegistry();
         console.sendMessage(Arconix.pl().getApi().format().formatText("&a============================="));
         console.sendMessage(Arconix.pl().getApi().format().formatText("&7EpicSpawners " + this.getDescription().getVersion() + " by &5Songoda <3!"));
@@ -112,8 +111,8 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
 
     @SuppressWarnings("unchecked")
     public void onEnable() {
-        EpicSpawnersAPI.setImplementation(this);
         INSTANCE = this;
+        EpicSpawnersAPI.setImplementation(this);
 
         Arconix.pl().hook(this);
 

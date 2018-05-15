@@ -27,17 +27,6 @@ import java.util.List;
 @SuppressWarnings("deprecation")
 public class Methods {
 
-    public static String formatName(EntityType type, int multi) {
-        try {
-            if (multi <= 0)
-                multi = 1;
-            return compileName(type.name(), multi, true);
-        } catch (Exception e) {
-            Debugger.runReport(e);
-        }
-        return null;
-    }
-
     public static void takeItem(Player p, int amt) {
         try {
             if (p.getGameMode() != GameMode.CREATIVE) {

@@ -88,7 +88,7 @@ public class Shop {
                 }
 
                 ItemMeta itemmeta = item.getItemMeta();
-                String name = Methods.compileName(spawnerData.getIdentifyingName(), 0, true);
+                String name = Methods.compileName(spawnerData.getIdentifyingName(), 1, true);
                 ArrayList<String> lore = new ArrayList<>();
                 double price = spawnerData.getShopPrice();
                 lore.add(Arconix.pl().getApi().format().formatText(instance.getLocale().getMessage("interface.shop.buyprice", Arconix.pl().getApi().format().formatEconomy(price))));
@@ -228,7 +228,7 @@ public class Shop {
 
             item.setAmount(amt);
             ItemMeta itemmeta = item.getItemMeta();
-            String name = Methods.compileName(spawnerData.getIdentifyingName(), 0, false);
+            String name = Methods.compileName(spawnerData.getIdentifyingName(), 1, false);
             itemmeta.setDisplayName(name);
             ArrayList<String> lore = new ArrayList<>();
             lore.add(instance.getLocale().getMessage("interface.shop.buyprice", Arconix.pl().getApi().format().formatEconomy(price)));

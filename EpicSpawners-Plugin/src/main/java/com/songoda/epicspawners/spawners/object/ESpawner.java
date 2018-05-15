@@ -583,7 +583,7 @@ public class ESpawner implements Spawner {
                 }
 
                 ItemMeta itemmeta = item.getItemMeta();
-                String name = Methods.compileName(spawnerData.getIdentifyingName(), 0, true);
+                String name = Methods.compileName(spawnerData.getIdentifyingName(), 1, true);
                 ArrayList<String> lore = new ArrayList<>();
                 double price = spawnerData.getConvertPrice() * getSpawnerDataCount();
 

@@ -38,13 +38,16 @@ public class SpawnerParticleTask extends BukkitRunnable {
                 continue;
 
             SpawnerData data = spawner.getFirstStack().getSpawnerData();
+            if (data == null) return;
             ParticleEffect effect = data.getParticleEffect();
-            if (effect == ParticleEffect.NONE || (data.isParticleEffectBoostedOnly() && spawner.getBoost() == 0)) continue;
+            if (effect == null || effect == ParticleEffect.NONE || (data.isParticleEffectBoostedOnly() && spawner.getBoost() == 0)) continue;
 
             Location centre = spawner.getLocation().add(0.5, 0.5, 0.5);
 
             ParticleType particle = data.getSpawnEffectParticle();
+            if (particle == null || particle.getEffect() == null) return;
             ParticleDensity density = data.getParticleDensity();
+            if (density == null) return;
 
             // Particle effects
             if (effect == ParticleEffect.HALO) {

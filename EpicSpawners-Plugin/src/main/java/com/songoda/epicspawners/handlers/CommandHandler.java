@@ -326,7 +326,7 @@ public class CommandHandler implements CommandExecutor {
                         sender.sendMessage(TextComponent.formatText(instance.references.getPrefix() + "&cThat username does not exist, or the user is not online!"));
                         return true;
                     }
-                    int multi = 0;
+                    int multi = 1;
 
                     SpawnerData data = null;
                     for (SpawnerData spawnerData : instance.getSpawnerManager().getRegisteredSpawnerData().values()) {
@@ -373,7 +373,7 @@ public class CommandHandler implements CommandExecutor {
                                 sender.sendMessage(TextComponent.formatText(instance.references.getPrefix() + "&6" + args[3] + "&7 is not a number."));
                                 return true;
                             }
-                            if (!Arconix.pl().getApi().doMath().isNumeric(args[3])) {
+                            if (!Arconix.pl().getApi().doMath().isNumeric(args[4])) {
                                 sender.sendMessage(TextComponent.formatText(instance.references.getPrefix() + "&6" + args[4] + "&7 is not a number."));
                                 return true;
                             }
