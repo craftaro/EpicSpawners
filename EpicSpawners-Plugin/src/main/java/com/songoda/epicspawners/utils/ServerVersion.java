@@ -19,7 +19,7 @@ public enum ServerVersion {
 
     public static ServerVersion fromPackageName(String packageName) {
         for (ServerVersion version : values())
-            if (version.packagePrefix.startsWith(packageName)) return version;
+            if (packageName.startsWith(version.packagePrefix)) return version;
         return ServerVersion.UNKNOWN;
     }
 
