@@ -34,6 +34,10 @@ public class ESpawnerManager implements SpawnerManager {
         spawners.put(name.toLowerCase(), spawnerData);
     }
 
+    public void addSpawnerData(SpawnerData spawnerData) {
+        spawners.put(spawnerData.getIdentifyingName().toLowerCase(), spawnerData);
+    }
+
     @Override
     public void removeSpawnerData(String name) {
         spawners.remove(name.toLowerCase());

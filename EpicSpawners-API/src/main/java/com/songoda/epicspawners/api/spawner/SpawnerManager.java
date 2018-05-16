@@ -33,8 +33,17 @@ public interface SpawnerManager {
      *                    spawner data
      * @param spawnerData the object for your spawner
      *                    data
+     * 
+     * @see #addSpawnerData(SpawnerData)
      */
     void addSpawnerData(String name, SpawnerData spawnerData);
+
+    /**
+     * Add spawner data to memory
+     * 
+     * @param spawnerData the spawner data to register
+     */
+    void addSpawnerData(SpawnerData spawnerData);
 
     /**
      * Remove {@link SpawnerData} from memory by its
