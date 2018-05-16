@@ -8,6 +8,7 @@
 
     <modules>
         <module>EpicSpawners-API</module>
+        <module>EpicSpawners-Plugin</module>
     </modules>
 
     <properties>
