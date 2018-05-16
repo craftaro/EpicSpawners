@@ -163,9 +163,9 @@ public class InteractListeners implements Listener {
                 return;
             }
 
-            if (!EpicSpawnersPlugin.getInstance().getHookHandler().canBuild(e.getPlayer(), e.getClickedBlock().getLocation())
-                    || e.getClickedBlock() == null
-                    || e.getAction() != Action.RIGHT_CLICK_BLOCK) {
+            if (e.getClickedBlock() == null
+                    || e.getAction() != Action.RIGHT_CLICK_BLOCK
+                    || !EpicSpawnersPlugin.getInstance().getHookHandler().canBuild(e.getPlayer(), e.getClickedBlock().getLocation())) {
                 return;
             }
 
