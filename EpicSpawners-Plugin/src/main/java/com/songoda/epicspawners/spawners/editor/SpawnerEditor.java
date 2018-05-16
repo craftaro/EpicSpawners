@@ -1,5 +1,6 @@
 package com.songoda.epicspawners.spawners.editor;
 
+import com.songoda.arconix.api.methods.formatting.TextComponent;
 import com.songoda.arconix.plugin.Arconix;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.api.spawner.SpawnerData;
@@ -57,16 +58,16 @@ public class SpawnerEditor {
 
             int max = (int) Math.ceil((double) num / (double) 32);
             int amt = entities.size();
-            Inventory i = Bukkit.createInventory(null, 54, Arconix.pl().getApi().format().formatTitle("Spawner Editor"));
+            Inventory i = Bukkit.createInventory(null, 54, TextComponent.formatTitle("Spawner Editor"));
             int max2 = 54;
             if (amt <= 7) {
-                i = Bukkit.createInventory(null, 27, Arconix.pl().getApi().format().formatTitle("Spawner Editor"));
+                i = Bukkit.createInventory(null, 27, TextComponent.formatTitle("Spawner Editor"));
                 max2 = 27;
             } else if (amt <= 15) {
-                i = Bukkit.createInventory(null, 36, Arconix.pl().getApi().format().formatTitle("Spawner Editor"));
+                i = Bukkit.createInventory(null, 36, TextComponent.formatTitle("Spawner Editor"));
                 max2 = 36;
             } else if (amt <= 25) {
-                i = Bukkit.createInventory(null, 45, Arconix.pl().getApi().format().formatTitle("Spawner Editor"));
+                i = Bukkit.createInventory(null, 45, TextComponent.formatTitle("Spawner Editor"));
                 max2 = 45;
             }
 
@@ -117,8 +118,8 @@ public class SpawnerEditor {
                 ItemMeta itemmeta = item.getItemMeta();
                 String name = Methods.compileName(spawnerData.getIdentifyingName(), 1, false);
                 ArrayList<String> lore = new ArrayList<>();
-                lore.add(Arconix.pl().getApi().format().formatText("&7Click to &a&lEdit&7."));
-                lore.add(Arconix.pl().getApi().format().convertToInvisibleString(Integer.toString(dis)));
+                lore.add(TextComponent.formatText("&7Click to &a&lEdit&7."));
+                lore.add(TextComponent.convertToInvisibleString(Integer.toString(dis)));
                 itemmeta.setLore(lore);
                 itemmeta.setDisplayName(name);
                 item.setItemMeta(itemmeta);
@@ -168,7 +169,7 @@ public class SpawnerEditor {
 
             ItemStack newSpawner = new ItemStack(Material.PAPER, 1);
             ItemMeta newSpawnerMeta = newSpawner.getItemMeta();
-            newSpawnerMeta.setDisplayName(Arconix.pl().getApi().format().formatText("&9&lNew Spawner"));
+            newSpawnerMeta.setDisplayName(TextComponent.formatText("&9&lNew Spawner"));
             newSpawner.setItemMeta(newSpawnerMeta);
             i.setItem(max22 - 4, newSpawner);
 
@@ -206,7 +207,7 @@ public class SpawnerEditor {
             spawnerData = instance.getSpawnerManager().getSpawnerData(type);
 
             name = Methods.compileName(type, 1, false);
-            Inventory i = Bukkit.createInventory(null, 54, Arconix.pl().getApi().format().formatTitle(Arconix.pl().getApi().format().formatText("&8Editing: " + name + "&8.")));
+            Inventory i = Bukkit.createInventory(null, 54, TextComponent.formatTitle(TextComponent.formatText("&8Editing: " + name + "&8.")));
 
             int num = 0;
             while (num != 54) {
@@ -271,23 +272,23 @@ public class SpawnerEditor {
 
             ItemMeta itemmeta = item.getItemMeta();
             ArrayList<String> lore = new ArrayList<>();
-            lore.add(Arconix.pl().getApi().format().formatText("&7Left-Click to &9Change Spawner Name&7."));
-            lore.add(Arconix.pl().getApi().format().formatText("&7Middle-Click to &bChange Spawner Display Item&7."));
+            lore.add(TextComponent.formatText("&7Left-Click to &9Change Spawner Name&7."));
+            lore.add(TextComponent.formatText("&7Middle-Click to &bChange Spawner Display Item&7."));
             if (EpicSpawnersPlugin.getInstance().getConfig().getBoolean("settings.beta-features"))
-                lore.add(Arconix.pl().getApi().format().formatText("&7Right-Click to &9Change Spawner Head&7."));
-            lore.add(Arconix.pl().getApi().format().formatText("&6-----------------------------"));
+                lore.add(TextComponent.formatText("&7Right-Click to &9Change Spawner Head&7."));
+            lore.add(TextComponent.formatText("&6-----------------------------"));
 
-            lore.add(Arconix.pl().getApi().format().formatText("&6Display Name: &7" + spawnerData.getDisplayName() + "&7."));
+            lore.add(TextComponent.formatText("&6Display Name: &7" + spawnerData.getDisplayName() + "&7."));
             if (spawnerData.getDisplayItem() != null) {
-                lore.add(Arconix.pl().getApi().format().formatText("&6Display Item: &7" + spawnerData.getDisplayItem().name() + "&7."));
+                lore.add(TextComponent.formatText("&6Display Item: &7" + spawnerData.getDisplayItem().name() + "&7."));
             } else {
                 if (!name.contains("Custom")) {
-                    lore.add(Arconix.pl().getApi().format().formatText("&6Display Item: &7Unavailable&7."));
+                    lore.add(TextComponent.formatText("&6Display Item: &7Unavailable&7."));
                 } else {
-                    lore.add(Arconix.pl().getApi().format().formatText("&6Display Item: &7Dirt&7."));
+                    lore.add(TextComponent.formatText("&6Display Item: &7Dirt&7."));
                 }
             }
-            lore.add(Arconix.pl().getApi().format().formatText("&6Config Name: &7" + type + "&7."));
+            lore.add(TextComponent.formatText("&6Config Name: &7" + type + "&7."));
             itemmeta.setLore(lore);
             itemmeta.setDisplayName(name);
             item.setItemMeta(itemmeta);
@@ -304,13 +305,13 @@ public class SpawnerEditor {
                 }
             }
             lore = new ArrayList<>();
-            destroymeta.setDisplayName(Arconix.pl().getApi().format().formatText("&7Left-Click to: &cDisable Spawner"));
-            if (!dont) lore.add(Arconix.pl().getApi().format().formatText("&7Right-Click to: &cDestroy Spawner"));
-            lore.add(Arconix.pl().getApi().format().formatText("&6---------------------------"));
+            destroymeta.setDisplayName(TextComponent.formatText("&7Left-Click to: &cDisable Spawner"));
+            if (!dont) lore.add(TextComponent.formatText("&7Right-Click to: &cDestroy Spawner"));
+            lore.add(TextComponent.formatText("&6---------------------------"));
             if (!spawnerData.isActive())
-                lore.add(Arconix.pl().getApi().format().formatText("&6Currently:&c Disabled."));
+                lore.add(TextComponent.formatText("&6Currently:&c Disabled."));
             else
-                lore.add(Arconix.pl().getApi().format().formatText("&6Currently:&a Enabled."));
+                lore.add(TextComponent.formatText("&6Currently:&a Enabled."));
             destroymeta.setLore(lore);
 
             destroy.setItemMeta(destroymeta);
@@ -318,13 +319,13 @@ public class SpawnerEditor {
 
             ItemStack settings = new ItemStack(Material.LEVER);
             ItemMeta settingsmeta = settings.getItemMeta();
-            settingsmeta.setDisplayName(Arconix.pl().getApi().format().formatText("&9&lGeneral Settings"));
+            settingsmeta.setDisplayName(TextComponent.formatText("&9&lGeneral Settings"));
             settings.setItemMeta(settingsmeta);
             i.setItem(23, settings);
 
             settings = new ItemStack(Material.BONE);
             settingsmeta = settings.getItemMeta();
-            settingsmeta.setDisplayName(Arconix.pl().getApi().format().formatText("&e&lDrop Settings"));
+            settingsmeta.setDisplayName(TextComponent.formatText("&e&lDrop Settings"));
             settings.setItemMeta(settingsmeta);
             i.setItem(24, settings);
 
@@ -332,31 +333,31 @@ public class SpawnerEditor {
 
             ItemStack entity = EpicSpawnersPlugin.getInstance().getHeads().addTexture(it2, instance.getSpawnerManager().getSpawnerData("omni"));
             ItemMeta entitymeta = entity.getItemMeta();
-            entitymeta.setDisplayName(Arconix.pl().getApi().format().formatText("&a&lEntity Settings"));
+            entitymeta.setDisplayName(TextComponent.formatText("&a&lEntity Settings"));
             entity.setItemMeta(entitymeta);
             i.setItem(25, entity);
 
             ItemStack item2 = new ItemStack(Material.CHEST);
             ItemMeta item2meta = item2.getItemMeta();
-            item2meta.setDisplayName(Arconix.pl().getApi().format().formatText("&5&lItem Settings"));
+            item2meta.setDisplayName(TextComponent.formatText("&5&lItem Settings"));
             item2.setItemMeta(item2meta);
             i.setItem(41, item2);
 
             ItemStack item3 = new ItemStack(Material.GOLD_BLOCK);
             ItemMeta item3meta = item3.getItemMeta();
-            item3meta.setDisplayName(Arconix.pl().getApi().format().formatText("&c&lBlock Settings"));
+            item3meta.setDisplayName(TextComponent.formatText("&c&lBlock Settings"));
             item3.setItemMeta(item3meta);
             i.setItem(32, item3);
 
             ItemStack item4 = new ItemStack(Material.FIREWORK);
             ItemMeta item4meta = item4.getItemMeta();
-            item4meta.setDisplayName(Arconix.pl().getApi().format().formatText("&b&lParticle Settings"));
+            item4meta.setDisplayName(TextComponent.formatText("&b&lParticle Settings"));
             item4.setItemMeta(item4meta);
             i.setItem(34, item4);
 
             ItemStack command = new ItemStack(Material.PAPER);
             ItemMeta commandmeta = command.getItemMeta();
-            commandmeta.setDisplayName(Arconix.pl().getApi().format().formatText("&6&lCommand Settings"));
+            commandmeta.setDisplayName(TextComponent.formatText("&6&lCommand Settings"));
             command.setItemMeta(commandmeta);
             i.setItem(43, command);
 
@@ -395,7 +396,7 @@ public class SpawnerEditor {
         SpawnerData spawnerData = getType(editingData.getSpawnerSlot());
 
         String name = Methods.compileName(spawnerData.getIdentifyingName(), 1, false);
-        Inventory i = Bukkit.createInventory(null, 45, Arconix.pl().getApi().format().formatTitle(Arconix.pl().getApi().format().formatText(name + " &8Particle &8Settings.")));
+        Inventory i = Bukkit.createInventory(null, 45, TextComponent.formatTitle(TextComponent.formatText(name + " &8Particle &8Settings.")));
 
         int num = 0;
         while (num != 45) {
@@ -439,35 +440,35 @@ public class SpawnerEditor {
 
         ItemStack item2 = new ItemStack(Material.ENDER_PEARL);
         ItemMeta item2meta = item2.getItemMeta();
-        item2meta.setDisplayName(Arconix.pl().getApi().format().formatText("&5&lParticle Types"));
+        item2meta.setDisplayName(TextComponent.formatText("&5&lParticle Types"));
         ArrayList<String> lore = new ArrayList<>();
-        lore.add(Arconix.pl().getApi().format().formatText("&7Entity Spawn Particle: &a" + spawnerData.getEntitySpawnParticle().name()));
-        lore.add(Arconix.pl().getApi().format().formatText("&cLeft-Click to change."));
-        lore.add(Arconix.pl().getApi().format().formatText("&7Spawner Spawn Particle: &a" + spawnerData.getSpawnerSpawnParticle().name()));
-        lore.add(Arconix.pl().getApi().format().formatText("&cMiddle-Click to change."));
-        lore.add(Arconix.pl().getApi().format().formatText("&7Effect Particle: &a" + spawnerData.getSpawnEffectParticle().name()));
-        lore.add(Arconix.pl().getApi().format().formatText("&cRight-Click to change."));
+        lore.add(TextComponent.formatText("&7Entity Spawn Particle: &a" + spawnerData.getEntitySpawnParticle().name()));
+        lore.add(TextComponent.formatText("&cLeft-Click to change."));
+        lore.add(TextComponent.formatText("&7Spawner Spawn Particle: &a" + spawnerData.getSpawnerSpawnParticle().name()));
+        lore.add(TextComponent.formatText("&cMiddle-Click to change."));
+        lore.add(TextComponent.formatText("&7Effect Particle: &a" + spawnerData.getSpawnEffectParticle().name()));
+        lore.add(TextComponent.formatText("&cRight-Click to change."));
         item2meta.setLore(lore);
         item2.setItemMeta(item2meta);
         i.setItem(20, item2);
 
         item2 = new ItemStack(Material.FIREWORK);
         item2meta = item2.getItemMeta();
-        item2meta.setDisplayName(Arconix.pl().getApi().format().formatText("&6&lSpawner Effect"));
+        item2meta.setDisplayName(TextComponent.formatText("&6&lSpawner Effect"));
         lore = new ArrayList<>();
-        lore.add(Arconix.pl().getApi().format().formatText("&7Particle Effect: &a" + spawnerData.getParticleEffect().name()));
-        lore.add(Arconix.pl().getApi().format().formatText("&cLeft-Click to change."));
-        lore.add(Arconix.pl().getApi().format().formatText("&7Particle Effect For Boosted Only: &a" + spawnerData.isParticleEffectBoostedOnly()));
-        lore.add(Arconix.pl().getApi().format().formatText("&cRight-Click to change."));
+        lore.add(TextComponent.formatText("&7Particle Effect: &a" + spawnerData.getParticleEffect().name()));
+        lore.add(TextComponent.formatText("&cLeft-Click to change."));
+        lore.add(TextComponent.formatText("&7Particle Effect For Boosted Only: &a" + spawnerData.isParticleEffectBoostedOnly()));
+        lore.add(TextComponent.formatText("&cRight-Click to change."));
         item2meta.setLore(lore);
         item2.setItemMeta(item2meta);
         i.setItem(22, item2);
 
         item2 = new ItemStack(Material.REDSTONE_COMPARATOR);
         item2meta = item2.getItemMeta();
-        item2meta.setDisplayName(Arconix.pl().getApi().format().formatText("&6&lPerformance"));
+        item2meta.setDisplayName(TextComponent.formatText("&6&lPerformance"));
         lore = new ArrayList<>();
-        lore.add(Arconix.pl().getApi().format().formatText("&7Currently: &a" + spawnerData.getParticleDensity().name() + " &cClick to change."));
+        lore.add(TextComponent.formatText("&7Currently: &a" + spawnerData.getParticleDensity().name() + " &cClick to change."));
         item2meta.setLore(lore);
         item2.setItemMeta(item2meta);
         i.setItem(24, item2);
@@ -482,7 +483,7 @@ public class SpawnerEditor {
             SpawnerData spawnerData = getType(editingData.getSpawnerSlot());
 
             String name = Methods.compileName(spawnerData.getIdentifyingName(), 1, false);
-            Inventory i = Bukkit.createInventory(null, 54, Arconix.pl().getApi().format().formatTitle(Arconix.pl().getApi().format().formatText(name + "&8 " + editingMenu + " &8Settings.")));
+            Inventory i = Bukkit.createInventory(null, 54, TextComponent.formatTitle(TextComponent.formatText(name + "&8 " + editingMenu + " &8Settings.")));
 
             int num = 0;
             while (num != 54) {
@@ -508,14 +509,14 @@ public class SpawnerEditor {
                     ItemStack item = EpicSpawnersPlugin.getInstance().getHeads().addTexture(it,
                             instance.getSpawnerManager().getSpawnerData(spawnerData.getEntities().get(spot)));
                     ItemMeta meta = item.getItemMeta();
-                    meta.setDisplayName(Arconix.pl().getApi().format().formatText("&e" + Methods.getTypeFromString(spawnerData.getEntities().get(spot).name())));
+                    meta.setDisplayName(TextComponent.formatText("&e" + Methods.getTypeFromString(spawnerData.getEntities().get(spot).name())));
                     item.setItemMeta(meta);
                     i.setItem(num, item);
 
                 } else if (spawnerData.getCommands().size() >= spot + 1 && editingMenu == EditingMenu.COMMAND) {
                     ItemStack parseStack = new ItemStack(Material.PAPER, 1);
                     ItemMeta meta = parseStack.getItemMeta();
-                    meta.setDisplayName(Arconix.pl().getApi().format().formatText("&a/" + spawnerData.getCommands().get(spot)));
+                    meta.setDisplayName(TextComponent.formatText("&a/" + spawnerData.getCommands().get(spot)));
                     parseStack.setItemMeta(meta);
                     i.setItem(num, parseStack);
                 } else {
@@ -563,13 +564,13 @@ public class SpawnerEditor {
                 if (editingMenu == EditingMenu.COMMAND) {
                     ItemStack item = new ItemStack(Material.WATCH);
                     ItemMeta meta = item.getItemMeta();
-                    meta.setDisplayName(Arconix.pl().getApi().format().formatText("&bSpawn Limit"));
+                    meta.setDisplayName(TextComponent.formatText("&bSpawn Limit"));
                     ArrayList<String> lore = new ArrayList<>();
                     // ToDo: This bit should be some sort of boolean to enable the built in spawn check.
                     //lore.add(Arconix.pl().format().formatText("&7Currently: &c" + EpicSpawners.getInstance().spawnerFile.getConfig().getInt("Entities." + Methods.getTypeFromString(spawnerData) + ".commandSpawnLimit")));
                     lore.add("");
-                    lore.add(Arconix.pl().getApi().format().formatText("&7This is the spawn limit for entities you spawn"));
-                    lore.add(Arconix.pl().getApi().format().formatText("&7from this spawner. Set to &60 &7to disable this."));
+                    lore.add(TextComponent.formatText("&7This is the spawn limit for entities you spawn"));
+                    lore.add(TextComponent.formatText("&7from this spawner. Set to &60 &7to disable this."));
                     meta.setLore(lore);
                     item.setItemMeta(meta);
                     i.setItem(49, item);
@@ -587,7 +588,7 @@ public class SpawnerEditor {
                     addName = "&6Add entity";
                 }
                 ItemMeta addmeta = add.getItemMeta();
-                addmeta.setDisplayName(Arconix.pl().getApi().format().formatText(addName));
+                addmeta.setDisplayName(TextComponent.formatText(addName));
 
                 add.setItemMeta(addmeta);
                 i.setItem(39, add);
@@ -595,7 +596,7 @@ public class SpawnerEditor {
 
             ItemStack save = new ItemStack(Material.REDSTONE);
             ItemMeta savemeta = save.getItemMeta();
-            savemeta.setDisplayName(Arconix.pl().getApi().format().formatText("&aSave"));
+            savemeta.setDisplayName(TextComponent.formatText("&aSave"));
             save.setItemMeta(savemeta);
             if (editingMenu != EditingMenu.ITEM)
                 i.setItem(41, save);
@@ -614,7 +615,7 @@ public class SpawnerEditor {
             EditingData editingData = userEditingData.get(p.getUniqueId());
             SpawnerData spawnerData = getType(editingData.getSpawnerSlot());
             String name = Methods.compileName(spawnerData.getIdentifyingName(), 1, false);
-            Inventory i = Bukkit.createInventory(null, 45, Arconix.pl().getApi().format().formatTitle(Arconix.pl().getApi().format().formatText(name + " &8Settings.")));
+            Inventory i = Bukkit.createInventory(null, 45, TextComponent.formatTitle(TextComponent.formatText(name + " &8Settings.")));
             int num = 0;
             while (num != 45) {
                 i.setItem(num, Methods.getGlass());
@@ -657,13 +658,13 @@ public class SpawnerEditor {
 
             ItemStack item2 = new ItemStack(Material.DOUBLE_PLANT);
             ItemMeta item2meta = item2.getItemMeta();
-            item2meta.setDisplayName(Arconix.pl().getApi().format().formatText("&6&lShop Price"));
+            item2meta.setDisplayName(TextComponent.formatText("&6&lShop Price"));
 
             ArrayList<String> lore = new ArrayList<>();
-            lore.add(Arconix.pl().getApi().format().formatText("&7Currently: &a" + spawnerData.getShopPrice()));
+            lore.add(TextComponent.formatText("&7Currently: &a" + spawnerData.getShopPrice()));
 
-            lore.add(Arconix.pl().getApi().format().formatText("&7This is the price of the"));
-            lore.add(Arconix.pl().getApi().format().formatText("&7spawner in the shop."));
+            lore.add(TextComponent.formatText("&7This is the price of the"));
+            lore.add(TextComponent.formatText("&7spawner in the shop."));
             item2meta.setLore(lore);
 
             item2.setItemMeta(item2meta);
@@ -671,100 +672,100 @@ public class SpawnerEditor {
 
             item2 = new ItemStack(Material.DIAMOND);
             item2meta = item2.getItemMeta();
-            item2meta.setDisplayName(Arconix.pl().getApi().format().formatText("&6&lIn Shop"));
+            item2meta.setDisplayName(TextComponent.formatText("&6&lIn Shop"));
             lore = new ArrayList<>();
-            lore.add(Arconix.pl().getApi().format().formatText("&7Currently: &a" + spawnerData.isInShop()));
+            lore.add(TextComponent.formatText("&7Currently: &a" + spawnerData.isInShop()));
 
-            lore.add(Arconix.pl().getApi().format().formatText("&7If this is true this spawner"));
-            lore.add(Arconix.pl().getApi().format().formatText("&7will show up in the shop GUI."));
+            lore.add(TextComponent.formatText("&7If this is true this spawner"));
+            lore.add(TextComponent.formatText("&7will show up in the shop GUI."));
             item2meta.setLore(lore);
             item2.setItemMeta(item2meta);
             i.setItem(20, item2);
 
             item2 = new ItemStack(Material.FIREBALL);
             item2meta = item2.getItemMeta();
-            item2meta.setDisplayName(Arconix.pl().getApi().format().formatText("&c&lSpawn On Fire"));
+            item2meta.setDisplayName(TextComponent.formatText("&c&lSpawn On Fire"));
             lore = new ArrayList<>();
-            lore.add(Arconix.pl().getApi().format().formatText("&7Currently: &a" + spawnerData.isSpawnOnFire()));
+            lore.add(TextComponent.formatText("&7Currently: &a" + spawnerData.isSpawnOnFire()));
 
-            lore.add(Arconix.pl().getApi().format().formatText("&7If this is true this spawner"));
-            lore.add(Arconix.pl().getApi().format().formatText("&7will spawn entities on fire."));
+            lore.add(TextComponent.formatText("&7If this is true this spawner"));
+            lore.add(TextComponent.formatText("&7will spawn entities on fire."));
             item2meta.setLore(lore);
             item2.setItemMeta(item2meta);
             i.setItem(22, item2);
 
             item2 = new ItemStack(Material.HOPPER);
             item2meta = item2.getItemMeta();
-            item2meta.setDisplayName(Arconix.pl().getApi().format().formatText("&5&lUpgradable"));
+            item2meta.setDisplayName(TextComponent.formatText("&5&lUpgradable"));
             lore = new ArrayList<>();
-            lore.add(Arconix.pl().getApi().format().formatText("&7Currently: &a" + spawnerData.isUpgradeable()));
+            lore.add(TextComponent.formatText("&7Currently: &a" + spawnerData.isUpgradeable()));
 
-            lore.add(Arconix.pl().getApi().format().formatText("&7Setting this to true will define"));
-            lore.add(Arconix.pl().getApi().format().formatText("&7whether or not this spawner is"));
-            lore.add(Arconix.pl().getApi().format().formatText("&7upgradable."));
+            lore.add(TextComponent.formatText("&7Setting this to true will define"));
+            lore.add(TextComponent.formatText("&7whether or not this spawner is"));
+            lore.add(TextComponent.formatText("&7upgradable."));
             item2meta.setLore(lore);
             item2.setItemMeta(item2meta);
             i.setItem(13, item2);
 
             item2 = new ItemStack(Material.DOUBLE_PLANT);
             item2meta = item2.getItemMeta();
-            item2meta.setDisplayName(Arconix.pl().getApi().format().formatText("&6&lCustom ECO cost"));
+            item2meta.setDisplayName(TextComponent.formatText("&6&lCustom ECO cost"));
             lore = new ArrayList<>();
-            lore.add(Arconix.pl().getApi().format().formatText("&7Currently: &a" + spawnerData.getUpgradeCostEconomy()));
+            lore.add(TextComponent.formatText("&7Currently: &a" + spawnerData.getUpgradeCostEconomy()));
 
-            lore.add(Arconix.pl().getApi().format().formatText("&7This is the custom Economy cost"));
-            lore.add(Arconix.pl().getApi().format().formatText("&7to upgrade this spawner."));
+            lore.add(TextComponent.formatText("&7This is the custom Economy cost"));
+            lore.add(TextComponent.formatText("&7to upgrade this spawner."));
             item2meta.setLore(lore);
             item2.setItemMeta(item2meta);
             i.setItem(24, item2);
 
             item2 = new ItemStack(Material.EXP_BOTTLE);
             item2meta = item2.getItemMeta();
-            item2meta.setDisplayName(Arconix.pl().getApi().format().formatText("&5&lCustom XP cost"));
+            item2meta.setDisplayName(TextComponent.formatText("&5&lCustom XP cost"));
             lore = new ArrayList<>();
-            lore.add(Arconix.pl().getApi().format().formatText("&7Currently: &a" + spawnerData.getUpgradeCostExperience()));
+            lore.add(TextComponent.formatText("&7Currently: &a" + spawnerData.getUpgradeCostExperience()));
 
-            lore.add(Arconix.pl().getApi().format().formatText("&7This is the custom XP cost"));
-            lore.add(Arconix.pl().getApi().format().formatText("&7to upgrade this spawner."));
+            lore.add(TextComponent.formatText("&7This is the custom XP cost"));
+            lore.add(TextComponent.formatText("&7to upgrade this spawner."));
             item2meta.setLore(lore);
             item2.setItemMeta(item2meta);
             i.setItem(25, item2);
 
             item2 = new ItemStack(Material.DOUBLE_PLANT);
             item2meta = item2.getItemMeta();
-            item2meta.setDisplayName(Arconix.pl().getApi().format().formatText("&5&lCustom Goal"));
+            item2meta.setDisplayName(TextComponent.formatText("&5&lCustom Goal"));
             lore = new ArrayList<>();
-            lore.add(Arconix.pl().getApi().format().formatText("&7Currently: &a" + spawnerData.getKillGoal()));
+            lore.add(TextComponent.formatText("&7Currently: &a" + spawnerData.getKillGoal()));
 
-            lore.add(Arconix.pl().getApi().format().formatText("&7If this is set to anything "));
-            lore.add(Arconix.pl().getApi().format().formatText("&7but 0 the default kill goal "));
-            lore.add(Arconix.pl().getApi().format().formatText("&7will be adjusted for this spawner."));
+            lore.add(TextComponent.formatText("&7If this is set to anything "));
+            lore.add(TextComponent.formatText("&7but 0 the default kill goal "));
+            lore.add(TextComponent.formatText("&7will be adjusted for this spawner."));
             item2meta.setLore(lore);
             item2.setItemMeta(item2meta);
             i.setItem(30, item2);
 
             item2 = new ItemStack(Material.DIAMOND);
             item2meta = item2.getItemMeta();
-            item2meta.setDisplayName(Arconix.pl().getApi().format().formatText("&b&lPickup Cost"));
+            item2meta.setDisplayName(TextComponent.formatText("&b&lPickup Cost"));
             lore = new ArrayList<>();
-            lore.add(Arconix.pl().getApi().format().formatText("&7Currently: &a" + spawnerData.getPickupCost()));
+            lore.add(TextComponent.formatText("&7Currently: &a" + spawnerData.getPickupCost()));
 
-            lore.add(Arconix.pl().getApi().format().formatText("&7Setting this to anything but 0"));
-            lore.add(Arconix.pl().getApi().format().formatText("&7will allow you to charge players"));
-            lore.add(Arconix.pl().getApi().format().formatText("&7for breaking this spawner."));
+            lore.add(TextComponent.formatText("&7Setting this to anything but 0"));
+            lore.add(TextComponent.formatText("&7will allow you to charge players"));
+            lore.add(TextComponent.formatText("&7for breaking this spawner."));
             item2meta.setLore(lore);
             item2.setItemMeta(item2meta);
             i.setItem(32, item2);
 
             item2 = new ItemStack(Material.WATCH);
             item2meta = item2.getItemMeta();
-            item2meta.setDisplayName(Arconix.pl().getApi().format().formatText("&6&lTick Rate"));
+            item2meta.setDisplayName(TextComponent.formatText("&6&lTick Rate"));
             lore = new ArrayList<>();
-            lore.add(Arconix.pl().getApi().format().formatText("&7Currently: &a" + spawnerData.getTickRate()));
+            lore.add(TextComponent.formatText("&7Currently: &a" + spawnerData.getTickRate()));
 
-            lore.add(Arconix.pl().getApi().format().formatText("&7This is the default tick rate"));
-            lore.add(Arconix.pl().getApi().format().formatText("&7that your spawner will use"));
-            lore.add(Arconix.pl().getApi().format().formatText("&7to create its delay with."));
+            lore.add(TextComponent.formatText("&7This is the default tick rate"));
+            lore.add(TextComponent.formatText("&7that your spawner will use"));
+            lore.add(TextComponent.formatText("&7to create its delay with."));
             item2meta.setLore(lore);
             item2.setItemMeta(item2meta);
             i.setItem(40, item2);
@@ -783,33 +784,33 @@ public class SpawnerEditor {
             p.sendMessage("");
             switch (type) {
                 case "Shop-Price":
-                    p.sendMessage(Arconix.pl().getApi().format().formatText("&7Enter a sale price for &6" + Methods.getTypeFromString(entity.getIdentifyingName()) + "&7."));
-                    p.sendMessage(Arconix.pl().getApi().format().formatText("&7Example: &619.99&7."));
+                    p.sendMessage(TextComponent.formatText("&7Enter a sale price for &6" + Methods.getTypeFromString(entity.getIdentifyingName()) + "&7."));
+                    p.sendMessage(TextComponent.formatText("&7Example: &619.99&7."));
                     break;
                 case "Custom-ECO-Cost":
-                    p.sendMessage(Arconix.pl().getApi().format().formatText("&7Enter a custom eco cost for " + Methods.getTypeFromString(entity.getIdentifyingName()) + "&7."));
-                    p.sendMessage(Arconix.pl().getApi().format().formatText("&7Use &60 &7to use the default cost."));
-                    p.sendMessage(Arconix.pl().getApi().format().formatText("&7Example: &619.99&7."));
+                    p.sendMessage(TextComponent.formatText("&7Enter a custom eco cost for " + Methods.getTypeFromString(entity.getIdentifyingName()) + "&7."));
+                    p.sendMessage(TextComponent.formatText("&7Use &60 &7to use the default cost."));
+                    p.sendMessage(TextComponent.formatText("&7Example: &619.99&7."));
                     break;
                 case "Custom-XP-Cost":
-                    p.sendMessage(Arconix.pl().getApi().format().formatText("&7Enter a custom xp cost for " + Methods.getTypeFromString(entity.getIdentifyingName()) + "&7."));
-                    p.sendMessage(Arconix.pl().getApi().format().formatText("&7Use &60 &7to use the default cost."));
-                    p.sendMessage(Arconix.pl().getApi().format().formatText("&7Example: &625&7."));
+                    p.sendMessage(TextComponent.formatText("&7Enter a custom xp cost for " + Methods.getTypeFromString(entity.getIdentifyingName()) + "&7."));
+                    p.sendMessage(TextComponent.formatText("&7Use &60 &7to use the default cost."));
+                    p.sendMessage(TextComponent.formatText("&7Example: &625&7."));
                     break;
                 case "Pickup-cost":
-                    p.sendMessage(Arconix.pl().getApi().format().formatText("&7Enter a pickup cost for " + Methods.getTypeFromString(entity.getIdentifyingName()) + "&7."));
-                    p.sendMessage(Arconix.pl().getApi().format().formatText("&7Use &60 &7to disable."));
-                    p.sendMessage(Arconix.pl().getApi().format().formatText("&7Example: &719.99&6."));
-                    p.sendMessage(Arconix.pl().getApi().format().formatText("&7Example: &625&7."));
+                    p.sendMessage(TextComponent.formatText("&7Enter a pickup cost for " + Methods.getTypeFromString(entity.getIdentifyingName()) + "&7."));
+                    p.sendMessage(TextComponent.formatText("&7Use &60 &7to disable."));
+                    p.sendMessage(TextComponent.formatText("&7Example: &719.99&6."));
+                    p.sendMessage(TextComponent.formatText("&7Example: &625&7."));
                     break;
                 case "CustomGoal":
-                    p.sendMessage(Arconix.pl().getApi().format().formatText("&7Enter a custom goal for " + Methods.getTypeFromString(entity.getIdentifyingName()) + "&7."));
-                    p.sendMessage(Arconix.pl().getApi().format().formatText("&7Use &60 &7to use the default price."));
-                    p.sendMessage(Arconix.pl().getApi().format().formatText("&7Example: &35&6."));
+                    p.sendMessage(TextComponent.formatText("&7Enter a custom goal for " + Methods.getTypeFromString(entity.getIdentifyingName()) + "&7."));
+                    p.sendMessage(TextComponent.formatText("&7Use &60 &7to use the default price."));
+                    p.sendMessage(TextComponent.formatText("&7Example: &35&6."));
                     break;
                 case "Tick-Rate":
-                    p.sendMessage(Arconix.pl().getApi().format().formatText("&7Enter a tick rate min and max for " + Methods.getTypeFromString(entity.getIdentifyingName()) + "&7."));
-                    p.sendMessage(Arconix.pl().getApi().format().formatText("&7Example: &3800:200&6."));
+                    p.sendMessage(TextComponent.formatText("&7Enter a tick rate min and max for " + Methods.getTypeFromString(entity.getIdentifyingName()) + "&7."));
+                    p.sendMessage(TextComponent.formatText("&7Example: &3800:200&6."));
                     break;
             }
             p.sendMessage("");
@@ -872,7 +873,7 @@ public class SpawnerEditor {
                 }
                 spawnerData.setCommands(list);
             }
-            p.sendMessage(Arconix.pl().getApi().format().formatText(EpicSpawnersPlugin.getInstance().references.getPrefix() + "&7Spawner Saved."));
+            p.sendMessage(TextComponent.formatText(EpicSpawnersPlugin.getInstance().references.getPrefix() + "&7Spawner Saved."));
             spawnerData.reloadSpawnMethods();
         } catch (Exception e) {
             Debugger.runReport(e);
@@ -889,7 +890,7 @@ public class SpawnerEditor {
                     list.append(value.toString()).append("&7, &6");
                 }
             }
-            p.sendMessage(Arconix.pl().getApi().format().formatText("&6" + list));
+            p.sendMessage(TextComponent.formatText("&6" + list));
             p.sendMessage("Enter an entity type.");
             p.sendMessage("");
             EpicSpawnersPlugin.getInstance().chatEditing.put(p, "addEntity");
@@ -903,8 +904,8 @@ public class SpawnerEditor {
         try {
             EditingData editingData = userEditingData.get(p.getUniqueId());
             p.sendMessage("");
-            p.sendMessage(Arconix.pl().getApi().format().formatText("&cAre you sure you want to destroy &6" + getType(editingData.getSpawnerSlot()).getIdentifyingName() + "&7."));
-            p.sendMessage(Arconix.pl().getApi().format().formatText("&7Type &l&6CONFIRM &7to continue. Otherwise type anything else to cancel."));
+            p.sendMessage(TextComponent.formatText("&cAre you sure you want to destroy &6" + getType(editingData.getSpawnerSlot()).getIdentifyingName() + "&7."));
+            p.sendMessage(TextComponent.formatText("&7Type &l&6CONFIRM &7to continue. Otherwise type anything else to cancel."));
             p.sendMessage("");
             EpicSpawnersPlugin.getInstance().chatEditing.put(p, "destroy");
             p.closeInventory();
@@ -919,11 +920,11 @@ public class SpawnerEditor {
 
             EpicSpawnersPlugin.getInstance().chatEditing.remove(p);
             if (msg.toLowerCase().equals("confirm")) {
-                p.sendMessage(Arconix.pl().getApi().format().formatText("&6" + getType(type).getIdentifyingName() + " Spawner &7 has been destroyed successfully"));
+                p.sendMessage(TextComponent.formatText("&6" + getType(type).getIdentifyingName() + " Spawner &7 has been destroyed successfully"));
                 EpicSpawnersPlugin.getInstance().getSpawnerManager().removeSpawnerData(getType(type).getIdentifyingName());
                 openSpawnerSelector(p, 1);
             } else {
-                p.sendMessage(Arconix.pl().getApi().format().formatText("&7Action canceled..."));
+                p.sendMessage(TextComponent.formatText("&7Action canceled..."));
                 overview(p, type);
             }
         } catch (Exception e) {
@@ -939,7 +940,7 @@ public class SpawnerEditor {
                 SpawnerData spawnerData = getType(type);
 
                 p.sendMessage("");
-                p.sendMessage(Arconix.pl().getApi().format().formatText("&7Enter a spawn limit for &6" + Methods.getTypeFromString(spawnerData.getIdentifyingName()) + "&7."));
+                p.sendMessage(TextComponent.formatText("&7Enter a spawn limit for &6" + Methods.getTypeFromString(spawnerData.getIdentifyingName()) + "&7."));
                 p.sendMessage("");
                 EpicSpawnersPlugin.getInstance().chatEditing.put(p, "spawnLimit");
                 p.closeInventory();
@@ -952,10 +953,10 @@ public class SpawnerEditor {
     public void createCommand(Player p) {
         try {
             p.sendMessage("");
-            p.sendMessage(Arconix.pl().getApi().format().formatText("&7Please type a command. Example: &6eco give @p 1000&7."));
-            p.sendMessage(Arconix.pl().getApi().format().formatText("&7You can use @X @Y and @Z for random X Y and Z coordinates around the spawner."));
-            p.sendMessage(Arconix.pl().getApi().format().formatText("&7If you're getting command output try &6/gamerule sendCommandFeedback false&7."));
-            p.sendMessage(Arconix.pl().getApi().format().formatText("&7do not include a &a/"));
+            p.sendMessage(TextComponent.formatText("&7Please type a command. Example: &6eco give @p 1000&7."));
+            p.sendMessage(TextComponent.formatText("&7You can use @X @Y and @Z for random X Y and Z coordinates around the spawner."));
+            p.sendMessage(TextComponent.formatText("&7If you're getting command output try &6/gamerule sendCommandFeedback false&7."));
+            p.sendMessage(TextComponent.formatText("&7do not include a &a/"));
             p.sendMessage("");
 
             EpicSpawnersPlugin.getInstance().chatEditing.put(p, "Command");
@@ -988,7 +989,7 @@ public class SpawnerEditor {
             SpawnerData spawnerData = getType(type);
 
             p.sendMessage("");
-            p.sendMessage(Arconix.pl().getApi().format().formatText("&7Enter a display name for &6" + Methods.getTypeFromString(spawnerData.getIdentifyingName()) + "&7."));
+            p.sendMessage(TextComponent.formatText("&7Enter a display name for &6" + Methods.getTypeFromString(spawnerData.getIdentifyingName()) + "&7."));
             p.sendMessage("");
             EpicSpawnersPlugin.getInstance().chatEditing.put(p, "name");
             p.closeInventory();

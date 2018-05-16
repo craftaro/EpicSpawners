@@ -3,6 +3,7 @@ package com.songoda.epicspawners.handlers;
 import com.google.common.collect.Iterables;
 import com.songoda.arconix.api.methods.formatting.TextComponent;
 import com.songoda.arconix.api.methods.math.AMath;
+import com.songoda.arconix.api.methods.serialize.Serialize;
 import com.songoda.arconix.plugin.Arconix;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.api.spawner.Spawner;
@@ -283,7 +284,7 @@ public class CommandHandler implements CommandExecutor {
 
                     if (p.getTargetBlock(null, 200) != null) {
                         Block b = p.getTargetBlock(null, 200);
-                        String loc = Arconix.pl().getApi().serialize().serializeLocation(b);
+                        String loc = Serialize.getInstance().serializeLocation(b);
                         instance.dataFile.getConfig().set("data.blockshop." + loc, args[1]);
                         sender.sendMessage(instance.references.getPrefix() + TextComponent.formatText(instance.references.getPrefix() + "&aShop setup successfully."));
                     }
@@ -302,7 +303,7 @@ public class CommandHandler implements CommandExecutor {
                             return true;
                         }
                         Block b = p.getTargetBlock(null, 200);
-                        String loc = Arconix.pl().getApi().serialize().serializeLocation(b);
+                        String loc = Serialize.getInstance().serializeLocation(b);
                         instance.dataFile.getConfig().set("data.blockshop." + loc, null);
                         sender.sendMessage(instance.references.getPrefix() + TextComponent.formatText(instance.references.getPrefix() + "&aShop removed successfully."));
                     }
@@ -351,7 +352,7 @@ public class CommandHandler implements CommandExecutor {
                             data = Iterables.get(list, rand.nextInt(list.size()));
                         }
                         if (args.length == 4) {
-                            if (!Arconix.pl().getApi().doMath().isNumeric(args[3])) {
+                            if (!AMath.isInt(args[3])) {
                                 sender.sendMessage(TextComponent.formatText(instance.references.getPrefix() + "&6" + args[3] + "&7 is not a number."));
                                 return true;
                             }
@@ -369,11 +370,11 @@ public class CommandHandler implements CommandExecutor {
 
                             }
                         } else {
-                            if (!Arconix.pl().getApi().doMath().isNumeric(args[3])) {
+                            if (!AMath.isInt(args[3])) {
                                 sender.sendMessage(TextComponent.formatText(instance.references.getPrefix() + "&6" + args[3] + "&7 is not a number."));
                                 return true;
                             }
-                            if (!Arconix.pl().getApi().doMath().isNumeric(args[4])) {
+                            if (!AMath.isInt(args[4])) {
                                 sender.sendMessage(TextComponent.formatText(instance.references.getPrefix() + "&6" + args[4] + "&7 is not a number."));
                                 return true;
                             }

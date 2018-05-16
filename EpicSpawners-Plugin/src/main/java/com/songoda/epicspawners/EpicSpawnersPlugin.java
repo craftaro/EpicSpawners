@@ -2,7 +2,10 @@ package com.songoda.epicspawners;
 
 import com.google.common.base.Preconditions;
 import com.songoda.arconix.api.mcupdate.MCUpdate;
+import com.songoda.arconix.api.methods.formatting.TextComponent;
+import com.songoda.arconix.api.methods.serialize.Serialize;
 import com.songoda.arconix.api.utils.ConfigWrapper;
+import com.songoda.arconix.api.utils.Serializer;
 import com.songoda.arconix.plugin.Arconix;
 import com.songoda.epicspawners.api.EpicSpawners;
 import com.songoda.epicspawners.api.EpicSpawnersAPI;
@@ -103,10 +106,10 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         this.saveToFile();
         this.particleTask.cancel();
         //this.spawnerRegistry.clearRegistry();
-        console.sendMessage(Arconix.pl().getApi().format().formatText("&a============================="));
-        console.sendMessage(Arconix.pl().getApi().format().formatText("&7EpicSpawners " + this.getDescription().getVersion() + " by &5Songoda <3!"));
-        console.sendMessage(Arconix.pl().getApi().format().formatText("&7Action: &cDisabling&7..."));
-        console.sendMessage(Arconix.pl().getApi().format().formatText("&a============================="));
+        console.sendMessage(TextComponent.formatText("&a============================="));
+        console.sendMessage(TextComponent.formatText("&7EpicSpawners " + this.getDescription().getVersion() + " by &5Songoda <3!"));
+        console.sendMessage(TextComponent.formatText("&7Action: &cDisabling&7..."));
+        console.sendMessage(TextComponent.formatText("&a============================="));
     }
 
     @SuppressWarnings("unchecked")
@@ -116,9 +119,9 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
 
         Arconix.pl().hook(this);
 
-        console.sendMessage(Arconix.pl().getApi().format().formatText("&a============================="));
-        console.sendMessage(Arconix.pl().getApi().format().formatText("&7EpicSpawners " + this.getDescription().getVersion() + " by &5Brianna <3&7!"));
-        console.sendMessage(Arconix.pl().getApi().format().formatText("&7Action: &aEnabling&7..."));
+        console.sendMessage(TextComponent.formatText("&a============================="));
+        console.sendMessage(TextComponent.formatText("&7EpicSpawners " + this.getDescription().getVersion() + " by &5Brianna <3&7!"));
+        console.sendMessage(TextComponent.formatText("&7Action: &aEnabling&7..."));
 
         hookHandler = new HookHandler();
         hookHandler.hook();
@@ -215,7 +218,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
              * Adding in Legacy Spawners.
              */
             for (String key : dataFile.getConfig().getConfigurationSection("data.spawnerstats").getKeys(false)) {
-                Location location = Arconix.pl().getApi().serialize().unserializeLocation(key);
+                Location location = Serialize.getInstance().unserializeLocation(key);
                 location.setX(location.getBlockX());
                 location.setY(location.getBlockY());
                 location.setZ(location.getBlockZ());
@@ -275,7 +278,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         if (dataFile.getConfig().contains("data.spawners")) {
 
             for (String key : dataFile.getConfig().getConfigurationSection("data.spawners").getKeys(false)) {
-                Location location = Arconix.pl().getApi().serialize().unserializeLocation(key);
+                Location location = Serialize.getInstance().unserializeLocation(key);
 
                 if (location.getWorld() == null || location.getBlock().getType() != Material.MOB_SPAWNER) {
                     if (location.getWorld() != null && location.getBlock().getType() != Material.MOB_SPAWNER)
@@ -361,7 +364,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         if (!v1_7) {
             getServer().getPluginManager().registerEvents(new TestListeners(), this);
         }
-        console.sendMessage(Arconix.pl().getApi().format().formatText("&a============================="));
+        console.sendMessage(TextComponent.formatText("&a============================="));
 
         this.particleTask = SpawnerParticleTask.startTask(this);
     }
@@ -420,7 +423,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
                     || spawner.getLocation().getWorld() == null) continue;
             try {
 
-                String key = Arconix.pl().getApi().serialize().serializeLocation(spawner.getLocation());
+                String key = Serialize.getInstance().serializeLocation(spawner.getLocation());
 
                 for (SpawnerStack stack : spawner.getSpawnerStacks()) {
                     dataFile.getConfig().set("data.spawners." + key + ".Stacks." + stack.getSpawnerData().getIdentifyingName(), stack.getStackSize());
@@ -457,7 +460,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         dataFile.saveConfig();
     }
 
-    private String[] getStrings(List mats) {
+    private <T extends Enum<T>> String[] getStrings(List<T> mats) {
         List<String> strings = new ArrayList<>();
         for (Object object : mats) {
             if (object instanceof Material) {

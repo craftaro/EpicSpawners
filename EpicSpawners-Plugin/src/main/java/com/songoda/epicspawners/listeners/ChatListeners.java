@@ -1,6 +1,7 @@
 package com.songoda.epicspawners.listeners;
 
-import com.songoda.arconix.plugin.Arconix;
+import com.songoda.arconix.api.methods.formatting.TextComponent;
+import com.songoda.arconix.api.methods.math.AMath;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.api.spawner.SpawnerData;
 import com.songoda.epicspawners.spawners.editor.EditingMenu;
@@ -44,10 +45,10 @@ public class ChatListeners implements Listener {
                             break;
                         case "Shop-Price":
                             SpawnerData spawnerData = instance.getSpawnerEditor().getType(instance.getSpawnerEditor().getEditingData(e.getPlayer()).getSpawnerSlot());
-                            if (Arconix.pl().getApi().doMath().isNumeric(e.getMessage())) {
+                            if (AMath.isInt(e.getMessage())) {
                                 spawnerData.setShopPrice(Double.parseDouble(e.getMessage()));
                             } else {
-                                e.getPlayer().sendMessage(Arconix.pl().getApi().format().formatText("&CYou must enter a number."));
+                                e.getPlayer().sendMessage(TextComponent.formatText("&CYou must enter a number."));
                             }
                             instance.getSpawnerEditor().basicSettings(e.getPlayer());
                             break;
@@ -56,49 +57,49 @@ public class ChatListeners implements Listener {
                             instance.getSpawnerEditor().basicSettings(e.getPlayer());
                             break;
                         case "Custom-ECO-Cost":
-                            if (Arconix.pl().getApi().doMath().isNumeric(e.getMessage())) {
+                            if (AMath.isInt(e.getMessage())) {
                                 instance.getSpawnerEditor().getType(instance.getSpawnerEditor().getEditingData(e.getPlayer()).getSpawnerSlot()).setUpgradeCostEconomy(Double.parseDouble(e.getMessage()));
                             } else {
-                                e.getPlayer().sendMessage(Arconix.pl().getApi().format().formatText("&CYou must enter a number."));
+                                e.getPlayer().sendMessage(TextComponent.formatText("&CYou must enter a number."));
                             }
                             instance.getSpawnerEditor().basicSettings(e.getPlayer());
                             break;
                         case "Custom-XP-Cost":
-                            if (Arconix.pl().getApi().doMath().isNumeric(e.getMessage())) {
+                            if (AMath.isInt(e.getMessage())) {
                                 instance.getSpawnerEditor().getType(instance.getSpawnerEditor().getEditingData(e.getPlayer()).getSpawnerSlot()).setUpgradeCostExperience(Integer.parseInt(e.getMessage()));
                             } else {
-                                e.getPlayer().sendMessage(Arconix.pl().getApi().format().formatText("&CYou must enter a number."));
+                                e.getPlayer().sendMessage(TextComponent.formatText("&CYou must enter a number."));
                             }
                             instance.getSpawnerEditor().basicSettings(e.getPlayer());
                             break;
                         case "Command":
                             String msg = e.getMessage();
-                            e.getPlayer().sendMessage(Arconix.pl().getApi().format().formatText(instance.references.getPrefix() + "&8Command &5" + msg + "&8 saved to your inventory."));
+                            e.getPlayer().sendMessage(TextComponent.formatText(instance.references.getPrefix() + "&8Command &5" + msg + "&8 saved to your inventory."));
                             instance.getSpawnerEditor().addCommand(e.getPlayer(), e.getMessage());
                             break;
                         case "CustomGoal":
-                            if (Arconix.pl().getApi().doMath().isNumeric(e.getMessage())) {
+                            if (AMath.isInt(e.getMessage())) {
                                 instance.getSpawnerEditor().getType(instance.getSpawnerEditor().getEditingData(e.getPlayer()).getSpawnerSlot()).setKillGoal(Integer.parseInt(e.getMessage()));
                             } else {
-                                e.getPlayer().sendMessage(Arconix.pl().getApi().format().formatText("&CYou must enter a number."));
+                                e.getPlayer().sendMessage(TextComponent.formatText("&CYou must enter a number."));
                             }
                             instance.getSpawnerEditor().basicSettings(e.getPlayer());
                             break;
                         case "Pickup-cost":
-                            if (Arconix.pl().getApi().doMath().isNumeric(e.getMessage())) {
+                            if (AMath.isInt(e.getMessage())) {
                                 instance.getSpawnerEditor().getType(instance.getSpawnerEditor().getEditingData(e.getPlayer()).getSpawnerSlot()).setPickupCost(Double.parseDouble(e.getMessage()));
                             } else {
-                                e.getPlayer().sendMessage(Arconix.pl().getApi().format().formatText("&CYou must enter a number."));
+                                e.getPlayer().sendMessage(TextComponent.formatText("&CYou must enter a number."));
                             }
                             instance.getSpawnerEditor().basicSettings(e.getPlayer());
                             break;
                         case "spawnLimit":
                             //SpawnerData spawnerData = instance.getSpawnerEditor().getType(instance.getSpawnerEditor().getEditingData(e.getPlayer()).getSpawnerSlot());
-                            if (Arconix.pl().getApi().doMath().isNumeric(e.getMessage())) { //ToDo: Make this work.
+                            if (AMath.isInt(e.getMessage())) { //ToDo: Make this work.
                                 //instance.spawnerFile.getConfig().set("Entities." + Methods.getTypeFromString(instance.getSpawnerEditor().getType(instance.editing.get(e.getPlayer()))) + ".commandSpawnLimit", Double.parseDouble(e.getMessage()));
                                 instance.getSpawnerEditor().editor(e.getPlayer(), EditingMenu.COMMAND);
                             } else {
-                                e.getPlayer().sendMessage(Arconix.pl().getApi().format().formatText("&CYou must enter a number."));
+                                e.getPlayer().sendMessage(TextComponent.formatText("&CYou must enter a number."));
                             }
                             instance.getSpawnerEditor().basicSettings(e.getPlayer());
                             break;

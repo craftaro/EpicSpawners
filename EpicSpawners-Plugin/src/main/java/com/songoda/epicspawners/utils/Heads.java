@@ -38,9 +38,9 @@ public class Heads {
             if (instance.v1_7) {
                 item = new ItemStack(Material.MOB_SPAWNER, 1);
                 return item;
-            } else {
-                return Arconix.pl().getApi().getGUI().addTexture(item, headURL);
             }
+
+            return Arconix.pl().getApi().getGUI().addTexture(item, headURL);
         } catch (Exception e) {
             Debugger.runReport(e);
         }

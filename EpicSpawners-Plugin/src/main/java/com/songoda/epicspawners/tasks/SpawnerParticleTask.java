@@ -21,12 +21,10 @@ public class SpawnerParticleTask extends BukkitRunnable {
 
     private double theta = 0;
 
-    private final EpicSpawnersPlugin plugin;
     private final SpawnerManager manager;
     private final Particle particleManager;
 
     private SpawnerParticleTask(EpicSpawnersPlugin plugin) {
-        this.plugin = plugin;
         this.manager = plugin.getSpawnerManager();
         this.particleManager = Arconix.pl().getApi().packetLibrary.getParticleManager();
     }

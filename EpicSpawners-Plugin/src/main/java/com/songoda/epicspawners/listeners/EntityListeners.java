@@ -99,7 +99,7 @@ public class EntityListeners implements Listener {
     public void onDeath(EntityDeathEvent event) {
         try {
             EpicSpawnersPlugin instance = EpicSpawnersPlugin.getInstance();
-            if (event.getEntity().getKiller() == null && !(event.getEntity().getKiller() instanceof Player)) return;
+            if (event.getEntity().getKiller() == null) return;
             Player player = event.getEntity().getKiller();
             if (event.getEntity().hasMetadata("ES")) {
                 SpawnerData spawnerData = instance.getSpawnerManager().getSpawnerData(event.getEntity().getMetadata("ES").get(0).asString());

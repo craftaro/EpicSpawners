@@ -1,7 +1,7 @@
 package com.songoda.epicspawners.utils;
 
+import com.songoda.arconix.api.methods.formatting.TextComponent;
 import com.songoda.arconix.api.utils.ConfigWrapper;
-import com.songoda.arconix.plugin.Arconix;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -108,9 +108,9 @@ public class SettingsManager implements Listener {
         this.current.put(p, ChatColor.stripColor(current));
         p.closeInventory();
         p.sendMessage("");
-        p.sendMessage(Arconix.pl().getApi().format().formatText("&7Please enter a value for &6" + current + "&7."));
+        p.sendMessage(TextComponent.formatText("&7Please enter a value for &6" + current + "&7."));
         if (plugin.getConfig().get(current).getClass().getName().equals("java.lang.Integer")) {
-            p.sendMessage(Arconix.pl().getApi().format().formatText("&cUse only numbers."));
+            p.sendMessage(TextComponent.formatText("&cUse only numbers."));
         }
         p.sendMessage("");
     }
@@ -127,8 +127,8 @@ public class SettingsManager implements Listener {
         for (String key : plugin.getConfig().getDefaultSection().getKeys(false)) {
             ItemStack item = new ItemStack(Material.WOOL, 1, (byte) (spot - 9));
             ItemMeta meta = item.getItemMeta();
-            meta.setLore(Collections.singletonList(Arconix.pl().getApi().format().formatText("&6Click To Edit This Category.")));
-            meta.setDisplayName(Arconix.pl().getApi().format().formatText("&f&l" + key));
+            meta.setLore(Collections.singletonList(TextComponent.formatText("&6Click To Edit This Category.")));
+            meta.setDisplayName(TextComponent.formatText("&f&l" + key));
             item.setItemMeta(meta);
             i.setItem(spot, item);
             spot++;
@@ -144,7 +144,7 @@ public class SettingsManager implements Listener {
             String fKey = cat.get(p) + "." + key;
             ItemStack item = new ItemStack(Material.DIAMOND_HELMET);
             ItemMeta meta = item.getItemMeta();
-            meta.setDisplayName(Arconix.pl().getApi().format().formatText("&6" + key));
+            meta.setDisplayName(TextComponent.formatText("&6" + key));
             ArrayList<String> lore = new ArrayList<>();
             switch (plugin.getConfig().get(fKey).getClass().getName()) {
                 case "java.lang.Boolean":
@@ -153,21 +153,21 @@ public class SettingsManager implements Listener {
                     boolean bool = (Boolean) plugin.getConfig().get(fKey);
 
                     if (!bool)
-                        lore.add(Arconix.pl().getApi().format().formatText("&c" + false));
+                        lore.add(TextComponent.formatText("&c" + false));
                     else
-                        lore.add(Arconix.pl().getApi().format().formatText("&a" + true));
+                        lore.add(TextComponent.formatText("&a" + true));
 
                     break;
                 case "java.lang.String":
                     item.setType(Material.PAPER);
                     String str = (String) plugin.getConfig().get(fKey);
-                    lore.add(Arconix.pl().getApi().format().formatText("&9" + str));
+                    lore.add(TextComponent.formatText("&9" + str));
                     break;
                 case "java.lang.Integer":
                     item.setType(Material.WATCH);
 
                     int in = (Integer) plugin.getConfig().get(fKey);
-                    lore.add(Arconix.pl().getApi().format().formatText("&5" + in));
+                    lore.add(TextComponent.formatText("&5" + in));
                     break;
                 default:
                     continue;
@@ -179,7 +179,7 @@ public class SettingsManager implements Listener {
                 Matcher m = regex.matcher(text);
                 while (m.find()) {
                     if (m.end() != text.length() || m.group().length() != 0)
-                        lore.add(Arconix.pl().getApi().format().formatText("&7" + m.group()));
+                        lore.add(TextComponent.formatText("&7" + m.group()));
                 }
             }
             meta.setLore(lore);

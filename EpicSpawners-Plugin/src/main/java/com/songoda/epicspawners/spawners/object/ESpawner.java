@@ -1,6 +1,7 @@
 package com.songoda.epicspawners.spawners.object;
 
 
+import com.songoda.arconix.api.methods.formatting.TextComponent;
 import com.songoda.arconix.plugin.Arconix;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.api.CostType;
@@ -150,7 +151,7 @@ public class ESpawner implements Spawner {
         try {
             EpicSpawnersPlugin instance = EpicSpawnersPlugin.getInstance();
             if (!p.hasPermission("epicspawners.overview")) return;
-            Inventory i = Bukkit.createInventory(null, 27, Arconix.pl().getApi().format().formatTitle(Methods.compileName(getIdentifyingName(), getSpawnerDataCount(), false)));
+            Inventory i = Bukkit.createInventory(null, 27, TextComponent.formatTitle(Methods.compileName(getIdentifyingName(), getSpawnerDataCount(), false)));
 
             SpawnerData spawnerData = getFirstStack().getSpawnerData();
 
@@ -189,7 +190,7 @@ public class ESpawner implements Spawner {
                     num++;
                 }
 
-                lore.add(Arconix.pl().getApi().format().formatText(only.toString()));
+                lore.add(TextComponent.formatText(only.toString()));
             }
 
             List<Material> blocks = getFirstStack().getSpawnerData().getSpawnBlocksList();
@@ -221,10 +222,10 @@ public class ESpawner implements Spawner {
             if (getBoost() != 0) {
 
                 // ToDo: Make it display all boosts.
-                String[] parts = instance.getLocale().getMessage("interface.spawner.boostedstats", Integer.toString(getBoost()), spawnerData, Arconix.pl().getApi().format().readableTime(getBoostEnd().toEpochMilli() - System.currentTimeMillis())).split("\\|");
+                String[] parts = instance.getLocale().getMessage("interface.spawner.boostedstats", Integer.toString(getBoost()), spawnerData, TextComponent.readableTime(getBoostEnd().toEpochMilli() - System.currentTimeMillis())).split("\\|");
                 lore.add("");
                 for (String line : parts)
-                    lore.add(Arconix.pl().getApi().format().formatText(line));
+                    lore.add(TextComponent.formatText(line));
             }
             itemmeta.setLore(lore);
             item.setItemMeta(itemmeta);
@@ -253,7 +254,7 @@ public class ESpawner implements Spawner {
             itemmetaECO.setDisplayName(instance.getLocale().getMessage("interface.spawner.upgradewitheconomy"));
             ArrayList<String> loreECO = new ArrayList<>();
             if (!maxed)
-                loreECO.add(instance.getLocale().getMessage("interface.spawner.upgradewitheconomylore", Arconix.pl().getApi().format().formatEconomy(ecoCost)));
+                loreECO.add(instance.getLocale().getMessage("interface.spawner.upgradewitheconomylore", TextComponent.formatEconomy(ecoCost)));
             else
                 loreECO.add(instance.getLocale().getMessage("event.upgrade.maxed"));
             itemmetaECO.setLore(loreECO);
@@ -306,7 +307,7 @@ public class ESpawner implements Spawner {
                         while (m.find()) {
                             if (li > start) {
                                 if (li < start + 15) {
-                                    loreO.add(Arconix.pl().getApi().format().formatText("&7" + m.group()));
+                                    loreO.add(TextComponent.formatText("&7" + m.group()));
                                     added++;
                                 } else {
                                     max = true;
@@ -378,7 +379,7 @@ public class ESpawner implements Spawner {
             ItemMeta coalMeta = coal.getItemMeta();
             coalMeta.setDisplayName(EpicSpawnersPlugin.getInstance().getLocale().getMessage("interface.boost.boostfor", "5"));
             ArrayList<String> coalLore = new ArrayList<>();
-            coalLore.add(Arconix.pl().getApi().format().formatText("&7Costs &6&l" + Methods.getBoostCost(5, amt) + "."));
+            coalLore.add(TextComponent.formatText("&7Costs &6&l" + Methods.getBoostCost(5, amt) + "."));
             coalMeta.setLore(coalLore);
             coal.setItemMeta(coalMeta);
 
@@ -386,7 +387,7 @@ public class ESpawner implements Spawner {
             ItemMeta ironMeta = iron.getItemMeta();
             ironMeta.setDisplayName(EpicSpawnersPlugin.getInstance().getLocale().getMessage("interface.boost.boostfor", "15"));
             ArrayList<String> ironLore = new ArrayList<>();
-            ironLore.add(Arconix.pl().getApi().format().formatText("&7Costs &6&l" + Methods.getBoostCost(15, amt) + "."));
+            ironLore.add(TextComponent.formatText("&7Costs &6&l" + Methods.getBoostCost(15, amt) + "."));
             ironMeta.setLore(ironLore);
             iron.setItemMeta(ironMeta);
 
@@ -394,7 +395,7 @@ public class ESpawner implements Spawner {
             ItemMeta diamondMeta = diamond.getItemMeta();
             diamondMeta.setDisplayName(EpicSpawnersPlugin.getInstance().getLocale().getMessage("interface.boost.boostfor", "30"));
             ArrayList<String> diamondLore = new ArrayList<>();
-            diamondLore.add(Arconix.pl().getApi().format().formatText("&7Costs &6&l" + Methods.getBoostCost(30, amt) + "."));
+            diamondLore.add(TextComponent.formatText("&7Costs &6&l" + Methods.getBoostCost(30, amt) + "."));
             diamondMeta.setLore(diamondLore);
             diamond.setItemMeta(diamondMeta);
 
@@ -402,7 +403,7 @@ public class ESpawner implements Spawner {
             ItemMeta emeraldMeta = emerald.getItemMeta();
             emeraldMeta.setDisplayName(EpicSpawnersPlugin.getInstance().getLocale().getMessage("interface.boost.boostfor", "60"));
             ArrayList<String> emeraldLore = new ArrayList<>();
-            emeraldLore.add(Arconix.pl().getApi().format().formatText("&7Costs &6&l" + Methods.getBoostCost(60, amt) + "."));
+            emeraldLore.add(TextComponent.formatText("&7Costs &6&l" + Methods.getBoostCost(60, amt) + "."));
             emeraldMeta.setLore(emeraldLore);
             emerald.setItemMeta(emeraldMeta);
 
@@ -434,7 +435,7 @@ public class ESpawner implements Spawner {
             if (EpicSpawnersPlugin.getInstance().v1_7)
                 skullMeta.setOwner("MHF_ArrowRight");
             skull.setDurability((short) 3);
-            skullMeta.setDisplayName(Arconix.pl().getApi().format().formatText("&6&l+1"));
+            skullMeta.setDisplayName(TextComponent.formatText("&6&l+1"));
             skull.setItemMeta(skullMeta);
 
             ItemStack head2 = new ItemStack(Material.SKULL_ITEM, 1, (byte) 3);
@@ -445,7 +446,7 @@ public class ESpawner implements Spawner {
             if (EpicSpawnersPlugin.getInstance().v1_7)
                 skullMeta.setOwner("MHF_ArrowLeft");
             skull2.setDurability((short) 3);
-            skull2Meta.setDisplayName(Arconix.pl().getApi().format().formatText("&6&l-1"));
+            skull2Meta.setDisplayName(TextComponent.formatText("&6&l-1"));
             skull2.setItemMeta(skull2Meta);
 
             if (amt != 1) {
@@ -552,16 +553,16 @@ public class ESpawner implements Spawner {
 
             int amt = entities.size();
             String title = EpicSpawnersPlugin.getInstance().getLocale().getMessage("interface.convert.title");
-            Inventory i = Bukkit.createInventory(null, 54, Arconix.pl().getApi().format().formatTitle(title));
+            Inventory i = Bukkit.createInventory(null, 54, TextComponent.formatTitle(title));
             int max2 = 54;
             if (amt <= 7) {
-                i = Bukkit.createInventory(null, 27, Arconix.pl().getApi().format().formatTitle(title));
+                i = Bukkit.createInventory(null, 27, TextComponent.formatTitle(title));
                 max2 = 27;
             } else if (amt <= 15) {
-                i = Bukkit.createInventory(null, 36, Arconix.pl().getApi().format().formatTitle(title));
+                i = Bukkit.createInventory(null, 36, TextComponent.formatTitle(title));
                 max2 = 36;
             } else if (amt <= 25) {
-                i = Bukkit.createInventory(null, 45, Arconix.pl().getApi().format().formatTitle(title));
+                i = Bukkit.createInventory(null, 45, TextComponent.formatTitle(title));
                 max2 = 45;
             }
 
@@ -587,7 +588,7 @@ public class ESpawner implements Spawner {
                 ArrayList<String> lore = new ArrayList<>();
                 double price = spawnerData.getConvertPrice() * getSpawnerDataCount();
 
-                lore.add(EpicSpawnersPlugin.getInstance().getLocale().getMessage("interface.shop.buyprice", Arconix.pl().getApi().format().formatEconomy(price)));
+                lore.add(EpicSpawnersPlugin.getInstance().getLocale().getMessage("interface.shop.buyprice", TextComponent.formatEconomy(price)));
                 String loreString = EpicSpawnersPlugin.getInstance().getLocale().getMessage("interface.convert.lore", Methods.getTypeFromString(spawnerData.getIdentifyingName()));
                 if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
                     loreString = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(p, loreString.replace(" ", "_")).replace("_", " ");

@@ -45,7 +45,7 @@ public class AppearanceHandler {
                 }
 
                 Location location = spawner.getLocation();
-                if (location == null && location.getWorld() == null) continue;
+                if (location == null || location.getWorld() == null) continue;
                 int destx = location.getBlockX() >> 4;
                 int destz = location.getBlockZ() >> 4;
                 if (!location.getWorld().isChunkLoaded(destx, destz)) {

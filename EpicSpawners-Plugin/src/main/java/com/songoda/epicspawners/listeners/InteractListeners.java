@@ -1,5 +1,6 @@
 package com.songoda.epicspawners.listeners;
 
+import com.songoda.arconix.api.methods.serialize.Serialize;
 import com.songoda.arconix.plugin.Arconix;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.api.spawner.Spawner;
@@ -89,8 +90,8 @@ public class InteractListeners implements Listener {
             }
 
             int bmulti = 1;
-            if (EpicSpawnersPlugin.getInstance().dataFile.getConfig().getInt("data.spawner." + Arconix.pl().getApi().serialize().serializeLocation(b)) != 0)
-                bmulti = EpicSpawnersPlugin.getInstance().dataFile.getConfig().getInt("data.spawner." + Arconix.pl().getApi().serialize().serializeLocation(b));
+            if (EpicSpawnersPlugin.getInstance().dataFile.getConfig().getInt("data.spawner." + Serialize.getInstance().serializeLocation(b)) != 0)
+                bmulti = EpicSpawnersPlugin.getInstance().dataFile.getConfig().getInt("data.spawner." + Serialize.getInstance().serializeLocation(b));
             int amt = p.getInventory().getItemInHand().getAmount();
             EntityType itype;
 
@@ -153,7 +154,7 @@ public class InteractListeners implements Listener {
                 }
             }
 
-            String loc = Arconix.pl().getApi().serialize().serializeLocation(block);
+            String loc = Serialize.getInstance().serializeLocation(block);
             if (EpicSpawnersPlugin.getInstance().dataFile.getConfig().getString("data.blockshop." + loc) != null) {
                 e.setCancelled(true);
                 EpicSpawnersPlugin.getInstance().getShop().show(instance.getSpawnerManager().getSpawnerData(instance.dataFile.getConfig().getString("data.blockshop." + loc).toLowerCase()), 1, player);

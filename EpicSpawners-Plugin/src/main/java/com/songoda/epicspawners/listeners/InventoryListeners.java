@@ -1,6 +1,6 @@
 package com.songoda.epicspawners.listeners;
 
-import com.songoda.arconix.plugin.Arconix;
+import com.songoda.arconix.api.methods.formatting.TextComponent;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.api.*;
 import com.songoda.epicspawners.api.particles.ParticleDensity;
@@ -44,7 +44,7 @@ public class InventoryListeners implements Listener {
         try {
             if (event.getInventory() == null || event.getCurrentItem() == null) return;
             Player player = (Player) event.getWhoClicked();
-            if (instance.inShow.containsKey(event.getWhoClicked())) {
+            if (instance.inShow.containsKey(player)) {
                 event.setCancelled(true);
                 int amt = event.getInventory().getItem(22).getAmount();
                 if (event.getSlot() == 0) {
@@ -167,7 +167,7 @@ public class InventoryListeners implements Listener {
                         if (!event.getClick().isLeftClick() && !event.getClick().isRightClick()) {
                             SpawnerData spawnerData = instance.getSpawnerEditor().getType(editingData.getSpawnerSlot());
                             spawnerData.setDisplayItem(Material.valueOf(player.getItemInHand().getType().toString()));
-                            player.sendMessage(Arconix.pl().getApi().format().formatText(instance.references.getPrefix() + "&7Display Item for &6" + spawnerData.getIdentifyingName() + " &7set to &6" + player.getItemInHand().getType().toString() + "&7."));
+                            player.sendMessage(TextComponent.formatText(instance.references.getPrefix() + "&7Display Item for &6" + spawnerData.getIdentifyingName() + " &7set to &6" + player.getItemInHand().getType().toString() + "&7."));
                             instance.getSpawnerEditor().overview(player, editingData.getSpawnerSlot());
                         } else if (event.getClick().isLeftClick()) {
                             instance.getSpawnerEditor().editSpawnerName(player);
@@ -333,11 +333,11 @@ public class InventoryListeners implements Listener {
                             event.setCancelled(true);
                             if (event.getCurrentItem().getItemMeta().getDisplayName().equals(instance.getLocale().getMessage("general.nametag.back")))
                                 instance.getSpawnerEditor().overview(player, editingData.getSpawnerSlot());
-                            else if (event.getCurrentItem().getItemMeta().getDisplayName().equals(Arconix.pl().getApi().format().formatText("&6Add Command")))
+                            else if (event.getCurrentItem().getItemMeta().getDisplayName().equals(TextComponent.formatText("&6Add Command")))
                                 instance.getSpawnerEditor().createCommand(player);
-                            else if (event.getCurrentItem().getItemMeta().getDisplayName().equals(Arconix.pl().getApi().format().formatText("&6Add entity")))
+                            else if (event.getCurrentItem().getItemMeta().getDisplayName().equals(TextComponent.formatText("&6Add entity")))
                                 instance.getSpawnerEditor().addEntityInit(player);
-                            else if (event.getCurrentItem().getItemMeta().getDisplayName().equals(Arconix.pl().getApi().format().formatText("&aSave")))
+                            else if (event.getCurrentItem().getItemMeta().getDisplayName().equals(TextComponent.formatText("&aSave")))
                                 instance.getSpawnerEditor().save(player, instance.getSpawnerEditor().getItems(player));
                             else if (event.getSlot() == 49)
                                 instance.getSpawnerEditor().editSpawnLimit(player);
@@ -349,7 +349,7 @@ public class InventoryListeners implements Listener {
                 int page = instance.page.get(player);
                 if (event.getSlot() == 8) {
                     player.closeInventory();
-                } else if (event.getCurrentItem().getItemMeta().getDisplayName().equals(Arconix.pl().getApi().format().formatText("&9&lNew Spawner"))) {
+                } else if (event.getCurrentItem().getItemMeta().getDisplayName().equals(TextComponent.formatText("&9&lNew Spawner"))) {
                     instance.getSpawnerEditor().getEditingData(player).setNewId(instance.getSpawnerManager().getRegisteredSpawnerData().size() - 1);
                     instance.getSpawnerEditor().overview(player, 0);
                 } else if (event.getCurrentItem().getItemMeta().getDisplayName().equals(instance.getLocale().getMessage("general.nametag.back"))) {
