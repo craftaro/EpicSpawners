@@ -5,6 +5,8 @@ import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.api.spawner.SpawnerData;
 import com.songoda.epicspawners.utils.Debugger;
 import com.songoda.epicspawners.utils.Methods;
+import com.songoda.epicspawners.utils.ServerVersion;
+
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -123,10 +125,11 @@ public class Shop {
 
             ItemStack head = new ItemStack(Material.SKULL_ITEM, 1, (byte) 3);
             ItemStack skull = head;
-            if (!instance.v1_7)
+            boolean v1_7 = instance.isServerVersion(ServerVersion.V1_7);
+            if (!v1_7)
                 skull = Arconix.pl().getApi().getGUI().addTexture(head, "http://textures.minecraft.net/texture/1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b");
             SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
-            if (instance.v1_7)
+            if (v1_7)
                 skullMeta.setOwner("MHF_ArrowRight");
             skull.setDurability((short) 3);
             skullMeta.setDisplayName(instance.getLocale().getMessage("general.nametag.next"));
@@ -134,10 +137,10 @@ public class Shop {
 
             ItemStack head2 = new ItemStack(Material.SKULL_ITEM, 1, (byte) 3);
             ItemStack skull2 = head2;
-            if (!instance.v1_7)
+            if (!v1_7)
                 skull2 = Arconix.pl().getApi().getGUI().addTexture(head2, "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23");
             SkullMeta skull2Meta = (SkullMeta) skull2.getItemMeta();
-            if (instance.v1_7)
+            if (v1_7)
                 skull2Meta.setOwner("MHF_ArrowLeft");
             skull2.setDurability((short) 3);
             skull2Meta.setDisplayName(instance.getLocale().getMessage("general.nametag.back"));
@@ -289,10 +292,11 @@ public class Shop {
 
             ItemStack head2 = new ItemStack(Material.SKULL_ITEM, 1, (byte) 3);
             ItemStack skull2 = head2;
-            if (!EpicSpawnersPlugin.getInstance().v1_7)
+            boolean v1_7 = EpicSpawnersPlugin.getInstance().isServerVersion(ServerVersion.V1_7);
+            if (!v1_7)
                 skull2 = Arconix.pl().getApi().getGUI().addTexture(head2, "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23");
             SkullMeta skull2Meta = (SkullMeta) skull2.getItemMeta();
-            if (EpicSpawnersPlugin.getInstance().v1_7)
+            if (v1_7)
                 skull2Meta.setOwner("MHF_ArrowLeft");
             skull2.setDurability((short) 3);
             skull2Meta.setDisplayName(instance.getLocale().getMessage("general.nametag.back"));

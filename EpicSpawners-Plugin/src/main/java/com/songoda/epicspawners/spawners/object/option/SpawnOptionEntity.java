@@ -8,6 +8,8 @@ import com.songoda.epicspawners.api.spawner.SpawnerStack;
 import com.songoda.epicspawners.spawners.object.SpawnOptionType;
 import com.songoda.epicspawners.utils.Debugger;
 import com.songoda.epicspawners.utils.Methods;
+import com.songoda.epicspawners.utils.ServerVersion;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -59,7 +61,7 @@ public class SpawnOptionEntity implements SpawnOption {
 
         if (nmsSpawnMethod == null) {
             try {
-                if (instance.v1_12 || instance.v1_11) {
+                if (instance.isServerVersionAtLeast(ServerVersion.V1_11)) {
                     nmsSpawnMethod = world.getClass().getMethod("spawn", Location.class, Class.class, Consumer.class, CreatureSpawnEvent.SpawnReason.class);
                 } else {
                     nmsSpawnMethod = world.getClass().getMethod("spawn", Location.class, Class.class, CreatureSpawnEvent.SpawnReason.class);
@@ -117,9 +119,9 @@ public class SpawnOptionEntity implements SpawnOption {
                 double testY = ThreadLocalRandom.current().nextDouble(-1, 2);
                 double testZ = ThreadLocalRandom.current().nextDouble(-1, 1);
 
-                double x = location.getX() + testX * (double) 3;
+                double x = location.getX() + testX * 3;
                 double y = location.getY() + testY;
-                double z = location.getZ() + testZ * (double) 3;
+                double z = location.getZ() + testZ * 3;
 
                 spot = new Location(location.getWorld(), x, y, z);
                 if (canSpawn(type, spot))
@@ -201,7 +203,7 @@ public class SpawnOptionEntity implements SpawnOption {
 
         try {
             Entity entity;
-            if (instance.v1_12 || instance.v1_11)
+            if (instance.isServerVersionAtLeast(ServerVersion.V1_11))
                 entity = (Entity) nmsSpawnMethod.invoke(world, location, type.getEntityClass(), null, CreatureSpawnEvent.SpawnReason.SPAWNER); //ToDo: account for all mobs in the spawner.
             else
                 entity = (Entity) nmsSpawnMethod.invoke(world, location, type.getEntityClass(), CreatureSpawnEvent.SpawnReason.SPAWNER);

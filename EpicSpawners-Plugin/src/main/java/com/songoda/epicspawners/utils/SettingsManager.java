@@ -197,7 +197,7 @@ public class SettingsManager implements Listener {
                 plugin.getConfig().addDefault(s.setting, plugin.getConfig().get("settings." + s.oldSetting));
                 plugin.getConfig().set("settings." + s.oldSetting, null);
             } else if (s.setting.equals("Main.Upgrade Particle Type")) {
-                if (plugin.v1_7 || plugin.v1_8)
+                if (plugin.isServerVersion(ServerVersion.V1_7, ServerVersion.V1_8))
                     plugin.getConfig().addDefault(s.setting, "WITCH_MAGIC");
                 else
                     plugin.getConfig().addDefault(s.setting, s.option);

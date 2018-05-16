@@ -5,6 +5,8 @@ import com.songoda.epicspawners.api.spawner.Spawner;
 import com.songoda.epicspawners.api.spawner.SpawnerData;
 import com.songoda.epicspawners.api.spawner.SpawnerStack;
 import com.songoda.epicspawners.spawners.object.SpawnOptionType;
+import com.songoda.epicspawners.utils.ServerVersion;
+
 import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -78,7 +80,7 @@ public class SpawnOptionCommand implements SpawnOption {
     }
 
     private Player getNearestPlayer(Location location) {
-        if (EpicSpawnersPlugin.getInstance().v1_7) return null;
+        if (EpicSpawnersPlugin.getInstance().isServerVersion(ServerVersion.V1_7)) return null;
 
         String[] playerRadius = EpicSpawnersPlugin.getInstance().getConfig().getString("Main.Radius To Search Around Spawners").split("x");
         if (playerRadius.length != 3) return null;

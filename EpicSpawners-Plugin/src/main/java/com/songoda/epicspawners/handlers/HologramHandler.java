@@ -5,6 +5,8 @@ import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.api.spawner.Spawner;
 import com.songoda.epicspawners.utils.Debugger;
 import com.songoda.epicspawners.utils.Methods;
+import com.songoda.epicspawners.utils.ServerVersion;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -31,7 +33,7 @@ public class HologramHandler {
     public void loadHolograms() {
         if (instance.getConfig().getBoolean("Main.Spawners Have Holograms")) {
 
-            if (instance.v1_7 || instance.getSpawnerManager().getSpawnersInWorld().size() == 0) return;
+            if (instance.isServerVersion(ServerVersion.V1_7) || instance.getSpawnerManager().getSpawnersInWorld().size() == 0) return;
 
             for (Spawner spawner : instance.getSpawnerManager().getSpawnersInWorld().values()) {
                 if (spawner.getLocation().getWorld() == null) continue;
@@ -149,7 +151,7 @@ public class HologramHandler {
 
     public void processChange(Block b) {
         try {
-            if (!instance.v1_7) {
+            if (instance.isServerVersionAtLeast(ServerVersion.V1_8)) {
                 Block spawner = null;
                 if (b.getType() == Material.MOB_SPAWNER) {
                     spawner = b;

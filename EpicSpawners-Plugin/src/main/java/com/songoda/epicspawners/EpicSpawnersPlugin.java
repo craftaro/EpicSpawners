@@ -5,7 +5,6 @@ import com.songoda.arconix.api.mcupdate.MCUpdate;
 import com.songoda.arconix.api.methods.formatting.TextComponent;
 import com.songoda.arconix.api.methods.serialize.Serialize;
 import com.songoda.arconix.api.utils.ConfigWrapper;
-import com.songoda.arconix.api.utils.Serializer;
 import com.songoda.arconix.plugin.Arconix;
 import com.songoda.epicspawners.api.EpicSpawners;
 import com.songoda.epicspawners.api.EpicSpawnersAPI;
@@ -33,8 +32,11 @@ import com.songoda.epicspawners.spawners.object.ESpawnerStack;
 import com.songoda.epicspawners.tasks.SpawnerParticleTask;
 import com.songoda.epicspawners.utils.Heads;
 import com.songoda.epicspawners.utils.Methods;
+import com.songoda.epicspawners.utils.ServerVersion;
 import com.songoda.epicspawners.utils.SettingsManager;
-import org.apache.commons.lang3.math.NumberUtils;
+
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -63,13 +65,6 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
     public List<Player> change = new ArrayList<>();
 
     public Map<Player, Integer> boostAmt = new HashMap<>();
-
-    public boolean v1_7 = Bukkit.getServer().getClass().getPackage().getName().contains("1_7");
-    public boolean v1_8 = Bukkit.getServer().getClass().getPackage().getName().contains("1_8");
-    public boolean v1_9 = Bukkit.getServer().getClass().getPackage().getName().contains("1_9");
-    public boolean v1_10 = Bukkit.getServer().getClass().getPackage().getName().contains("1_10");
-    public boolean v1_11 = Bukkit.getServer().getClass().getPackage().getName().contains("1_11");
-    public boolean v1_12 = Bukkit.getServer().getClass().getPackage().getName().contains("1_12");
 
     public String newSpawnerName = "";
 
@@ -101,6 +96,8 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
     private Heads heads;
     private Shop shop;
     private Locale locale;
+
+    private ServerVersion serverVersion = ServerVersion.fromPackageName(Bukkit.getServer().getClass().getPackage().getName());
 
     public void onDisable() {
         this.saveToFile();
@@ -361,7 +358,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
 
         Bukkit.getScheduler().runTaskTimerAsynchronously(this, this::saveToFile, 6000, 6000);
 
-        if (!v1_7) {
+        if (isServerVersionAtLeast(ServerVersion.V1_8)) {
             getServer().getPluginManager().registerEvents(new TestListeners(), this);
         }
         console.sendMessage(TextComponent.formatText("&a============================="));
@@ -640,6 +637,22 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
 
     public Heads getHeads() {
         return heads;
+    }
+
+    public ServerVersion getServerVersion() {
+        return serverVersion;
+    }
+
+    public boolean isServerVersion(ServerVersion version) {
+        return serverVersion == version;
+    }
+
+    public boolean isServerVersion(ServerVersion... versions) {
+        return ArrayUtils.contains(versions, serverVersion);
+    }
+
+    public boolean isServerVersionAtLeast(ServerVersion version) {
+        return serverVersion.ordinal() >= version.ordinal();
     }
 
     @Override

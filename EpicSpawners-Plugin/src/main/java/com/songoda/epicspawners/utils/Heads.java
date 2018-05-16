@@ -35,7 +35,7 @@ public class Heads {
             if (headURL == null) {
                 headURL = textureURL.get("DROPPED_ITEM");
             }
-            if (instance.v1_7) {
+            if (instance.isServerVersion(ServerVersion.V1_7)) {
                 item = new ItemStack(Material.MOB_SPAWNER, 1);
                 return item;
             }

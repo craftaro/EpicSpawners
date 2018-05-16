@@ -12,6 +12,8 @@ import com.songoda.epicspawners.spawners.object.ESpawner;
 import com.songoda.epicspawners.utils.Debugger;
 import com.songoda.epicspawners.utils.Methods;
 import com.songoda.epicspawners.utils.Reflection;
+import com.songoda.epicspawners.utils.ServerVersion;
+
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -95,7 +97,7 @@ public class InteractListeners implements Listener {
             int amt = p.getInventory().getItemInHand().getAmount();
             EntityType itype;
 
-            if (EpicSpawnersPlugin.getInstance().v1_7 || EpicSpawnersPlugin.getInstance().v1_8)
+            if (EpicSpawnersPlugin.getInstance().isServerVersion(ServerVersion.V1_7, ServerVersion.V1_8))
                 itype = ((SpawnEgg) i.getData()).getSpawnedType();
             else {
                 String str = Reflection.getNBTTagCompound(Reflection.getNMSItemStack(i)).toString();

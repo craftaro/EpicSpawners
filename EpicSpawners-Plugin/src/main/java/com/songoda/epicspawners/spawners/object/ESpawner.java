@@ -2,6 +2,7 @@ package com.songoda.epicspawners.spawners.object;
 
 
 import com.songoda.arconix.api.methods.formatting.TextComponent;
+import com.songoda.arconix.api.methods.formatting.TimeComponent;
 import com.songoda.arconix.plugin.Arconix;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.api.CostType;
@@ -16,6 +17,8 @@ import com.songoda.epicspawners.player.MenuType;
 import com.songoda.epicspawners.api.events.SpawnerChangeEvent;
 import com.songoda.epicspawners.utils.Debugger;
 import com.songoda.epicspawners.utils.Methods;
+import com.songoda.epicspawners.utils.ServerVersion;
+
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.*;
 import org.bukkit.block.CreatureSpawner;
@@ -222,7 +225,7 @@ public class ESpawner implements Spawner {
             if (getBoost() != 0) {
 
                 // ToDo: Make it display all boosts.
-                String[] parts = instance.getLocale().getMessage("interface.spawner.boostedstats", Integer.toString(getBoost()), spawnerData, TextComponent.readableTime(getBoostEnd().toEpochMilli() - System.currentTimeMillis())).split("\\|");
+                String[] parts = instance.getLocale().getMessage("interface.spawner.boostedstats", Integer.toString(getBoost()), spawnerData, TimeComponent.makeReadable(getBoostEnd().toEpochMilli() - System.currentTimeMillis())).split("\\|");
                 lore.add("");
                 for (String line : parts)
                     lore.add(TextComponent.formatText(line));
@@ -429,10 +432,11 @@ public class ESpawner implements Spawner {
 
             ItemStack head = new ItemStack(Material.SKULL_ITEM, 1, (byte) 3);
             ItemStack skull = head;
-            if (!EpicSpawnersPlugin.getInstance().v1_7)
+            boolean v1_7 = EpicSpawnersPlugin.getInstance().isServerVersion(ServerVersion.V1_7);
+            if (!v1_7)
                 skull = Arconix.pl().getApi().getGUI().addTexture(head, "http://textures.minecraft.net/texture/1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b");
             SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
-            if (EpicSpawnersPlugin.getInstance().v1_7)
+            if (v1_7)
                 skullMeta.setOwner("MHF_ArrowRight");
             skull.setDurability((short) 3);
             skullMeta.setDisplayName(TextComponent.formatText("&6&l+1"));
@@ -440,10 +444,10 @@ public class ESpawner implements Spawner {
 
             ItemStack head2 = new ItemStack(Material.SKULL_ITEM, 1, (byte) 3);
             ItemStack skull2 = head2;
-            if (!EpicSpawnersPlugin.getInstance().v1_7)
+            if (!v1_7)
                 skull2 = Arconix.pl().getApi().getGUI().addTexture(head2, "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23");
             SkullMeta skull2Meta = (SkullMeta) skull2.getItemMeta();
-            if (EpicSpawnersPlugin.getInstance().v1_7)
+            if (v1_7)
                 skullMeta.setOwner("MHF_ArrowLeft");
             skull2.setDurability((short) 3);
             skull2Meta.setDisplayName(TextComponent.formatText("&6&l-1"));
@@ -620,10 +624,11 @@ public class ESpawner implements Spawner {
 
             ItemStack head = new ItemStack(Material.SKULL_ITEM, 1, (byte) 3);
             ItemStack skull = head;
-            if (!EpicSpawnersPlugin.getInstance().v1_7)
+            boolean v1_7 = EpicSpawnersPlugin.getInstance().isServerVersion(ServerVersion.V1_7);
+            if (!v1_7)
                 skull = Arconix.pl().getApi().getGUI().addTexture(head, "http://textures.minecraft.net/texture/1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b");
             SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
-            if (EpicSpawnersPlugin.getInstance().v1_7)
+            if (v1_7)
                 skullMeta.setOwner("MHF_ArrowRight");
             skull.setDurability((short) 3);
             skullMeta.setDisplayName(EpicSpawnersPlugin.getInstance().getLocale().getMessage("general.nametag.next"));
@@ -631,10 +636,10 @@ public class ESpawner implements Spawner {
 
             ItemStack head2 = new ItemStack(Material.SKULL_ITEM, 1, (byte) 3);
             ItemStack skull2 = head2;
-            if (!EpicSpawnersPlugin.getInstance().v1_7)
+            if (!v1_7)
                 skull2 = Arconix.pl().getApi().getGUI().addTexture(head2, "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23");
             SkullMeta skull2Meta = (SkullMeta) skull2.getItemMeta();
-            if (EpicSpawnersPlugin.getInstance().v1_7)
+            if (v1_7)
                 skull2Meta.setOwner("MHF_ArrowLeft");
             skull2.setDurability((short) 3);
             skull2Meta.setDisplayName(EpicSpawnersPlugin.getInstance().getLocale().getMessage("general.nametag.back"));
@@ -881,7 +886,7 @@ public class ESpawner implements Spawner {
         }
 
         if (instance.getConfig().getBoolean("Main.Sounds Enabled")) {
-            if (!instance.v1_8 && !instance.v1_7) {
+            if (instance.isServerVersionAtLeast(ServerVersion.V1_9)) {
                 player.playSound(player.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 0.6F, 15.0F);
             } else {
                 player.playSound(player.getLocation(), Sound.valueOf("ARROW_HIT"), 0.6F, 15.0F);
@@ -998,7 +1003,7 @@ public class ESpawner implements Spawner {
             loc.setX(loc.getX() + .5);
             loc.setY(loc.getY() + .5);
             loc.setZ(loc.getZ() + .5);
-            if (!EpicSpawnersPlugin.getInstance().v1_8 && !EpicSpawnersPlugin.getInstance().v1_7) {
+            if (EpicSpawnersPlugin.getInstance().isServerVersionAtLeast(ServerVersion.V1_9)) {
                 player.getWorld().spawnParticle(org.bukkit.Particle.valueOf(EpicSpawnersPlugin.getInstance().getConfig().getString("Main.Upgrade Particle Type")), loc, 100, .5, .5, .5);
             } else {
                 player.getWorld().playEffect(loc, org.bukkit.Effect.valueOf(EpicSpawnersPlugin.getInstance().getConfig().getString("Main.Upgrade Particle Type")), 1, 0);
@@ -1010,13 +1015,13 @@ public class ESpawner implements Spawner {
                 return;
             }
             if (currentStackSize != EpicSpawnersPlugin.getInstance().getConfig().getInt("Main.Spawner Max Upgrade")) {
-                if (!EpicSpawnersPlugin.getInstance().v1_8 && !EpicSpawnersPlugin.getInstance().v1_7) {
+                if (EpicSpawnersPlugin.getInstance().isServerVersionAtLeast(ServerVersion.V1_9)) {
                     player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 0.6F, 15.0F);
                 } else {
                     player.playSound(player.getLocation(), Sound.valueOf("LEVEL_UP"), 2F, 15.0F);
                 }
             } else {
-                if (!EpicSpawnersPlugin.getInstance().v1_11 && !EpicSpawnersPlugin.getInstance().v1_10 && !EpicSpawnersPlugin.getInstance().v1_9 && !EpicSpawnersPlugin.getInstance().v1_8 && !EpicSpawnersPlugin.getInstance().v1_7) {
+                if (EpicSpawnersPlugin.getInstance().isServerVersionAtLeast(ServerVersion.V1_12)) {
                     player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 2F, 25.0F);
                     player.playSound(player.getLocation(), Sound.BLOCK_NOTE_CHIME, 2F, 25.0F);
                     Bukkit.getScheduler().scheduleSyncDelayedTask(EpicSpawnersPlugin.getInstance(), () -> player.playSound(player.getLocation(), Sound.BLOCK_NOTE_CHIME, 1.2F, 35.0F), 5L);

@@ -47,7 +47,7 @@ public class Methods {
     public static boolean isOffhand(PlayerInteractEvent e) {
         try {
             EpicSpawnersPlugin plugin = EpicSpawnersPlugin.getInstance();
-            if (!plugin.v1_8 && !plugin.v1_7) {
+            if (plugin.isServerVersionAtLeast(ServerVersion.V1_9)) {
                 if (e.getHand() == EquipmentSlot.OFF_HAND)
                     return true;
             }
@@ -60,7 +60,7 @@ public class Methods {
     public static boolean isOffhand(BlockPlaceEvent e) {
         try {
             EpicSpawnersPlugin plugin = EpicSpawnersPlugin.getInstance();
-            if (!plugin.v1_8 && !plugin.v1_7 && e.getHand() == EquipmentSlot.OFF_HAND)
+            if (plugin.isServerVersionAtLeast(ServerVersion.V1_9) && e.getHand() == EquipmentSlot.OFF_HAND)
                 return true;
         } catch (Exception ee) {
             Debugger.runReport(ee);
@@ -205,7 +205,9 @@ public class Methods {
 
     @SuppressWarnings("unchecked")
     public static Collection<Entity> getNearbyEntities(Location location, double x, double y, double z) {
-        if (!EpicSpawnersPlugin.getInstance().v1_7) return location.getWorld().getNearbyEntities(location, x, y, z);
+        if (!EpicSpawnersPlugin.getInstance().isServerVersion(ServerVersion.V1_7)) {
+            return location.getWorld().getNearbyEntities(location, x, y, z);
+        }
 
         if (location == null) return Collections.emptyList();
 
