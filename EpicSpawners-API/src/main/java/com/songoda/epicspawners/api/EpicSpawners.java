@@ -2,6 +2,8 @@ package com.songoda.epicspawners.api;
 
 import com.songoda.epicspawners.api.spawner.SpawnerData;
 import com.songoda.epicspawners.api.spawner.SpawnerManager;
+import com.songoda.epicspawners.api.utils.SpawnerDataBuilder;
+
 import org.bukkit.inventory.ItemStack;
 
 public interface EpicSpawners {
@@ -48,6 +50,16 @@ public interface EpicSpawners {
      * or has no meta
      */
     SpawnerData getSpawnerDataFromItem(ItemStack item);
+
+    /**
+     * Create a new {@link SpawnerDataBuilder} instance
+     * to easily construct a new {@link SpawnerData} object
+     * 
+     * @param identifier the unique spawner data identifier (name)
+     * 
+     * @return the created SpawnerDataBuilder instance
+     */
+    SpawnerDataBuilder createSpawnerData(String identifier);
 
     /**
      * Get the amount of spawners stacked in an ItemStack.

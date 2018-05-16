@@ -15,6 +15,7 @@ import com.songoda.epicspawners.api.spawner.Spawner;
 import com.songoda.epicspawners.api.spawner.SpawnerData;
 import com.songoda.epicspawners.api.spawner.SpawnerManager;
 import com.songoda.epicspawners.api.spawner.SpawnerStack;
+import com.songoda.epicspawners.api.utils.SpawnerDataBuilder;
 import com.songoda.epicspawners.boost.BoostData;
 import com.songoda.epicspawners.boost.BoostManager;
 import com.songoda.epicspawners.boost.BoostType;
@@ -30,6 +31,7 @@ import com.songoda.epicspawners.spawners.object.ESpawnerData;
 import com.songoda.epicspawners.spawners.object.ESpawnerManager;
 import com.songoda.epicspawners.spawners.object.ESpawnerStack;
 import com.songoda.epicspawners.tasks.SpawnerParticleTask;
+import com.songoda.epicspawners.utils.ESpawnerDataBuilder;
 import com.songoda.epicspawners.utils.Heads;
 import com.songoda.epicspawners.utils.Methods;
 import com.songoda.epicspawners.utils.ServerVersion;
@@ -699,6 +701,11 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         }
 
         return null;
+    }
+
+    @Override
+    public SpawnerDataBuilder createSpawnerData(String identifier) {
+        return new ESpawnerDataBuilder(identifier);
     }
 
     @Override

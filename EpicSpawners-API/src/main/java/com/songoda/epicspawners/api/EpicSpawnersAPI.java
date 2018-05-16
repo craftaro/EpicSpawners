@@ -2,6 +2,8 @@ package com.songoda.epicspawners.api;
 
 import com.songoda.epicspawners.api.spawner.SpawnerData;
 import com.songoda.epicspawners.api.spawner.SpawnerManager;
+import com.songoda.epicspawners.api.utils.SpawnerDataBuilder;
+
 import org.bukkit.inventory.ItemStack;
 
 public class EpicSpawnersAPI {
@@ -34,6 +36,10 @@ public class EpicSpawnersAPI {
 
     public static SpawnerData getSpawnerDataFromItem(ItemStack item) {
         return implementation.getSpawnerDataFromItem(item);
+    }
+
+    public static SpawnerDataBuilder createSpawnerData(String identifier) {
+        return implementation.createSpawnerData(identifier);
     }
 
     public static int getStackSizeFromItem(ItemStack item) {

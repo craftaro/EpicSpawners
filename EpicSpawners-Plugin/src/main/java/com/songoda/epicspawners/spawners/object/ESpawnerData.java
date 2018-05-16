@@ -71,6 +71,10 @@ public class ESpawnerData implements SpawnerData {
         reloadSpawnMethods();
     }
 
+    public ESpawnerData(String name) {
+        this(name, Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
+    }
+
     public void reloadSpawnMethods() {
         spawnOptions.clear();
         if (!entities.isEmpty())
