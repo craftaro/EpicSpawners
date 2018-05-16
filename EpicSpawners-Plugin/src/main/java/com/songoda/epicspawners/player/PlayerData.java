@@ -59,4 +59,19 @@ public class PlayerData {
     public Map<EntityType, Integer> getEntityKills() {
         return Collections.unmodifiableMap(entityKills);
     }
+
+    @Override
+    public int hashCode() {
+        return 31 * (playerUUID == null ? 0 : playerUUID.hashCode());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof PlayerData)) return false;
+
+        PlayerData other = (PlayerData) obj;
+        return Objects.equals(playerUUID, other.playerUUID);
+    }
+
 }

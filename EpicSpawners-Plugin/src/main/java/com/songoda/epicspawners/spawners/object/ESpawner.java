@@ -1081,7 +1081,7 @@ public class ESpawner implements Spawner {
         EpicSpawnersPlugin instance = EpicSpawnersPlugin.getInstance();
         if (placedBy == null) return 0;
 
-        List<BoostData> boosts = instance.getBoostManager().getBoosts();
+        Set<BoostData> boosts = instance.getBoostManager().getBoosts();
 
         if (boosts.size() == 0) return 0;
 
@@ -1119,7 +1119,7 @@ public class ESpawner implements Spawner {
     public Instant getBoostEnd() { //ToDo: Wrong.
         EpicSpawnersPlugin instance = EpicSpawnersPlugin.getInstance();
 
-        List<BoostData> boosts = instance.getBoostManager().getBoosts();
+        Set<BoostData> boosts = instance.getBoostManager().getBoosts();
 
         if (boosts.size() == 0) return null;
 
@@ -1271,4 +1271,21 @@ public class ESpawner implements Spawner {
     public void setOmniState(String omniState) {
         this.omniState = omniState;
     }
+
+    @Override
+    public int hashCode() {
+        int result = 31 * (location == null ? 0 : location.hashCode());
+        result = 31 * result + (placedBy == null ? 0 : placedBy.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof ESpawner)) return false;
+
+        ESpawner other = (ESpawner) obj;
+        return Objects.equals(location, other.location) && Objects.equals(placedBy, other.placedBy);
+    }
+
 }

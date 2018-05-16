@@ -1,5 +1,7 @@
 package com.songoda.epicspawners.spawners.object;
 
+import java.util.Objects;
+
 import com.songoda.epicspawners.api.spawner.SpawnerData;
 import com.songoda.epicspawners.api.spawner.SpawnerStack;
 
@@ -46,4 +48,22 @@ public class ESpawnerStack implements SpawnerStack {
     public void setStackSize(int stackSize) {
         this.stackSize = stackSize;
     }
+
+    @Override
+    public int hashCode() {
+        int result = 31 * (spawnerData == null ? 0 : spawnerData.hashCode());
+        result = 31 * result + this.stackSize;
+        
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof ESpawnerStack)) return false;
+
+        ESpawnerStack other = (ESpawnerStack) obj;
+        return stackSize == other.stackSize && Objects.equals(spawnerData, other.spawnerData);
+    }
+
 }

@@ -1,12 +1,12 @@
 package com.songoda.epicspawners.boost;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class BoostManager {
 
     // These are the boosted spawners currently in the game world.
-    private final List<BoostData> boostedSpawners = new ArrayList<>();
+    private final Set<BoostData> boostedSpawners = new HashSet<>();
 
     public void addBoostToSpawner(BoostData data) {
         boostedSpawners.add(data);
@@ -16,7 +16,7 @@ public class BoostManager {
         boostedSpawners.remove(data);
     }
 
-    public List<BoostData> getBoosts() {
+    public Set<BoostData> getBoosts() {
         return boostedSpawners;
     }
 }
