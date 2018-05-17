@@ -94,7 +94,6 @@ public class ESpawner implements Spawner {
         float y = (float) (0 + (Math.random() * .8));
         float z = (float) (0 + (Math.random() * .8));
 
-        Bukkit.broadcastMessage("hi3");
         Location particleLocation = location.clone();
         particleLocation.add(.5, .5, .5);
         //ToDo: Only currently works for the first spawner type in the stack. this is not how it should work.
