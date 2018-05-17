@@ -62,7 +62,7 @@ public class SpawnerCustomSpawnTask extends BukkitRunnable {
     public static SpawnerCustomSpawnTask startTask(EpicSpawnersPlugin plugin) {
         if (instance == null) {
             instance = new SpawnerCustomSpawnTask(plugin);
-            instance.runTaskTimer(plugin, 0, 20);
+            instance.runTaskTimer(plugin, 0, plugin.getConfig().getInt("Main.Custom Spawner Tick Rate"));
         }
 
         return instance;

@@ -219,6 +219,7 @@ public class SettingsManager implements Listener {
         o32("spawners-holograms", "Main.Spawners Have Holograms", true),
         o4("Only-drop-placed", "Main.Only Drop Placed Spawner", false),
         o5("Only-charge-natural", "Main.Only Charge Natural Spawners", false),
+        o342("123", "Main.Custom Spawner Tick Rate", 10),
         o43("Random-Low & Random-High", "Main.Random Amount Added To Each Spawn", "1:3"),
         o63("Sounds", "Main.Sounds Enabled", true),
         o23("Display-Level-One", "Main.Display Level In Spawner Title If Level 1", false),
