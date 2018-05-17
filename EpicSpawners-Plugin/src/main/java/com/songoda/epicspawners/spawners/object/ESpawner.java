@@ -52,8 +52,6 @@ public class ESpawner implements Spawner {
 
     private UUID placedBy = null;
 
-    private boolean hasSpawned = false;
-
     private CreatureSpawner creatureSpawner;
 
     //Holds the different types of spawners contained by this creatureSpawner.
@@ -74,7 +72,6 @@ public class ESpawner implements Spawner {
 
     @Override
     public void spawn() {
-        hasSpawned = true;
         EpicSpawnersPlugin instance = EpicSpawnersPlugin.getInstance();
         long lastSpawn = 1001;
         if (lastSpawns.containsKey(location)) {
@@ -1201,11 +1198,6 @@ public class ESpawner implements Spawner {
             Debugger.runReport(e);
         }
         return 999999;
-    }
-
-    @Override
-    public boolean hasSpawned() {
-        return hasSpawned;
     }
 
     @Override
