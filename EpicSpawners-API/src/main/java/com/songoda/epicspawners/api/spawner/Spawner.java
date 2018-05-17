@@ -194,6 +194,12 @@ public interface Spawner {
     int updateDelay(); // Updates delay of the spawner
 
     /**
+     * Returns true if this spawner has spawned this instance.
+     *
+     * @return true if has spawned, false otherwise
+     */
+    boolean hasSpawned();
+    /**
      * You can use this method to force a spawn of this spawner.
      */
     void spawn();

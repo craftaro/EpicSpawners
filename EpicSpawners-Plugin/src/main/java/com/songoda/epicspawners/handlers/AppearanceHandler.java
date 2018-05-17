@@ -39,6 +39,9 @@ public class AppearanceHandler {
             if (!EpicSpawnersPlugin.getInstance().getConfig().getBoolean("Main.OmniSpawners Enabled")) return;
 
             for (Spawner spawner : instance.getSpawnerManager().getSpawnersInWorld().values()) {
+                if (!spawner.hasSpawned()) {
+                    spawner.spawn();
+                }
                 if (spawner.getSpawnerStacks().size() == 1) {
                     updateDisplayItem(spawner, spawner.getFirstStack().getSpawnerData());
                     continue;

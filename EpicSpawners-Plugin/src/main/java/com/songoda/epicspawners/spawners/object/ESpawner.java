@@ -52,6 +52,8 @@ public class ESpawner implements Spawner {
 
     private UUID placedBy = null;
 
+    private boolean hasSpawned = false;
+
     private CreatureSpawner creatureSpawner;
 
     //Holds the different types of spawners contained by this creatureSpawner.
@@ -69,10 +71,10 @@ public class ESpawner implements Spawner {
     //ToDo: Use this for all spawner things (Like items, commands and what not) instead of the old shit
     //ToDO: There is a weird error that is triggered when a spawner is not found in the config.
     private Map<Location, Date> lastSpawns = new HashMap<>();
-    private Map<Location, Integer> timer = new HashMap<>();
 
     @Override
     public void spawn() {
+        hasSpawned = true;
         EpicSpawnersPlugin instance = EpicSpawnersPlugin.getInstance();
         long lastSpawn = 1001;
         if (lastSpawns.containsKey(location)) {
@@ -85,22 +87,6 @@ public class ESpawner implements Spawner {
         if (location.getBlock().isBlockPowered() && instance.getConfig().getBoolean("Main.Redstone Power Deactivates Spawners"))
             return;
 
-        if (getCreatureSpawner().getSpawnedType() == EntityType.DROPPED_ITEM) {
-            int amt = 0;
-            if (!timer.containsKey(location)) {
-                timer.put(location, amt);
-                return;
-            } else {
-                amt = timer.get(location);
-                amt = amt + 30;
-                timer.put(location, amt);
-            }
-            int delay = updateDelay();
-            if (amt < delay) {
-                return;
-            }
-            timer.remove(location);
-        }
 
         if (getFirstStack().getSpawnerData() == null) return;
 
@@ -108,6 +94,7 @@ public class ESpawner implements Spawner {
         float y = (float) (0 + (Math.random() * .8));
         float z = (float) (0 + (Math.random() * .8));
 
+        Bukkit.broadcastMessage("hi3");
         Location particleLocation = location.clone();
         particleLocation.add(.5, .5, .5);
         //ToDo: Only currently works for the first spawner type in the stack. this is not how it should work.
@@ -1215,6 +1202,11 @@ public class ESpawner implements Spawner {
             Debugger.runReport(e);
         }
         return 999999;
+    }
+
+    @Override
+    public boolean hasSpawned() {
+        return hasSpawned;
     }
 
     @Override

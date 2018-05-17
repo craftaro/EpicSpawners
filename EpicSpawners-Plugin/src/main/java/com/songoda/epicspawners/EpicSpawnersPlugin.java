@@ -30,6 +30,7 @@ import com.songoda.epicspawners.spawners.object.ESpawner;
 import com.songoda.epicspawners.spawners.object.ESpawnerData;
 import com.songoda.epicspawners.spawners.object.ESpawnerManager;
 import com.songoda.epicspawners.spawners.object.ESpawnerStack;
+import com.songoda.epicspawners.tasks.SpawnerCustomSpawnTask;
 import com.songoda.epicspawners.tasks.SpawnerParticleTask;
 import com.songoda.epicspawners.utils.ESpawnerDataBuilder;
 import com.songoda.epicspawners.utils.Heads;
@@ -94,6 +95,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
     private AppearanceHandler appearanceHandler;
 
     private SpawnerParticleTask particleTask;
+    private SpawnerCustomSpawnTask spawnerCustomSpawnTask;
     private SpawnerEditor spawnerEditor;
     private Heads heads;
     private Shop shop;
@@ -104,6 +106,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
     public void onDisable() {
         this.saveToFile();
         this.particleTask.cancel();
+        this.spawnerCustomSpawnTask.cancel();
         //this.spawnerRegistry.clearRegistry();
         console.sendMessage(TextComponent.formatText("&a============================="));
         console.sendMessage(TextComponent.formatText("&7EpicSpawners " + this.getDescription().getVersion() + " by &5Songoda <3!"));
@@ -366,6 +369,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         console.sendMessage(TextComponent.formatText("&a============================="));
 
         this.particleTask = SpawnerParticleTask.startTask(this);
+        this.spawnerCustomSpawnTask = SpawnerCustomSpawnTask.startTask(this);
     }
 
     private void saveToFile() {

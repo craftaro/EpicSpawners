@@ -2,10 +2,8 @@ package com.songoda.epicspawners.utils;
 
 import com.songoda.arconix.plugin.Arconix;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
-import net.minecraft.server.v1_7_R4.AxisAlignedBB;
 import org.bukkit.*;
 import org.bukkit.block.CreatureSpawner;
-import org.bukkit.craftbukkit.v1_7_R4.CraftWorld;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -208,6 +206,8 @@ public class Methods {
         if (!EpicSpawnersPlugin.getInstance().isServerVersion(ServerVersion.V1_7)) {
             return location.getWorld().getNearbyEntities(location, x, y, z);
         }
+        return null;
+        /*
 
         if (location == null) return Collections.emptyList();
 
@@ -220,7 +220,9 @@ public class Methods {
             bukkitEntityList.add(((net.minecraft.server.v1_7_R4.Entity) entity).getBukkitEntity());
         }
 
-        return bukkitEntityList;
+        */
+
+        //return bukkitEntityList;
     }
 
     public static int countEntitiesAroundLoation(Location location) {
