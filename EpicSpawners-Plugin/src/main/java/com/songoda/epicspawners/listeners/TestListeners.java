@@ -40,7 +40,7 @@ public class TestListeners implements Listener {
         try {
             Player p = e.getPlayer();
             if (p.isOp() && EpicSpawnersPlugin.getInstance().getConfig().getBoolean("Main.Display Helpful Tips For Operators")) {
-                if (EpicSpawnersPlugin.getInstance().getServer().getPluginManager().getPlugin("Factions") != null && EpicSpawnersPlugin.getInstance().getHookHandler().FactionsHook == null) {
+                if (EpicSpawnersPlugin.getInstance().getServer().getPluginManager().getPlugin("Factions") != null && EpicSpawnersPlugin.getInstance().getServer().getPluginManager().getPlugin("FactionsFramework") == null) {
                     p.sendMessage("");
                     p.sendMessage(TextComponent.formatText(EpicSpawnersPlugin.getInstance().references.getPrefix() + "&7Here's the deal,"));
                     p.sendMessage(TextComponent.formatText("&7I cannot give you full support for Factions out of the box."));

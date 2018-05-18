@@ -505,8 +505,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
     private void setupSpawners() {
         for (final EntityType value : EntityType.values()) {
             if (value.isSpawnable() && value.isAlive() &&
-                    !value.toString().toLowerCase().contains("armor") &&
-                    !value.toString().toLowerCase().contains("giant"))
+                    !value.toString().toLowerCase().contains("armor"))
                 processDefault(value.name());
         }
         processDefault("Omni");
