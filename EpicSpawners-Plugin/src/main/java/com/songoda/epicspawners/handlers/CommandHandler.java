@@ -191,31 +191,31 @@ public class CommandHandler implements CommandExecutor {
                                             boostObject = Bukkit.getOfflinePlayer(arr[1]).getUniqueId().toString();
                                         }
                                     } else if (arr[0].equalsIgnoreCase("f") || arr[0].equalsIgnoreCase("faction")) {
-                                        if (instance.getHookHandler().getFactionId(arr[1]) == null) {
+                                        if (instance.getFactionId(arr[1]) == null) {
                                             sender.sendMessage(TextComponent.formatText(instance.references.getPrefix() + "&cThat faction does not exist..."));
                                             return true;
                                         } else {
                                             start += "The faction";
                                             boostType = BoostType.FACTION;
-                                            boostObject = instance.getHookHandler().getFactionId(arr[1]);
+                                            boostObject = instance.getFactionId(arr[1]);
                                         }
                                     } else if (arr[0].equalsIgnoreCase("t") || arr[0].equalsIgnoreCase("town")) {
-                                        if (instance.getHookHandler().getTownId(arr[1]) == null) {
+                                        if (instance.getTownId(arr[1]) == null) {
                                             sender.sendMessage(TextComponent.formatText(instance.references.getPrefix() + "&cThat town does not exist..."));
                                             return true;
                                         } else {
                                             start += "The town";
                                             boostType = BoostType.TOWN;
-                                            boostObject = instance.getHookHandler().getTownId(arr[1]);
+                                            boostObject = instance.getTownId(arr[1]);
                                         }
                                     } else if (arr[0].equalsIgnoreCase("i") || arr[0].equalsIgnoreCase("island")) {
-                                        if (instance.getHookHandler().getIslandId(arr[1]) == null) {
+                                        if (instance.getIslandId(arr[1]) == null) {
                                             sender.sendMessage(TextComponent.formatText(instance.references.getPrefix() + "&cThat island does not exist..."));
                                             return true;
                                         } else {
                                             start += "The island";
                                             boostType = BoostType.ISLAND;
-                                            boostObject = instance.getHookHandler().getIslandId(arr[1]);
+                                            boostObject = instance.getIslandId(arr[1]);
                                         }
                                     }
 
