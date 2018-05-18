@@ -46,15 +46,6 @@ public class SpawnerDropEvent extends SpawnerEvent implements Cancellable {
     }
 
     /**
-     * Get the player involved in this event
-     * 
-     * @return the involved player
-     */
-    public Player getPlayer() {
-        return player;
-    }
-
-    /**
      * Get the stack size of the broken spawner
      * 
      * @return the spawner stack size
