@@ -12,25 +12,28 @@ import org.bukkit.event.HandlerList;
 /**
  * Called when a spawner has been dropped in the world after being broken
  */
-public class SpawnerDropEvent extends Event implements Cancellable {
-    private static final HandlerList HANDLERS = new HandlerList();
+public class SpawnerDropEvent extends SpawnerEvent implements Cancellable {
 
-    private Location location;
-    private Player player;
-    private int stackSize;
-    private EntityType type;
+    private static final HandlerList HANDLERS = new HandlerList();
 
     private boolean canceled = false;
 
-    public SpawnerDropEvent(Location location, Player player) {
-        Spawner spawner = EpicSpawnersAPI.getSpawnerManager().getSpawnerFromWorld(location);
-        this.location = location;
-        this.player = player;
+    @Deprecated private final Location location;
+    @Deprecated private final int stackSize;
+    @Deprecated private final EntityType type;
+
+    public SpawnerDropEvent(Player player, Spawner spawner) {
+        super(player, spawner);
+
+        // Legacy
+        this.location = spawner.getLocation();
         this.stackSize = spawner.getSpawnerDataCount();
-        if (spawner.getCreatureSpawner() == null)
-            this.type = null;
-        else
-            this.type = spawner.getCreatureSpawner().getSpawnedType();
+        this.type = (spawner.getCreatureSpawner() != null) ? spawner.getCreatureSpawner().getSpawnedType() : null;
+    }
+
+    @Deprecated
+    public SpawnerDropEvent(Location location, Player player) {
+        this(player, EpicSpawnersAPI.getSpawnerManager().getSpawnerFromWorld(location));
     }
 
     /**

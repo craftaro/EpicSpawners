@@ -117,7 +117,7 @@ public class InteractListeners implements Listener {
                 e.setCancelled(true);
                 return;
             }
-            SpawnerChangeEvent event = new SpawnerChangeEvent(b.getLocation(), p, blockType, itemType);
+            SpawnerChangeEvent event = new SpawnerChangeEvent(p, spawner, blockType, itemType);
             Bukkit.getPluginManager().callEvent(event);
             if (event.isCancelled()) {
                 return;

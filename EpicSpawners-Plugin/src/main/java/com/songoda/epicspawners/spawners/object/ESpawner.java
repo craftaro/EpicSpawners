@@ -1,6 +1,5 @@
 package com.songoda.epicspawners.spawners.object;
 
-
 import com.songoda.arconix.api.methods.formatting.TextComponent;
 import com.songoda.arconix.api.methods.formatting.TimeComponent;
 import com.songoda.arconix.plugin.Arconix;
@@ -8,13 +7,13 @@ import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.api.CostType;
 import com.songoda.epicspawners.api.EpicSpawners;
 import com.songoda.epicspawners.api.EpicSpawnersAPI;
+import com.songoda.epicspawners.api.events.SpawnerChangeEvent;
 import com.songoda.epicspawners.api.spawner.Spawner;
 import com.songoda.epicspawners.api.spawner.SpawnerData;
 import com.songoda.epicspawners.api.spawner.SpawnerStack;
 import com.songoda.epicspawners.boost.BoostData;
 import com.songoda.epicspawners.boost.BoostType;
 import com.songoda.epicspawners.player.MenuType;
-import com.songoda.epicspawners.api.events.SpawnerChangeEvent;
 import com.songoda.epicspawners.utils.Debugger;
 import com.songoda.epicspawners.utils.Methods;
 import com.songoda.epicspawners.utils.ServerVersion;
@@ -685,7 +684,7 @@ public class ESpawner implements Spawner {
                 p.sendMessage(EpicSpawnersPlugin.getInstance().references.getPrefix() + EpicSpawnersPlugin.getInstance().getLocale().getMessage("event.upgrade.cannotafford"));
                 return;
             }
-            SpawnerChangeEvent event = new SpawnerChangeEvent(location, p, getFirstStack().getSpawnerData().getIdentifyingName(), type);
+            SpawnerChangeEvent event = new SpawnerChangeEvent(p, this, getFirstStack().getSpawnerData(), spawnerData);
             Bukkit.getPluginManager().callEvent(event);
             if (event.isCancelled()) {
                 return;
@@ -978,7 +977,7 @@ public class ESpawner implements Spawner {
             else
                 player.sendMessage(EpicSpawnersPlugin.getInstance().getLocale().getMessage("event.upgrade.successmaxed", currentStackSize));
 
-            SpawnerChangeEvent event = new SpawnerChangeEvent(location, player, currentStackSize, oldStackSize);
+            SpawnerChangeEvent event = new SpawnerChangeEvent(player, this, currentStackSize, oldStackSize);
             Bukkit.getPluginManager().callEvent(event);
             if (event.isCancelled()) return;
 
