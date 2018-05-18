@@ -6,6 +6,11 @@ import org.bukkit.entity.EntityType;
 import java.util.Collection;
 import java.util.Map;
 
+/**
+ * A manager class to handle {@link Spawner} instances and registered {@link SpawnerData}.
+ * Any spawners in the world will be handled in here alongside any created or cached
+ * spawner data types
+ */
 public interface SpawnerManager {
 
     /**

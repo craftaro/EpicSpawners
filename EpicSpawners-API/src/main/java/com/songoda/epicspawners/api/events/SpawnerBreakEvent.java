@@ -9,7 +9,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
- * Created by songoda on 4/22/2017.
+ * Called when a spawner has been broken in the world
  */
 public class SpawnerBreakEvent extends Event implements Cancellable {
     private static final HandlerList HANDLERS = new HandlerList();
@@ -32,18 +32,38 @@ public class SpawnerBreakEvent extends Event implements Cancellable {
             this.type = spawner.getIdentifyingName();
     }
 
+    /**
+     * Get the location at which the spawner was broken
+     * 
+     * @return the spawner location
+     */
     public Location getLocation() {
         return location;
     }
 
+    /**
+     * Get the player involved in this event
+     * 
+     * @return the involved player
+     */
     public Player getPlayer() {
         return player;
     }
 
+    /**
+     * Get the amount of SpawnerData objects held by the broken spawner
+     * 
+     * @return the spawner multiplier
+     */
     public int getMulti() {
         return multi;
     }
 
+    /**
+     * Get the type of spawner data
+     * 
+     * @return the spawner data
+     */
     public String getType() {
         return type;
     }

@@ -10,6 +10,10 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
+/**
+ * Represents a {@link Spawner}'s data. All data held within this object is kept in memory
+ * when breaking and placing spawner objects in the world
+ */
 public interface SpawnerData {
 
     /**

@@ -9,7 +9,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
- * Created by songoda on 4/22/2017.
+ * Called when a spawner has been placed in the world
  */
 public class SpawnerPlaceEvent extends Event implements Cancellable {
     private static final HandlerList HANDLERS = new HandlerList();
@@ -50,14 +50,29 @@ public class SpawnerPlaceEvent extends Event implements Cancellable {
         this.type = spawner.getDisplayName();
     }
 
+    /**
+     * Get the location at which the spawner was placed
+     * 
+     * @return the placement location
+     */
     public Location getLocation() {
         return location;
     }
 
+    /**
+     * Get the player involved in this event
+     * 
+     * @return the involved player
+     */
     public Player getPlayer() {
         return player;
     }
 
+    /**
+     * Get the {@link Spawner} to be placed
+     * 
+     * @return the placed spawner
+     */
     public Spawner getSpawner() {
         return spawner;
     }

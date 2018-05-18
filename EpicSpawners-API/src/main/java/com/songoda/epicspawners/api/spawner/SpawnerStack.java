@@ -1,5 +1,8 @@
 package com.songoda.epicspawners.api.spawner;
 
+/**
+ * Represents a stack of spawners
+ */
 public interface SpawnerStack {
 
     /**

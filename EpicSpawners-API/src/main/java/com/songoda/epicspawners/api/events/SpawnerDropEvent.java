@@ -10,7 +10,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
- * Created by songoda on 4/22/2017.
+ * Called when a spawner has been dropped in the world after being broken
  */
 public class SpawnerDropEvent extends Event implements Cancellable {
     private static final HandlerList HANDLERS = new HandlerList();
@@ -33,18 +33,38 @@ public class SpawnerDropEvent extends Event implements Cancellable {
             this.type = spawner.getCreatureSpawner().getSpawnedType();
     }
 
+    /**
+     * Get the location at which the spawner was broken
+     * 
+     * @return the spawner location
+     */
     public Location getLocation() {
         return location;
     }
 
+    /**
+     * Get the player involved in this event
+     * 
+     * @return the involved player
+     */
     public Player getPlayer() {
         return player;
     }
 
+    /**
+     * Get the stack size of the broken spawner
+     * 
+     * @return the spawner stack size
+     */
     public int getStackSize() {
         return stackSize;
     }
 
+    /**
+     * Get the type of entity that was spawned from the broken spawner
+     * 
+     * @return the spawner type
+     */
     public EntityType getType() {
         return type;
     }
@@ -68,6 +88,13 @@ public class SpawnerDropEvent extends Event implements Cancellable {
         this.canceled = canceled;
     }
 
+    /**
+     * Get the multiplier of the broken spawner
+     * 
+     * @return the stack size
+     * 
+     * @deprecated see {@link #getStackSize()}
+     */
     @Deprecated
     public int getMultiSize() {
         return stackSize;

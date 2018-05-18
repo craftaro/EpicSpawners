@@ -7,8 +7,18 @@ import com.songoda.epicspawners.api.utils.SpawnerDataBuilder;
 
 import org.bukkit.inventory.ItemStack;
 
+/**
+ * The main API class for the EpicSpawners plugin. This class will provide various
+ * methods to access important features of the plugin's API. For static method
+ * wrappers to all methods in this interface, see the {@link EpicSpawnersAPI} class
+ */
 public interface EpicSpawners {
 
+    /**
+     * Get an instance of the {@link SpawnerManager}
+     * 
+     * @return the spawner manager
+     */
     SpawnerManager getSpawnerManager();
 
     /**

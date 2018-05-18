@@ -11,7 +11,8 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
- * Created by songoda on 4/22/2017.
+ * Called when a spawner has been changed. This includes changes such as stack size as
+ * well as a change in {@link SpawnerData}
  */
 public class SpawnerChangeEvent extends Event implements Cancellable {
     private static final HandlerList HANDLERS = new HandlerList();
@@ -49,18 +50,40 @@ public class SpawnerChangeEvent extends Event implements Cancellable {
         this.oldSpawnerData = spawnerManager.getSpawnerData(oldType);
     }
 
+    /**
+     * Get the spawner block involved with this event
+     * 
+     * @return the spawner block
+     */
     public Block getSpawner() {
         return location.getBlock();
     }
 
+    /**
+     * Get the new stack size of the spawner after this event completes. If this
+     * event is not to do with stack size changing, this method simply returns 0
+     * 
+     * @return the new stack size
+     */
     public int getStackSize() {
         return stackSize;
     }
 
+    /**
+     * Get the old stack size of the spawner from before this event was called. If
+     * this event is not to do with stack size changing, this method simply returns 0
+     * 
+     * @return the old stack size
+     */
     public int getOldStackSize() {
         return oldStackSize;
     }
 
+    /**
+     * Get the player involved in this event
+     * 
+     * @return the involved player
+     */
     public Player getPlayer() {
         return player;
     }
@@ -84,29 +107,69 @@ public class SpawnerChangeEvent extends Event implements Cancellable {
         this.canceled = canceled;
     }
 
+    /**
+     * Get the new spawner data after this event completes. If this event is not
+     * to do with the spawner data changing, this method simply returns null
+     * 
+     * @return the new spawner data
+     */
     public SpawnerData getSpawnerData() {
         return spawnerData;
     }
 
+    /**
+     * Get the old spawner data from before this event was called. If this event
+     * is not to do with the spawner data changing, this method simply returns null
+     * 
+     * @return the old spawner data
+     */
     public SpawnerData getOldSpawnerData() {
         return oldSpawnerData;
     }
 
+    /**
+     * The spawner's multiplier (stack size)
+     * 
+     * @return the stack size
+     * 
+     * @deprecated see {@link #getStackSize()}
+     */
     @Deprecated
     public int getCurrentMulti() {
         return stackSize;
     }
 
+    /**
+     * Get the old stack size
+     * 
+     * @return the old stack size
+     * 
+     * @deprecated see {@link #getOldStackSize()}
+     */
     @Deprecated
     public int getOldMulti() {
         return oldStackSize;
     }
 
+    /**
+     * Get the new spawner data type
+     * 
+     * @return the spawner type
+     * 
+     * @deprecated see {@link #getSpawnerData()}
+     */
     @Deprecated
     public String getType() {
         return spawnerData.getIdentifyingName();
     }
 
+    /**
+     * Get the old spawner data type
+     * 
+     * @return the spawner type
+     * 
+     * @deprecated see {@link #getOldSpawnerData()}
+     */
     @Deprecated
     public String getOldType() {
         return oldSpawnerData.getIdentifyingName();
