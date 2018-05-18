@@ -1,16 +1,17 @@
 package com.songoda.epicspawners.spawners.object.option;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Random;
+
 import com.songoda.epicspawners.api.spawner.Spawner;
 import com.songoda.epicspawners.api.spawner.SpawnerData;
 import com.songoda.epicspawners.api.spawner.SpawnerStack;
 import com.songoda.epicspawners.spawners.object.SpawnOptionType;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Random;
 
 public class SpawnOptionBlock implements SpawnOption {
 

@@ -115,7 +115,7 @@ public class InventoryListeners implements Listener {
                     } else if (event.getCurrentItem().getItemMeta().getDisplayName().equals(instance.getLocale().getMessage("general.nametag.next"))) {
                         spawner.convertOverview(player, page + 1);
                     } else if (clicked.getType() == Material.SKULL_ITEM || clicked.getType() == Material.MOB_SPAWNER) {
-                        spawner.convert(Methods.getIType(clicked), player);
+                        spawner.convert(instance.getSpawnerDataFromItem(clicked), player);
                     }
                 }
             } else if (instance.getPlayerActionManager().getPlayerAction(player).getInMenu() == MenuType.OVERVIEW) {
@@ -153,7 +153,7 @@ public class InventoryListeners implements Listener {
                         }
                     }
                 }
-            } else if (instance.getSpawnerEditor().getEditingData(player).getMenu() != EditingMenu.NOTIN) {
+            } else if (instance.getSpawnerEditor().getEditingData(player).getMenu() != EditingMenu.NOT_IN) {
 
                 if (event.getRawSlot() >= event.getView().getTopInventory().getSize()) return;
 
@@ -327,7 +327,7 @@ public class InventoryListeners implements Listener {
                         }
                         event.setCancelled(true);
                     }
-                } else if (editingMenu != EditingMenu.SPAWNERSELECTOR) {
+                } else if (editingMenu != EditingMenu.SPAWNER_SELECTOR) {
                     if (event.getInventory().equals(player.getOpenInventory().getTopInventory())) {
                         if ((event.getSlot() < 10 || event.getSlot() > 25) || event.getSlot() == 17 || event.getSlot() == 18) {
                             event.setCancelled(true);
@@ -386,7 +386,7 @@ public class InventoryListeners implements Listener {
                     } else if (event.getCurrentItem().getItemMeta().getDisplayName().equals(instance.getLocale().getMessage("general.nametag.next"))) {
                         instance.getShop().open(player, page + 1);
                     } else if (event.getSlot() >= 10 && event.getSlot() <= (event.getInventory().getSize() - 10) && event.getSlot() != 17 && event.getSlot() != (event.getInventory().getSize() - 18))
-                        instance.getShop().show(instance.getSpawnerManager().getSpawnerData(Methods.getTypeFromString(Methods.getIType(clicked))), 1, player);
+                        instance.getShop().show(instance.getSpawnerDataFromItem(clicked), 1, player);
                 }
             }
             if (event.getSlot() != 64537) {
@@ -412,7 +412,7 @@ public class InventoryListeners implements Listener {
         try {
             final Player p = (Player) event.getPlayer();
 
-            instance.getPlayerActionManager().getPlayerAction(p).setInMenu(MenuType.NOTIN);
+            instance.getPlayerActionManager().getPlayerAction(p).setInMenu(MenuType.NOT_IN);
 
             if (instance.inShow.containsKey(p)) {
                 instance.inShow.remove(p);
@@ -421,7 +421,7 @@ public class InventoryListeners implements Listener {
                         p.closeInventory();
                 }, 1L);
             }
-            instance.getSpawnerEditor().getEditingData(p).setMenu(EditingMenu.NOTIN);
+            instance.getSpawnerEditor().getEditingData(p).setMenu(EditingMenu.NOT_IN);
         } catch (Exception e) {
             Debugger.runReport(e);
         }

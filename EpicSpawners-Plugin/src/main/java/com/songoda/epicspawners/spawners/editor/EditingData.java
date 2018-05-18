@@ -2,15 +2,8 @@ package com.songoda.epicspawners.spawners.editor;
 
 public class EditingData {
 
-    // This is the menu that the use is currently
-    // located in.
-    private EditingMenu menu = EditingMenu.NOTIN;
-
-    // This is the slot in which the spawner
-    // that is currently being edited is located.
-    private int spawnerSlot = 0;
-
-    private int newId = -1;
+    private EditingMenu menu = EditingMenu.NOT_IN;
+    private int spawnerSlot = 0, newId = -1;
 
     public EditingMenu getMenu() {
         return menu;
@@ -35,4 +28,5 @@ public class EditingData {
     public void setNewId(int newId) {
         this.newId = newId;
     }
+
 }

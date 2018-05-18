@@ -9,6 +9,7 @@ import com.songoda.epicspawners.api.particles.ParticleType;
 import com.songoda.epicspawners.api.spawner.Spawner;
 import com.songoda.epicspawners.api.spawner.SpawnerData;
 import com.songoda.epicspawners.api.spawner.SpawnerManager;
+
 import org.bukkit.Location;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -31,12 +32,12 @@ public class SpawnerParticleTask extends BukkitRunnable {
 
     @Override
     public void run() {
-        for (Spawner spawner : manager.getSpawnersInWorld().values()) {
-            if (spawner == null || spawner.getLocation() == null || spawner.getSpawnerDataCount() == 0 || spawner.getFirstStack().getSpawnerData() == null)
-                continue;
+        for (Spawner spawner : manager.getSpawners()) {
+            if (spawner == null || spawner.getLocation() == null || spawner.getSpawnerDataCount() == 0 || spawner.getFirstStack().getSpawnerData() == null) continue;
 
             SpawnerData data = spawner.getFirstStack().getSpawnerData();
             if (data == null) return;
+
             ParticleEffect effect = data.getParticleEffect();
             if (effect == null || effect == ParticleEffect.NONE || (data.isParticleEffectBoostedOnly() && spawner.getBoost() == 0)) continue;
 

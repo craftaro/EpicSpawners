@@ -1,11 +1,31 @@
 package com.songoda.epicspawners.spawners.object;
 
+import java.time.Instant;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Random;
+import java.util.Set;
+import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+
 import com.songoda.arconix.api.methods.formatting.TextComponent;
 import com.songoda.arconix.api.methods.formatting.TimeComponent;
 import com.songoda.arconix.plugin.Arconix;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.api.CostType;
-import com.songoda.epicspawners.api.EpicSpawners;
 import com.songoda.epicspawners.api.EpicSpawnersAPI;
 import com.songoda.epicspawners.api.events.SpawnerChangeEvent;
 import com.songoda.epicspawners.api.spawner.Spawner;
@@ -19,10 +39,15 @@ import com.songoda.epicspawners.utils.Methods;
 import com.songoda.epicspawners.utils.ServerVersion;
 
 import net.milkbowl.vault.economy.Economy;
-import org.bukkit.*;
+
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.Sound;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -30,13 +55,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
-
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import java.time.Instant;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @SuppressWarnings("Duplicates")
 public class ESpawner implements Spawner {
@@ -666,36 +684,36 @@ public class ESpawner implements Spawner {
     }
 
 
-    public void convert(String type, Player p) {
+    public void convert(SpawnerData type, Player p) {
         try {
             EpicSpawnersPlugin instance = EpicSpawnersPlugin.getInstance();
-            if (EpicSpawnersPlugin.getInstance().getServer().getPluginManager().getPlugin("Vault") == null) {
+            if (!Bukkit.getPluginManager().isPluginEnabled("Vault")) {
                 p.sendMessage("Vault is not installed.");
                 return;
             }
+
             RegisteredServiceProvider<net.milkbowl.vault.economy.Economy> rsp = EpicSpawnersPlugin.getInstance().getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
             net.milkbowl.vault.economy.Economy econ = rsp.getProvider();
 
-            SpawnerData spawnerData = instance.getSpawnerManager().getSpawnerData(type);
-
-            double price = spawnerData.getConvertPrice() * getSpawnerDataCount();
+            double price = type.getConvertPrice() * getSpawnerDataCount();
 
             if (!(econ.has(p, price) || p.isOp())) {
                 p.sendMessage(EpicSpawnersPlugin.getInstance().references.getPrefix() + EpicSpawnersPlugin.getInstance().getLocale().getMessage("event.upgrade.cannotafford"));
                 return;
             }
-            SpawnerChangeEvent event = new SpawnerChangeEvent(p, this, getFirstStack().getSpawnerData(), spawnerData);
+            SpawnerChangeEvent event = new SpawnerChangeEvent(p, this, getFirstStack().getSpawnerData(), type);
             Bukkit.getPluginManager().callEvent(event);
             if (event.isCancelled()) {
                 return;
             }
-            spawnerStacks.getFirst().setSpawnerData(instance.getSpawnerManager().getSpawnerData(type));
+
+            this.spawnerStacks.getFirst().setSpawnerData(type);
             try {
-                getCreatureSpawner().setSpawnedType(EntityType.valueOf(type.toUpperCase()));
+                this.creatureSpawner.setSpawnedType(EntityType.valueOf(type.getIdentifyingName().toUpperCase()));
             } catch (Exception e) {
-                getCreatureSpawner().setSpawnedType(EntityType.DROPPED_ITEM);
+                this.creatureSpawner.setSpawnedType(EntityType.DROPPED_ITEM);
             }
-            getCreatureSpawner().update();
+            this.creatureSpawner.update();
 
             p.sendMessage(EpicSpawnersPlugin.getInstance().references.getPrefix() + EpicSpawnersPlugin.getInstance().getLocale().getMessage("event.convert.success"));
 
@@ -918,13 +936,11 @@ public class ESpawner implements Spawner {
 
     @Override
     public boolean preStack(Player player, ItemStack itemStack) {
-        String type = Methods.getIType(itemStack);
-        int amt = Methods.getIMulti(itemStack);
-
-        return stack(player, type, amt);
+        return stack(player, EpicSpawnersAPI.getSpawnerDataFromItem(itemStack), EpicSpawnersAPI.getStackSizeFromItem(itemStack));
     }
 
     @Override
+    @Deprecated
     public boolean stack(Player player, String type, int amt) {
         return stack(player, EpicSpawnersAPI.getSpawnerManager().getSpawnerData(type), amt);
     }
@@ -1089,13 +1105,13 @@ public class ESpawner implements Spawner {
                     if (!placedBy.toString().equals(boostData.getData())) continue;
                     break;
                 case FACTION:
-                    if (!instance.getHookHandler().isInFaction((String) boostData.getData(), location)) continue;
+                    if (!instance.isInFaction((String) boostData.getData(), location)) continue;
                     break;
                 case ISLAND:
-                    if (!instance.getHookHandler().isInIsland((String) boostData.getData(), location)) continue;
+                    if (!instance.isInIsland((String) boostData.getData(), location)) continue;
                     break;
                 case TOWN:
-                    if (!instance.getHookHandler().isInTown((String) boostData.getData(), location)) continue;
+                    if (!instance.isInTown((String) boostData.getData(), location)) continue;
                     break;
             }
             amountToBoost += boostData.getAmtBoosted();
@@ -1125,13 +1141,13 @@ public class ESpawner implements Spawner {
                     if (!placedBy.toString().equals(boostData.getData())) continue;
                     break;
                 case FACTION:
-                    if (!instance.getHookHandler().isInFaction((String) boostData.getData(), location)) continue;
+                    if (!instance.isInFaction((String) boostData.getData(), location)) continue;
                     break;
                 case ISLAND:
-                    if (!instance.getHookHandler().isInIsland((String) boostData.getData(), location)) continue;
+                    if (!instance.isInIsland((String) boostData.getData(), location)) continue;
                     break;
                 case TOWN:
-                    if (!instance.getHookHandler().isInTown((String) boostData.getData(), location)) continue;
+                    if (!instance.isInTown((String) boostData.getData(), location)) continue;
                     break;
             }
 

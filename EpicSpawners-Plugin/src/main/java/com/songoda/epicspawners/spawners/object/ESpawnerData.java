@@ -1,5 +1,12 @@
 package com.songoda.epicspawners.spawners.object;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+
 import com.google.common.base.Preconditions;
 import com.songoda.epicspawners.api.EpicSpawnersAPI;
 import com.songoda.epicspawners.api.particles.ParticleDensity;
@@ -8,12 +15,15 @@ import com.songoda.epicspawners.api.particles.ParticleType;
 import com.songoda.epicspawners.api.spawner.Spawner;
 import com.songoda.epicspawners.api.spawner.SpawnerData;
 import com.songoda.epicspawners.api.spawner.SpawnerStack;
-import com.songoda.epicspawners.spawners.object.option.*;
+import com.songoda.epicspawners.spawners.object.option.SpawnOption;
+import com.songoda.epicspawners.spawners.object.option.SpawnOptionBlock;
+import com.songoda.epicspawners.spawners.object.option.SpawnOptionCommand;
+import com.songoda.epicspawners.spawners.object.option.SpawnOptionEntity;
+import com.songoda.epicspawners.spawners.object.option.SpawnOptionItem;
+
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.*;
 
 /*
  * This class is used to store actual spawner types.

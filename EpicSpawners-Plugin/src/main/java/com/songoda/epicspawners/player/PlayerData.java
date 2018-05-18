@@ -1,17 +1,22 @@
 package com.songoda.epicspawners.player;
 
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
+
 import com.songoda.epicspawners.spawners.object.ESpawner;
+
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.EntityType;
-
-import java.util.*;
 
 public class PlayerData {
 
     private final UUID playerUUID;
     private ESpawner lastSpawner = null;
-    private MenuType inMenu = MenuType.NOTIN;
+    private MenuType inMenu = MenuType.NOT_IN;
     private Map<EntityType, Integer> entityKills = new EnumMap<>(EntityType.class);
     private int infoPage = 1;
 

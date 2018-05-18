@@ -1,5 +1,12 @@
 package com.songoda.epicspawners.spawners.editor;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
 import com.songoda.arconix.api.methods.formatting.TextComponent;
 import com.songoda.arconix.plugin.Arconix;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
@@ -19,16 +26,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import java.util.*;
-
 /**
  * Created by songo on 9/3/2017.
  */
 public class SpawnerEditor {
 
-    private EpicSpawnersPlugin instance;
-
-    private Map<UUID, EditingData> userEditingData = new HashMap<>();
+    private final EpicSpawnersPlugin instance;
+    private final Map<UUID, EditingData> userEditingData = new HashMap<>();
 
     public SpawnerEditor(EpicSpawnersPlugin instance) {
         this.instance = instance;
@@ -36,40 +40,40 @@ public class SpawnerEditor {
 
     public void openSpawnerSelector(Player player, int page) {
         try {
-            userEditingData.remove(player.getUniqueId());
+            this.userEditingData.remove(player.getUniqueId());
             EditingData editingData = new EditingData();
-            editingData.setMenu(EditingMenu.SPAWNERSELECTOR);
-            EpicSpawnersPlugin.getInstance().newSpawnerName = "";
-            EpicSpawnersPlugin.getInstance().page.put(player, page);
+            editingData.setMenu(EditingMenu.SPAWNER_SELECTOR);
+            this.instance.newSpawnerName = "";
+            this.instance.page.put(player, page);
 
             List<SpawnerData> entities = new ArrayList<>();
 
-            int num = 0;
-            int show = 0;
+            int num = 0, show = 0;
             int start = (page - 1) * 33;
 
-            for (SpawnerData spawnerData : EpicSpawnersPlugin.getInstance().getSpawnerManager().getRegisteredSpawnerData().values()) {
+            for (SpawnerData spawnerData : instance.getSpawnerManager().getAllSpawnerData()) {
                 if (num >= start && !spawnerData.getIdentifyingName().equalsIgnoreCase("omni")) {
                     if (show <= 33) {
                         entities.add(spawnerData);
                         show++;
                     }
                 }
+
                 num++;
             }
 
             int max = (int) Math.ceil((double) num / (double) 32);
             int amt = entities.size();
-            Inventory i = Bukkit.createInventory(null, 54, TextComponent.formatTitle("Spawner Editor"));
+            Inventory inventory = Bukkit.createInventory(null, 54, TextComponent.formatTitle("Spawner Editor"));
             int max2 = 54;
             if (amt <= 7) {
-                i = Bukkit.createInventory(null, 27, TextComponent.formatTitle("Spawner Editor"));
+                inventory = Bukkit.createInventory(null, 27, TextComponent.formatTitle("Spawner Editor"));
                 max2 = 27;
             } else if (amt <= 15) {
-                i = Bukkit.createInventory(null, 36, TextComponent.formatTitle("Spawner Editor"));
+                inventory = Bukkit.createInventory(null, 36, TextComponent.formatTitle("Spawner Editor"));
                 max2 = 36;
             } else if (amt <= 25) {
-                i = Bukkit.createInventory(null, 45, TextComponent.formatTitle("Spawner Editor"));
+                inventory = Bukkit.createInventory(null, 45, TextComponent.formatTitle("Spawner Editor"));
                 max2 = 45;
             }
 
@@ -77,7 +81,7 @@ public class SpawnerEditor {
             ItemMeta exitMeta = exit.getItemMeta();
             exitMeta.setDisplayName(instance.getLocale().getMessage("general.nametag.exit"));
             exit.setItemMeta(exitMeta);
-            i.setItem(8, exit);
+            inventory.setItem(8, exit);
 
             ItemStack head = new ItemStack(Material.SKULL_ITEM, 1, (byte) 3);
             ItemStack skull = head;
@@ -102,81 +106,81 @@ public class SpawnerEditor {
             skull2Meta.setDisplayName(instance.getLocale().getMessage("general.nametag.back"));
             skull2.setItemMeta(skull2Meta);
 
-            final int max22 = max2;
+            int max22 = max2;
             int place = 10;
             int dis = start + 1;
             if (start != 0) dis--;
-            for (SpawnerData spawnerData : entities) {
-                if (place == 17)
-                    place++;
-                if (place == (max22 - 18))
-                    place++;
-                ItemStack it = new ItemStack(Material.SKULL_ITEM, 1, (byte) 3);
 
+            for (SpawnerData spawnerData : entities) {
+                if (place == 17 || place == (max22 - 18)) place++;
+
+                ItemStack it = new ItemStack(Material.SKULL_ITEM, 1, (byte) 3);
                 ItemStack item = EpicSpawnersPlugin.getInstance().getHeads().addTexture(it, spawnerData);
                 if (spawnerData.getDisplayItem() != null) {
                     item.setType(spawnerData.getDisplayItem());
                 }
 
-                ItemMeta itemmeta = item.getItemMeta();
+                ItemMeta meta = item.getItemMeta();
+
                 String name = Methods.compileName(spawnerData.getIdentifyingName(), 1, false);
-                ArrayList<String> lore = new ArrayList<>();
+                List<String> lore = new ArrayList<>();
                 lore.add(TextComponent.formatText("&7Click to &a&lEdit&7."));
                 lore.add(TextComponent.convertToInvisibleString(Integer.toString(dis)));
-                itemmeta.setLore(lore);
-                itemmeta.setDisplayName(name);
-                item.setItemMeta(itemmeta);
-                i.setItem(place, item);
+                meta.setLore(lore);
+                meta.setDisplayName(name);
+                item.setItemMeta(meta);
+
+                inventory.setItem(place, item);
+
                 place++;
                 dis++;
             }
 
-            num = 0;
-            while (num != 8) {
-                i.setItem(num, Methods.getGlass());
-                num++;
-            }
-            num = max22 - 9;
-            while (num != max22) {
-                i.setItem(num, Methods.getGlass());
-                num++;
+            ItemStack glass = Methods.getGlass();
+            for (int i = 0; i < 8; i++) {
+                inventory.setItem(i, glass);
             }
 
-            i.setItem(0, Methods.getBackgroundGlass(true));
-            i.setItem(1, Methods.getBackgroundGlass(true));
-            i.setItem(9, Methods.getBackgroundGlass(true));
+            for (int i = max22 - 9; i < max22; i++) {
+                inventory.setItem(i, glass);
+            }
 
-            i.setItem(7, Methods.getBackgroundGlass(true));
-            i.setItem(17, Methods.getBackgroundGlass(true));
+            ItemStack glassType2 = Methods.getBackgroundGlass(true), glassType3 = Methods.getBackgroundGlass(false);
+            inventory.setItem(0, glassType2);
+            inventory.setItem(1, glassType2);
+            inventory.setItem(9, glassType2);
 
-            i.setItem(max22 - 18, Methods.getBackgroundGlass(true));
-            i.setItem(max22 - 9, Methods.getBackgroundGlass(true));
-            i.setItem(max22 - 8, Methods.getBackgroundGlass(true));
+            inventory.setItem(7, glassType2);
+            inventory.setItem(17, glassType2);
 
-            i.setItem(max22 - 10, Methods.getBackgroundGlass(true));
-            i.setItem(max22 - 2, Methods.getBackgroundGlass(true));
-            i.setItem(max22 - 1, Methods.getBackgroundGlass(true));
+            inventory.setItem(max22 - 18, glassType2);
+            inventory.setItem(max22 - 9, glassType2);
+            inventory.setItem(max22 - 8, glassType2);
 
-            i.setItem(2, Methods.getBackgroundGlass(false));
-            i.setItem(6, Methods.getBackgroundGlass(false));
-            i.setItem(max22 - 7, Methods.getBackgroundGlass(false));
-            i.setItem(max22 - 3, Methods.getBackgroundGlass(false));
+            inventory.setItem(max22 - 10, glassType2);
+            inventory.setItem(max22 - 2, glassType2);
+            inventory.setItem(max22 - 1, glassType2);
+
+            inventory.setItem(2, glassType3);
+            inventory.setItem(6, glassType3);
+            inventory.setItem(max22 - 7, glassType3);
+            inventory.setItem(max22 - 3, glassType3);
 
             if (page != 1) {
-                i.setItem(max22 - 8, skull2);
+                inventory.setItem(max22 - 8, skull2);
             }
 
             if (page != max) {
-                i.setItem(max22 - 2, skull);
+                inventory.setItem(max22 - 2, skull);
             }
 
             ItemStack newSpawner = new ItemStack(Material.PAPER, 1);
             ItemMeta newSpawnerMeta = newSpawner.getItemMeta();
             newSpawnerMeta.setDisplayName(TextComponent.formatText("&9&lNew Spawner"));
             newSpawner.setItemMeta(newSpawnerMeta);
-            i.setItem(max22 - 4, newSpawner);
+            inventory.setItem(max22 - 4, newSpawner);
 
-            player.openInventory(i);
+            player.openInventory(inventory);
         } catch (Exception e) {
             Debugger.runReport(e);
         }

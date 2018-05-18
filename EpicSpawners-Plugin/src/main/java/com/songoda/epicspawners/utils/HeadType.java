@@ -4,6 +4,7 @@ package com.songoda.epicspawners.utils;
  * Created by songoda on 3/20/2017.
  */
 public enum HeadType {
+
     BAT("http://textures.minecraft.net/texture/978862a56119227aaad4b7c246c8b2256db985db0951f55b0a1f8616c191f"),
     BLAZE("http://textures.minecraft.net/texture/b78ef2e4cf2c41a2d14bfde9caff10219f5b1bf5b35a49eb51c6467882cb5f0"),
     CHICKEN("http://textures.minecraft.net/texture/1638469a599ceef7207537603248a9ab11ff591fd378bea4735b346a7fae893"),
@@ -56,13 +57,14 @@ public enum HeadType {
     ZOMBIE_VILLAGER("http://textures.minecraft.net/texture/1a207a2b872fe8dd22ce5e27fc3263622621635efd8ea6abbdf317f99c5843"),
     DROPPED_ITEM("http://textures.minecraft.net/texture/452fe4ce1f1d53a12ed443eeba7297e81da581e0c7a39954d9d7bba7de59c46");
 
-    private String url;
+    private final String url;
 
-    HeadType(String url) {
+    private HeadType(String url) {
         this.url = url;
     }
 
     public String getUrl() {
         return url;
     }
+
 }

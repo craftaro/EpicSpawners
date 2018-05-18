@@ -107,15 +107,10 @@ public class BlockListeners implements Listener {
             }
 
             Location location = event.getBlock().getLocation();
-
             ESpawner spawner = new ESpawner(event.getBlock().getLocation());
 
-            String spawnerName = Methods.getIType(event.getItemInHand());
-
-            int spawnerStackSize = Methods.getIMulti(event.getItemInHand());
-
-            SpawnerData spawnerData = instance.getSpawnerManager().getSpawnerData(Methods.getTypeFromString(spawnerName).toLowerCase());
-
+            SpawnerData spawnerData = instance.getSpawnerDataFromItem(event.getItemInHand());
+            int spawnerStackSize = instance.getStackSizeFromItem(event.getItemInHand());
             spawner.addSpawnerStack(new ESpawnerStack(spawnerData, spawnerStackSize));
 
             if (doForceCombine(event.getPlayer(), spawner)) {
@@ -135,7 +130,7 @@ public class BlockListeners implements Listener {
                 event.getPlayer().sendMessage(instance.getLocale().getMessage("event.block.place", Methods.compileName(spawnerData.getIdentifyingName(), spawner.getFirstStack().getStackSize(), false)));
 
             try {
-                spawner.getCreatureSpawner().setSpawnedType(EntityType.valueOf(spawnerName.toUpperCase().replace(" ", "_")));
+                spawner.getCreatureSpawner().setSpawnedType(EntityType.valueOf(spawnerData.getIdentifyingName().toUpperCase().replace(" ", "_")));
             } catch (Exception ex) {
                 spawner.getCreatureSpawner().setSpawnedType(EntityType.valueOf("PIG"));
             }

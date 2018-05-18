@@ -5,15 +5,14 @@ import java.util.Set;
 
 public class BoostManager {
 
-    // These are the boosted spawners currently in the game world.
     private final Set<BoostData> boostedSpawners = new HashSet<>();
 
     public void addBoostToSpawner(BoostData data) {
-        boostedSpawners.add(data);
+        this.boostedSpawners.add(data);
     }
 
     public void removeBoostFromSpawner(BoostData data) {
-        boostedSpawners.remove(data);
+        this.boostedSpawners.remove(data);
     }
 
     public Set<BoostData> getBoosts() {

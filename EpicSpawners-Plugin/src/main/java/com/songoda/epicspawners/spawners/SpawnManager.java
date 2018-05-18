@@ -13,6 +13,7 @@ public class SpawnManager {
     }
 
     public void addUnnaturalSpawn(UUID uuid) {
-        unnaturalSpawns.add(uuid);
+        this.unnaturalSpawns.add(uuid);
     }
+
 }
