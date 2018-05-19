@@ -2,7 +2,6 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>EpicSpawners-Plugin</artifactId>
-    <packaging>jar</packaging>
 
     <parent>
         <groupId>com.songoda</groupId>
@@ -16,11 +15,24 @@
     </properties>
 
     <build>
+        <directory>../target</directory> <!-- Build it one level up, because it is the one we care about -->
+        <finalName>EpicSpawners</finalName>
+        <!-- Define filtering for the inclusion of plugin.yml, so we can utilize the pom.xml version in it -->
+        <resources>
+            <resource>
+                <targetPath>.</targetPath>
+                <filtering>true</filtering>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>plugin.yml</include>
+                </includes>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.1.1</version>
+                <version>1.4</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -29,6 +41,17 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                        </manifest>
+                    </archive>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -47,6 +70,7 @@
             <artifactId>EpicSpawners-API</artifactId>
             <version>5.1</version>
             <scope>compile</scope>
+            <type>jar</type>
         </dependency>
     </dependencies>
 </project>
