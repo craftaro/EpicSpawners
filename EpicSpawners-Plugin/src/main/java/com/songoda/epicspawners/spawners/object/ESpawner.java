@@ -1224,12 +1224,13 @@ public class ESpawner implements Spawner {
 
     @Override
     public String getDisplayName() {
-        String name = spawnerStacks.getFirst().getSpawnerData().getDisplayName();
+        if (spawnerStacks.size() == 0) {
+            return Methods.getTypeFromString(creatureSpawner.getSpawnedType().name());
+        } else if (spawnerStacks.size() > 1) {
+            return EpicSpawnersPlugin.getInstance().getSpawnerManager().getSpawnerData("omni").getDisplayName();
+        }
 
-        if (spawnerStacks.size() > 1)
-            name = EpicSpawnersPlugin.getInstance().getSpawnerManager().getSpawnerData("omni").getDisplayName();
-
-        return name;
+        return spawnerStacks.getFirst().getSpawnerData().getDisplayName();
     }
 
     @Override
