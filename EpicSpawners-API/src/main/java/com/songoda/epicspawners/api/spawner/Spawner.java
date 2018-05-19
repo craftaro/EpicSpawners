@@ -21,7 +21,7 @@ public interface Spawner {
 
     /**
      * Get identifying name of this spawner.
-     * <p>
+     *
      * <p>Will return Omni if multiple {@link SpawnerData}
      * objects are present.</p>
      *
@@ -32,7 +32,7 @@ public interface Spawner {
     /**
      * Get custom display name as to be used when
      * displaying this spawner.
-     * <p>
+     * 
      * <p>Will return Omni if multiple {@link SpawnerData}
      * objects are present.</p>
      *

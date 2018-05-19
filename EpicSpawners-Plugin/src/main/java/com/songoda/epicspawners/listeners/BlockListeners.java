@@ -1,6 +1,8 @@
 package com.songoda.epicspawners.listeners;
 
 import com.songoda.epicspawners.EpicSpawnersPlugin;
+import com.songoda.epicspawners.api.events.SpawnerBreakEvent;
+import com.songoda.epicspawners.api.events.SpawnerPlaceEvent;
 import com.songoda.epicspawners.api.spawner.Spawner;
 import com.songoda.epicspawners.api.spawner.SpawnerData;
 import com.songoda.epicspawners.spawners.object.ESpawner;
@@ -100,26 +102,34 @@ public class BlockListeners implements Listener {
         if (!event.isCancelled()) {
             if (event.getBlock().getType() != Material.MOB_SPAWNER) return;
 
-            doLiquidRepel(event.getBlock(), true);
-
-            if (instance.getBlacklistHandler().isBlacklisted(event.getPlayer(), true)) {
-                event.setCancelled(true);
-            }
-
             Location location = event.getBlock().getLocation();
             ESpawner spawner = new ESpawner(event.getBlock().getLocation());
+            
+            Player player = event.getPlayer();
+            
+            SpawnerPlaceEvent placeEvent = new SpawnerPlaceEvent(player, spawner);
+            Bukkit.getPluginManager().callEvent(placeEvent);
+            if (event.isCancelled()) {
+                return;
+            }
+            
+            doLiquidRepel(event.getBlock(), true);
+
+            if (instance.getBlacklistHandler().isBlacklisted(player, true)) {
+                event.setCancelled(true);
+            }
 
             SpawnerData spawnerData = instance.getSpawnerDataFromItem(event.getItemInHand());
             int spawnerStackSize = instance.getStackSizeFromItem(event.getItemInHand());
             spawner.addSpawnerStack(new ESpawnerStack(spawnerData, spawnerStackSize));
 
-            if (doForceCombine(event.getPlayer(), spawner)) {
+            if (doForceCombine(player, spawner)) {
                 event.setCancelled(true);
                 return;
             }
 
             if (spawnerData == null) {
-                event.getPlayer().sendMessage(instance.getLocale().getMessage("event.block.broken"));
+                player.sendMessage(instance.getLocale().getMessage("event.block.broken"));
                 event.setCancelled(true);
                 return;
             }
@@ -127,7 +137,7 @@ public class BlockListeners implements Listener {
             instance.getSpawnerManager().addSpawnerToWorld(location, spawner);
 
             if (instance.getConfig().getBoolean("Main.Alerts On Place And Break"))
-                event.getPlayer().sendMessage(instance.getLocale().getMessage("event.block.place", Methods.compileName(spawnerData.getIdentifyingName(), spawner.getFirstStack().getStackSize(), false)));
+                player.sendMessage(instance.getLocale().getMessage("event.block.place", Methods.compileName(spawnerData.getIdentifyingName(), spawner.getFirstStack().getStackSize(), false)));
 
             try {
                 spawner.getCreatureSpawner().setSpawnedType(EntityType.valueOf(spawnerData.getIdentifyingName().toUpperCase().replace(" ", "_")));
@@ -136,7 +146,7 @@ public class BlockListeners implements Listener {
             }
             spawner.getCreatureSpawner().update();
 
-            spawner.setPlacedBy(event.getPlayer());
+            spawner.setPlacedBy(player);
 
             instance.getHologramHandler().processChange(event.getBlock());
 
@@ -175,6 +185,12 @@ public class BlockListeners implements Listener {
             }
 
             Spawner spawner = instance.getSpawnerManager().getSpawnerFromWorld(location);
+
+            SpawnerBreakEvent breakEvent = new SpawnerBreakEvent(player, spawner);
+            Bukkit.getPluginManager().callEvent(breakEvent);
+            if (event.isCancelled()) {
+                return;
+            }
 
             int currentStackSize = spawner.getSpawnerDataCount();
 
