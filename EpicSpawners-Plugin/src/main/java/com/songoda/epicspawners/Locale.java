@@ -3,7 +3,6 @@ package com.songoda.epicspawners;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-import org.apache.commons.io.IOUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -284,7 +283,7 @@ public class Locale {
         }
 
         try (OutputStream outputStream = new FileOutputStream(destinationFile)) {
-            IOUtils.copy(plugin.getResource(fileName), outputStream);
+            copy(plugin.getResource(fileName), outputStream);
 
             fileName = fileName.substring(0, fileName.lastIndexOf('.'));
             String[] localeValues = fileName.split("_");
@@ -359,6 +358,19 @@ public class Locale {
         }
 
         return changed;
+    }
+    
+    private static void copy(InputStream input, OutputStream output) {
+        int n;
+        byte[] buffer = new byte[1024 * 4];
+        
+        try {
+            while ((n = input.read(buffer)) != -1) {
+                output.write(buffer, 0, n);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }
