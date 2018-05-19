@@ -104,6 +104,10 @@ public class BlockListeners implements Listener {
 
             Location location = event.getBlock().getLocation();
             ESpawner spawner = new ESpawner(event.getBlock().getLocation());
+
+            SpawnerData spawnerData = instance.getSpawnerDataFromItem(event.getItemInHand());
+            int spawnerStackSize = instance.getStackSizeFromItem(event.getItemInHand());
+            spawner.addSpawnerStack(new ESpawnerStack(spawnerData, spawnerStackSize));
             
             Player player = event.getPlayer();
             
@@ -118,10 +122,6 @@ public class BlockListeners implements Listener {
             if (instance.getBlacklistHandler().isBlacklisted(player, true)) {
                 event.setCancelled(true);
             }
-
-            SpawnerData spawnerData = instance.getSpawnerDataFromItem(event.getItemInHand());
-            int spawnerStackSize = instance.getStackSizeFromItem(event.getItemInHand());
-            spawner.addSpawnerStack(new ESpawnerStack(spawnerData, spawnerStackSize));
 
             if (doForceCombine(player, spawner)) {
                 event.setCancelled(true);
