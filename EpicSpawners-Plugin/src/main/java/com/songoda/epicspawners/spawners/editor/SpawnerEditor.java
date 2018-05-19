@@ -191,20 +191,20 @@ public class SpawnerEditor {
             EpicSpawnersPlugin instance = EpicSpawnersPlugin.getInstance();
 
             int csp = 1;
-            for (SpawnerData spawnerData : EpicSpawnersPlugin.getInstance().getSpawnerManager().getRegisteredSpawnerData().values()) {
+            for (SpawnerData spawnerData : instance.getSpawnerManager().getAllSpawnerData()) {
                 if (spawnerData.getIdentifyingName().toLowerCase().contains("custom"))
                     csp++;
             }
 
             String type = "Custom " + csp;
 
-            if (!EpicSpawnersPlugin.getInstance().newSpawnerName.equals(""))
+            if (!instance.newSpawnerName.equals(""))
                 type = EpicSpawnersPlugin.getInstance().newSpawnerName;
 
             if (id != 0)
                 type = getType(id).getIdentifyingName();
             else
-                EpicSpawnersPlugin.getInstance().newSpawnerName = type;
+                instance.newSpawnerName = type;
             String name;
 
             SpawnerData spawnerData;
@@ -259,7 +259,7 @@ public class SpawnerEditor {
 
             ItemStack head2 = new ItemStack(Material.SKULL_ITEM, 1, (byte) 3);
             ItemStack skull2 = head2;
-            boolean v1_7 = EpicSpawnersPlugin.getInstance().isServerVersion(ServerVersion.V1_7);
+            boolean v1_7 = instance.isServerVersion(ServerVersion.V1_7);
             if (!v1_7)
                 skull2 = Arconix.pl().getApi().getGUI().addTexture(head2, "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23");
             SkullMeta skull2Meta = (SkullMeta) skull2.getItemMeta();
@@ -273,7 +273,7 @@ public class SpawnerEditor {
 
             ItemStack it = new ItemStack(Material.SKULL_ITEM, 1, (byte) 3);
 
-            ItemStack item = EpicSpawnersPlugin.getInstance().getHeads().addTexture(it, spawnerData);
+            ItemStack item = instance.getHeads().addTexture(it, spawnerData);
             if (spawnerData.getDisplayItem() != null) {
                 item.setType(spawnerData.getDisplayItem());
             }

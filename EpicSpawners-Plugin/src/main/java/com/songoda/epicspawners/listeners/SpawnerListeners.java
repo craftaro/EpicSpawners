@@ -1,29 +1,20 @@
 package com.songoda.epicspawners.listeners;
 
-import com.songoda.arconix.plugin.Arconix;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.api.spawner.Spawner;
 import com.songoda.epicspawners.api.spawner.SpawnerData;
-import com.songoda.epicspawners.api.spawner.SpawnerStack;
-import com.songoda.epicspawners.spawners.object.ESpawnerData;
-import com.songoda.epicspawners.spawners.object.ESpawnerStack;
 import com.songoda.epicspawners.spawners.object.ESpawner;
+import com.songoda.epicspawners.spawners.object.ESpawnerStack;
 import com.songoda.epicspawners.utils.Debugger;
 import com.songoda.epicspawners.utils.ServerVersion;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.entity.SpawnerSpawnEvent;
-
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by songoda on 2/25/2017.

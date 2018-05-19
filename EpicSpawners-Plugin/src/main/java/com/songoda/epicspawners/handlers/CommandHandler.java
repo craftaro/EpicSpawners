@@ -34,7 +34,6 @@ import java.util.*;
 /**
  * Created by songoda on 2/24/2017.
  */
-@SuppressWarnings({"ConstantConditions", "Duplicates"})
 public class CommandHandler implements CommandExecutor {
 
     private EpicSpawnersPlugin instance;
@@ -194,29 +193,29 @@ public class CommandHandler implements CommandExecutor {
                                         if (instance.getFactionId(arr[1]) == null) {
                                             sender.sendMessage(TextComponent.formatText(instance.references.getPrefix() + "&cThat faction does not exist..."));
                                             return true;
-                                        } else {
-                                            start += "The faction";
-                                            boostType = BoostType.FACTION;
-                                            boostObject = instance.getFactionId(arr[1]);
                                         }
+
+                                        start += "The faction";
+                                        boostType = BoostType.FACTION;
+                                        boostObject = instance.getFactionId(arr[1]);
                                     } else if (arr[0].equalsIgnoreCase("t") || arr[0].equalsIgnoreCase("town")) {
                                         if (instance.getTownId(arr[1]) == null) {
                                             sender.sendMessage(TextComponent.formatText(instance.references.getPrefix() + "&cThat town does not exist..."));
                                             return true;
-                                        } else {
-                                            start += "The town";
-                                            boostType = BoostType.TOWN;
-                                            boostObject = instance.getTownId(arr[1]);
                                         }
+
+                                        start += "The town";
+                                        boostType = BoostType.TOWN;
+                                        boostObject = instance.getTownId(arr[1]);
                                     } else if (arr[0].equalsIgnoreCase("i") || arr[0].equalsIgnoreCase("island")) {
                                         if (instance.getIslandId(arr[1]) == null) {
                                             sender.sendMessage(TextComponent.formatText(instance.references.getPrefix() + "&cThat island does not exist..."));
                                             return true;
-                                        } else {
-                                            start += "The island";
-                                            boostType = BoostType.ISLAND;
-                                            boostObject = instance.getIslandId(arr[1]);
                                         }
+
+                                        start += "The island";
+                                        boostType = BoostType.ISLAND;
+                                        boostObject = instance.getIslandId(arr[1]);
                                     }
 
                                     if (boostType == null || boostObject == null) {
@@ -294,8 +293,7 @@ public class CommandHandler implements CommandExecutor {
                     } else {
                         Player p = (Player) sender;
                         Entity ent = null;
-                        if (Arconix.pl().getApi().getPlayer(p).getTarget() != null &&
-                                ent.getType() == EntityType.ITEM_FRAME) {
+                        if (Arconix.pl().getApi().getPlayer(p).getTarget() != null) {
                             ent = Arconix.pl().getApi().getPlayer(p).getTarget();
                         }
                         if (ent != null) {
@@ -330,7 +328,7 @@ public class CommandHandler implements CommandExecutor {
                     int multi = 1;
 
                     SpawnerData data = null;
-                    for (SpawnerData spawnerData : instance.getSpawnerManager().getRegisteredSpawnerData().values()) {
+                    for (SpawnerData spawnerData : instance.getSpawnerManager().getAllSpawnerData()) {
                         String input = args[2].toUpperCase().replace("_", "").replace(" ", "");
                         String compare = spawnerData.getIdentifyingName().toUpperCase().replace("_", "").replace(" ", "");
                         if (input.equals(compare))
@@ -341,7 +339,7 @@ public class CommandHandler implements CommandExecutor {
                         sender.sendMessage(instance.references.getPrefix() + TextComponent.formatText(instance.references.getPrefix() + "&7The entity type &6" + args[2] + " &7does not exist. Try one of these:"));
                         StringBuilder list = new StringBuilder();
 
-                        for (SpawnerData spawnerData : instance.getSpawnerManager().getRegisteredSpawnerData().values()) {
+                        for (SpawnerData spawnerData : instance.getSpawnerManager().getAllSpawnerData()) {
                             list.append(spawnerData.getIdentifyingName().toUpperCase().replace(" ", "_")).append("&7, &6");
                         }
                         sender.sendMessage(TextComponent.formatText("&6" + list));

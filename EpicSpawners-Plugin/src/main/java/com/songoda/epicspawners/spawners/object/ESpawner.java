@@ -56,11 +56,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
-@SuppressWarnings("Duplicates")
 public class ESpawner implements Spawner {
-    // This holds a placed creatureSpawner that exists in the game world.
 
-    // Location of this creatureSpawner.
     private Location location;
 
     private int spawnCount;
@@ -542,7 +539,7 @@ public class ESpawner implements Spawner {
             int num = 0;
             int show = 0;
             int start = (page - 1) * 32;
-            for (SpawnerData spawnerData : instance.getSpawnerManager().getRegisteredSpawnerData().values()) {
+            for (SpawnerData spawnerData : instance.getSpawnerManager().getAllSpawnerData()) {
                 if (spawnerData.getIdentifyingName().equalsIgnoreCase("omni")
                         || !spawnerData.isConvertible()
                         || !p.hasPermission("epicspawners.convert." + spawnerData.getIdentifyingName())) continue;

@@ -25,14 +25,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 
-/*
- * This class is used to store actual spawner types.
- * For an example this will contain all spawners
- * in the spawners yaml.
- *
- * This object will be held inside the SpawnerStack
- * class when used in the game world.
- */
 public class ESpawnerData implements SpawnerData {
 
     private final String name;
@@ -97,10 +89,6 @@ public class ESpawnerData implements SpawnerData {
             spawnOptions.add(new SpawnOptionCommand(commands));
     }
 
-    /**
-     * This method will trigger the spawn method(s)
-     * for this spawner type.
-     */
     public void spawn(Spawner spawner, SpawnerStack stack) {
         for (SpawnOption spawnOption : spawnOptions) {
             spawnOption.spawn(this, stack, spawner);

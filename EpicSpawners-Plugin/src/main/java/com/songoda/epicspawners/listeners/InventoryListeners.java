@@ -38,7 +38,6 @@ public class InventoryListeners implements Listener {
         this.instance = instance;
     }
 
-    @SuppressWarnings("SuspiciousMethodCalls")
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         try {
@@ -350,7 +349,7 @@ public class InventoryListeners implements Listener {
                 if (event.getSlot() == 8) {
                     player.closeInventory();
                 } else if (event.getCurrentItem().getItemMeta().getDisplayName().equals(TextComponent.formatText("&9&lNew Spawner"))) {
-                    instance.getSpawnerEditor().getEditingData(player).setNewId(instance.getSpawnerManager().getRegisteredSpawnerData().size() - 1);
+                    instance.getSpawnerEditor().getEditingData(player).setNewId(instance.getSpawnerManager().getAllSpawnerData().size() - 1);
                     instance.getSpawnerEditor().overview(player, 0);
                 } else if (event.getCurrentItem().getItemMeta().getDisplayName().equals(instance.getLocale().getMessage("general.nametag.back"))) {
                     if (page != 1) {

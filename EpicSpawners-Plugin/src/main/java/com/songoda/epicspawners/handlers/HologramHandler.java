@@ -20,7 +20,6 @@ import java.util.Collection;
 /**
  * Created by songoda on 3/12/2017.
  */
-@SuppressWarnings("ConstantConditions")
 public class HologramHandler {
 
     private final EpicSpawnersPlugin instance;
@@ -33,9 +32,12 @@ public class HologramHandler {
     public void loadHolograms() {
         if (instance.getConfig().getBoolean("Main.Spawners Have Holograms")) {
 
-            if (instance.isServerVersion(ServerVersion.V1_7) || instance.getSpawnerManager().getSpawnersInWorld().size() == 0) return;
+            if (instance.isServerVersion(ServerVersion.V1_7)) return;
 
-            for (Spawner spawner : instance.getSpawnerManager().getSpawnersInWorld().values()) {
+            Collection<Spawner> spawners = instance.getSpawnerManager().getSpawners();
+            if (spawners.size() == 0) return;
+
+            for (Spawner spawner : spawners) {
                 if (spawner.getLocation().getWorld() == null) continue;
                 updateHologram(spawner);
             }

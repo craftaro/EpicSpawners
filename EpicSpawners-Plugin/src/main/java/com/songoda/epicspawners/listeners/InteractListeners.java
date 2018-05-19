@@ -1,7 +1,6 @@
 package com.songoda.epicspawners.listeners;
 
 import com.songoda.arconix.api.methods.serialize.Serialize;
-import com.songoda.arconix.plugin.Arconix;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.api.spawner.Spawner;
 import com.songoda.epicspawners.api.events.SpawnerChangeEvent;
@@ -40,7 +39,6 @@ public class InteractListeners implements Listener {
 
     }
 
-    @SuppressWarnings("ConstantConditions")
     @EventHandler(ignoreCancelled = true)
     public void PlayerInteractEventEgg(PlayerInteractEvent e) {
         try {

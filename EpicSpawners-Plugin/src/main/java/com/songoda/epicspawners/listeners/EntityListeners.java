@@ -6,7 +6,6 @@ import com.songoda.epicspawners.api.spawner.Spawner;
 import com.songoda.epicspawners.api.spawner.SpawnerData;
 import com.songoda.epicspawners.api.spawner.SpawnerStack;
 import com.songoda.epicspawners.utils.Debugger;
-import com.songoda.epicspawners.utils.Methods;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;

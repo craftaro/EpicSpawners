@@ -21,7 +21,6 @@ import java.util.List;
 /**
  * Created by songo on 5/17/2017.
  */
-@SuppressWarnings("ConstantConditions")
 public class AppearanceHandler {
 
     public AppearanceHandler() {
@@ -38,7 +37,7 @@ public class AppearanceHandler {
 
             if (!EpicSpawnersPlugin.getInstance().getConfig().getBoolean("Main.OmniSpawners Enabled")) return;
 
-            for (Spawner spawner : instance.getSpawnerManager().getSpawnersInWorld().values()) {
+            for (Spawner spawner : instance.getSpawnerManager().getSpawners()) {
                 if (spawner.getSpawnerStacks().size() == 1) {
                     updateDisplayItem(spawner, spawner.getFirstStack().getSpawnerData());
                     continue;

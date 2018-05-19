@@ -51,6 +51,7 @@ public class ESpawnerManager implements SpawnerManager {
     }
 
     @Override
+    @Deprecated
     public Map<String, SpawnerData> getRegisteredSpawnerData() {
         return Collections.unmodifiableMap(spawners);
     }
@@ -86,6 +87,7 @@ public class ESpawnerManager implements SpawnerManager {
     }
 
     @Override
+    @Deprecated
     public Map<Location, Spawner> getSpawnersInWorld() {
         return Collections.unmodifiableMap(spawnersInWorld);
     }

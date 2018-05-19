@@ -78,7 +78,7 @@ public class BlockListeners implements Listener {
     public boolean doForceCombine(Player player, ESpawner placedSpawner) {
         if (instance.getConfig().getInt("Main.Force Combine Radius") == 0) return false;
 
-        for (Spawner spawner : instance.getSpawnerManager().getSpawnersInWorld().values()) {
+        for (Spawner spawner : instance.getSpawnerManager().getSpawners()) {
             if (spawner.getLocation().getWorld() == null
                     || spawner.getLocation().getWorld() != placedSpawner.getLocation().getWorld()
                     || spawner.getLocation() == placedSpawner.getLocation()
@@ -89,7 +89,7 @@ public class BlockListeners implements Listener {
 
             if (instance.getConfig().getBoolean("Main.Deny Place On Force Combine"))
                 player.sendMessage(instance.getLocale().getMessage("event.block.forcedeny"));
-            else if (spawner.stack(player, placedSpawner.getIdentifyingName(), placedSpawner.getSpawnerDataCount()))
+            else if (spawner.stack(player, placedSpawner.getFirstStack().getSpawnerData(), placedSpawner.getSpawnerDataCount()))
                 player.sendMessage(instance.getLocale().getMessage("event.block.mergedistance"));
             return true;
         }
@@ -214,20 +214,19 @@ public class BlockListeners implements Listener {
                     Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(instance, () -> ((ESpawnerManager)instance.getSpawnerManager()).removeCooldown(spawner), 300L);
                     event.setCancelled(true);
                     return;
-                } else {
-                    ((ESpawnerManager)instance.getSpawnerManager()).removeCooldown(spawner);
-                    //ToDO: Do this somewhere else.
-                    double cost = spawner.getFirstStack().getSpawnerData().getPickupCost();
-                    RegisteredServiceProvider<Economy> rsp = instance.getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
-                    net.milkbowl.vault.economy.Economy econ = rsp.getProvider();
-                    if (econ.has(player, cost)) {
-                        econ.withdrawPlayer(player, cost);
-                    } else {
-                        player.sendMessage(instance.getLocale().getMessage("event.block.cannotbreak"));
-                        event.setCancelled(true);
-                        return;
-                    }
+                }
 
+                ((ESpawnerManager)instance.getSpawnerManager()).removeCooldown(spawner);
+                //ToDO: Do this somewhere else.
+                double cost = spawner.getFirstStack().getSpawnerData().getPickupCost();
+                RegisteredServiceProvider<Economy> rsp = instance.getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
+                net.milkbowl.vault.economy.Economy econ = rsp.getProvider();
+                if (econ.has(player, cost)) {
+                    econ.withdrawPlayer(player, cost);
+                } else {
+                    player.sendMessage(instance.getLocale().getMessage("event.block.cannotbreak"));
+                    event.setCancelled(true);
+                    return;
                 }
             }
 
