@@ -20,6 +20,7 @@ import com.songoda.epicspawners.utils.Debugger;
 import com.songoda.epicspawners.utils.Methods;
 import com.songoda.epicspawners.utils.ServerVersion;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -125,11 +126,12 @@ public class SpawnOptionEntity implements SpawnOption {
                 double z = location.getZ() + testZ * 3;
 
                 spot = new Location(location.getWorld(), x, y, z);
-                if (canSpawn(type, spot))
+                if (canSpawn(data, spot))
                     in = true;
 
                 amt++;
             }
+
             if (in) {
                 float x = (float) (0 + (Math.random() * 1));
                 float y = (float) (0 + (Math.random() * 2));
@@ -160,22 +162,20 @@ public class SpawnOptionEntity implements SpawnOption {
         }
     }
 
-    public boolean canSpawn(EntityType type, Location location) {
+    public boolean canSpawn(SpawnerData data, Location location) {
         boolean canSpawn = true;
         try {
-            String spawnBlocks = instance.spawnerFile.getConfig().getString("Entities." + instance.getSpawnerManager().getSpawnerData(type).getIdentifyingName() + ".Spawn-Block");
+            List<Material> spawnBlocks = Arrays.asList(data.getSpawnBlocks());
 
-            List<String> blocks = Arrays.asList(spawnBlocks.split("\\s*,\\s*"));
-
-            if (!Methods.isAir(location.getBlock().getType()) && (!isWater(location.getBlock().getType()) && !blocks.contains("WATER"))) {
+            if (!Methods.isAir(location.getBlock().getType()) && (!isWater(location.getBlock().getType()) && !spawnBlocks.contains("WATER"))) {
                 canSpawn = false;
             }
 
             boolean canSpawnUnder = false;
             if (canSpawn) {
-                for (String block : blocks) {
+                for (Material material : spawnBlocks) {
                     Location loc = location.clone().subtract(0, 1, 0);
-                    if (loc.getBlock().getType().toString().equalsIgnoreCase(block) || isWater(loc.getBlock().getType()) && blocks.contains("WATER")) {
+                    if (loc.getBlock().getType().toString().equalsIgnoreCase(material.name()) || isWater(loc.getBlock().getType()) && spawnBlocks.contains("WATER")) {
                         canSpawnUnder = true;
                     }
                 }

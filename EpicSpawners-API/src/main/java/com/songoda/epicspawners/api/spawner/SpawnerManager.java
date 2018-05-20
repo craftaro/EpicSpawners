@@ -38,7 +38,7 @@ public interface SpawnerManager {
      *                    spawner data
      * @param spawnerData the object for your spawner
      *                    data
-     * 
+     *
      * @see #addSpawnerData(SpawnerData)
      */
     void addSpawnerData(String name, SpawnerData spawnerData);
