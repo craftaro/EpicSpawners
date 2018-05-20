@@ -371,7 +371,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         console.sendMessage(TextComponent.formatText("&a============================="));
 
         // Register default hooks
-        this.registerIfEnabled("ASkyblock", HookASkyBlock::new);
+        this.registerIfEnabled("ASkyBlock", HookASkyBlock::new);
         this.registerIfEnabled("Factions", HookFactions::new);
         this.registerIfEnabled("GriefPrevention", HookGriefPrevention::new);
         this.registerIfEnabled("Kingdoms", HookKingdoms::new);
