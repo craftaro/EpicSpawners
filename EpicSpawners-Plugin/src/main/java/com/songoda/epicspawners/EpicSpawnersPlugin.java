@@ -329,6 +329,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
                 PlayerData playerData = playerActionManager.getPlayerAction(UUID.fromString(key));
 
                 Map<EntityType, Integer> entityKills = new HashMap<>();
+                if (!dataConfig.contains("data.players." + key + ".EntityKills")) continue;
                 for (String key2 : dataConfig.getConfigurationSection("data.players." + key + ".EntityKills").getKeys(false)) {
                     EntityType entityType = EntityType.valueOf(key2);
                     int amt = dataConfig.getInt("data.players." + key + ".EntityKills." + key2);
