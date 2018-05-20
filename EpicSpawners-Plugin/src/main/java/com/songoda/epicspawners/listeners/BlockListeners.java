@@ -171,6 +171,7 @@ public class BlockListeners implements Listener {
 
             if (instance.getBlacklistHandler().isBlacklisted(event.getPlayer(), true)) {
                 event.setCancelled(true);
+                return;
             }
 
             event.setCancelled(true);
@@ -188,7 +189,7 @@ public class BlockListeners implements Listener {
 
             SpawnerBreakEvent breakEvent = new SpawnerBreakEvent(player, spawner);
             Bukkit.getPluginManager().callEvent(breakEvent);
-            if (event.isCancelled()) {
+            if (breakEvent.isCancelled()) {
                 return;
             }
 

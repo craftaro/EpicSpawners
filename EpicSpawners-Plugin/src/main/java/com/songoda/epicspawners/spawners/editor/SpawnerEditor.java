@@ -384,7 +384,7 @@ public class SpawnerEditor {
     public SpawnerData getType(int id) {
         SpawnerData type = EpicSpawnersPlugin.getInstance().getSpawnerManager().getSpawnerData("pig");
         try {
-            if (id > 33) id++;
+            if (id >= 33) id++;
             int num = 1;
             for (SpawnerData spawnerData : EpicSpawnersPlugin.getInstance().getSpawnerManager().getRegisteredSpawnerData().values()) {
                 if (spawnerData.getIdentifyingName().toLowerCase().equals("omni")) continue;
@@ -514,7 +514,6 @@ public class SpawnerEditor {
                     i.setItem(num, new ItemStack(spawnerData.getBlocks().get(spot)));
                 } else if (spawnerData.getEntities().size() >= spot + 1 && editingMenu == EditingMenu.ENTITY && spawnerData.getEntities().get(spot) != EntityType.GIANT) {
                     ItemStack it = new ItemStack(Material.SKULL_ITEM, 1, (byte) 3);
-                    player.sendMessage(spot + ":" + spawnerData.getEntities().get(spot).toString());
                     ItemStack item = EpicSpawnersPlugin.getInstance().getHeads().addTexture(it,
                             instance.getSpawnerManager().getSpawnerData(spawnerData.getEntities().get(spot)));
                     ItemMeta meta = item.getItemMeta();
