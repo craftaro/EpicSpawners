@@ -371,15 +371,15 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         console.sendMessage(TextComponent.formatText("&a============================="));
 
         // Register default hooks
-        this.registerIfEnabled("ASkyBlock", HookASkyBlock::new);
-        this.registerIfEnabled("Factions", HookFactions::new);
-        this.registerIfEnabled("GriefPrevention", HookGriefPrevention::new);
-        this.registerIfEnabled("Kingdoms", HookKingdoms::new);
-        this.registerIfEnabled("PlotSquared", HookPlotSquared::new);
-        this.registerIfEnabled("RedProtect", HookRedProtect::new);
-        this.registerIfEnabled("Towny", HookTowny::new);
-        this.registerIfEnabled("USkyBlock", HookUSkyBlock::new);
-        this.registerIfEnabled("WorldGuard", HookWorldGuard::new);
+        if (Bukkit.getPluginManager().isPluginEnabled("ASkyBlock")) this.register(HookASkyBlock::new);
+        if (Bukkit.getPluginManager().isPluginEnabled("Factions")) this.register(HookFactions::new);
+        if (Bukkit.getPluginManager().isPluginEnabled("GriefPrevention")) this.register(HookGriefPrevention::new);
+        if (Bukkit.getPluginManager().isPluginEnabled("Kingdoms")) this.register(HookKingdoms::new);
+        if (Bukkit.getPluginManager().isPluginEnabled("PlotSquared")) this.register(HookPlotSquared::new);
+        if (Bukkit.getPluginManager().isPluginEnabled("RedProtect")) this.register(HookRedProtect::new);
+        if (Bukkit.getPluginManager().isPluginEnabled("Towny")) this.register(HookTowny::new);
+        if (Bukkit.getPluginManager().isPluginEnabled("USkyBlock")) this.register(HookUSkyBlock::new);
+        if (Bukkit.getPluginManager().isPluginEnabled("WorldGuard")) this.register(HookWorldGuard::new);
 
         this.particleTask = SpawnerParticleTask.startTask(this);
         this.spawnerCustomSpawnTask = SpawnerCustomSpawnTask.startTask(this);
@@ -507,8 +507,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         this.spawnerFile.saveConfig();
     }
 
-    private void registerIfEnabled(String pluginName, Supplier<ProtectionPluginHook> hookSupplier) {
-        if (!Bukkit.getPluginManager().isPluginEnabled(pluginName)) return;
+    private void register(Supplier<ProtectionPluginHook> hookSupplier) {
         this.registerProtectionHook(hookSupplier.get());
     }
 
