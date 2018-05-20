@@ -1246,6 +1246,7 @@ public class ESpawner implements Spawner {
 
     @Override
     public OfflinePlayer getPlacedBy() {
+        if (placedBy == null) return null;
         return Bukkit.getOfflinePlayer(placedBy);
     }
 
