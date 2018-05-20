@@ -54,21 +54,24 @@ public class SettingsManager implements Listener {
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         ItemStack clickedItem = event.getCurrentItem();
-        if (event.getInventory() == event.getWhoClicked().getOpenInventory().getTopInventory()
+
+        if (event.getInventory() != event.getWhoClicked().getOpenInventory().getTopInventory()
                 || clickedItem == null || !clickedItem.hasItemMeta()
-                || clickedItem.getType() == Material.STAINED_GLASS_PANE
                 || !clickedItem.getItemMeta().hasDisplayName()) {
             return;
         }
 
         if (event.getInventory().getTitle().equals(pluginName + " Settings Manager")) {
             event.setCancelled(true);
+            if (clickedItem.getType() == Material.STAINED_GLASS_PANE) return;
 
             String type = ChatColor.stripColor(clickedItem.getItemMeta().getDisplayName());
             this.cat.put((Player) event.getWhoClicked(), type);
             this.openEditor((Player) event.getWhoClicked());
         } else if (event.getInventory().getTitle().equals(pluginName + " Settings Editor")) {
             event.setCancelled(true);
+            if (clickedItem.getType() == Material.STAINED_GLASS_PANE) return;
+
             Player player = (Player) event.getWhoClicked();
 
             String key = cat.get(player) + "." + ChatColor.stripColor(clickedItem.getItemMeta().getDisplayName());

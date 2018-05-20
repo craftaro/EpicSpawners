@@ -21,6 +21,7 @@ public final class ESpawnerDataBuilder implements SpawnerDataBuilder {
 
     public ESpawnerDataBuilder(String identifier) {
         this.spawnerData = new ESpawnerData(identifier);
+        spawnerData.reloadSpawnMethods();
     }
 
     @Override

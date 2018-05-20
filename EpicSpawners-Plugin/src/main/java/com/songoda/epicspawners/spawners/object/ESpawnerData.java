@@ -21,6 +21,7 @@ import com.songoda.epicspawners.spawners.object.option.SpawnOptionCommand;
 import com.songoda.epicspawners.spawners.object.option.SpawnOptionEntity;
 import com.songoda.epicspawners.spawners.object.option.SpawnOptionItem;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
@@ -126,8 +127,8 @@ public class ESpawnerData implements SpawnerData {
     }
 
     @Override
-    public Material[] getSpawnBlocks() { //ToDO: Why isnt this used?
-        return (Material[]) spawnBlocks.toArray();
+    public Material[] getSpawnBlocks() {
+        return spawnBlocks.toArray(new Material[spawnBlocks.size()]);
     }
 
     public void setSpawnBlocks(String[] spawnBlock) {
@@ -140,7 +141,8 @@ public class ESpawnerData implements SpawnerData {
 
     @Override
     public List<Material> getSpawnBlocksList() {
-        return spawnBlocks;
+        System.out.println(Collections.unmodifiableList(spawnBlocks));
+        return Collections.unmodifiableList(spawnBlocks);
     }
 
     @Override

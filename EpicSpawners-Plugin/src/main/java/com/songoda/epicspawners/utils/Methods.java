@@ -130,7 +130,7 @@ public class Methods {
     }
 
     public static String getTypeFromString(String type) {
-        return (type != null) ? ChatColor.stripColor(WordUtils.capitalizeFully(type.replace("_", ""))) : null;
+        return (type != null) ? ChatColor.stripColor(WordUtils.capitalizeFully(type.replace("_", " "))) : null;
     }
 
     public static String restoreType(String type) {

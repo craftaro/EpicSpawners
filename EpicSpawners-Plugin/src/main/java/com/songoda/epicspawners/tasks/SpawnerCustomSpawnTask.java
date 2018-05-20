@@ -35,7 +35,7 @@ public class SpawnerCustomSpawnTask extends BukkitRunnable {
             int amount = timer.merge(location, 30, (oldValue, value) -> (oldValue == null) ? 0 : oldValue + value);
             int delay = spawner.updateDelay();
             if (amount < delay) continue;
-            
+
             this.timer.remove(location);
             spawner.spawn();
         }

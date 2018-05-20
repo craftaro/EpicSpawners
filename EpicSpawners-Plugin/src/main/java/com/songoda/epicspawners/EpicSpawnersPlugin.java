@@ -181,7 +181,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
                 for (String block : currentSection.getStringList("blocks")) {
                     blocks.add(Material.matchMaterial(block.toUpperCase()));
                 }
-                for (String block : currentSection.getStringList("Spawn-Block")) {
+                for (String block : currentSection.getString("Spawn-Block").split(",")) {
                     spawnBlocks.add(Material.matchMaterial(block.toUpperCase()));
                 }
                 for (String entity : currentSection.getStringList("entities")) {
@@ -515,6 +515,8 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
     public void processDefault(String value) {
         FileConfiguration spawnerConfig = spawnerFile.getConfig();
 
+        System.out.println("hii");
+
         String type = Methods.getTypeFromString(value);
         if (!spawnerConfig.contains("Entities." + type + ".Display-Name")) {
             spawnerConfig.set("Entities." + type + ".Display-Name", type);
@@ -539,7 +541,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         }
 
         if (value.equalsIgnoreCase("OCELOT")) {
-            spawnBlock = ", LEAVES";
+            spawnBlock += ", LEAVES";
         }
 
         for (EntityType val : EntityType.values()) {

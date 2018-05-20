@@ -153,6 +153,7 @@ public class ESpawner implements Spawner {
             if (!p.hasPermission("epicspawners.overview")) return;
             Inventory i = Bukkit.createInventory(null, 27, TextComponent.formatTitle(Methods.compileName(getIdentifyingName(), getSpawnerDataCount(), false)));
 
+
             SpawnerData spawnerData = getFirstStack().getSpawnerData();
 
             int showAmt = getSpawnerDataCount();
