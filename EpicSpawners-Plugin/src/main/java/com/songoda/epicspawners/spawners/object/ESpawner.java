@@ -113,7 +113,6 @@ public class ESpawner implements Spawner {
 
         for (SpawnerStack stack : getSpawnerStacks()) {
             ((ESpawnerData)stack.getSpawnerData()).spawn(this, stack);
-            //stack.getSpawnerData().spawn(location); // This method will spawn all methods at once.
         }
         Bukkit.getScheduler().runTaskLater(instance, this::updateDelay, 10);
     }

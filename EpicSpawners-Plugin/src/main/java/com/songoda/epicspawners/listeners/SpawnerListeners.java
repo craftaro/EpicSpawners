@@ -39,7 +39,8 @@ public class SpawnerListeners implements Listener {
                 SpawnerData spawnerData = instance.getSpawnerManager().getSpawnerData(e.getEntityType().name());
                 spawner.addSpawnerStack(new ESpawnerStack(spawnerData, 1));
             }
-
+            e.getSpawner().setDelay(5);
+            /*
             Spawner spawner = instance.getSpawnerManager().getSpawnerFromWorld(e.getSpawner().getLocation());
 
             // Remove entity so we can do our own method.
@@ -51,7 +52,7 @@ public class SpawnerListeners implements Listener {
                 }
             }
 
-            spawner.spawn();
+            spawner.spawn(); */
         } catch (Exception ex) {
             Debugger.runReport(ex);
         }

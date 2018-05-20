@@ -42,7 +42,7 @@ import com.songoda.epicspawners.spawners.editor.SpawnerEditor;
 import com.songoda.epicspawners.spawners.object.ESpawner;
 import com.songoda.epicspawners.spawners.object.ESpawnerManager;
 import com.songoda.epicspawners.spawners.object.ESpawnerStack;
-import com.songoda.epicspawners.tasks.SpawnerCustomSpawnTask;
+import com.songoda.epicspawners.tasks.SpawnerSpawnTask;
 import com.songoda.epicspawners.tasks.SpawnerParticleTask;
 import com.songoda.epicspawners.utils.ESpawnerDataBuilder;
 import com.songoda.epicspawners.utils.Heads;
@@ -106,7 +106,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
     private AppearanceHandler appearanceHandler;
 
     private SpawnerParticleTask particleTask;
-    private SpawnerCustomSpawnTask spawnerCustomSpawnTask;
+    private SpawnerSpawnTask spawnerCustomSpawnTask;
     private SpawnerEditor spawnerEditor;
     private Heads heads;
     private Shop shop;
@@ -383,7 +383,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         if (Bukkit.getPluginManager().isPluginEnabled("WorldGuard")) this.register(HookWorldGuard::new);
 
         this.particleTask = SpawnerParticleTask.startTask(this);
-        this.spawnerCustomSpawnTask = SpawnerCustomSpawnTask.startTask(this);
+        this.spawnerCustomSpawnTask = SpawnerSpawnTask.startTask(this);
     }
 
     private void saveToFile() {
