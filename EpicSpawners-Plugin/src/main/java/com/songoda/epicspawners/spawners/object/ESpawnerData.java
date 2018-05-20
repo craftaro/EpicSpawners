@@ -141,7 +141,6 @@ public class ESpawnerData implements SpawnerData {
 
     @Override
     public List<Material> getSpawnBlocksList() {
-        System.out.println(Collections.unmodifiableList(spawnBlocks));
         return Collections.unmodifiableList(spawnBlocks);
     }
 

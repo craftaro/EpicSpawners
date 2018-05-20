@@ -515,8 +515,6 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
     public void processDefault(String value) {
         FileConfiguration spawnerConfig = spawnerFile.getConfig();
 
-        System.out.println("hii");
-
         String type = Methods.getTypeFromString(value);
         if (!spawnerConfig.contains("Entities." + type + ".Display-Name")) {
             spawnerConfig.set("Entities." + type + ".Display-Name", type);
