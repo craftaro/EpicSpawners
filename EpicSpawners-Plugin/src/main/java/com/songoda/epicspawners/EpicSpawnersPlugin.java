@@ -154,6 +154,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         this.locale = Locale.getLocale(getConfig().getString("Locale", "en_US"));
 
         this.langFile.createNewFile("Loading Language File", "EpicSpawners Language File");
+        this.hooksFile.createNewFile("Loading Hooks File", "EpicSpawners Hooks File");
         this.dataFile.createNewFile("Loading Data File", "EpicSpawners Data File");
         this.loadDataFile();
 
@@ -788,6 +789,8 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
 
         this.hooksFile.getConfig().addDefault("hooks." + hookPlugin.getName(), true);
         if (!hooksFile.getConfig().getBoolean("hooks." + hookPlugin.getName(), true)) return;
+        this.hooksFile.getConfig().options().copyDefaults(true);
+        this.hooksFile.saveConfig();
 
         this.protectionHooks.add(hook);
         this.getLogger().info("Registered protection hook for plugin: " + hook.getPlugin().getName());
