@@ -594,7 +594,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
             spawnerConfig.addDefault("Entities." + type + ".Particle-Amount", "NORMAL");
 
         if (!spawnerConfig.contains("Entities." + type + ".Particle-Effect-Boosted-Only"))
-            spawnerConfig.addDefault("Entities." + type + ".Particle-Effect-Boosted-Only", false);
+            spawnerConfig.addDefault("Entities." + type + ".Particle-Effect-Boosted-Only", true);
     }
 
     private void loadDataFile() {
