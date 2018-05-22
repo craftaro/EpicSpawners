@@ -103,8 +103,23 @@ public class CommandHandler implements CommandExecutor {
                         if (b.getType().equals(Material.MOB_SPAWNER)) {
                             Spawner spawner = instance.getSpawnerManager().getSpawnerFromWorld(b.getLocation());
 
+
+
+                            SpawnerData data = null;
+                            for (SpawnerData spawnerData : instance.getSpawnerManager().getAllSpawnerData()) {
+                                String input = args[1].toUpperCase().replace("_", "").replace(" ", "");
+                                String compare = spawnerData.getIdentifyingName().toUpperCase().replace("_", "").replace(" ", "");
+                                if (input.equals(compare))
+                                    data = spawnerData;
+                            }
+
+                            if (data == null) {
+                                p.sendMessage("This type does not exist.");
+                                return true;
+                            }
+
                             try {
-                                SpawnerStack stack = new ESpawnerStack(instance.getSpawnerManager().getSpawnerData(Methods.restoreType(args[1]).toLowerCase()), spawner.getSpawnerDataCount());
+                                SpawnerStack stack = new ESpawnerStack(data, spawner.getSpawnerDataCount());
                                 spawner.clearSpawnerStacks();
                                 spawner.addSpawnerStack(stack);
                                 spawner.getSpawnerStacks();
