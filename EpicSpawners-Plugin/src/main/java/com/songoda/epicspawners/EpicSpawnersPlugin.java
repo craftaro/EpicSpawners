@@ -413,7 +413,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
             currentSection.set("In-Shop", spawnerData.isInShop());
             currentSection.set("Shop-Price", spawnerData.getShopPrice());
             currentSection.set("CustomGoal", spawnerData.getKillGoal());
-            currentSection.set("Custom-ECO-Cost", spawnerData.getUpgradeCostExperience());
+            currentSection.set("Custom-ECO-Cost", spawnerData.getUpgradeCostEconomy());
             currentSection.set("Custom-XP-Cost", spawnerData.getUpgradeCostExperience());
             currentSection.set("Tick-Rate", spawnerData.getTickRate());
             currentSection.set("Pickup-cost", spawnerData.getPickupCost());
