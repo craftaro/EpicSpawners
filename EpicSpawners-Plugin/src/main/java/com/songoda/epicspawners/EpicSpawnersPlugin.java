@@ -1,12 +1,5 @@
 package com.songoda.epicspawners;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.function.Supplier;
-
 import com.google.common.base.Preconditions;
 import com.songoda.arconix.api.mcupdate.MCUpdate;
 import com.songoda.arconix.api.methods.formatting.TextComponent;
@@ -22,6 +15,7 @@ import com.songoda.epicspawners.api.spawner.Spawner;
 import com.songoda.epicspawners.api.spawner.SpawnerData;
 import com.songoda.epicspawners.api.spawner.SpawnerManager;
 import com.songoda.epicspawners.api.spawner.SpawnerStack;
+import com.songoda.epicspawners.api.spawner.condition.SpawnCondition;
 import com.songoda.epicspawners.api.utils.ClaimableProtectionPluginHook;
 import com.songoda.epicspawners.api.utils.ProtectionPluginHook;
 import com.songoda.epicspawners.api.utils.SpawnerDataBuilder;
@@ -38,34 +32,35 @@ import com.songoda.epicspawners.player.PlayerActionManager;
 import com.songoda.epicspawners.player.PlayerData;
 import com.songoda.epicspawners.spawners.Shop;
 import com.songoda.epicspawners.spawners.SpawnManager;
+import com.songoda.epicspawners.spawners.condition.*;
 import com.songoda.epicspawners.spawners.editor.SpawnerEditor;
 import com.songoda.epicspawners.spawners.object.ESpawner;
 import com.songoda.epicspawners.spawners.object.ESpawnerManager;
 import com.songoda.epicspawners.spawners.object.ESpawnerStack;
-import com.songoda.epicspawners.tasks.SpawnerSpawnTask;
 import com.songoda.epicspawners.tasks.SpawnerParticleTask;
-import com.songoda.epicspawners.utils.ESpawnerDataBuilder;
-import com.songoda.epicspawners.utils.Heads;
-import com.songoda.epicspawners.utils.Methods;
-import com.songoda.epicspawners.utils.ServerVersion;
-import com.songoda.epicspawners.utils.SettingsManager;
-
+import com.songoda.epicspawners.tasks.SpawnerSpawnTask;
+import com.songoda.epicspawners.utils.*;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Biome;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.*;
+import java.util.function.Supplier;
 
 /**
  * Created by songoda on 2/25/2017.
@@ -86,15 +81,11 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
 
     public Map<Player, SpawnerData> inShow = new HashMap<>();
     public Map<Player, Integer> page = new HashMap<>();
-
-    private ConfigWrapper langFile = new ConfigWrapper(this, "", "lang.yml");
-    private ConfigWrapper hooksFile = new ConfigWrapper(this, "", "hooks.yml");
     public ConfigWrapper dataFile = new ConfigWrapper(this, "", "data.yml");
     public ConfigWrapper spawnerFile = new ConfigWrapper(this, "", "spawners.yml");
-
     public References references = null;
-
-
+    private ConfigWrapper langFile = new ConfigWrapper(this, "", "lang.yml");
+    private ConfigWrapper hooksFile = new ConfigWrapper(this, "", "hooks.yml");
     private SpawnManager spawnManager;
     private PlayerActionManager playerActionManager;
     private SpawnerManager spawnerManager;
@@ -115,6 +106,10 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
     private ServerVersion serverVersion = ServerVersion.fromPackageName(Bukkit.getServer().getClass().getPackage().getName());
     private List<ProtectionPluginHook> protectionHooks = new ArrayList<>();
     private ClaimableProtectionPluginHook factionsHook, townyHook, aSkyblockHook, uSkyblockHook;
+
+    public static EpicSpawnersPlugin getInstance() {
+        return INSTANCE;
+    }
 
     public void onDisable() {
         this.saveToFile();
@@ -166,61 +161,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         this.hologramHandler = new HologramHandler(this);
         this.playerActionManager = new PlayerActionManager();
 
-        // Register spawner data into SpawnerRegistry from configuration.
-        FileConfiguration spawnerConfig = spawnerFile.getConfig();
-        if (spawnerConfig.contains("Entities")) {
-            for (String key : spawnerConfig.getConfigurationSection("Entities").getKeys(false)) {
-                ConfigurationSection currentSection = spawnerConfig.getConfigurationSection("Entities." + key);
-
-                List<EntityType> entities = new ArrayList<>();
-                List<Material> blocks = new ArrayList<>();
-                List<Material> spawnBlocks = new ArrayList<>();
-                List<ItemStack> itemDrops = (List<ItemStack>) currentSection.getList("itemDrops", new ArrayList<>());
-                List<ItemStack> items = (List<ItemStack>) currentSection.getList("items", new ArrayList<>());
-                List<String> commands = currentSection.getStringList("commands");
-
-                for (String block : currentSection.getStringList("blocks")) {
-                    blocks.add(Material.matchMaterial(block.toUpperCase()));
-                }
-                for (String block : currentSection.getString("Spawn-Block").split(",")) {
-                    spawnBlocks.add(Material.matchMaterial(block.toUpperCase()));
-                }
-                for (String entity : currentSection.getStringList("entities")) {
-                    entities.add(EntityType.valueOf(entity));
-                }
-
-                SpawnerDataBuilder dataBuilder = new ESpawnerDataBuilder(key)
-                        .entities(entities).blocks(blocks).items(items).entityDroppedItems(itemDrops).commands(commands)
-                        .spawnBlocks(spawnBlocks)
-                        .active(currentSection.getBoolean("Allowed"))
-                        .spawnOnFire(currentSection.getBoolean("Spawn-On-Fire"))
-                        .upgradeable(currentSection.getBoolean("Upgradable"))
-                        .convertible(currentSection.getBoolean("Convertible"))
-                        .convertRatio(currentSection.getString("Convert-Ratio"))
-                        .inShop(currentSection.getBoolean("In-Shop"))
-                        .pickupCost(currentSection.getDouble("Pickup-Cost"))
-                        .shopPrice(currentSection.getDouble("Shop-Price"))
-                        .killGoal(currentSection.getInt("CustomGoal"))
-                        .upgradeCostEconomy(currentSection.getInt("Custom-ECO-Cost"))
-                        .upgradeCostExperience(currentSection.getInt("Custom-XP-Cost"))
-                        .tickRate(currentSection.getString("Tick-Rate"))
-                        .particleEffect(ParticleEffect.valueOf(currentSection.getString("Spawn-Effect", "HALO")))
-                        .spawnEffectParticle(ParticleType.valueOf(currentSection.getString("Spawn-Effect-Particle", "REDSTONE")))
-                        .entitySpawnParticle(ParticleType.valueOf(currentSection.getString("Entity-Spawn-Particle", "SMOKE")))
-                        .spawnerSpawnParticle(ParticleType.valueOf(currentSection.getString("Spawner-Spawn-Particle", "FIRE")))
-                        .particleDensity(ParticleDensity.valueOf(currentSection.getString("Particle-Amount", "NORMAL")))
-                        .particleEffectBoostedOnly(currentSection.getBoolean("Particle-Effect-Boosted-Only"));
-
-                if (currentSection.contains("Display-Name")) {
-                    dataBuilder.displayName(currentSection.getString("Display-Name"));
-                }
-                if (currentSection.contains("Display-Item")) {
-                    dataBuilder.displayItem(Material.valueOf(currentSection.getString("Display-Item")));
-                }
-
-                this.spawnerManager.addSpawnerData(key, dataBuilder.build());
-            }
-        }
+        loadSpawnersFromFile();
 
         FileConfiguration dataConfig = dataFile.getConfig();
 
@@ -240,8 +181,8 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
                 String type = spawnerState.getSpawnedType().name().toLowerCase().replace("_", " ");
 
                 // Is custom spawner.
-                if (dataConfig.contains("data.spawnerstats." + key + ".type"))
-                    type = dataConfig.getString("data.spawnerstats." + key + ".type").toLowerCase().replace("_", " ");
+                if (dataConfig.contains("data.spawnerstats." + key + ".Type"))
+                    type = dataConfig.getString("data.spawnerstats." + key + ".Type").toLowerCase().replace("_", " ");
 
                 ESpawner spawner = new ESpawner(location);
 
@@ -279,7 +220,6 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         } else {
             this.getLogger().info("No legacy spawners found.");
         }
-
 
         // Adding in spawners.
         if (dataConfig.contains("data.spawners")) {
@@ -386,6 +326,86 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         this.spawnerCustomSpawnTask = SpawnerSpawnTask.startTask(this);
     }
 
+    private void loadSpawnersFromFile() {
+        // Register spawner data into SpawnerRegistry from configuration.
+        FileConfiguration spawnerConfig = spawnerFile.getConfig();
+        if (spawnerConfig.contains("Entities")) {
+            for (String key : spawnerConfig.getConfigurationSection("Entities").getKeys(false)) {
+                ConfigurationSection currentSection = spawnerConfig.getConfigurationSection("Entities." + key);
+
+                List<EntityType> entities = new ArrayList<>();
+                List<Material> blocks = new ArrayList<>();
+                List<Material> spawnBlocks = new ArrayList<>();
+                List<ItemStack> itemDrops = (List<ItemStack>) currentSection.getList("itemDrops", new ArrayList<>());
+                List<ItemStack> items = (List<ItemStack>) currentSection.getList("items", new ArrayList<>());
+                List<String> commands = currentSection.getStringList("commands");
+
+                for (String block : currentSection.getStringList("blocks")) {
+                    blocks.add(Material.matchMaterial(block.toUpperCase()));
+                }
+                for (String block : currentSection.getString("Spawn-Block").split(",")) {
+                    spawnBlocks.add(Material.matchMaterial(block.toUpperCase()));
+                }
+                for (String entity : currentSection.getStringList("entities")) {
+                    entities.add(EntityType.valueOf(entity));
+                }
+
+                SpawnerDataBuilder dataBuilder = new ESpawnerDataBuilder(key)
+                        .entities(entities).blocks(blocks).items(items).entityDroppedItems(itemDrops).commands(commands)
+                        .spawnBlocks(spawnBlocks)
+                        .active(currentSection.getBoolean("Allowed"))
+                        .spawnOnFire(currentSection.getBoolean("Spawn-On-Fire"))
+                        .upgradeable(currentSection.getBoolean("Upgradable"))
+                        .convertible(currentSection.getBoolean("Convertible"))
+                        .convertRatio(currentSection.getString("Convert-Ratio"))
+                        .inShop(currentSection.getBoolean("In-Shop"))
+                        .pickupCost(currentSection.getDouble("Pickup-Cost"))
+                        .shopPrice(currentSection.getDouble("Shop-Price"))
+                        .killGoal(currentSection.getInt("CustomGoal"))
+                        .upgradeCostEconomy(currentSection.getInt("Custom-ECO-Cost"))
+                        .upgradeCostExperience(currentSection.getInt("Custom-XP-Cost"))
+                        .tickRate(currentSection.getString("Tick-Rate"))
+                        .particleEffect(ParticleEffect.valueOf(currentSection.getString("Spawn-Effect", "HALO")))
+                        .spawnEffectParticle(ParticleType.valueOf(currentSection.getString("Spawn-Effect-Particle", "REDSTONE")))
+                        .entitySpawnParticle(ParticleType.valueOf(currentSection.getString("Entity-Spawn-Particle", "SMOKE")))
+                        .spawnerSpawnParticle(ParticleType.valueOf(currentSection.getString("Spawner-Spawn-Particle", "FIRE")))
+                        .particleDensity(ParticleDensity.valueOf(currentSection.getString("Particle-Amount", "NORMAL")))
+                        .particleEffectBoostedOnly(currentSection.getBoolean("Particle-Effect-Boosted-Only"));
+
+                if (currentSection.contains("Display-Name")) {
+                    dataBuilder.displayName(currentSection.getString("Display-Name"));
+                }
+                if (currentSection.contains("Display-Item")) {
+                    dataBuilder.displayItem(Material.valueOf(currentSection.getString("Display-Item")));
+                }
+
+                SpawnerData data = dataBuilder.build();
+
+                String biomeString = currentSection.getString("Conditions.Biomes");
+                Set<Biome> biomes = new HashSet<>();
+                if (biomeString.toLowerCase().equals("all"))
+                    biomes = this.BIOMES;
+                else {
+                    for (String string : biomeString.split(", ")) {
+                        biomes.add(Biome.valueOf(string));
+                    }
+                }
+
+                String[] heightString = currentSection.getString("Conditions.Height").split(":");
+
+                data.addCondition(new SpawnConditionBiome(biomes));
+                data.addCondition(new SpawnConditionHeight(Integer.parseInt(heightString[0]), Integer.parseInt(heightString[1])));
+                data.addCondition(new SpawnConditionLightDark(SpawnConditionLightDark.Type.valueOf(currentSection.getString("Conditions.Light"))));
+                data.addCondition(new SpawnConditionStorm(currentSection.getBoolean("Conditions.Storm Only")));
+                data.addCondition(new SpawnConditionNearbyEntities(currentSection.getInt("Conditions.Max Entities Around Spawner")));
+
+                this.spawnerManager.addSpawnerData(key, data);
+            }
+        }
+    }
+
+    private static final Set<Biome> BIOMES = EnumSet.allOf(Biome.class);
+
     private void saveToFile() {
         //ToDO: If the defaults are set correctly this could do the initial config save.
 
@@ -424,6 +444,25 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
             currentSection.set("Spawner-Spawn-Particle", spawnerData.getSpawnerSpawnParticle().name());
             currentSection.set("Particle-Amount", spawnerData.getParticleDensity().name());
             currentSection.set("Particle-Effect-Boosted-Only", spawnerData.isParticleEffectBoostedOnly());
+
+
+            for (SpawnCondition spawnCondition : spawnerData.getConditions()) {
+                if (spawnCondition instanceof SpawnConditionBiome) {
+                    if (BIOMES.equals(((SpawnConditionBiome) spawnCondition).getBiomes())) {
+                        currentSection.set("Conditions.Biomes", "ALL");
+                    } else {
+                        currentSection.set("Conditions.Biomes", String.join(", ", getStrings(((SpawnConditionBiome) spawnCondition).getBiomes())));
+                    }
+                }
+                if (spawnCondition instanceof SpawnConditionHeight)
+                    currentSection.set("Conditions.Height", ((SpawnConditionHeight)spawnCondition).getMin() + ":" + ((SpawnConditionHeight)spawnCondition).getMax());
+                if (spawnCondition instanceof SpawnConditionLightDark)
+                    currentSection.set("Conditions.Light", ((SpawnConditionLightDark)spawnCondition).getType().name());
+                if (spawnCondition instanceof SpawnConditionStorm)
+                    currentSection.set("Conditions.Storm Only", ((SpawnConditionStorm)spawnCondition).isStormOnly());
+                if (spawnCondition instanceof SpawnConditionNearbyEntities)
+                    currentSection.set("Conditions.Max Entities Around Spawner", ((SpawnConditionNearbyEntities)spawnCondition).getMax());
+            }
 
             if (spawnerData.getDisplayItem() != null) {
                 currentSection.set("Display-Item", spawnerData.getDisplayItem().name());
@@ -490,6 +529,16 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         return strings.toArray(new String[strings.size()]);
     }
 
+    private String[] getStrings(Set<Biome> biomes) {
+        List<String> strings = new ArrayList<>();
+
+        for (Biome biome : biomes) {
+            strings.add(biome.name());
+        }
+
+        return strings.toArray(new String[strings.size()]);
+    }
+
     private void setupConfig() {
         this.settingsManager.updateSettings();
         this.getConfig().options().copyDefaults(true);
@@ -542,9 +591,12 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
             spawnBlock += ", LEAVES";
         }
 
+        EntityType entityType = null;
+
         for (EntityType val : EntityType.values()) {
             if (val.isSpawnable() && val.isAlive()) {
                 if (val.name().equals(value)) {
+                    entityType = val;
                     List<String> list = new ArrayList<>();
                     list.add(value);
                     if (!spawnerConfig.contains("Entities." + type + ".entities"))
@@ -553,48 +605,45 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
             }
         }
 
-        if (!spawnerConfig.contains("Entities." + type + ".Spawn-Block"))
-            spawnerConfig.addDefault("Entities." + type + ".Spawn-Block", spawnBlock);
+        spawnerConfig.addDefault("Entities." + type + ".Spawn-Block", spawnBlock);
 
-        if (!spawnerConfig.contains("Entities." + type + ".Allowed"))
-            spawnerConfig.addDefault("Entities." + type + ".Allowed", true);
+        spawnerConfig.addDefault("Entities." + type + ".Allowed", true);
 
-        if (!spawnerConfig.contains("Entities." + type + ".Spawn-On-Fire"))
-            spawnerConfig.addDefault("Entities." + type + ".Spawn-On-Fire", false);
+        spawnerConfig.addDefault("Entities." + type + ".Spawn-On-Fire", false);
 
-        if (!spawnerConfig.contains("Entities." + type + ".Upgradable"))
-            spawnerConfig.addDefault("Entities." + type + ".Upgradable", true);
-        if (!spawnerConfig.contains("Entities." + type + ".Convertible"))
-            spawnerConfig.addDefault("Entities." + type + ".Convertible", true);
-        if (!spawnerConfig.contains("Entities." + type + ".Convert-Ratio"))
-            spawnerConfig.addDefault("Entities." + type + ".Convert-Ratio", "45%");
-        if (!spawnerConfig.contains("Entities." + type + ".In-Shop"))
-            spawnerConfig.addDefault("Entities." + type + ".In-Shop", true);
-        if (!spawnerConfig.contains("Entities." + type + ".Shop-Price"))
-            spawnerConfig.addDefault("Entities." + type + ".Shop-Price", 1000.00);
-        if (!spawnerConfig.contains("Entities." + type + ".CustomGoal"))
-            spawnerConfig.addDefault("Entities." + type + ".CustomGoal", 0);
-        if (!spawnerConfig.contains("Entities." + type + ".Custom-ECO-Cost"))
-            spawnerConfig.addDefault("Entities." + type + ".Custom-ECO-Cost", 0);
-        if (!spawnerConfig.contains("Entities." + type + ".Custom-XP-Cost"))
-            spawnerConfig.addDefault("Entities." + type + ".Custom-XP-Cost", 0);
-        if (!spawnerConfig.contains("Entities." + type + ".Tick-Rate"))
-            spawnerConfig.addDefault("Entities." + type + ".Tick-Rate", "800:200");
+        spawnerConfig.addDefault("Entities." + type + ".Upgradable", true);
+        spawnerConfig.addDefault("Entities." + type + ".Convertible", true);
+        spawnerConfig.addDefault("Entities." + type + ".Convert-Ratio", "45%");
+        spawnerConfig.addDefault("Entities." + type + ".In-Shop", true);
+        spawnerConfig.addDefault("Entities." + type + ".Shop-Price", 1000.00);
+        spawnerConfig.addDefault("Entities." + type + ".CustomGoal", 0);
+        spawnerConfig.addDefault("Entities." + type + ".Custom-ECO-Cost", 0);
+        spawnerConfig.addDefault("Entities." + type + ".Custom-XP-Cost", 0);
+        spawnerConfig.addDefault("Entities." + type + ".Tick-Rate", "800:200");
 
-        if (!spawnerConfig.contains("Entities." + type + ".Spawn-Effect"))
-            spawnerConfig.addDefault("Entities." + type + ".Spawn-Effect", "NONE");
-        if (!spawnerConfig.contains("Entities." + type + ".Spawn-Effect-Particle"))
-            spawnerConfig.addDefault("Entities." + type + ".Spawn-Effect-Particle", "REDSTONE");
-        if (!spawnerConfig.contains("Entities." + type + ".Entity-Spawn-Particle"))
-            spawnerConfig.addDefault("Entities." + type + ".Entity-Spawn-Particle", "SMOKE");
-        if (!spawnerConfig.contains("Entities." + type + ".Spawner-Spawn-Particle"))
-            spawnerConfig.addDefault("Entities." + type + ".Spawner-Spawn-Particle", "FIRE");
+        spawnerConfig.addDefault("Entities." + type + ".Spawn-Effect", "NONE");
+        spawnerConfig.addDefault("Entities." + type + ".Spawn-Effect-Particle", "REDSTONE");
+        spawnerConfig.addDefault("Entities." + type + ".Entity-Spawn-Particle", "SMOKE");
+        spawnerConfig.addDefault("Entities." + type + ".Spawner-Spawn-Particle", "FIRE");
+        spawnerConfig.addDefault("Entities." + type + ".Particle-Amount", "NORMAL");
 
-        if (!spawnerConfig.contains("Entities." + type + ".Particle-Amount"))
-            spawnerConfig.addDefault("Entities." + type + ".Particle-Amount", "NORMAL");
+        spawnerConfig.addDefault("Entities." + type + ".Particle-Effect-Boosted-Only", true);
 
-        if (!spawnerConfig.contains("Entities." + type + ".Particle-Effect-Boosted-Only"))
-            spawnerConfig.addDefault("Entities." + type + ".Particle-Effect-Boosted-Only", true);
+
+        if (entityType == entityType.SLIME) {
+            spawnerConfig.addDefault("Entities." + type + ".Conditions.Biomes", Biome.SWAMPLAND);
+            spawnerConfig.addDefault("Entities." + type + ".Conditions.Height", "50:70");
+        } else {
+            spawnerConfig.addDefault("Entities." + type + ".Conditions.Biomes", "ALL");
+            spawnerConfig.addDefault("Entities." + type + ".Conditions.Height", "0:256");
+        }
+        if (entityType != null && Monster.class.isAssignableFrom(entityType.getEntityClass())) {
+            spawnerConfig.addDefault("Entities." + type + ".Conditions.Light", "DARK");
+        } else {
+            spawnerConfig.addDefault("Entities." + type + ".Conditions.Light", "BOTH");
+        }
+        spawnerConfig.addDefault("Entities." + type + ".Conditions.Storm Only", false);
+        spawnerConfig.addDefault("Entities." + type + ".Conditions.Max Entities Around Spawner", 6);
     }
 
     private void loadDataFile() {
@@ -609,16 +658,13 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         this.hooksFile.createNewFile("Loading hookHandler File", "EpicSpawners Spawners File");
         this.references = new References();
         this.blacklistHandler.reload();
+        this.loadSpawnersFromFile();
         this.reloadConfig();
         this.saveConfig();
     }
 
     public Locale getLocale() {
         return locale;
-    }
-
-    public static EpicSpawnersPlugin getInstance() {
-        return INSTANCE;
     }
 
     public SpawnManager getSpawnManager() {

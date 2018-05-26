@@ -115,6 +115,13 @@ public interface Spawner {
     int getSpawnerDataCount();
 
     /**
+     * Check spawner conditions before spawning.
+     *
+     * @return true of conditions met, false otherwise
+     */
+    boolean checkConditions();
+
+    /**
      * Get the cost needed to upgrade this spawner with
      * either Experience or Economy.
      *

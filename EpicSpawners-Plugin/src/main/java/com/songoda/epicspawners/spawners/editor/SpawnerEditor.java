@@ -901,7 +901,7 @@ public class SpawnerEditor {
                 }
             }
             p.sendMessage(TextComponent.formatText("&6" + list));
-            p.sendMessage("Enter an entity type.");
+            p.sendMessage("Enter an entity Type.");
             p.sendMessage("");
             EpicSpawnersPlugin.getInstance().chatEditing.put(p, "addEntity");
             p.closeInventory();
@@ -915,7 +915,7 @@ public class SpawnerEditor {
             EditingData editingData = userEditingData.get(p.getUniqueId());
             p.sendMessage("");
             p.sendMessage(TextComponent.formatText("&cAre you sure you want to destroy &6" + getType(editingData.getSpawnerSlot()).getIdentifyingName() + "&7."));
-            p.sendMessage(TextComponent.formatText("&7Type &l&6CONFIRM &7to continue. Otherwise type anything else to cancel."));
+            p.sendMessage(TextComponent.formatText("&7Type &l&6CONFIRM &7to continue. Otherwise Type anything else to cancel."));
             p.sendMessage("");
             EpicSpawnersPlugin.getInstance().chatEditing.put(p, "destroy");
             p.closeInventory();
@@ -963,7 +963,7 @@ public class SpawnerEditor {
     public void createCommand(Player p) {
         try {
             p.sendMessage("");
-            p.sendMessage(TextComponent.formatText("&7Please type a command. Example: &6eco give @p 1000&7."));
+            p.sendMessage(TextComponent.formatText("&7Please Type a command. Example: &6eco give @p 1000&7."));
             p.sendMessage(TextComponent.formatText("&7You can use @X @Y and @Z for random X Y and Z coordinates around the spawner."));
             p.sendMessage(TextComponent.formatText("&7If you're getting command output try &6/gamerule sendCommandFeedback false&7."));
             p.sendMessage(TextComponent.formatText("&7do not include a &a/"));

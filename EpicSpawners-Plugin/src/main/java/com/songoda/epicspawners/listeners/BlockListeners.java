@@ -197,7 +197,7 @@ public class BlockListeners implements Listener {
 
             if (spawner.getFirstStack().getSpawnerData() == null) {
                 event.getBlock().setType(Material.AIR);
-                System.out.println("A corrupted spawner has been removed as its type no longer exists.");
+                System.out.println("A corrupted spawner has been removed as its Type no longer exists.");
                 instance.getSpawnerManager().removeSpawnerFromWorld(location);
                 instance.getHologramHandler().updateHologram(spawner);
                 instance.getAppearanceHandler().removeDisplayItem(spawner);

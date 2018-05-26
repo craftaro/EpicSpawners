@@ -44,23 +44,8 @@ public class SpawnerSpawnTask extends BukkitRunnable {
                 continue;
             }
 
-            Collection<Entity> entitiesNearBy = location.getWorld().getNearbyEntities(location, 17,17,17);
-            //entitiesNearBy.removeIf(entity -> entity.getType() != EntityType.PLAYER);
-
-            int size = entitiesNearBy.size();
-
-            for (Entity entity : entitiesNearBy) {
-                if (!(entity instanceof HumanEntity)) {
-                    size--;
-                }
-                //if (entity instanceof HumanEntity) entity.sendMessage("hi"); //ToDo: Maybe a (You are now in rage of your spawner type thing)
-
-            }
-
-            System.out.println(size);
-            if (size == 0) {
-                continue;
-            }
+            if (spawner.checkConditions() == false)
+                return;
 
             // If not present in map, init to 0 and put in map. Otherwise, add 30 to existing value
             int amount = timer.merge(location, 30, (oldValue, value) -> (oldValue == null) ? 0 : oldValue + value);

@@ -4,6 +4,7 @@ import com.songoda.epicspawners.api.EpicSpawnersAPI;
 import com.songoda.epicspawners.api.particles.ParticleDensity;
 import com.songoda.epicspawners.api.particles.ParticleEffect;
 import com.songoda.epicspawners.api.particles.ParticleType;
+import com.songoda.epicspawners.api.spawner.condition.SpawnCondition;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
@@ -530,5 +531,26 @@ public interface SpawnerData {
      *                    spawners, false otherwise
      */
     void setParticleEffectBoostedOnly(boolean boostedOnly);
+
+    /**
+     *  Add spawner condiction.
+     *
+     * @param spawnCondition SpawnerCondition
+     */
+    void addCondition(SpawnCondition spawnCondition);
+
+    /**
+     *  remove spawner condiction.
+     *
+     * @param spawnCondition SpawnerCondition
+     */
+    void removeCondition(SpawnCondition spawnCondition);
+
+    /**
+     *  List spawner conditions.
+     *
+     * @return spawner conditions
+     */
+    List<SpawnCondition> getConditions();
 
 }

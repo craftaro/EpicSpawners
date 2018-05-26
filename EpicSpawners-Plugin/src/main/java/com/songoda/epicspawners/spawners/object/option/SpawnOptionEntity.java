@@ -15,6 +15,8 @@ import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.api.spawner.Spawner;
 import com.songoda.epicspawners.api.spawner.SpawnerData;
 import com.songoda.epicspawners.api.spawner.SpawnerStack;
+import com.songoda.epicspawners.api.spawner.condition.SpawnCondition;
+import com.songoda.epicspawners.spawners.condition.SpawnConditionNearbyEntities;
 import com.songoda.epicspawners.spawners.object.SpawnOptionType;
 import com.songoda.epicspawners.utils.Debugger;
 import com.songoda.epicspawners.utils.Methods;
@@ -95,9 +97,14 @@ public class SpawnOptionEntity implements SpawnOption {
             System.out.println("Your spawner equation is broken, fix it.");
         }
 
+        int limit = 0;
+        for (SpawnCondition spawnCondition : data.getConditions()) {
+            if (spawnCondition instanceof SpawnConditionNearbyEntities)
+                limit = ((SpawnConditionNearbyEntities)spawnCondition).getMax();
+        }
+
         int spawnerBoost = spawner.getBoost();
         int amtOfCurrentEntities = Methods.countEntitiesAroundLoation(location);
-        int limit = instance.getConfig().getInt("Main.Max Entities Around Single Spawner");
         if (amtOfCurrentEntities == limit && spawnerBoost == 0) return;
         spawnCount = Math.min(limit - amtOfCurrentEntities, spawnCount) + spawner.getBoost();
 

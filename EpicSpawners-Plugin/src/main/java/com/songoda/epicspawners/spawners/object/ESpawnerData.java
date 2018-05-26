@@ -15,6 +15,7 @@ import com.songoda.epicspawners.api.particles.ParticleType;
 import com.songoda.epicspawners.api.spawner.Spawner;
 import com.songoda.epicspawners.api.spawner.SpawnerData;
 import com.songoda.epicspawners.api.spawner.SpawnerStack;
+import com.songoda.epicspawners.api.spawner.condition.SpawnCondition;
 import com.songoda.epicspawners.spawners.object.option.SpawnOption;
 import com.songoda.epicspawners.spawners.object.option.SpawnOptionBlock;
 import com.songoda.epicspawners.spawners.object.option.SpawnOptionCommand;
@@ -59,6 +60,8 @@ public class ESpawnerData implements SpawnerData {
     private List<String> commands;
 
     private Set<SpawnOption> spawnOptions = new HashSet<>();
+
+    private List<SpawnCondition> spawnConditions = new ArrayList<>();
 
     public ESpawnerData(String name, List<EntityType> entities, List<Material> blocks, List<ItemStack> items, List<ItemStack> itemDrops, List<String> commands) {
         Preconditions.checkNotNull(name, "Name cannot be null");
@@ -393,6 +396,22 @@ public class ESpawnerData implements SpawnerData {
     public void setParticleEffectBoostedOnly(boolean particleEffectBoostedOnly) {
         this.particleEffectBoostedOnly = particleEffectBoostedOnly;
     }
+
+    @Override
+    public void addCondition(SpawnCondition spawnCondition) {
+        spawnConditions.add(spawnCondition);
+    }
+
+    @Override
+    public void removeCondition(SpawnCondition spawnCondition) {
+        spawnConditions.remove(spawnCondition);
+    }
+
+    @Override
+    public List<SpawnCondition> getConditions() {
+        return Collections.unmodifiableList(spawnConditions);
+    }
+
 
     @Override
     public int hashCode() {

@@ -231,11 +231,10 @@ public class SettingsManager implements Listener {
         USE_CUSTOM_UPGRADE_EQUATION("Use-equations", "Main.Use Custom Equations for Upgrade Costs", false),
         LIQUID_REPEL_RADIUS("spawners-repel-radius", "Main.Spawner Repel Liquid Radius", 1),
         REDSTONE_ACTIVATE("redstone-activate", "Main.Redstone Power Deactivates Spawners", true),
-        MAX_ENTITIES_AROUND_SPAWNER("Max-Entities-Around-Single-spawners", "Main.Max Entities Around Single Spawner", 6),
         DISPLAY_HELP_BUTTON("How-to", "Main.Display Help Button In Spawner Overview", true),
         SPAWNERS_DONT_EXPLODE("spawners-dont-explode", "Main.Prevent Spawners From Exploding", false),
         SPAWNERS_TO_INVENTORY("Add-spawners-To-Inventory-On-Drop", "Main.Add Spawners To Inventory On Drop", false),
-        UPGRADE_PARTICLE_TYPE("Upgrade-particle-type", "Main.Upgrade Particle Type", "SPELL_WITCH"),
+        UPGRADE_PARTICLE_TYPE("Upgrade-particle-Type", "Main.Upgrade Particle Type", "SPELL_WITCH"),
 
         COST_EQUATION_XP("XP-cost-equation", "Main.Equations.Calculate XP Upgrade Cost", "{XPCost} * {Level}"),
         COST_EQUATION_ECO("ECO-cost-equation", "Main.Equations.Calculate Economy Upgrade Cost", "{ECOCost} * {Level}"),
