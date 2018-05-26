@@ -52,7 +52,7 @@ public class SpawnOptionBlock implements SpawnOption {
                     // If block isn't air, try for another block
                     if (spawnBlock.getType() != Material.AIR) continue;
 
-                    // Set type and data for valid air block
+                    // Set Type and data for valid air block
                     spawnBlock.setType(material);
                     break;
                 }

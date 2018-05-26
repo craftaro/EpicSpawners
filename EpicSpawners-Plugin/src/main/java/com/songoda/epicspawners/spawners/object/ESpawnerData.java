@@ -61,7 +61,7 @@ public class ESpawnerData implements SpawnerData {
 
     private Set<SpawnOption> spawnOptions = new HashSet<>();
 
-    private Set<SpawnCondition> spawnConditions = new HashSet<>();
+    private List<SpawnCondition> spawnConditions = new ArrayList<>();
 
     public ESpawnerData(String name, List<EntityType> entities, List<Material> blocks, List<ItemStack> items, List<ItemStack> itemDrops, List<String> commands) {
         Preconditions.checkNotNull(name, "Name cannot be null");
@@ -396,6 +396,22 @@ public class ESpawnerData implements SpawnerData {
     public void setParticleEffectBoostedOnly(boolean particleEffectBoostedOnly) {
         this.particleEffectBoostedOnly = particleEffectBoostedOnly;
     }
+
+    @Override
+    public void addCondition(SpawnCondition spawnCondition) {
+        spawnConditions.add(spawnCondition);
+    }
+
+    @Override
+    public void removeCondition(SpawnCondition spawnCondition) {
+        spawnConditions.remove(spawnCondition);
+    }
+
+    @Override
+    public List<SpawnCondition> getConditions() {
+        return Collections.unmodifiableList(spawnConditions);
+    }
+
 
     @Override
     public int hashCode() {

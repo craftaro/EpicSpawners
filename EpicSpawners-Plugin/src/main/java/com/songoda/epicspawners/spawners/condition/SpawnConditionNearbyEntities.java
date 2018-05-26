@@ -5,6 +5,7 @@ import java.util.Collection;
 import com.songoda.epicspawners.api.spawner.Spawner;
 import com.songoda.epicspawners.api.spawner.condition.SpawnCondition;
 
+import com.songoda.epicspawners.utils.Methods;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -12,11 +13,9 @@ import org.bukkit.entity.EntityType;
 public class SpawnConditionNearbyEntities implements SpawnCondition {
 
     private final int max;
-    private final double radius;
 
-    public SpawnConditionNearbyEntities(int max, double radius) {
+    public SpawnConditionNearbyEntities(int max) {
         this.max = max;
-        this.radius = radius;
     }
 
     @Override
@@ -26,17 +25,19 @@ public class SpawnConditionNearbyEntities implements SpawnCondition {
 
     @Override
     public String getDescription() {
-        return "Must be less than " + max + " entities within a " + radius + " block radius";
+        return "Must be less than " + max + " around this spawner.";
     }
 
     @Override
     public boolean isMet(Spawner spawner) {
         Location location = spawner.getLocation().add(0.5, 0.5, 0.5);
 
-        Collection<Entity> entities = location.getWorld().getNearbyEntities(location, radius, radius, radius);
-        entities.removeIf(e -> e.getType() == EntityType.PLAYER);
+        int amt = Methods.countEntitiesAroundLoation(location);
 
-        return entities.size() < max;
+        return amt < max;
     }
 
+    public int getMax() {
+        return max;
+    }
 }

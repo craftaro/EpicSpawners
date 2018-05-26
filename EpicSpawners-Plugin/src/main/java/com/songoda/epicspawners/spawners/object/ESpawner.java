@@ -31,6 +31,7 @@ import com.songoda.epicspawners.api.events.SpawnerChangeEvent;
 import com.songoda.epicspawners.api.spawner.Spawner;
 import com.songoda.epicspawners.api.spawner.SpawnerData;
 import com.songoda.epicspawners.api.spawner.SpawnerStack;
+import com.songoda.epicspawners.api.spawner.condition.SpawnCondition;
 import com.songoda.epicspawners.boost.BoostData;
 import com.songoda.epicspawners.boost.BoostType;
 import com.songoda.epicspawners.player.MenuType;
@@ -107,7 +108,7 @@ public class ESpawner implements Spawner {
 
         Location particleLocation = location.clone();
         particleLocation.add(.5, .5, .5);
-        //ToDo: Only currently works for the first spawner type in the stack. this is not how it should work.
+        //ToDo: Only currently works for the first spawner Type in the stack. this is not how it should work.
         SpawnerData spawnerData = getFirstStack().getSpawnerData();
         Arconix.pl().getApi().packetLibrary.getParticleManager().broadcastParticle(particleLocation, x, y, z, 0, spawnerData.getSpawnerSpawnParticle().getEffect(), spawnerData.getParticleDensity().getSpawnerSpawn());
 
@@ -463,6 +464,16 @@ public class ESpawner implements Spawner {
         } catch (Exception e) {
             Debugger.runReport(e);
         }
+    }
+
+    @Override
+    public boolean checkConditions() {
+        for (SpawnerStack stack : spawnerStacks) {
+            for (SpawnCondition spawnCondition : stack.getSpawnerData().getConditions()) {
+                if (!spawnCondition.isMet(this)) return false;
+            }
+        }
+        return true;
     }
 
     public void purchaseBoost(Player p, int time) {

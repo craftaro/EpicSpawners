@@ -3,12 +3,12 @@ package com.songoda.epicspawners.spawners.condition;
 import com.songoda.epicspawners.api.spawner.Spawner;
 import com.songoda.epicspawners.api.spawner.condition.SpawnCondition;
 
-public class SpawnerConditionStorm implements SpawnCondition {
+public class SpawnConditionStorm implements SpawnCondition {
 
-    private final boolean inStorm;
+    private final boolean stormOnly;
 
-    public SpawnerConditionStorm(boolean inStorm) {
-        this.inStorm = inStorm;
+    public SpawnConditionStorm(boolean stormOnly) {
+        this.stormOnly = stormOnly;
     }
 
     @Override
@@ -23,6 +23,10 @@ public class SpawnerConditionStorm implements SpawnCondition {
 
     @Override
     public boolean isMet(Spawner spawner) {
-        return inStorm && spawner.getLocation().getWorld().hasStorm();
+        return (stormOnly && spawner.getLocation().getWorld().hasStorm()) || (!stormOnly && !spawner.getLocation().getWorld().hasStorm());
+    }
+
+    public boolean isStormOnly() {
+        return stormOnly;
     }
 }

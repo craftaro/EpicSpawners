@@ -60,9 +60,9 @@ public class CommandHandler implements CommandExecutor {
                 sender.sendMessage(TextComponent.formatText(" &8- &aspawnershop &7Opens the spawner shop."));
                 sender.sendMessage(TextComponent.formatText(" &8- &aspawnerstats &7Allows a player to overview their current EpicSpawners stats and see how many kills they have left to get a specific spawner drop."));
             } else if (page == 2 && sender.hasPermission("epicspawners.admin")) {
-                sender.sendMessage(TextComponent.formatText(" &8- &aes change <type> &7Changes the entity for the spawner you are looking at."));
+                sender.sendMessage(TextComponent.formatText(" &8- &aes change <Type> &7Changes the entity for the spawner you are looking at."));
                 sender.sendMessage(TextComponent.formatText(" &8- &aes give [player/all] [spawnertype/random] [multiplier] [amount] &7Gives an operator the ability to spawn a spawner of his or her choice."));
-                sender.sendMessage(TextComponent.formatText(" &8- &aes setshop <type> &7Assigns a spawner shop to the block you are looking at."));
+                sender.sendMessage(TextComponent.formatText(" &8- &aes setshop <Type> &7Assigns a spawner shop to the block you are looking at."));
             } else if (page == 3 && sender.hasPermission("epicspawners.admin")) {
                 sender.sendMessage(TextComponent.formatText(" &8- &aes settings &7Edit the EpicSpawners Settings."));
                 sender.sendMessage(TextComponent.formatText(" &8- &aes boost <p:player, f:faction, t:town, i:islandOwner> <amount> [m:minute, h:hour, d:day, y:year] &7This allows you to boost the amount of spawns that are got from placed spawners."));
@@ -259,7 +259,7 @@ public class CommandHandler implements CommandExecutor {
                     }
 
                     if (type == null) {
-                        sender.sendMessage(instance.references.getPrefix() + TextComponent.formatText(instance.references.getPrefix() + "&7The entity type &6" + args[1] + " &7does not exist. Try one of these:"));
+                        sender.sendMessage(instance.references.getPrefix() + TextComponent.formatText(instance.references.getPrefix() + "&7The entity Type &6" + args[1] + " &7does not exist. Try one of these:"));
                         StringBuilder list = new StringBuilder();
                         for (final EntityType value : EntityType.values()) {
                             if (value.isSpawnable() && value.isAlive()) {
@@ -336,7 +336,7 @@ public class CommandHandler implements CommandExecutor {
                     }
 
                     if (data == null && !args[2].equalsIgnoreCase("random")) {
-                        sender.sendMessage(instance.references.getPrefix() + TextComponent.formatText(instance.references.getPrefix() + "&7The entity type &6" + args[2] + " &7does not exist. Try one of these:"));
+                        sender.sendMessage(instance.references.getPrefix() + TextComponent.formatText(instance.references.getPrefix() + "&7The entity Type &6" + args[2] + " &7does not exist. Try one of these:"));
                         StringBuilder list = new StringBuilder();
 
                         for (SpawnerData spawnerData : instance.getSpawnerManager().getAllSpawnerData()) {

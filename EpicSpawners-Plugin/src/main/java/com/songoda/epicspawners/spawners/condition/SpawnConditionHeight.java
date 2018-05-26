@@ -28,4 +28,11 @@ public class SpawnConditionHeight implements SpawnCondition {
         return y >= min && y <= max;
     }
 
+    public int getMin() {
+        return min;
+    }
+
+    public int getMax() {
+        return max;
+    }
 }

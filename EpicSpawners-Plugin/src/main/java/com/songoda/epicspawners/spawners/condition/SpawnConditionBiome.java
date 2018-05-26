@@ -18,8 +18,8 @@ public class SpawnConditionBiome implements SpawnCondition {
         this.biomes = (biomes.length > 1) ? EnumSet.of(biomes[0], biomes) : EnumSet.noneOf(Biome.class);
     }
 
-    public SpawnConditionBiome() {
-        this(Biome.values());
+    public SpawnConditionBiome(Set<Biome> biomes) {
+        this.biomes = biomes;
     }
 
     @Override
@@ -43,4 +43,7 @@ public class SpawnConditionBiome implements SpawnCondition {
         return WordUtils.capitalizeFully(Iterables.get(biomes, 0).name().replace("_", " "));
     }
 
+    public Set<Biome> getBiomes() {
+        return biomes;
+    }
 }
