@@ -26,6 +26,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.entity.CreatureSpawnEvent;
@@ -116,6 +117,8 @@ public class SpawnOptionEntity implements SpawnOption {
         }
     }
 
+    private static final int SPAWNRANGE = 4;
+
     public void spawnEntity(Location location, EntityType type, SpawnerData data) {
         try {
 
@@ -133,6 +136,17 @@ public class SpawnOptionEntity implements SpawnOption {
                 double z = location.getZ() + testZ * 3;
 
                 spot = new Location(location.getWorld(), x, y, z);
+
+
+                if (type.equals(EntityType.IRON_GOLEM)) {
+                    if (spot.getBlock().getRelative(BlockFace.UP).getType() !=  Material.AIR) continue;
+                    if (spot.getBlock().getRelative(BlockFace.DOWN).getType() !=  Material.AIR) continue;
+                    if (spot.getBlock().getRelative(BlockFace.NORTH).getType() !=  Material.AIR) continue;
+                    if (spot.getBlock().getRelative(BlockFace.SOUTH).getType() !=  Material.AIR) continue;
+                    if (spot.getBlock().getRelative(BlockFace.EAST).getType() !=  Material.AIR) continue;
+                    if (spot.getBlock().getRelative(BlockFace.WEST).getType() !=  Material.AIR) continue;
+                }
+
                 if (canSpawn(data, spot))
                     in = true;
 
@@ -149,18 +163,13 @@ public class SpawnOptionEntity implements SpawnOption {
 
                 Location loc = spot.clone();
                 loc.subtract(0, 1, 0);
-                if (type.equals(EntityType.IRON_GOLEM)) {
-
-                    spot.add(.5, .5, .5);
-
-                } else {
                     spot = spot.clone().getBlock().getLocation();
 
                     double spawnX = ThreadLocalRandom.current().nextDouble(0.4, 0.6);
                     double spawnZ = ThreadLocalRandom.current().nextDouble(0.4, 0.6);
 
                     spot.add(spawnX, .5, spawnZ);
-                }
+
 
                 spawnFinal(spot, data, type);
             }
@@ -211,6 +220,7 @@ public class SpawnOptionEntity implements SpawnOption {
 
         try {
             Entity entity;
+
             if (instance.isServerVersionAtLeast(ServerVersion.V1_11))
                 entity = (Entity) nmsSpawnMethod.invoke(world, location, type.getEntityClass(), null, CreatureSpawnEvent.SpawnReason.SPAWNER); //ToDo: account for all mobs in the spawner.
             else

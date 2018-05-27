@@ -154,13 +154,6 @@ public class InteractListeners implements Listener {
                 }
             }
 
-            String loc = Serialize.getInstance().serializeLocation(block);
-            if (EpicSpawnersPlugin.getInstance().dataFile.getConfig().getString("data.blockshop." + loc) != null) {
-                e.setCancelled(true);
-                EpicSpawnersPlugin.getInstance().getShop().show(instance.getSpawnerManager().getSpawnerData(instance.dataFile.getConfig().getString("data.blockshop." + loc).toLowerCase()), 1, player);
-                return;
-            }
-
             if (e.getClickedBlock() == null
                     || e.getAction() != Action.RIGHT_CLICK_BLOCK
                     || !EpicSpawnersPlugin.getInstance().canBuild(e.getPlayer(), e.getClickedBlock().getLocation())) {

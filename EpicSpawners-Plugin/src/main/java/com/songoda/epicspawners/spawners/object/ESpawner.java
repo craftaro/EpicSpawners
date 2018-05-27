@@ -223,7 +223,7 @@ public class ESpawner implements Spawner {
             if (getBoost() != 0) {
 
                 // ToDo: Make it display all boosts.
-                String[] parts = instance.getLocale().getMessage("interface.spawner.boostedstats", Integer.toString(getBoost()), spawnerData, TimeComponent.makeReadable(getBoostEnd().toEpochMilli() - System.currentTimeMillis())).split("\\|");
+                String[] parts = instance.getLocale().getMessage("interface.spawner.boostedstats", Integer.toString(getBoost()), spawnerData.getIdentifyingName(), TimeComponent.makeReadable(getBoostEnd().toEpochMilli() - System.currentTimeMillis())).split("\\|");
                 lore.add("");
                 for (String line : parts)
                     lore.add(TextComponent.formatText(line));

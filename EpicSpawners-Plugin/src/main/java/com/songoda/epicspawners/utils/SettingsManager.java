@@ -249,7 +249,6 @@ public class SettingsManager implements Listener {
         BOOST_COST("Boost-cost", "Spawner Boosting.Item Charged For A Boost", "DIAMOND:2"),
 
         HOSTILE_MOBS_ATTACK_SECOND("Hostile-mobs-attack-second", "entity.Hostile Mobs Attack Second", false),
-        LARGE_ENTITY_SAFE_SPAWNING("Large-entity-Safe-Spawning", "entity.Use Default Minecraft Spawn Method For Large Entities", true),
 
         ONLY_DROP_STACKED("Only-drop-stacked", "Spawner Drops.Only Drop Stacked Spawners", false),
         MOB_KILLING_COUNT("Mob-kill-counting", "Spawner Drops.Allow Killing Mobs To Drop Spawners", true),
