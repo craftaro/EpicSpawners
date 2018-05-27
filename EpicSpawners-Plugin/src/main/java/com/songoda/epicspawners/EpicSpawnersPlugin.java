@@ -392,12 +392,14 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
                 }
 
                 String[] heightString = currentSection.getString("Conditions.Height").split(":");
-
+                String[] playerString = currentSection.getString("Conditions.Required Player Distance And Amount").split(":");
+                        
                 data.addCondition(new SpawnConditionBiome(biomes));
                 data.addCondition(new SpawnConditionHeight(Integer.parseInt(heightString[0]), Integer.parseInt(heightString[1])));
                 data.addCondition(new SpawnConditionLightDark(SpawnConditionLightDark.Type.valueOf(currentSection.getString("Conditions.Light"))));
                 data.addCondition(new SpawnConditionStorm(currentSection.getBoolean("Conditions.Storm Only")));
                 data.addCondition(new SpawnConditionNearbyEntities(currentSection.getInt("Conditions.Max Entities Around Spawner")));
+                data.addCondition(new SpawnConditionNearbyPlayers(Integer.parseInt(playerString[0]), Integer.parseInt(playerString[1])));
 
                 this.spawnerManager.addSpawnerData(key, data);
             }
@@ -462,6 +464,8 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
                     currentSection.set("Conditions.Storm Only", ((SpawnConditionStorm)spawnCondition).isStormOnly());
                 if (spawnCondition instanceof SpawnConditionNearbyEntities)
                     currentSection.set("Conditions.Max Entities Around Spawner", ((SpawnConditionNearbyEntities)spawnCondition).getMax());
+                if (spawnCondition instanceof SpawnConditionNearbyPlayers)
+                    currentSection.set("Conditions.Required Player Distance And Amount", ((SpawnConditionNearbyPlayers)spawnCondition).getDistance() + ":" + ((SpawnConditionNearbyPlayers)spawnCondition).getAmount());
             }
 
             if (spawnerData.getDisplayItem() != null) {
@@ -644,6 +648,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         }
         spawnerConfig.addDefault("Entities." + type + ".Conditions.Storm Only", false);
         spawnerConfig.addDefault("Entities." + type + ".Conditions.Max Entities Around Spawner", 6);
+        spawnerConfig.addDefault("Entities." + type + ".Conditions.Required Player Distance And Amount", 16 + ":" + 1);
     }
 
     private void loadDataFile() {
@@ -815,7 +820,8 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         if (!item.hasItemMeta()) return 1;
 
         String name = item.getItemMeta().getDisplayName();
-        if (name == null) return 1;
+        if (name == null || !name.contains(":")) return 1;
+
 
         String amount = name.replace(String.valueOf(ChatColor.COLOR_CHAR), "").split(":")[1];
         return NumberUtils.toInt(amount, 1);

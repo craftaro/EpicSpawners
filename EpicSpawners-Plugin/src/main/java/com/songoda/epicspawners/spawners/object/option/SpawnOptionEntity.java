@@ -117,8 +117,6 @@ public class SpawnOptionEntity implements SpawnOption {
         }
     }
 
-    private static final int SPAWNRANGE = 4;
-
     public void spawnEntity(Location location, EntityType type, SpawnerData data) {
         try {
 
@@ -136,7 +134,6 @@ public class SpawnOptionEntity implements SpawnOption {
                 double z = location.getZ() + testZ * 3;
 
                 spot = new Location(location.getWorld(), x, y, z);
-
 
                 if (type.equals(EntityType.IRON_GOLEM)) {
                     if (spot.getBlock().getRelative(BlockFace.UP).getType() !=  Material.AIR) continue;
