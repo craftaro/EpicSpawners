@@ -15,25 +15,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 /**
  * Created by songoda on 3/13/2017.
  */
-public class TestListeners implements Listener {
-
-    @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPlayerEntityInteract(PlayerInteractAtEntityEvent e) {
-        try {
-            if (e.getRightClicked() instanceof ItemFrame) {
-                if (EpicSpawnersPlugin.getInstance().dataFile.getConfig().getString("data.entityshop") != null) {
-                    String uuid = e.getRightClicked().getUniqueId().toString();
-                    if (EpicSpawnersPlugin.getInstance().dataFile.getConfig().getString("data.entityshop." + uuid) != null) {
-                        ((ItemFrame) e.getRightClicked()).setRotation(Rotation.CLOCKWISE_45);
-                        EpicSpawnersPlugin.getInstance().getShop().show(EpicSpawnersPlugin.getInstance().getSpawnerManager().getSpawnerData(EpicSpawnersPlugin.getInstance().dataFile.getConfig().getString("data.entityshop." + uuid).toLowerCase()), 1, e.getPlayer());
-                    }
-                }
-            }
-        } catch (Exception ex) {
-            Debugger.runReport(ex);
-        }
-    }
-
+public class PlayerJoinListeners implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {

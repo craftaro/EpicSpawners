@@ -62,11 +62,9 @@ public class CommandHandler implements CommandExecutor {
             } else if (page == 2 && sender.hasPermission("epicspawners.admin")) {
                 sender.sendMessage(TextComponent.formatText(" &8- &aes change <Type> &7Changes the entity for the spawner you are looking at."));
                 sender.sendMessage(TextComponent.formatText(" &8- &aes give [player/all] [spawnertype/random] [multiplier] [amount] &7Gives an operator the ability to spawn a spawner of his or her choice."));
-                sender.sendMessage(TextComponent.formatText(" &8- &aes setshop <Type> &7Assigns a spawner shop to the block you are looking at."));
-            } else if (page == 3 && sender.hasPermission("epicspawners.admin")) {
                 sender.sendMessage(TextComponent.formatText(" &8- &aes settings &7Edit the EpicSpawners Settings."));
+            } else if (page == 3 && sender.hasPermission("epicspawners.admin")) {
                 sender.sendMessage(TextComponent.formatText(" &8- &aes boost <p:player, f:faction, t:town, i:islandOwner> <amount> [m:minute, h:hour, d:day, y:year] &7This allows you to boost the amount of spawns that are got from placed spawners."));
-                sender.sendMessage(TextComponent.formatText(" &8- &aes removeshop &7Unassigns a spawner shop to the block you are looking at."));
             } else {
                 sender.sendMessage(TextComponent.formatText(instance.references.getPrefix() + "That page does not exist!"));
             }
@@ -255,70 +253,6 @@ public class CommandHandler implements CommandExecutor {
                     } else {
                         Player p = (Player) sender;
                         instance.getSettingsManager().openSettingsManager(p);
-                    }
-                } else if (args[0].equalsIgnoreCase("setshop")) {
-                    if (args.length < 2) return true;
-                    Player p = (Player) sender;
-                    if (!sender.hasPermission("epicspawners.admin")) {
-                        sender.sendMessage(instance.references.getPrefix() + instance.getLocale().getMessage("event.general.nopermission"));
-                        return true;
-                    }
-
-                    String type = null;
-                    ConfigurationSection css = instance.spawnerFile.getConfig().getConfigurationSection("Entities");
-                    for (String key : css.getKeys(false)) {
-                        String input = args[1].toUpperCase().replace("_", "").replace(" ", "");
-                        String compare = key.toUpperCase().replace("_", "").replace(" ", "");
-                        if (input.equals(compare))
-                            type = key;
-                    }
-
-                    if (type == null) {
-                        sender.sendMessage(instance.references.getPrefix() + TextComponent.formatText(instance.references.getPrefix() + "&7The entity Type &6" + args[1] + " &7does not exist. Try one of these:"));
-                        StringBuilder list = new StringBuilder();
-                        for (final EntityType value : EntityType.values()) {
-                            if (value.isSpawnable() && value.isAlive()) {
-                                list.append(value.toString()).append("&7, &6");
-                            }
-                        }
-                        sender.sendMessage(TextComponent.formatText("&6" + list));
-                        return true;
-                    }
-                    Entity ent = null;
-                    if (Arconix.pl().getApi().getPlayer(p).getTarget() != null) {
-                        if (ent instanceof ItemFrame) {
-                            ent = Arconix.pl().getApi().getPlayer(p).getTarget();
-                        }
-                    }
-                    if (ent != null) {
-                        instance.dataFile.getConfig().set("data.entityshop." + ent.getUniqueId().toString(), type);
-                        sender.sendMessage(instance.references.getPrefix() + TextComponent.formatText(instance.references.getPrefix() + "&aShop setup successfully."));
-                        return true;
-                    }
-
-                    if (p.getTargetBlock(null, 200) != null) {
-                        Block b = p.getTargetBlock(null, 200);
-                        String loc = Serialize.getInstance().serializeLocation(b);
-                        instance.dataFile.getConfig().set("data.blockshop." + loc, args[1]);
-                        sender.sendMessage(instance.references.getPrefix() + TextComponent.formatText(instance.references.getPrefix() + "&aShop setup successfully."));
-                    }
-                } else if (args[0].equalsIgnoreCase("removeshop")) {
-                    if (!sender.hasPermission("epicspawners.admin")) {
-                        sender.sendMessage(instance.references.getPrefix() + instance.getLocale().getMessage("event.general.nopermission"));
-                    } else {
-                        Player p = (Player) sender;
-                        Entity ent = null;
-                        if (Arconix.pl().getApi().getPlayer(p).getTarget() != null) {
-                            ent = Arconix.pl().getApi().getPlayer(p).getTarget();
-                        }
-                        if (ent != null) {
-                            instance.dataFile.getConfig().set("data.entityshop." + ent.getUniqueId().toString(), null);
-                            return true;
-                        }
-                        Block b = p.getTargetBlock(null, 200);
-                        String loc = Serialize.getInstance().serializeLocation(b);
-                        instance.dataFile.getConfig().set("data.blockshop." + loc, null);
-                        sender.sendMessage(instance.references.getPrefix() + TextComponent.formatText(instance.references.getPrefix() + "&aShop removed successfully."));
                     }
                 } else if (args[0].equalsIgnoreCase("shop")) {
                     if (!sender.hasPermission("epicspawners.openshop")) {
