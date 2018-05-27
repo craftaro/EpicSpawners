@@ -65,15 +65,6 @@
     </build>
 
     <repositories>
-        <!-- Songoda Repo -->
-        <repository>
-            <id>songoda-public</id>
-            <url>http://repo.songoda.com/repository/songoda-public/</url>
-        </repository>
-        <repository>
-            <id>songoda-private</id>
-            <url>http://repo.songoda.com/repository/songoda-private/</url>
-        </repository>
 
         <repository>
             <id>jcenter</id>

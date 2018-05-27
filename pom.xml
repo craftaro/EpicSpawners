@@ -34,6 +34,16 @@
     </build>
 
     <repositories>
+        <!-- Songoda Repo -->
+        <repository>
+            <id>songoda-public</id>
+            <url>http://repo.songoda.com/repository/songoda-public/</url>
+        </repository>
+        <repository>
+            <id>songoda-private</id>
+            <url>http://repo.songoda.com/repository/songoda-private/</url>
+        </repository>
+        <!--Spigot/Bukkit Repo-->
         <repository>
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
