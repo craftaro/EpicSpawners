@@ -45,7 +45,7 @@ public class SpawnerSpawnTask extends BukkitRunnable {
             }
 
             if (spawner.checkConditions() == false)
-                return;
+                continue;
 
             // If not present in map, init to 0 and put in map. Otherwise, add 30 to existing value
             int amount = timer.merge(location, 30, (oldValue, value) -> (oldValue == null) ? 0 : oldValue + value);
