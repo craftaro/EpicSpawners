@@ -144,6 +144,7 @@ public class BlockListeners implements Listener {
             } catch (Exception ex) {
                 spawner.getCreatureSpawner().setSpawnedType(EntityType.DROPPED_ITEM);
             }
+            spawner.getCreatureSpawner().setDelay(1);
             spawner.getCreatureSpawner().update();
 
             spawner.setPlacedBy(player);

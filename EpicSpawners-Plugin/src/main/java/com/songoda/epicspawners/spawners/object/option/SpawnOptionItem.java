@@ -42,9 +42,9 @@ public class SpawnOptionItem implements SpawnOption {
                 Item droppedItem = world.dropItem(spawnLocation, item);
                 spawner.setSpawnCount(spawner.getSpawnCount() + 1);
 
-                double dx = -0.2 * random.nextDouble();
-                double dz = -0.2 * random.nextDouble();
-                double dy = 0.5 * random.nextDouble();
+                double dx = -.2 + (.2 - -.2) * random.nextDouble();
+                double dy = 0 + (.5 - 0) * random.nextDouble();
+                double dz = -.2 + (.2 - -.2) * random.nextDouble();
 
                 droppedItem.setVelocity(new Vector(dx, dy, dz));
             }
