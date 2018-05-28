@@ -16,6 +16,7 @@ import com.songoda.epicspawners.api.spawner.Spawner;
 import com.songoda.epicspawners.api.spawner.SpawnerData;
 import com.songoda.epicspawners.api.spawner.SpawnerStack;
 import com.songoda.epicspawners.api.spawner.condition.SpawnCondition;
+import com.songoda.epicspawners.spawners.condition.*;
 import com.songoda.epicspawners.spawners.object.option.SpawnOption;
 import com.songoda.epicspawners.spawners.object.option.SpawnOptionBlock;
 import com.songoda.epicspawners.spawners.object.option.SpawnOptionCommand;
@@ -24,6 +25,7 @@ import com.songoda.epicspawners.spawners.object.option.SpawnOptionItem;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.block.Biome;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 
@@ -79,6 +81,15 @@ public class ESpawnerData implements SpawnerData {
 
     public ESpawnerData(String name) {
         this(name, Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
+    }
+
+    public void addDefaultConditions() {
+        addCondition(new SpawnConditionBiome(Biome.values()));
+        addCondition(new SpawnConditionHeight(0, 265));
+        addCondition(new SpawnConditionLightDark(SpawnConditionLightDark.Type.BOTH));
+        addCondition(new SpawnConditionStorm(false));
+        addCondition(new SpawnConditionNearbyEntities(6));
+        addCondition(new SpawnConditionNearbyPlayers(16, 1));
     }
 
     public void reloadSpawnMethods() {

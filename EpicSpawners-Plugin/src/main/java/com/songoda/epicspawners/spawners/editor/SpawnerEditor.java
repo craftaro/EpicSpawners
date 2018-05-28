@@ -209,7 +209,9 @@ public class SpawnerEditor {
 
             SpawnerData spawnerData;
             if (!instance.getSpawnerManager().isSpawnerData(type.toLowerCase())) {
-                instance.getSpawnerManager().addSpawnerData(type, new ESpawnerData(type, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>()));
+                spawnerData = new ESpawnerData(type, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+                ((ESpawnerData) spawnerData).addDefaultConditions();
+                instance.getSpawnerManager().addSpawnerData(type, spawnerData);
             }
             spawnerData = instance.getSpawnerManager().getSpawnerData(type);
 

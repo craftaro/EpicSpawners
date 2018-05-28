@@ -142,7 +142,7 @@ public class BlockListeners implements Listener {
             try {
                 spawner.getCreatureSpawner().setSpawnedType(EntityType.valueOf(spawnerData.getIdentifyingName().toUpperCase().replace(" ", "_")));
             } catch (Exception ex) {
-                spawner.getCreatureSpawner().setSpawnedType(EntityType.valueOf("PIG"));
+                spawner.getCreatureSpawner().setSpawnedType(EntityType.DROPPED_ITEM);
             }
             spawner.getCreatureSpawner().update();
 
