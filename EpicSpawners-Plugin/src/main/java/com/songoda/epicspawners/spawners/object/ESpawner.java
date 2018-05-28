@@ -911,6 +911,7 @@ public class ESpawner implements Spawner {
                     && player.getItemInHand() != null
                     && player.getItemInHand().hasItemMeta()
                     && player.getItemInHand().getItemMeta().hasEnchant(Enchantment.SILK_TOUCH)
+                    && player.hasPermission("epicspawners.silkdrop." + stack.getSpawnerData().getIdentifyingName())
                     || player.hasPermission("epicspawners.no-silk-drop")) {
 
                 int ch = Integer.parseInt(instance.getConfig().getString((placedBy != null

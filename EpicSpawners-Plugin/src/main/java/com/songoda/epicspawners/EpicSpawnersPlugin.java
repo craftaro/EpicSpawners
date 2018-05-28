@@ -381,25 +381,27 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
 
                 SpawnerData data = dataBuilder.build();
 
-                String biomeString = currentSection.getString("Conditions.Biomes");
-                Set<Biome> biomes = new HashSet<>();
-                if (biomeString.toLowerCase().equals("all"))
-                    biomes = this.BIOMES;
-                else {
-                    for (String string : biomeString.split(", ")) {
-                        biomes.add(Biome.valueOf(string));
+                if (currentSection.contains("Conditions")) {
+                    String biomeString = currentSection.getString("Conditions.Biomes");
+                    Set<Biome> biomes = new HashSet<>();
+                    if (biomeString.toLowerCase().equals("all"))
+                        biomes = this.BIOMES;
+                    else {
+                        for (String string : biomeString.split(", ")) {
+                            biomes.add(Biome.valueOf(string));
+                        }
                     }
-                }
 
-                String[] heightString = currentSection.getString("Conditions.Height").split(":");
-                String[] playerString = currentSection.getString("Conditions.Required Player Distance And Amount").split(":");
-                        
-                data.addCondition(new SpawnConditionBiome(biomes));
-                data.addCondition(new SpawnConditionHeight(Integer.parseInt(heightString[0]), Integer.parseInt(heightString[1])));
-                data.addCondition(new SpawnConditionLightDark(SpawnConditionLightDark.Type.valueOf(currentSection.getString("Conditions.Light"))));
-                data.addCondition(new SpawnConditionStorm(currentSection.getBoolean("Conditions.Storm Only")));
-                data.addCondition(new SpawnConditionNearbyEntities(currentSection.getInt("Conditions.Max Entities Around Spawner")));
-                data.addCondition(new SpawnConditionNearbyPlayers(Integer.parseInt(playerString[0]), Integer.parseInt(playerString[1])));
+                    String[] heightString = currentSection.getString("Conditions.Height").split(":");
+                    String[] playerString = currentSection.getString("Conditions.Required Player Distance And Amount").split(":");
+
+                    data.addCondition(new SpawnConditionBiome(biomes));
+                    data.addCondition(new SpawnConditionHeight(Integer.parseInt(heightString[0]), Integer.parseInt(heightString[1])));
+                    data.addCondition(new SpawnConditionLightDark(SpawnConditionLightDark.Type.valueOf(currentSection.getString("Conditions.Light"))));
+                    data.addCondition(new SpawnConditionStorm(currentSection.getBoolean("Conditions.Storm Only")));
+                    data.addCondition(new SpawnConditionNearbyEntities(currentSection.getInt("Conditions.Max Entities Around Spawner")));
+                    data.addCondition(new SpawnConditionNearbyPlayers(Integer.parseInt(playerString[0]), Integer.parseInt(playerString[1])));
+                }
 
                 this.spawnerManager.addSpawnerData(key, data);
             }
