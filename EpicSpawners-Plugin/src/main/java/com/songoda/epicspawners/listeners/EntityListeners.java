@@ -108,6 +108,9 @@ public class EntityListeners implements Listener {
                 }
 
             }
+            if (!player.hasPermission("epicspawners.Killcounter") || !instance.getConfig().getBoolean("Spawner Drops.Allow Killing Mobs To Drop Spawners"))
+                return;
+
             if (!instance.getSpawnManager().isNaturalSpawn(event.getEntity().getUniqueId()) && !instance.getConfig().getBoolean("Spawner Drops.Count Unnatural Kills Towards Spawner Drop"))
                 return;
 
