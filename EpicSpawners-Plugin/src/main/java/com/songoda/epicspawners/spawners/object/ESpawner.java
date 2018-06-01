@@ -976,20 +976,26 @@ public class ESpawner implements Spawner {
             amount = max - currentStackSize;
         }
 
-        if (player.getGameMode() != GameMode.CREATIVE)
-            Methods.takeItem(player, amount);
 
         for (SpawnerStack stack : spawnerStacks) {
             if (!stack.getSpawnerData().equals(data)) continue;
             stack.setStackSize(stack.getStackSize() + amount);
             upgradeFinal(player, currentStackSize);
+
+            if (player.getGameMode() != GameMode.CREATIVE)
+                Methods.takeItem(player, amount);
+
             return true;
         }
 
-        if (!instance.getConfig().getBoolean("Main.OmniSpawners Enabled")) return false;
+        if (!instance.getConfig().getBoolean("Main.OmniSpawners Enabled") || !player.hasPermission("epicspawners.omni")) return false;
 
         ESpawnerStack stack = new ESpawnerStack(data, amount);
         spawnerStacks.push(stack);
+
+        if (player.getGameMode() != GameMode.CREATIVE)
+            Methods.takeItem(player, amount);
+
         return true;
     }
 
