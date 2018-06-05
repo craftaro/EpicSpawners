@@ -6,6 +6,7 @@ import com.songoda.epicspawners.api.spawner.SpawnerData;
 import com.songoda.epicspawners.spawners.object.ESpawner;
 import com.songoda.epicspawners.spawners.object.ESpawnerStack;
 import com.songoda.epicspawners.utils.Debugger;
+import com.songoda.epicspawners.utils.Methods;
 import com.songoda.epicspawners.utils.ServerVersion;
 
 import org.bukkit.Location;
@@ -36,7 +37,7 @@ public class SpawnerListeners implements Listener {
             if (!instance.getSpawnerManager().isSpawner(location)) {
                 Spawner spawner = new ESpawner(location);
                 instance.getSpawnerManager().addSpawnerToWorld(location, spawner);
-                SpawnerData spawnerData = instance.getSpawnerManager().getSpawnerData(e.getEntityType().name());
+                SpawnerData spawnerData = instance.getSpawnerManager().getSpawnerData(Methods.getTypeFromString(e.getEntityType().name()));
                 spawner.addSpawnerStack(new ESpawnerStack(spawnerData, 1));
             }
             e.getSpawner().setDelay(5);

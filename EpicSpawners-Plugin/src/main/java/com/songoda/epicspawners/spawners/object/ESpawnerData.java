@@ -84,12 +84,12 @@ public class ESpawnerData implements SpawnerData {
     }
 
     public void addDefaultConditions() {
-        addCondition(new SpawnConditionBiome(Biome.values()));
+        addCondition(new SpawnConditionNearbyPlayers(16, 1));
         addCondition(new SpawnConditionHeight(0, 265));
+        addCondition(new SpawnConditionBiome(Biome.values()));
         addCondition(new SpawnConditionLightDark(SpawnConditionLightDark.Type.BOTH));
         addCondition(new SpawnConditionStorm(false));
         addCondition(new SpawnConditionNearbyEntities(6));
-        addCondition(new SpawnConditionNearbyPlayers(16, 1));
     }
 
     public void reloadSpawnMethods() {
