@@ -667,7 +667,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         this.blacklistHandler.reload();
         this.loadSpawnersFromFile();
         this.reloadConfig();
-        this.saveConfig();
+        //this.saveConfig();
     }
 
     public Locale getLocale() {
