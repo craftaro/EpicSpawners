@@ -53,6 +53,7 @@ public class InteractListeners implements Listener {
             if (e.getItem() != null) {
                 is = i.getType();
             }
+
             int radius = EpicSpawnersPlugin.getInstance().getConfig().getInt("Main.Spawners Repel Liquid Radius");
             if (e.getItem() != null
                     && is.equals(Material.WATER_BUCKET)
@@ -84,14 +85,12 @@ public class InteractListeners implements Listener {
             SpawnerData blockType = spawnerManager.getSpawnerData(spawner.getCreatureSpawner().getSpawnedType());
 
             if (!EpicSpawnersPlugin.getInstance().getConfig().getBoolean("Main.Convert Spawners With Eggs")
-                    || !EpicSpawnersPlugin.getInstance().spawnerFile.getConfig().getBoolean("Entities." + blockType + ".Allowed")) {  //ToDo When you redo eggs make it so that if you use one on an omni
+                    || !spawner.getFirstStack().getSpawnerData().isActive()) {  //ToDo When you redo eggs make it so that if you use one on an omni
                 e.setCancelled(true);
                 return;
             }
 
-            int bmulti = 1;
-            if (EpicSpawnersPlugin.getInstance().dataFile.getConfig().getInt("data.spawner." + Serialize.getInstance().serializeLocation(b)) != 0)
-                bmulti = EpicSpawnersPlugin.getInstance().dataFile.getConfig().getInt("data.spawner." + Serialize.getInstance().serializeLocation(b));
+            int bmulti = spawner.getSpawnerDataCount();
             int amt = p.getInventory().getItemInHand().getAmount();
             EntityType itype;
 
