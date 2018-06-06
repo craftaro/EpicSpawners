@@ -3,6 +3,7 @@ package com.songoda.epicspawners.api.spawner;
 import com.songoda.epicspawners.api.CostType;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.entity.Player;
@@ -46,6 +47,34 @@ public interface Spawner {
      * @return location of spawner
      */
     Location getLocation();
+
+    /**
+     * Get the X coordinate for the spawner object.
+     *
+     * @return X coordinate.
+     */
+    int getX();
+
+    /**
+     * Get the Y coordinate for the spawner object.
+     *
+     * @return Y coordinate.
+     */
+    int getY();
+
+    /**
+     * Get the Z coordinate for the spawner object.
+     *
+     * @return Z coordinate.
+     */
+    int getZ();
+
+    /**
+     * Get the world that the spawner is in.
+     *
+     * @return spawner world.
+     */
+    World getWorld();
 
     /**
      * Get the {@link CreatureSpawner} object from this

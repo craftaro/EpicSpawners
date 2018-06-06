@@ -41,12 +41,7 @@ import com.songoda.epicspawners.utils.ServerVersion;
 
 import net.milkbowl.vault.economy.Economy;
 
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
@@ -126,6 +121,26 @@ public class ESpawner implements Spawner {
     @Override
     public Location getLocation() {
         return location.clone();
+    }
+
+    @Override
+    public int getX() {
+        return location.getBlockX();
+    }
+
+    @Override
+    public int getY() {
+        return location.getBlockY();
+    }
+
+    @Override
+    public int getZ() {
+        return location.getBlockZ();
+    }
+
+    @Override
+    public World getWorld() {
+        return location.getWorld();
     }
 
     @Override

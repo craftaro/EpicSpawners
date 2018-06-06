@@ -35,6 +35,11 @@ public class ESpawnerStack implements SpawnerStack {
     }
 
     @Override
+    public boolean hasSpawnerData() {
+        return spawnerData != null;
+    }
+
+    @Override
     public void setSpawnerData(SpawnerData spawnerData) {
         this.spawnerData = spawnerData;
     }

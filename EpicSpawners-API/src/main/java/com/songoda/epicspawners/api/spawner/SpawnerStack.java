@@ -14,6 +14,13 @@ public interface SpawnerStack {
     SpawnerData getSpawnerData();
 
     /**
+     * Get if this stack has SpawnerData.
+     *
+     * @return if has spawner data.
+     */
+    boolean hasSpawnerData();
+
+    /**
      * Set the SpawnerData object for this
      * SpawnerStack.
      *
