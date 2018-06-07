@@ -71,4 +71,12 @@ public class ESpawnerStack implements SpawnerStack {
         return stackSize == other.stackSize && Objects.equals(spawnerData, other.spawnerData);
     }
 
+    @Override
+    public String toString() {
+        return "ESpawnerStack:{"
+                    + "Size:" + stackSize + ","
+                    + "Data:" + (spawnerData == null ? null : spawnerData.toString())
+             + "}";
+    }
+
 }

@@ -437,4 +437,10 @@ public class ESpawnerData implements SpawnerData {
         ESpawnerData other = (ESpawnerData) object;
         return Objects.equals(name, other.name);
     }
+
+    @Override
+    public String toString() {
+        return "ESpawnerData:{Name:\"" + name + "\"}";
+    }
+
 }

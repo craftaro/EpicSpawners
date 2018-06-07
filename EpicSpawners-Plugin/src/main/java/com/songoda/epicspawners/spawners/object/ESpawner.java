@@ -1324,4 +1324,18 @@ public class ESpawner implements Spawner {
         return Objects.equals(location, other.location) && Objects.equals(placedBy, other.placedBy);
     }
 
+    @Override
+    public String toString() {
+        return "ESpawner:{"
+                + "Owner:\"" + placedBy + "\","
+                + "Location:{"
+                    + "World:\"" + location.getWorld().getName() + "\","
+                    + "X:" + location.getBlockX() + ","
+                    + "Y:" + location.getBlockY() + ","
+                    + "Z:" + location.getBlockZ()
+                + "},"
+                + "StackCount:" + spawnerStacks.size()
+             + "}";
+    }
+
 }
