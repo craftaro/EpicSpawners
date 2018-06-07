@@ -67,6 +67,8 @@ import java.util.function.Supplier;
  */
 public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
 
+    private static final Set<Biome> BIOMES = EnumSet.allOf(Biome.class);
+
     private static EpicSpawnersPlugin INSTANCE;
 
     public Map<String, Integer> cache = new HashMap<>();
@@ -125,7 +127,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         console.sendMessage(TextComponent.formatText("&a============================="));
     }
 
-    @SuppressWarnings("unchecked")
+    @Override
     public void onEnable() {
         INSTANCE = this;
         EpicSpawnersAPI.setImplementation(this);
@@ -326,6 +328,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         this.spawnerCustomSpawnTask = SpawnerSpawnTask.startTask(this);
     }
 
+    @SuppressWarnings("unchecked")
     private void loadSpawnersFromFile() {
         // Register spawner data into SpawnerRegistry from configuration.
         FileConfiguration spawnerConfig = spawnerFile.getConfig();
@@ -383,10 +386,11 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
 
                 if (currentSection.contains("Conditions")) {
                     String biomeString = currentSection.getString("Conditions.Biomes");
-                    Set<Biome> biomes = new HashSet<>();
+                    Set<Biome> biomes = null;
                     if (biomeString.toLowerCase().equals("all"))
-                        biomes = this.BIOMES;
+                        biomes = EnumSet.copyOf(BIOMES);
                     else {
+                    	biomes = new HashSet<>();
                         for (String string : biomeString.split(", ")) {
                             biomes.add(Biome.valueOf(string));
                         }
@@ -407,8 +411,6 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
             }
         }
     }
-
-    private static final Set<Biome> BIOMES = EnumSet.allOf(Biome.class);
 
     private void saveToFile() {
         //ToDO: If the defaults are set correctly this could do the initial config save.
@@ -636,7 +638,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         spawnerConfig.addDefault("Entities." + type + ".Particle-Effect-Boosted-Only", true);
 
 
-        if (entityType == entityType.SLIME) {
+        if (entityType == EntityType.SLIME) {
             spawnerConfig.addDefault("Entities." + type + ".Conditions.Biomes", Biome.SWAMPLAND);
             spawnerConfig.addDefault("Entities." + type + ".Conditions.Height", "50:70");
         } else {
