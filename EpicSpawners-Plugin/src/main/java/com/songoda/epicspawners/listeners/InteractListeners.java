@@ -120,10 +120,15 @@ public class InteractListeners implements Listener {
                 return;
             }
             if (blockType.equals(itemType)) {
-                p.sendMessage(instance.getLocale().getMessage("event.egg.sametype", blockType));
+                p.sendMessage(instance.getLocale().getMessage("event.egg.sametype", blockType.getIdentifyingName()));
                 return;
             }
-            spawner.getCreatureSpawner().setSpawnedType(itype);
+            spawner.getFirstStack().setSpawnerData(instance.getSpawnerManager().getSpawnerData(itype));
+            try {
+                spawner.getCreatureSpawner().setSpawnedType(EntityType.valueOf(instance.getSpawnerManager().getSpawnerData(itype).getIdentifyingName().toUpperCase()));
+            } catch (Exception e2) {
+                spawner.getCreatureSpawner().setSpawnedType(EntityType.DROPPED_ITEM);
+            }
             spawner.getCreatureSpawner().update();
             EpicSpawnersPlugin.getInstance().getHologramHandler().processChange(b);
             if (p.getGameMode() != GameMode.CREATIVE) {
