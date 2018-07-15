@@ -113,7 +113,7 @@ public class BlockListeners implements Listener {
             
             SpawnerPlaceEvent placeEvent = new SpawnerPlaceEvent(player, spawner);
             Bukkit.getPluginManager().callEvent(placeEvent);
-            if (event.isCancelled()) {
+            if (placeEvent.isCancelled()) {
                 event.setCancelled(true);
                 return;
             }
