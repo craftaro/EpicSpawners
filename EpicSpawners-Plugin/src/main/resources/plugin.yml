@@ -5,6 +5,7 @@ depend: [Arconix, Vault]
 softdepend: [Towny, RedProtect Kingdoms, PlotSquared, GriefPrevention, USkyBlock, ASkyBlock, WorldGuard, Factions, PlaceholderAPI]
 main: com.songoda.epicspawners.EpicSpawnersPlugin
 author: songoda
+api-version: 1.13
 commands:
   EpicSpawners:
     description: I have no idea.

@@ -38,10 +38,10 @@ public class SettingsManager implements Listener {
     private String pluginName = "EpicSpawners";
     private Map<Player, String> cat = new HashMap<>();
 
-    private final EpicSpawnersPlugin plugin;
+    private final EpicSpawnersPlugin instance;
 
     public SettingsManager(EpicSpawnersPlugin plugin) {
-        this.plugin = plugin;
+        this.instance = plugin;
 
         plugin.saveResource("SettingDefinitions.yml", true);
         defs = new ConfigWrapper(plugin, "", "SettingDefinitions.yml");
@@ -63,21 +63,21 @@ public class SettingsManager implements Listener {
 
         if (event.getInventory().getTitle().equals(pluginName + " Settings Manager")) {
             event.setCancelled(true);
-            if (clickedItem.getType() == Material.STAINED_GLASS_PANE) return;
+            if (clickedItem.getType().name().contains("STAINED_GLASS")) return;
 
             String type = ChatColor.stripColor(clickedItem.getItemMeta().getDisplayName());
             this.cat.put((Player) event.getWhoClicked(), type);
             this.openEditor((Player) event.getWhoClicked());
         } else if (event.getInventory().getTitle().equals(pluginName + " Settings Editor")) {
             event.setCancelled(true);
-            if (clickedItem.getType() == Material.STAINED_GLASS_PANE) return;
+            if (clickedItem.getType().name().contains("STAINED_GLASS")) return;
 
             Player player = (Player) event.getWhoClicked();
 
             String key = cat.get(player) + "." + ChatColor.stripColor(clickedItem.getItemMeta().getDisplayName());
 
-            if (plugin.getConfig().get(key).getClass().getName().equals("java.lang.Boolean")) {
-                this.plugin.getConfig().set(key, !plugin.getConfig().getBoolean(key));
+            if (instance.getConfig().get(key).getClass().getName().equals("java.lang.Boolean")) {
+                this.instance.getConfig().set(key, !instance.getConfig().getBoolean(key));
                 this.finishEditing(player);
             } else {
                 this.editObject(player, key);
@@ -91,7 +91,7 @@ public class SettingsManager implements Listener {
         if (!current.containsKey(player)) return;
 
         String value = current.get(player);
-        FileConfiguration config = plugin.getConfig();
+        FileConfiguration config = instance.getConfig();
         if (config.isInt(value)) {
             config.set(value, Integer.parseInt(event.getMessage()));
         } else if (config.isDouble(value)) {
@@ -106,7 +106,7 @@ public class SettingsManager implements Listener {
 
     public void finishEditing(Player player) {
         this.current.remove(player);
-        this.plugin.saveConfig();
+        this.instance.saveConfig();
         this.openEditor(player);
     }
 
@@ -117,7 +117,7 @@ public class SettingsManager implements Listener {
         player.closeInventory();
         player.sendMessage("");
         player.sendMessage(TextComponent.formatText("&7Please enter a value for &6" + current + "&7."));
-        if (plugin.getConfig().isInt(current) || plugin.getConfig().isDouble(current)) {
+        if (instance.getConfig().isInt(current) || instance.getConfig().isDouble(current)) {
             player.sendMessage(TextComponent.formatText("&cUse only numbers."));
         }
         player.sendMessage("");
@@ -131,8 +131,8 @@ public class SettingsManager implements Listener {
         }
 
         int slot = 10;
-        for (String key : plugin.getConfig().getDefaultSection().getKeys(false)) {
-            ItemStack item = new ItemStack(Material.WOOL, 1, (byte) (slot - 9));
+        for (String key : instance.getConfig().getDefaultSection().getKeys(false)) {
+            ItemStack item = new ItemStack(Material.WHITE_WOOL, 1, (byte) (slot - 9)); //ToDo: Make this function as it was meant to.
             ItemMeta meta = item.getItemMeta();
             meta.setLore(Collections.singletonList(TextComponent.formatText("&6Click To Edit This Category.")));
             meta.setDisplayName(TextComponent.formatText("&f&l" + key));
@@ -146,7 +146,7 @@ public class SettingsManager implements Listener {
 
     public void openEditor(Player player) {
         Inventory inventory = Bukkit.createInventory(null, 54, pluginName + " Settings Editor");
-        FileConfiguration config = plugin.getConfig();
+        FileConfiguration config = instance.getConfig();
 
         int slot = 0;
         for (String key : config.getConfigurationSection(cat.get(player)).getKeys(true)) {
@@ -163,7 +163,7 @@ public class SettingsManager implements Listener {
                 item.setType(Material.PAPER);
                 lore.add(TextComponent.formatText("&9" + config.getString(fKey)));
             } else if (config.isInt(fKey)) {
-                item.setType(Material.WATCH);
+                item.setType(Material.CLOCK);
                 lore.add(TextComponent.formatText("&5" + config.getInt(fKey)));
             }
 
@@ -188,14 +188,14 @@ public class SettingsManager implements Listener {
     }
 
     public void updateSettings() {
-        FileConfiguration config = plugin.getConfig();
+        FileConfiguration config = instance.getConfig();
 
         for (Setting setting : Setting.values()) {
             if (config.contains("settings." + setting.oldSetting)) {
-                config.addDefault(setting.setting, plugin.getConfig().get("settings." + setting.oldSetting));
+                config.addDefault(setting.setting, instance.getConfig().get("settings." + setting.oldSetting));
                 config.set("settings." + setting.oldSetting, null);
             } else if (setting.setting.equals("Main.Upgrade Particle Type")) {
-                config.addDefault(setting.setting, plugin.isServerVersion(ServerVersion.V1_7, ServerVersion.V1_8) ? "WITCH_MAGIC" : setting.option);
+                config.addDefault(setting.setting, instance.isServerVersion(ServerVersion.V1_7, ServerVersion.V1_8) ? "WITCH_MAGIC" : setting.option);
             } else {
                 config.addDefault(setting.setting, setting.option);
             }
@@ -263,10 +263,10 @@ public class SettingsManager implements Listener {
         SILKTOUCH_NATURAL_SPAWNER_DROP_CHANCE("Silktouch-natural-drop-chance", "Spawner Drops.Chance On Natural Silktouch", "100%"),
         SILKTOUCH_PLACED_SPAWNER_DROP_CHANCE("Silktouch-placed-drop-chance", "Spawner Drops.Chance On Placed Silktouch", "100%"),
 
-        EXIT_ICON("Exit-Icon", "Interfaces.Exit Icon", "WOOD_DOOR"),
+        EXIT_ICON("Exit-Icon", "Interfaces.Exit Icon", "OAK_DOOR"),
         BUY_ICON("Buy-Icon", "Interfaces.Buy Icon", "EMERALD"),
-        ECO_ICON("ECO-Icon", "Interfaces.Economy Icon", "DOUBLE_PLANT"),
-        XP_ICON("XP-Icon", "Interfaces.XP Icon", "EXP_BOTTLE"),
+        ECO_ICON("ECO-Icon", "Interfaces.Economy Icon", "SUNFLOWER"),
+        XP_ICON("XP-Icon", "Interfaces.XP Icon", "EXPERIENCE_BOTTLE"),
         GLASS_TYPE_1("Glass-Type-1", "Interfaces.Glass Type 1", 7),
         GLASS_TYPE_2("Glass-Type-2", "Interfaces.Glass Type 2", 11),
         GLASS_TYPE_3("Glass-Type-3", "Interfaces.Glass Type 3", 3),

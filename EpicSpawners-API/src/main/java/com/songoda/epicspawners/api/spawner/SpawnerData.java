@@ -26,6 +26,15 @@ public interface SpawnerData {
     void reloadSpawnMethods();
 
     /**
+     * Returns the uuid for this SpawnerData.
+     *
+     * @return uuid for SpawnerData
+     */
+    int getUUID();
+
+    void setUUID(int uuid);
+
+    /**
      * Create an item representation of this SpawnerData.
      *
      * @return new spawner item

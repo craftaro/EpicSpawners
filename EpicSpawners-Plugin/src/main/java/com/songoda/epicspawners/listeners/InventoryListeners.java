@@ -113,7 +113,7 @@ public class InventoryListeners implements Listener {
                         }
                     } else if (event.getCurrentItem().getItemMeta().getDisplayName().equals(instance.getLocale().getMessage("general.nametag.next"))) {
                         spawner.convertOverview(player, page + 1);
-                    } else if (clicked.getType() == Material.SKULL_ITEM || clicked.getType() == Material.MOB_SPAWNER) {
+                    } else if (clicked.getType() == Material.PLAYER_HEAD || clicked.getType() == Material.SPAWNER) {
                         spawner.convert(instance.getSpawnerDataFromItem(clicked), player);
                     }
                 }
@@ -357,9 +357,9 @@ public class InventoryListeners implements Listener {
                     }
                 } else if (event.getCurrentItem().getItemMeta().getDisplayName().equals(instance.getLocale().getMessage("general.nametag.next"))) {
                     instance.getSpawnerEditor().openSpawnerSelector(player, page + 1);
-                } else if (event.getCurrentItem().getType() != Material.STAINED_GLASS_PANE) {
+                } else if (!event.getCurrentItem().getType().name().contains("GLASS_PANE")) {
                     String idd = event.getCurrentItem().getItemMeta().getLore().get(1);
-                    idd = idd.replace("§", "");
+                    idd = idd.replace("§", "").replace(";", "");
                     int id = Integer.parseInt(idd);
                     //if (e.getClick().isLeftClick())
                     instance.getSpawnerEditor().overview(player, id);
@@ -393,7 +393,7 @@ public class InventoryListeners implements Listener {
                     if (event.getAction() != InventoryAction.NOTHING) {
                         if (event.getCurrentItem().getType() != Material.AIR) {
                             ItemStack item = event.getCurrentItem();
-                            if (item.getType() == Material.MOB_SPAWNER) {
+                            if (item.getType() == Material.SPAWNER) {
                                 event.setCancelled(true);
                             }
                         }

@@ -31,6 +31,12 @@ public final class ESpawnerDataBuilder implements SpawnerDataBuilder {
     }
 
     @Override
+    public SpawnerDataBuilder uuid(int uuid) {
+        this.spawnerData.setUUID(uuid);
+        return this;
+    }
+
+    @Override
     public SpawnerDataBuilder pickupCost(double cost) {
         this.spawnerData.setPickupCost(cost);
         return this;

@@ -44,7 +44,7 @@ public class EntityListeners implements Listener {
                 List<Block> toCancel = new ArrayList<>();
                 while (it.hasNext()) {
                     Block b = it.next();
-                    if (b.getType() != Material.MOB_SPAWNER) continue;
+                    if (b.getType() != Material.SPAWNER) continue;
 
                     Location spawnLocation = b.getLocation();
 

@@ -1,11 +1,6 @@
 package com.songoda.epicspawners.spawners.object;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 import com.google.common.base.Preconditions;
 import com.songoda.epicspawners.api.EpicSpawnersAPI;
@@ -31,6 +26,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class ESpawnerData implements SpawnerData {
 
+    private int uuid;
     private final String name;
     private double pickupCost = 0.0;
     private List<Material> spawnBlocks = Collections.singletonList(Material.DIRT);
@@ -65,9 +61,10 @@ public class ESpawnerData implements SpawnerData {
 
     private List<SpawnCondition> spawnConditions = new ArrayList<>();
 
-    public ESpawnerData(String name, List<EntityType> entities, List<Material> blocks, List<ItemStack> items, List<ItemStack> itemDrops, List<String> commands) {
+    public ESpawnerData(int uuid, String name, List<EntityType> entities, List<Material> blocks, List<ItemStack> items, List<ItemStack> itemDrops, List<String> commands) {
         Preconditions.checkNotNull(name, "Name cannot be null");
 
+        this.uuid = uuid == 0 ? (new Random()).nextInt(9999) : uuid;
         this.name = name;
         this.displayName = name;
 
@@ -80,7 +77,7 @@ public class ESpawnerData implements SpawnerData {
     }
 
     public ESpawnerData(String name) {
-        this(name, Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
+        this(0, name, Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
     }
 
     public void addDefaultConditions() {
@@ -108,6 +105,16 @@ public class ESpawnerData implements SpawnerData {
         for (SpawnOption spawnOption : spawnOptions) {
             spawnOption.spawn(this, stack, spawner);
         }
+    }
+
+    @Override
+    public int getUUID() {
+        return uuid;
+    }
+
+    @Override
+    public void setUUID(int uuid) {
+        this.uuid = uuid;
     }
 
     @Override

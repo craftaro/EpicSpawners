@@ -31,6 +31,13 @@ public interface Spawner {
     String getIdentifyingName();
 
     /**
+     * Get identifying SpawnerData for this spawner.
+     *
+     * @return SpawnerData for this spawner
+     */
+    SpawnerData getIdentifyingData();
+
+    /**
      * Get custom display name as to be used when
      * displaying this spawner.
      * 

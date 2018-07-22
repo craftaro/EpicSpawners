@@ -51,6 +51,15 @@ public interface EpicSpawners {
     ItemStack newSpawnerItem(SpawnerData data, int amount, int stackSize);
 
     /**
+     * Get the associated SpawnerData for the provided
+     * identifier.
+     *
+     * @param sid the identifier for the SpawnerData.
+     * @return SpawnerData
+     */
+    SpawnerData identifySpawner(String sid);
+
+    /**
      * Get the {@link SpawnerData} applicable to this
      * ItemStack.
      *

@@ -59,12 +59,12 @@ public class BlockListeners implements Listener {
                     Block b2 = block.getWorld().getBlockAt(bx + fx, by + fy, bz + fz);
 
                     if (from) {
-                        if ((b2.getType().equals(Material.STATIONARY_LAVA) || b2.getType().equals(Material.LAVA))
-                                || (b2.getType().equals(Material.STATIONARY_WATER) || b2.getType().equals(Material.WATER))) {
+                        if ((b2.getType().equals(Material.LAVA) || b2.getType().equals(Material.LAVA))
+                                || (b2.getType().equals(Material.WATER) || b2.getType().equals(Material.WATER))) {
                             b2.setType(Material.AIR);
                         }
                     } else {
-                        if (b2.getType().equals(Material.MOB_SPAWNER)) {
+                        if (b2.getType().equals(Material.SPAWNER)) {
                             return true;
                         }
                     }
@@ -100,7 +100,7 @@ public class BlockListeners implements Listener {
     public void onSpawnerPlace(BlockPlaceEvent event) {
         //We are ignoring canceled inside the event so that it will still remove holograms when the event is canceled.
         if (!event.isCancelled()) {
-            if (event.getBlock().getType() != Material.MOB_SPAWNER) return;
+            if (event.getBlock().getType() != Material.SPAWNER) return;
 
             Location location = event.getBlock().getLocation();
             ESpawner spawner = new ESpawner(event.getBlock().getLocation());
@@ -139,7 +139,7 @@ public class BlockListeners implements Listener {
             instance.getSpawnerManager().addSpawnerToWorld(location, spawner);
 
             if (instance.getConfig().getBoolean("Main.Alerts On Place And Break"))
-                player.sendMessage(instance.getLocale().getMessage("event.block.place", Methods.compileName(spawnerData.getIdentifyingName(), spawner.getFirstStack().getStackSize(), false)));
+                player.sendMessage(instance.getLocale().getMessage("event.block.place", Methods.compileName(spawnerData, spawner.getFirstStack().getStackSize(), false)));
 
             try {
                 spawner.getCreatureSpawner().setSpawnedType(EntityType.valueOf(spawnerData.getIdentifyingName().toUpperCase().replace(" ", "_")));
@@ -170,7 +170,7 @@ public class BlockListeners implements Listener {
 
             Player player = event.getPlayer();
 
-            if (event.getBlock().getType() != Material.MOB_SPAWNER) return;
+            if (event.getBlock().getType() != Material.SPAWNER) return;
 
             if (instance.getBlacklistHandler().isBlacklisted(event.getPlayer(), true)) {
                 event.setCancelled(true);
@@ -207,8 +207,6 @@ public class BlockListeners implements Listener {
                 return;
             }
 
-            String type = spawner.getFirstStack().getSpawnerData().getIdentifyingName();
-
             boolean naturalOnly = instance.getConfig().getBoolean("Main.Only Charge Natural Spawners");
 
             if (spawner.getFirstStack().getSpawnerData().getPickupCost() != 0 && (!naturalOnly || spawner.getPlacedBy() == null)) {
@@ -234,12 +232,14 @@ public class BlockListeners implements Listener {
                 }
             }
 
+            SpawnerData firstData = spawner.getFirstStack().getSpawnerData();
+
             if (spawner.unstack(event.getPlayer())) {
                 if (instance.getConfig().getBoolean("Main.Alerts On Place And Break")) {
                     if (spawner.getSpawnerStacks().size() != 0) {
                         player.sendMessage(instance.getLocale().getMessage("event.downgrade.success", Integer.toString(spawner.getSpawnerDataCount())));
                     } else {
-                        player.sendMessage(instance.getLocale().getMessage("event.block.break", Methods.compileName(type, currentStackSize, true)));
+                        player.sendMessage(instance.getLocale().getMessage("event.block.break", Methods.compileName(firstData, currentStackSize, true)));
                     }
                 }
             }

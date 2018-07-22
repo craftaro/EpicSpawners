@@ -2,6 +2,7 @@ package com.songoda.epicspawners;
 
 import com.google.common.base.Preconditions;
 import com.songoda.arconix.api.mcupdate.MCUpdate;
+import com.songoda.arconix.api.methods.Maths;
 import com.songoda.arconix.api.methods.formatting.TextComponent;
 import com.songoda.arconix.api.methods.serialize.Serialize;
 import com.songoda.arconix.api.utils.ConfigWrapper;
@@ -60,6 +61,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Supplier;
 
 /**
@@ -167,69 +169,13 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
 
         FileConfiguration dataConfig = dataFile.getConfig();
 
-        int amtConverted = 0;
-        this.getLogger().info("Checking for legacy spawners...");
-        if (dataFile.getConfig().contains("data.spawnerstats")) {
-            // Adding in Legacy Spawners.
-            for (String key : dataConfig.getConfigurationSection("data.spawnerstats").getKeys(false)) {
-                Location location = Serialize.getInstance().unserializeLocation(key);
-                location.setX(location.getBlockX());
-                location.setY(location.getBlockY());
-                location.setZ(location.getBlockZ());
-
-                if (location.getBlock().getType() != Material.MOB_SPAWNER) continue;
-
-                CreatureSpawner spawnerState = (CreatureSpawner) location.getBlock().getState();
-                String type = spawnerState.getSpawnedType().name().toLowerCase().replace("_", " ");
-
-                // Is custom spawner.
-                if (dataConfig.contains("data.spawnerstats." + key + ".Type"))
-                    type = dataConfig.getString("data.spawnerstats." + key + ".Type").toLowerCase().replace("_", " ");
-
-                ESpawner spawner = new ESpawner(location);
-
-                try {
-                    spawner.getCreatureSpawner().setSpawnedType(EntityType.valueOf(type.toUpperCase().replace(" ", "_")));
-                } catch (Exception ex) {
-                    spawner.getCreatureSpawner().setSpawnedType(EntityType.valueOf("PIG"));
-                }
-
-                if (!spawnerManager.isSpawnerData(type)) continue;
-
-                int stackSize = 1;
-                SpawnerData spawnerData = spawnerManager.getSpawnerData(type);
-
-                if (dataConfig.contains("data.spawner." + key))
-                    stackSize = dataConfig.getInt("data.spawner." + key);
-
-                ESpawnerStack spawnerStack = new ESpawnerStack(spawnerData, stackSize);
-                amtConverted++;
-
-                if (dataConfig.contains("data.spawnerstats." + key + ".spawns"))
-                    spawner.setSpawnCount(dataConfig.getInt("data.spawnerstats." + key + ".spawns"));
-
-                if (dataConfig.contains("data.spawnerstats." + key + ".player"))
-                    spawner.setPlacedBy(UUID.fromString(dataConfig.getString("data.spawnerstats." + key + ".player")));
-
-                spawner.addSpawnerStack(spawnerStack);
-                this.spawnerManager.addSpawnerToWorld(location, spawner);
-            }
-        }
-
-        if (amtConverted != 0) {
-            this.getLogger().info("Converted " + amtConverted + " legacy spawners...");
-            dataConfig.set("data", null);
-        } else {
-            this.getLogger().info("No legacy spawners found.");
-        }
-
         // Adding in spawners.
         if (dataConfig.contains("data.spawners")) {
             for (String key : dataConfig.getConfigurationSection("data.spawners").getKeys(false)) {
                 Location location = Serialize.getInstance().unserializeLocation(key);
 
-                if (location.getWorld() == null || location.getBlock().getType() != Material.MOB_SPAWNER) {
-                    if (location.getWorld() != null && location.getBlock().getType() != Material.MOB_SPAWNER) {
+                if (location.getWorld() == null || location.getBlock().getType() != Material.SPAWNER) {
+                    if (location.getWorld() != null && location.getBlock().getType() != Material.SPAWNER) {
                         this.hologramHandler.despawn(location.getBlock());
                     }
 
@@ -353,7 +299,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
                     entities.add(EntityType.valueOf(entity));
                 }
 
-                SpawnerDataBuilder dataBuilder = new ESpawnerDataBuilder(key)
+                SpawnerDataBuilder dataBuilder = new ESpawnerDataBuilder(key).uuid(currentSection.getInt("uuid"))
                         .entities(entities).blocks(blocks).items(items).entityDroppedItems(itemDrops).commands(commands)
                         .spawnBlocks(spawnBlocks)
                         .active(currentSection.getBoolean("Allowed"))
@@ -422,6 +368,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         for (SpawnerData spawnerData : spawnerManager.getAllSpawnerData()) {
             ConfigurationSection currentSection = entitiesSection.createSection(spawnerData.getIdentifyingName());
 
+            currentSection.set("uuid", spawnerData.getUUID());
             currentSection.set("Display-Name", spawnerData.getDisplayName());
 
             currentSection.set("blocks", getStrings(spawnerData.getBlocks()));
@@ -573,6 +520,10 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         FileConfiguration spawnerConfig = spawnerFile.getConfig();
 
         String type = Methods.getTypeFromString(value);
+            Random rn = new Random();
+            int uuid = rn.nextInt(9999);
+            spawnerConfig.addDefault("Entities." + type + ".uuid", uuid);
+
         if (!spawnerConfig.contains("Entities." + type + ".Display-Name")) {
             spawnerConfig.set("Entities." + type + ".Display-Name", type);
         }
@@ -591,7 +542,8 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
             spawnBlock = "MYCEL";
         }
 
-        if (value.equalsIgnoreCase("SQUID") || value.equalsIgnoreCase("ELDER_GUARDIAN")) {
+        if (value.equalsIgnoreCase("SQUID") || value.equalsIgnoreCase("ELDER_GUARDIAN") || value.equalsIgnoreCase("COD") ||
+                value.equalsIgnoreCase("SALMON") || value.toUpperCase().contains("FISH")) {
             spawnBlock = "WATER";
         }
 
@@ -639,7 +591,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
 
 
         if (entityType == EntityType.SLIME) {
-            spawnerConfig.addDefault("Entities." + type + ".Conditions.Biomes", Biome.SWAMPLAND);
+            spawnerConfig.addDefault("Entities." + type + ".Conditions.Biomes", Biome.SWAMP);
             spawnerConfig.addDefault("Entities." + type + ".Conditions.Height", "50:70");
         } else {
             spawnerConfig.addDefault("Entities." + type + ".Conditions.Biomes", "ALL");
@@ -781,23 +733,37 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
     public ItemStack newSpawnerItem(SpawnerData data, int amount, int stackSize) {
         Preconditions.checkArgument(stackSize > 0, "Stack size must be greater than or equal to 0");
 
-        ItemStack item = new ItemStack(Material.MOB_SPAWNER, amount);
+        ItemStack item = new ItemStack(Material.SPAWNER, amount);
         ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName(Methods.compileName(data.getIdentifyingName(), stackSize, true));
+        meta.setDisplayName(Methods.compileName(data, stackSize, true));
         item.setItemMeta(meta);
 
         return item;
     }
 
     @Override
+    public SpawnerData identifySpawner(String sid) {
+        int id = Integer.parseInt(sid.replace(";", ""));
+        for (SpawnerData data : spawnerManager.getAllSpawnerData()) {
+            if (data.getUUID() == id)
+                return data;
+        }
+        return null;
+    }
+
+    @Override
     public SpawnerData getSpawnerDataFromItem(ItemStack item) {
         if (item == null || !item.hasItemMeta()) return null;
+
 
         String name = item.getItemMeta().getDisplayName();
         if (name == null) return null;
 
         if (name.contains(":")) {
-            String value = name.replace(String.valueOf(ChatColor.COLOR_CHAR), "").split(":")[0];
+            String value = name.replace(String.valueOf(ChatColor.COLOR_CHAR), "").replace(";", "").split(":")[0];
+            if (Maths.isInt(value)) {
+                return identifySpawner(value);
+            }
             return spawnerManager.getSpawnerData(value.toLowerCase().replace("_", " "));
         }
 
@@ -809,7 +775,6 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
                 return spawnerManager.getSpawnerData(type.name().toLowerCase().replace("_", " "));
             }
         }
-
         return null;
     }
 
@@ -827,7 +792,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         if (name == null || !name.contains(":")) return 1;
 
 
-        String amount = name.replace(String.valueOf(ChatColor.COLOR_CHAR), "").split(":")[1];
+        String amount = name.replace(String.valueOf(ChatColor.COLOR_CHAR), "").replace(";", "").split(":")[1];
         return NumberUtils.toInt(amount, 1);
     }
 

@@ -50,7 +50,7 @@ public class HologramHandler {
             Location olocation = spawner.getLocation();
             Location location = null;
             Block b = olocation.getBlock();
-            if (b.getType() != Material.MOB_SPAWNER) return;
+            if (b.getType() != Material.SPAWNER) return;
             String face = null;
             Collection<Entity> nearbyEntites = Methods.getNearbyEntities(olocation, 5, 5, 5);
             for (Entity entity : nearbyEntites) {
@@ -142,7 +142,7 @@ public class HologramHandler {
     public void addHologram(Location location, Spawner spawner) {
         try {
             int multi = spawner.getSpawnerDataCount();
-            String name = Methods.compileName(spawner.getIdentifyingName(), multi, false);
+            String name = Methods.compileName(instance.getSpawnerManager().getSpawnerData(spawner.getIdentifyingName()), multi, false);
 
             Arconix.pl().getApi().packetLibrary.getHologramManager().spawnHologram(location, name.trim());
 
@@ -155,19 +155,19 @@ public class HologramHandler {
         try {
             if (instance.isServerVersionAtLeast(ServerVersion.V1_8)) {
                 Block spawner = null;
-                if (b.getType() == Material.MOB_SPAWNER) {
+                if (b.getType() == Material.SPAWNER) {
                     spawner = b;
-                } else if (b.getRelative(BlockFace.UP).getType() == Material.MOB_SPAWNER) {
+                } else if (b.getRelative(BlockFace.UP).getType() == Material.SPAWNER) {
                     spawner = b.getRelative(BlockFace.UP);
-                } else if (b.getRelative(BlockFace.DOWN).getType() == Material.MOB_SPAWNER) {
+                } else if (b.getRelative(BlockFace.DOWN).getType() == Material.SPAWNER) {
                     spawner = b.getRelative(BlockFace.DOWN);
-                } else if (b.getRelative(BlockFace.NORTH).getType() == Material.MOB_SPAWNER) {
+                } else if (b.getRelative(BlockFace.NORTH).getType() == Material.SPAWNER) {
                     spawner = b.getRelative(BlockFace.NORTH);
-                } else if (b.getRelative(BlockFace.SOUTH).getType() == Material.MOB_SPAWNER) {
+                } else if (b.getRelative(BlockFace.SOUTH).getType() == Material.SPAWNER) {
                     spawner = b.getRelative(BlockFace.SOUTH);
-                } else if (b.getRelative(BlockFace.WEST).getType() == Material.MOB_SPAWNER) {
+                } else if (b.getRelative(BlockFace.WEST).getType() == Material.SPAWNER) {
                     spawner = b.getRelative(BlockFace.WEST);
-                } else if (b.getRelative(BlockFace.EAST).getType() == Material.MOB_SPAWNER) {
+                } else if (b.getRelative(BlockFace.EAST).getType() == Material.SPAWNER) {
                     spawner = b.getRelative(BlockFace.EAST);
                 }
                 if (spawner != null) {

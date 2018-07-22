@@ -50,7 +50,7 @@ public class AppearanceHandler {
                 if (!location.getWorld().isChunkLoaded(destx, destz)) {
                     continue;
                 }
-                if (location.getBlock().getType() != Material.MOB_SPAWNER) continue;
+                if (location.getBlock().getType() != Material.SPAWNER) continue;
                 String last = null;
                 SpawnerData next = null;
                 List<SpawnerStack> list = new ArrayList<>(spawner.getSpawnerStacks());

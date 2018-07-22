@@ -55,6 +55,14 @@ public enum HeadType {
     ZOMBIE("http://textures.minecraft.net/texture/56fc854bb84cf4b7697297973e02b79bc10698460b51a639c60e5e417734e11"),
     ZOMBIE_HORSE("http://textures.minecraft.net/texture/d898e3eacff9949a9de9777ddfada8a7f62a4102de47b54db35f9f843e1ce4"),
     ZOMBIE_VILLAGER("http://textures.minecraft.net/texture/1a207a2b872fe8dd22ce5e27fc3263622621635efd8ea6abbdf317f99c5843"),
+    TURTLE("http://textures.minecraft.net/texture/8df85c60a2e6061a5b4100e224422d19373badae2c0a1ca13e4d94897f7cbcf3"),
+    PHANTOM("http://textures.minecraft.net/texture/fc060c4c1565f337a1b399ccf247cf300d3c3843efaaa610e5d894a79d9957fe"),
+    DOLPHIN("http://textures.minecraft.net/texture/546fd34b06c61f68e94f357f38e62d334e339edf2b930d26951971921bbb5268"),
+    PUFFERFISH("http://textures.minecraft.net/texture/13bc144030373790ca5a03bf111ca4127d31729bf0788d1e05a019206e62da92"),
+    SALMON("http://textures.minecraft.net/texture/c1102e3a82c44ad4180e5be1cedda386158f5b8b20a52a8bd941104f7b695b9f"),
+    COD("http://textures.minecraft.net/texture/a5eef52a468f681fab6a56bf5cc9986c1868ff0795d115c6ab0009d8faf972a4"),
+    TROPICAL_FISH("http://textures.minecraft.net/texture/b80f5955825e822eff416182925c7d650a7e0947ec9f855a75450e03175e8338"),
+    DROWNED("http://textures.minecraft.net/texture/71f2469f9b4bd92aa6a8ba3415f1ab76fd746041400062dc40fe13b646c0cc5d"),
     DROPPED_ITEM("http://textures.minecraft.net/texture/452fe4ce1f1d53a12ed443eeba7297e81da581e0c7a39954d9d7bba7de59c46");
 
     private final String url;

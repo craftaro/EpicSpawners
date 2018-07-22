@@ -29,6 +29,14 @@ public interface SpawnerDataBuilder {
     SpawnerDataBuilder displayName(String name);
 
     /**
+     * Define the unique id for this spawner.
+     *
+     * @param uuid unique id for this SpawnerData
+     * @return this instance. Chained method calls
+     */
+    SpawnerDataBuilder uuid(int uuid);
+
+    /**
      * Set the pickup cost for this SpawnerDataBuilder
      * 
      * @param cost the cost to set. Must be greater than or equal to 0.0

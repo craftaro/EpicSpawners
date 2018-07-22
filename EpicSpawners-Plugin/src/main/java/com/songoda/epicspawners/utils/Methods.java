@@ -7,6 +7,7 @@ import com.songoda.arconix.api.methods.formatting.TextComponent;
 import com.songoda.arconix.plugin.Arconix;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
 
+import com.songoda.epicspawners.api.spawner.SpawnerData;
 import org.apache.commons.lang.WordUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.ChatColor;
@@ -75,12 +76,12 @@ public class Methods {
         return (int) Math.ceil(NumberUtils.toDouble(multi, 1) * time * amt);
     }
 
-    public static String compileName(String type, int multi, boolean full) {
+    public static String compileName(SpawnerData data, int multi, boolean full) {
         try {
             EpicSpawnersPlugin plugin = EpicSpawnersPlugin.getInstance();
 
             String nameFormat = plugin.getConfig().getString("Main.Spawner Name Format");
-            String displayName = plugin.getSpawnerManager().getSpawnerData(type).getDisplayName();
+            String displayName = data.getDisplayName();
 
             nameFormat = nameFormat.replace("{TYPE}", displayName);
 
@@ -95,9 +96,18 @@ public class Methods {
                 nameFormat = nameFormat.replaceAll("\\[.*?]", "");
             }
 
+
+            StringBuilder hidden = new StringBuilder();
+            for (char c : String.valueOf(multi).toCharArray()) hidden.append(";").append(c);
+            String multiStr = hidden.toString();
+
+            hidden = new StringBuilder();
+            for (char c : String.valueOf(data.getUUID()).toCharArray()) hidden.append(";").append(c);
+            String uuidStr = hidden.toString();
+
             String info = "";
             if (full) {
-                info += TextComponent.convertToInvisibleString(type.toUpperCase().replaceAll(" ", "_") + ":" + multi + ":");
+                info += TextComponent.convertToInvisibleString( uuidStr + ":" + multiStr + ":");
             }
 
             return info + TextComponent.formatText(nameFormat).trim();
@@ -138,8 +148,7 @@ public class Methods {
     }
 
     public static boolean isAir(Material type) {
-        return type == Material.AIR || type == Material.WOOD_PLATE || type == Material.STONE_PLATE
-            || type == Material.IRON_PLATE || type == Material.GOLD_PLATE;
+        return type == Material.AIR || type.name().contains("PRESSURE");
     }
 
 

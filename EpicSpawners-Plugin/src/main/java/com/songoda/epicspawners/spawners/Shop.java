@@ -75,7 +75,7 @@ public class Shop {
             for (SpawnerData spawnerData : entities) {
                 if (place == 17 || place == (max22 - 18)) place++;
 
-                ItemStack it = new ItemStack(Material.SKULL_ITEM, 1, (byte) 3);
+                ItemStack it = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
                 ItemStack item = instance.getHeads().addTexture(it, spawnerData);
 
                 if (spawnerData.getDisplayItem() != null) {
@@ -85,7 +85,7 @@ public class Shop {
                 }
 
                 ItemMeta itemmeta = item.getItemMeta();
-                String name = Methods.compileName(spawnerData.getIdentifyingName(), 1, true);
+                String name = Methods.compileName(spawnerData, 1, true);
                 ArrayList<String> lore = new ArrayList<>();
                 double price = spawnerData.getShopPrice();
                 lore.add(TextComponent.formatText(instance.getLocale().getMessage("interface.shop.buyprice", TextComponent.formatEconomy(price))));
@@ -98,6 +98,7 @@ public class Shop {
                 itemmeta.setDisplayName(name);
                 item.setItemMeta(itemmeta);
                 inventory.setItem(place, item);
+
                 place++;
             }
 
@@ -118,25 +119,16 @@ public class Shop {
             exitmeta.setDisplayName(instance.getLocale().getMessage("general.nametag.exit"));
             exit.setItemMeta(exitmeta);
 
-            ItemStack head = new ItemStack(Material.SKULL_ITEM, 1, (byte) 3);
-            ItemStack skull = head;
-            boolean v1_7 = instance.isServerVersion(ServerVersion.V1_7);
-            if (!v1_7)
-                skull = Arconix.pl().getApi().getGUI().addTexture(head, "http://textures.minecraft.net/texture/1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b");
+            ItemStack head = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
+            ItemStack skull = Arconix.pl().getApi().getGUI().addTexture(head, "http://textures.minecraft.net/texture/1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b");
             SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
-            if (v1_7)
-                skullMeta.setOwner("MHF_ArrowRight");
             skull.setDurability((short) 3);
             skullMeta.setDisplayName(instance.getLocale().getMessage("general.nametag.next"));
             skull.setItemMeta(skullMeta);
 
-            ItemStack head2 = new ItemStack(Material.SKULL_ITEM, 1, (byte) 3);
-            ItemStack skull2 = head2;
-            if (!v1_7)
-                skull2 = Arconix.pl().getApi().getGUI().addTexture(head2, "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23");
+            ItemStack head2 = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
+            ItemStack skull2 = Arconix.pl().getApi().getGUI().addTexture(head2, "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23");
             SkullMeta skull2Meta = (SkullMeta) skull2.getItemMeta();
-            if (v1_7)
-                skull2Meta.setOwner("MHF_ArrowLeft");
             skull2.setDurability((short) 3);
             skull2Meta.setDisplayName(instance.getLocale().getMessage("general.nametag.back"));
             skull2.setItemMeta(skull2Meta);
@@ -178,7 +170,7 @@ public class Shop {
 
     public void show(SpawnerData spawnerData, int amt, Player p) {
         try {
-            Inventory inventory = Bukkit.createInventory(null, 45, TextComponent.formatTitle(instance.getLocale().getMessage("interface.shop.spawnershowtitle", Methods.compileName(spawnerData.getIdentifyingName(), 1, false))));
+            Inventory inventory = Bukkit.createInventory(null, 45, TextComponent.formatTitle(instance.getLocale().getMessage("interface.shop.spawnershoptitle", Methods.compileName(spawnerData, 1, false))));
 
             int num = 0;
             while (num != 9) {
@@ -213,7 +205,7 @@ public class Shop {
 
             double price = spawnerData.getShopPrice() * amt;
 
-            ItemStack it = new ItemStack(Material.SKULL_ITEM, amt, (byte) 3);
+            ItemStack it = new ItemStack(Material.PLAYER_HEAD, amt, (byte) 3);
 
             ItemStack item = EpicSpawnersPlugin.getInstance().getHeads().addTexture(it, spawnerData);
 
@@ -226,7 +218,7 @@ public class Shop {
 
             item.setAmount(amt);
             ItemMeta itemmeta = item.getItemMeta();
-            String name = Methods.compileName(spawnerData.getIdentifyingName(), 1, false);
+            String name = Methods.compileName(spawnerData, 1, false);
             itemmeta.setDisplayName(name);
             ArrayList<String> lore = new ArrayList<>();
             lore.add(instance.getLocale().getMessage("interface.shop.buyprice", TextComponent.formatEconomy(price)));
@@ -235,7 +227,7 @@ public class Shop {
             inventory.setItem(22, item);
 
 
-            ItemStack plus = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 5);
+            ItemStack plus = new ItemStack(Material.LIME_STAINED_GLASS_PANE, 1, (short) 5);
             ItemMeta plusmeta = plus.getItemMeta();
             plusmeta.setDisplayName(instance.getLocale().getMessage("interface.shop.add1"));
             plus.setItemMeta(plusmeta);
@@ -243,21 +235,21 @@ public class Shop {
                 inventory.setItem(15, plus);
             }
 
-            plus = new ItemStack(Material.STAINED_GLASS_PANE, 10, (short) 5);
+            plus = new ItemStack(Material.LIME_STAINED_GLASS_PANE, 10, (short) 5);
             plusmeta.setDisplayName(instance.getLocale().getMessage("interface.shop.add10"));
             plus.setItemMeta(plusmeta);
             if (item.getAmount() + 10 <= 64) {
                 inventory.setItem(33, plus);
             }
 
-            plus = new ItemStack(Material.STAINED_GLASS_PANE, 64, (short) 5);
+            plus = new ItemStack(Material.LIME_STAINED_GLASS_PANE, 64, (short) 5);
             plusmeta.setDisplayName(instance.getLocale().getMessage("interface.shop.set64"));
             plus.setItemMeta(plusmeta);
             if (item.getAmount() != 64) {
                 inventory.setItem(25, plus);
             }
 
-            ItemStack minus = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 14);
+            ItemStack minus = new ItemStack(Material.RED_STAINED_GLASS_PANE, 1, (short) 14);
             ItemMeta minusmeta = minus.getItemMeta();
             minusmeta.setDisplayName(instance.getLocale().getMessage("interface.shop.remove1"));
             minus.setItemMeta(minusmeta);
@@ -265,14 +257,14 @@ public class Shop {
                 inventory.setItem(11, minus);
             }
 
-            minus = new ItemStack(Material.STAINED_GLASS_PANE, 10, (short) 14);
+            minus = new ItemStack(Material.RED_STAINED_GLASS_PANE, 10, (short) 14);
             minusmeta.setDisplayName(instance.getLocale().getMessage("interface.shop.remove10"));
             minus.setItemMeta(minusmeta);
             if (item.getAmount() - 10 >= 0) {
                 inventory.setItem(29, minus);
             }
 
-            minus = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 14);
+            minus = new ItemStack(Material.RED_STAINED_GLASS_PANE, 1, (short) 14);
             minusmeta.setDisplayName(instance.getLocale().getMessage("interface.shop.set1"));
             minus.setItemMeta(minusmeta);
             if (item.getAmount() != 1) {
@@ -285,14 +277,9 @@ public class Shop {
             exit.setItemMeta(exitmeta);
             inventory.setItem(8, exit);
 
-            ItemStack head2 = new ItemStack(Material.SKULL_ITEM, 1, (byte) 3);
-            ItemStack skull2 = head2;
-            boolean v1_7 = EpicSpawnersPlugin.getInstance().isServerVersion(ServerVersion.V1_7);
-            if (!v1_7)
-                skull2 = Arconix.pl().getApi().getGUI().addTexture(head2, "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23");
+            ItemStack head2 = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
+            ItemStack skull2 = Arconix.pl().getApi().getGUI().addTexture(head2, "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23");
             SkullMeta skull2Meta = (SkullMeta) skull2.getItemMeta();
-            if (v1_7)
-                skull2Meta.setOwner("MHF_ArrowLeft");
             skull2.setDurability((short) 3);
             skull2Meta.setDisplayName(instance.getLocale().getMessage("general.nametag.back"));
             skull2.setItemMeta(skull2Meta);

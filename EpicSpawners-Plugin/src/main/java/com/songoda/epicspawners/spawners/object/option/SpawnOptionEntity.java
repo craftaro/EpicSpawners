@@ -135,15 +135,6 @@ public class SpawnOptionEntity implements SpawnOption {
 
                 spot = new Location(location.getWorld(), x, y, z);
 
-                if (type.equals(EntityType.IRON_GOLEM)) {
-                    if (spot.getBlock().getRelative(BlockFace.UP).getType() !=  Material.AIR) continue;
-                    if (spot.getBlock().getRelative(BlockFace.DOWN).getType() !=  Material.AIR) continue;
-                    if (spot.getBlock().getRelative(BlockFace.NORTH).getType() !=  Material.AIR) continue;
-                    if (spot.getBlock().getRelative(BlockFace.SOUTH).getType() !=  Material.AIR) continue;
-                    if (spot.getBlock().getRelative(BlockFace.EAST).getType() !=  Material.AIR) continue;
-                    if (spot.getBlock().getRelative(BlockFace.WEST).getType() !=  Material.AIR) continue;
-                }
-
                 if (canSpawn(data, spot))
                     in = true;
 
@@ -202,7 +193,7 @@ public class SpawnOptionEntity implements SpawnOption {
 
     public boolean isWater(Material type) {
         try {
-            if (type == Material.WATER || type == Material.STATIONARY_WATER) {
+            if (type == Material.WATER || type == Material.WATER) {
                 return true;
             }
 

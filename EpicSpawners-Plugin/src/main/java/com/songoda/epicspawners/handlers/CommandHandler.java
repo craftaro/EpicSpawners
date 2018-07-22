@@ -98,7 +98,7 @@ public class CommandHandler implements CommandExecutor {
                         Player p = (Player) sender;
                         Block b = p.getTargetBlock(null, 200);
 
-                        if (b.getType().equals(Material.MOB_SPAWNER)) {
+                        if (b.getType().equals(Material.SPAWNER)) {
                             Spawner spawner = instance.getSpawnerManager().getSpawnerFromWorld(b.getLocation());
 
 
@@ -308,12 +308,12 @@ public class CommandHandler implements CommandExecutor {
                             if (args[1].toLowerCase().equals("all")) {
                                 for (Player pl : Bukkit.getOnlinePlayers()) {
                                     pl.getInventory().addItem(spawnerItem);
-                                    pl.sendMessage(TextComponent.formatText(instance.references.getPrefix() + instance.getLocale().getMessage("command.give.success", amt, Methods.compileName(data.getIdentifyingName(), multi, false))));
+                                    pl.sendMessage(TextComponent.formatText(instance.references.getPrefix() + instance.getLocale().getMessage("command.give.success", amt, Methods.compileName(data, multi, false))));
                                 }
                             } else {
                                 Player pl = Bukkit.getPlayerExact(args[1]);
                                 pl.getInventory().addItem(spawnerItem);
-                                pl.sendMessage(TextComponent.formatText(instance.references.getPrefix() + instance.getLocale().getMessage("command.give.success", amt, Methods.compileName(data.getIdentifyingName(), multi, false))));
+                                pl.sendMessage(TextComponent.formatText(instance.references.getPrefix() + instance.getLocale().getMessage("command.give.success", amt, Methods.compileName(data, multi, false))));
 
                             }
                         } else {
@@ -331,12 +331,12 @@ public class CommandHandler implements CommandExecutor {
                             if (args[1].toLowerCase().equals("all")) {
                                 for (Player pl : Bukkit.getOnlinePlayers()) {
                                     pl.getInventory().addItem(spawnerItem);
-                                    pl.sendMessage(TextComponent.formatText(instance.references.getPrefix() + instance.getLocale().getMessage("command.give.success", amt, Methods.compileName(data.getIdentifyingName(), multi, false))));
+                                    pl.sendMessage(TextComponent.formatText(instance.references.getPrefix() + instance.getLocale().getMessage("command.give.success", amt, Methods.compileName(data, multi, false))));
                                 }
                             } else {
                                 Player pl = Bukkit.getPlayerExact(args[1]);
                                 pl.getInventory().addItem(spawnerItem);
-                                pl.sendMessage(TextComponent.formatText(instance.references.getPrefix() + instance.getLocale().getMessage("command.give.success", amt, Methods.compileName(data.getIdentifyingName(), multi, false))));
+                                pl.sendMessage(TextComponent.formatText(instance.references.getPrefix() + instance.getLocale().getMessage("command.give.success", amt, Methods.compileName(data, multi, false))));
 
                             }
                         }
@@ -408,7 +408,7 @@ public class CommandHandler implements CommandExecutor {
                     int customGoal = spawnerData.getKillGoal();
                     if (customGoal != 0) goal = customGoal;
 
-                    ItemStack it = new ItemStack(Material.SKULL_ITEM, 1, (byte) 3);
+                    ItemStack it = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
 
                     ItemStack item = instance.getHeads().addTexture(it, spawnerData);
 
