@@ -16,7 +16,7 @@ public class HookTowny implements ClaimableProtectionPluginHook {
     private final Towny towny;
 
     public HookTowny() {
-        this.towny = Towny.plugin;
+        this.towny = Towny.getPlugin();
     }
 
     @Override
