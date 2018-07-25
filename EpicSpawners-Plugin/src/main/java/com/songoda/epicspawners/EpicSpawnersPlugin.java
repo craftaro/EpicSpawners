@@ -88,7 +88,6 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
     public ConfigWrapper dataFile = new ConfigWrapper(this, "", "data.yml");
     public ConfigWrapper spawnerFile = new ConfigWrapper(this, "", "spawners.yml");
     public References references = null;
-    private ConfigWrapper langFile = new ConfigWrapper(this, "", "lang.yml");
     private ConfigWrapper hooksFile = new ConfigWrapper(this, "", "hooks.yml");
     private SpawnManager spawnManager;
     private PlayerActionManager playerActionManager;
@@ -152,7 +151,6 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         Locale.saveDefaultLocale("en_US");
         this.locale = Locale.getLocale(getConfig().getString("Locale", "en_US"));
 
-        this.langFile.createNewFile("Loading Language File", "EpicSpawners Language File");
         this.hooksFile.createNewFile("Loading Hooks File", "EpicSpawners Hooks File");
         this.dataFile.createNewFile("Loading Data File", "EpicSpawners Data File");
         this.loadDataFile();
@@ -614,7 +612,6 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
 
     public void reload() {
         this.locale.reloadMessages();
-        this.langFile.createNewFile("Loading language file", "EpicSpawners language file");
         this.spawnerFile.createNewFile("Loading Spawners File", "EpicSpawners Spawners File");
         this.hooksFile.createNewFile("Loading hookHandler File", "EpicSpawners Spawners File");
         this.references = new References();
