@@ -35,6 +35,7 @@ import com.songoda.epicspawners.api.spawner.condition.SpawnCondition;
 import com.songoda.epicspawners.boost.BoostData;
 import com.songoda.epicspawners.boost.BoostType;
 import com.songoda.epicspawners.player.MenuType;
+import com.songoda.epicspawners.player.PlayerData;
 import com.songoda.epicspawners.utils.Debugger;
 import com.songoda.epicspawners.utils.Methods;
 import com.songoda.epicspawners.utils.ServerVersion;
@@ -555,10 +556,10 @@ public class ESpawner implements Spawner {
         }
     }
 
-    public void convertOverview(Player p, int page) {
+    public void convertOverview(Player player, int page) {
         try {
             EpicSpawnersPlugin instance = EpicSpawnersPlugin.getInstance();
-            instance.page.put(p, page);
+            instance.page.put(player, page);
 
             List<SpawnerData> entities = new ArrayList<>();
 
@@ -568,7 +569,7 @@ public class ESpawner implements Spawner {
             for (SpawnerData spawnerData : instance.getSpawnerManager().getAllSpawnerData()) {
                 if (spawnerData.getIdentifyingName().equalsIgnoreCase("omni")
                         || !spawnerData.isConvertible()
-                        || !p.hasPermission("epicspawners.convert." + spawnerData.getIdentifyingName())) continue;
+                        || !player.hasPermission("epicspawners.convert." + spawnerData.getIdentifyingName())) continue;
                 if (num >= start) {
                     if (show <= 32) {
                         entities.add(spawnerData);
@@ -579,7 +580,7 @@ public class ESpawner implements Spawner {
             }
 
             int amt = entities.size();
-            String title = EpicSpawnersPlugin.getInstance().getLocale().getMessage("interface.convert.title");
+            String title = instance.getLocale().getMessage("interface.convert.title");
             Inventory i = Bukkit.createInventory(null, 54, TextComponent.formatTitle(title));
             int max2 = 54;
             if (amt <= 7) {
@@ -602,7 +603,7 @@ public class ESpawner implements Spawner {
                     place++;
                 ItemStack it = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
 
-                ItemStack item = EpicSpawnersPlugin.getInstance().getHeads().addTexture(it, spawnerData);
+                ItemStack item = instance.getHeads().addTexture(it, spawnerData);
 
                 if (spawnerData.getDisplayItem() != null) {
                     Material mat = spawnerData.getDisplayItem();
@@ -615,10 +616,10 @@ public class ESpawner implements Spawner {
                 ArrayList<String> lore = new ArrayList<>();
                 double price = spawnerData.getConvertPrice() * getSpawnerDataCount();
 
-                lore.add(EpicSpawnersPlugin.getInstance().getLocale().getMessage("interface.shop.buyprice", TextComponent.formatEconomy(price)));
-                String loreString = EpicSpawnersPlugin.getInstance().getLocale().getMessage("interface.convert.lore", Methods.getTypeFromString(spawnerData.getIdentifyingName()));
+                lore.add(instance.getLocale().getMessage("interface.shop.buyprice", TextComponent.formatEconomy(price)));
+                String loreString = instance.getLocale().getMessage("interface.convert.lore", Methods.getTypeFromString(spawnerData.getIdentifyingName()));
                 if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-                    loreString = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(p, loreString.replace(" ", "_")).replace("_", " ");
+                    loreString = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, loreString.replace(" ", "_")).replace("_", " ");
                 }
                 lore.add(loreString);
                 itemmeta.setLore(lore);
@@ -640,23 +641,23 @@ public class ESpawner implements Spawner {
                 num2++;
             }
 
-            ItemStack exit = new ItemStack(Material.valueOf(EpicSpawnersPlugin.getInstance().getConfig().getString("Interfaces.Exit Icon")), 1);
+            ItemStack exit = new ItemStack(Material.valueOf(instance.getConfig().getString("Interfaces.Exit Icon")), 1);
             ItemMeta exitmeta = exit.getItemMeta();
-            exitmeta.setDisplayName(EpicSpawnersPlugin.getInstance().getLocale().getMessage("general.nametag.exit"));
+            exitmeta.setDisplayName(instance.getLocale().getMessage("general.nametag.exit"));
             exit.setItemMeta(exitmeta);
 
             ItemStack head = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
             ItemStack skull = Arconix.pl().getApi().getGUI().addTexture(head, "http://textures.minecraft.net/texture/1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b");
             SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
             skull.setDurability((short) 3);
-            skullMeta.setDisplayName(EpicSpawnersPlugin.getInstance().getLocale().getMessage("general.nametag.next"));
+            skullMeta.setDisplayName(instance.getLocale().getMessage("general.nametag.next"));
             skull.setItemMeta(skullMeta);
 
             ItemStack head2 = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
             ItemStack skull2 = Arconix.pl().getApi().getGUI().addTexture(head2, "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23");
             SkullMeta skull2Meta = (SkullMeta) skull2.getItemMeta();
             skull2.setDurability((short) 3);
-            skull2Meta.setDisplayName(EpicSpawnersPlugin.getInstance().getLocale().getMessage("general.nametag.back"));
+            skull2Meta.setDisplayName(instance.getLocale().getMessage("general.nametag.back"));
             skull2.setItemMeta(skull2Meta);
 
             i.setItem(8, exit);
@@ -688,10 +689,11 @@ public class ESpawner implements Spawner {
                 i.setItem(max22 - 2, skull);
             }
 
-            p.openInventory(i);
-            EpicSpawnersPlugin.getInstance().change.add(p);
-            EpicSpawnersPlugin.getInstance().getPlayerActionManager().getPlayerAction(p).setInMenu(MenuType.CONVERT);
-            EpicSpawnersPlugin.getInstance().getPlayerActionManager().getPlayerAction(p).setLastSpawner(this);
+            player.openInventory(i);
+            PlayerData playerData = instance.getPlayerActionManager().getPlayerAction(player);
+
+            playerData.setInMenu(MenuType.CONVERT);
+            playerData.setLastSpawner(this);
         } catch (Exception e) {
             Debugger.runReport(e);
         }

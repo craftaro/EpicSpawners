@@ -74,8 +74,6 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
 
     public Map<String, Integer> cache = new HashMap<>();
 
-    public List<Player> change = new ArrayList<>();
-
     public Map<Player, Integer> boostAmt = new HashMap<>();
 
     public String newSpawnerName = "";

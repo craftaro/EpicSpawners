@@ -77,8 +77,6 @@ public class PlayerData {
         this.lastData = lastData;
     }
 
-
-
     @Override
     public int hashCode() {
         return 31 * (playerUUID == null ? 0 : playerUUID.hashCode());
