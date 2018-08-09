@@ -5,6 +5,8 @@ public class EditingData {
     private EditingMenu menu = EditingMenu.NOT_IN;
     private int spawnerSlot = 0, newId = -1;
 
+    private String newSpawnerName = null;
+
     public EditingMenu getMenu() {
         return menu;
     }
@@ -29,4 +31,11 @@ public class EditingData {
         this.newId = newId;
     }
 
+    public String getNewSpawnerName() {
+        return newSpawnerName;
+    }
+
+    public void setNewSpawnerName(String newSpawnerName) {
+        this.newSpawnerName = newSpawnerName;
+    }
 }

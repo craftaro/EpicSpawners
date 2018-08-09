@@ -43,7 +43,7 @@ public class SpawnerEditor {
             this.userEditingData.remove(player.getUniqueId());
             EditingData editingData = new EditingData();
             editingData.setMenu(EditingMenu.SPAWNER_SELECTOR);
-            this.instance.newSpawnerName = "";
+            editingData.setNewSpawnerName(null);
             this.instance.page.put(player, page);
 
             List<SpawnerData> entities = new ArrayList<>();
@@ -184,9 +184,10 @@ public class SpawnerEditor {
         }
     }
 
-    public void overview(Player p, int id) {
+    public void overview(Player player, int id) {
         try {
             EpicSpawnersPlugin instance = EpicSpawnersPlugin.getInstance();
+            EditingData editingData = this.userEditingData.get(player);
 
             int csp = 1;
             for (SpawnerData spawnerData : instance.getSpawnerManager().getAllSpawnerData()) {
@@ -194,15 +195,13 @@ public class SpawnerEditor {
                     csp++;
             }
 
-            String type = "Custom " + csp;
-
-            if (!instance.newSpawnerName.equals(""))
-                type = EpicSpawnersPlugin.getInstance().newSpawnerName;
+            String type = "Custom " + (editingData.getNewSpawnerName() != null ? editingData.getNewSpawnerName() : "");
 
             if (id != 0)
                 type = getType(id).getIdentifyingName();
             else
-                instance.newSpawnerName = type;
+                editingData.setNewSpawnerName(type);
+
             String name;
 
             SpawnerData spawnerData;
@@ -364,8 +363,7 @@ public class SpawnerEditor {
             command.setItemMeta(commandmeta);
             i.setItem(43, command);
 
-            p.openInventory(i);
-            EditingData editingData = userEditingData.get(p.getUniqueId());
+            player.openInventory(i);
             editingData.setMenu(EditingMenu.OVERVIEW);
             if (editingData.getNewId() != -1)
                 id = editingData.getNewId();
