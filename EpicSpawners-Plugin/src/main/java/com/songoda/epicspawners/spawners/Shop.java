@@ -7,6 +7,8 @@ import com.songoda.arconix.api.methods.formatting.TextComponent;
 import com.songoda.arconix.plugin.Arconix;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.api.spawner.SpawnerData;
+import com.songoda.epicspawners.player.MenuType;
+import com.songoda.epicspawners.player.PlayerData;
 import com.songoda.epicspawners.utils.Debugger;
 import com.songoda.epicspawners.utils.Methods;
 import com.songoda.epicspawners.utils.ServerVersion;
@@ -168,8 +170,10 @@ public class Shop {
         }
     }
 
-    public void show(SpawnerData spawnerData, int amt, Player p) {
+    public void show(int amt, Player player) {
         try {
+            PlayerData playerData = instance.getPlayerActionManager().getPlayerAction(player);
+            SpawnerData spawnerData = playerData.getLastData();
             Inventory inventory = Bukkit.createInventory(null, 45, TextComponent.formatTitle(instance.getLocale().getMessage("interface.shop.spawnershoptitle", Methods.compileName(spawnerData, 1, false))));
 
             int num = 0;
@@ -292,39 +296,39 @@ public class Shop {
             buy.setItemMeta(buymeta);
             inventory.setItem(40, buy);
 
-            p.openInventory(inventory);
+            player.openInventory(inventory);
 
-            p.openInventory(inventory);
-            EpicSpawnersPlugin.getInstance().inShow.put(p, spawnerData); //ToDo: This system needs to be removed.
+            player.openInventory(inventory);
+            playerData.setInMenu(MenuType.SHOP);
         } catch (Exception e) {
             Debugger.runReport(e);
         }
     }
 
-    public void confirm(Player p, int amount) {
+    public void confirm(Player player, int amount) {
         try {
-            SpawnerData spawnerData = EpicSpawnersPlugin.getInstance().inShow.get(p);
+            SpawnerData spawnerData = instance.getPlayerActionManager().getPlayerAction(player).getLastData();
             if (EpicSpawnersPlugin.getInstance().getServer().getPluginManager().getPlugin("Vault") == null) {
-                p.sendMessage("Vault is not installed.");
+                player.sendMessage("Vault is not installed.");
                 return;
             }
             RegisteredServiceProvider<Economy> rsp = EpicSpawnersPlugin.getInstance().getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
             net.milkbowl.vault.economy.Economy econ = rsp.getProvider();
             double price = spawnerData.getShopPrice() * amount;
-            if (!p.isOp() && !econ.has(p, price)) {
-                p.sendMessage(EpicSpawnersPlugin.getInstance().references.getPrefix() + instance.getLocale().getMessage("event.shop.cannotafford"));
+            if (!player.isOp() && !econ.has(player, price)) {
+                player.sendMessage(EpicSpawnersPlugin.getInstance().references.getPrefix() + instance.getLocale().getMessage("event.shop.cannotafford"));
                 return;
             }
             ItemStack item = spawnerData.toItemStack(amount);
 
 
-            p.getInventory().addItem(item);
+            player.getInventory().addItem(item);
 
-            p.sendMessage(EpicSpawnersPlugin.getInstance().references.getPrefix() + instance.getLocale().getMessage("event.shop.purchasesuccess"));
+            player.sendMessage(EpicSpawnersPlugin.getInstance().references.getPrefix() + instance.getLocale().getMessage("event.shop.purchasesuccess"));
 
 
-            if (!p.isOp()) {
-                econ.withdrawPlayer(p, price);
+            if (!player.isOp()) {
+                econ.withdrawPlayer(player, price);
             }
         } catch (Exception e) {
             Debugger.runReport(e);

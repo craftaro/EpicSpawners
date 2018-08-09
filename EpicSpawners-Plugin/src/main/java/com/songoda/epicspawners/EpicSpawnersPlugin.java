@@ -61,7 +61,6 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Supplier;
 
 /**
@@ -82,8 +81,6 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
     public String newSpawnerName = "";
 
     public Map<Player, String> chatEditing = new HashMap<>();
-
-    public Map<Player, SpawnerData> inShow = new HashMap<>();
     public Map<Player, Integer> page = new HashMap<>();
     public ConfigWrapper dataFile = new ConfigWrapper(this, "", "data.yml");
     public ConfigWrapper spawnerFile = new ConfigWrapper(this, "", "spawners.yml");

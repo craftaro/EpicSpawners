@@ -1022,32 +1022,19 @@ public class ESpawner implements Spawner {
             loc.setX(loc.getX() + .5);
             loc.setY(loc.getY() + .5);
             loc.setZ(loc.getZ() + .5);
-            if (EpicSpawnersPlugin.getInstance().isServerVersionAtLeast(ServerVersion.V1_9)) {
                 player.getWorld().spawnParticle(org.bukkit.Particle.valueOf(EpicSpawnersPlugin.getInstance().getConfig().getString("Main.Upgrade Particle Type")), loc, 100, .5, .5, .5);
-            } else {
-                player.getWorld().playEffect(loc, org.bukkit.Effect.valueOf(EpicSpawnersPlugin.getInstance().getConfig().getString("Main.Upgrade Particle Type")), 1, 0);
-                //Doesn't resolve... --Nova
-                //player.getWorld().spigot().playEffect(loc, org.bukkit.Effect.valueOf(EpicSpawners.getInstance().getConfig().getString("Main.Upgrade Particle Type")), 1, 0, (float) 1, (float) 1, (float) 1, 1, 100, 10);
-            }
+
 
             if (!EpicSpawnersPlugin.getInstance().getConfig().getBoolean("Main.Sounds Enabled")) {
                 return;
             }
             if (currentStackSize != EpicSpawnersPlugin.getInstance().getConfig().getInt("Main.Spawner Max Upgrade")) {
-                if (EpicSpawnersPlugin.getInstance().isServerVersionAtLeast(ServerVersion.V1_9)) {
                     player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 0.6F, 15.0F);
-                } else {
-                    player.playSound(player.getLocation(), Sound.valueOf("LEVEL_UP"), 2F, 15.0F);
-                }
             } else {
-                if (EpicSpawnersPlugin.getInstance().isServerVersionAtLeast(ServerVersion.V1_12)) {
                     player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 2F, 25.0F);
                     player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 2F, 25.0F);
                     Bukkit.getScheduler().scheduleSyncDelayedTask(EpicSpawnersPlugin.getInstance(), () -> player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 1.2F, 35.0F), 5L);
                     Bukkit.getScheduler().scheduleSyncDelayedTask(EpicSpawnersPlugin.getInstance(), () -> player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 1.8F, 35.0F), 10L);
-                } else {
-                    player.playSound(player.getLocation(), Sound.valueOf("LEVEL_UP"), 2F, 25.0F);
-                }
             }
             EpicSpawnersPlugin.getInstance().getHologramHandler().updateHologram(this);
         } catch (Exception e) {

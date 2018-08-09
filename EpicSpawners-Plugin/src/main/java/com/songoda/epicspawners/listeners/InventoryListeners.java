@@ -43,7 +43,9 @@ public class InventoryListeners implements Listener {
         try {
             if (event.getInventory() == null || event.getCurrentItem() == null) return;
             Player player = (Player) event.getWhoClicked();
-            if (instance.inShow.containsKey(player)) {
+            PlayerData playerData = instance.getPlayerActionManager().getPlayerAction(player);
+
+            if (playerData.getInMenu() == MenuType.SHOP) {
                 event.setCancelled(true);
                 int amt = event.getInventory().getItem(22).getAmount();
                 if (event.getSlot() == 0) {
@@ -54,27 +56,27 @@ public class InventoryListeners implements Listener {
                 } else if (event.getSlot() == 19) {
                     if (amt != 1)
                         amt = 1;
-                    instance.getShop().show(instance.inShow.get(player), amt, player);
+                    instance.getShop().show(amt, player);
                 } else if (event.getSlot() == 29) {
                     if ((amt - 10) <= 64 && (amt - 10) >= 1)
                         amt = amt - 10;
-                    instance.getShop().show(instance.inShow.get(player), amt, player);
+                    instance.getShop().show(amt, player);
                 } else if (event.getSlot() == 11) {
                     if ((amt - 1) <= 64 && (amt - 1) >= 1)
                         amt = amt - 1;
-                    instance.getShop().show(instance.inShow.get(player), amt, player);
+                    instance.getShop().show(amt, player);
                 } else if (event.getSlot() == 15) {
                     if ((amt + 1) <= 64 && (amt + 1) >= 1)
                         amt = amt + 1;
-                    instance.getShop().show(instance.inShow.get(player), amt, player);
+                    instance.getShop().show(amt, player);
                 } else if (event.getSlot() == 33) {
                     if ((amt + 10) <= 64 && (amt + 10) >= 1)
                         amt = amt + 10;
-                    instance.getShop().show(instance.inShow.get(player), amt, player);
+                    instance.getShop().show(amt, player);
                 } else if (event.getSlot() == 25) {
                     if (amt != 64)
                         amt = 64;
-                    instance.getShop().show(instance.inShow.get(player), amt, player);
+                    instance.getShop().show(amt, player);
                 } else if (event.getSlot() == 40) {
                     instance.getShop().confirm(player, amt);
                     player.closeInventory();
@@ -119,7 +121,6 @@ public class InventoryListeners implements Listener {
                 }
             } else if (instance.getPlayerActionManager().getPlayerAction(player).getInMenu() == MenuType.OVERVIEW) {
                 event.setCancelled(true);
-                PlayerData playerData = instance.getPlayerActionManager().getPlayerAction(player);
                 ESpawner spawner = playerData.getLastSpawner();
                 if (spawner.getFirstStack().getSpawnerData().isUpgradeable()) {
                     if (event.getSlot() == 11) {
@@ -385,7 +386,8 @@ public class InventoryListeners implements Listener {
                     } else if (event.getCurrentItem().getItemMeta().getDisplayName().equals(instance.getLocale().getMessage("general.nametag.next"))) {
                         instance.getShop().open(player, page + 1);
                     } else if (event.getSlot() >= 10 && event.getSlot() <= (event.getInventory().getSize() - 10) && event.getSlot() != 17 && event.getSlot() != (event.getInventory().getSize() - 18))
-                        instance.getShop().show(instance.getSpawnerDataFromItem(clicked), 1, player);
+                        playerData.setLastData(instance.getSpawnerDataFromItem(clicked));
+                        instance.getShop().show(1, player);
                 }
             }
             if (event.getSlot() != 64537) {
@@ -411,15 +413,18 @@ public class InventoryListeners implements Listener {
         try {
             final Player p = (Player) event.getPlayer();
 
-            instance.getPlayerActionManager().getPlayerAction(p).setInMenu(MenuType.NOT_IN);
+            PlayerData playerData = instance.getPlayerActionManager().getPlayerAction(p);
 
-            if (instance.inShow.containsKey(p)) {
-                instance.inShow.remove(p);
+
+            if (playerData.getInMenu() == MenuType.SHOP) {
                 Bukkit.getScheduler().runTaskLater(instance, () -> {
                     if (!p.getOpenInventory().getTopInventory().getType().equals(InventoryType.CHEST))
                         p.closeInventory();
                 }, 1L);
             }
+
+            playerData.setInMenu(MenuType.NOT_IN);
+
             instance.getSpawnerEditor().getEditingData(p).setMenu(EditingMenu.NOT_IN);
         } catch (Exception e) {
             Debugger.runReport(e);

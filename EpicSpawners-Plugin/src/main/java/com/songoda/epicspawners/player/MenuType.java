@@ -5,6 +5,7 @@ public enum MenuType {
     NOT_IN,
     OVERVIEW,
     CONVERT,
-    PLAYERBOOST
+    PLAYERBOOST,
+    SHOP
 
 }

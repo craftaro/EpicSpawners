@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
+import com.songoda.epicspawners.api.spawner.SpawnerData;
 import com.songoda.epicspawners.spawners.object.ESpawner;
 
 import org.bukkit.Bukkit;
@@ -15,7 +16,10 @@ import org.bukkit.entity.EntityType;
 public class PlayerData {
 
     private final UUID playerUUID;
+
     private ESpawner lastSpawner = null;
+    private SpawnerData lastData = null;
+
     private MenuType inMenu = MenuType.NOT_IN;
     private Map<EntityType, Integer> entityKills = new EnumMap<>(EntityType.class);
     private int infoPage = 1;
@@ -64,6 +68,16 @@ public class PlayerData {
     public Map<EntityType, Integer> getEntityKills() {
         return Collections.unmodifiableMap(entityKills);
     }
+
+    public SpawnerData getLastData() {
+        return lastData;
+    }
+
+    public void setLastData(SpawnerData lastData) {
+        this.lastData = lastData;
+    }
+
+
 
     @Override
     public int hashCode() {
