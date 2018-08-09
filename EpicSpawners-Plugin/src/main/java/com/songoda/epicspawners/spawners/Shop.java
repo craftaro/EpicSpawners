@@ -11,7 +11,6 @@ import com.songoda.epicspawners.player.MenuType;
 import com.songoda.epicspawners.player.PlayerData;
 import com.songoda.epicspawners.utils.Debugger;
 import com.songoda.epicspawners.utils.Methods;
-import com.songoda.epicspawners.utils.ServerVersion;
 
 import net.milkbowl.vault.economy.Economy;
 
@@ -35,9 +34,10 @@ public class Shop {
         this.instance = instance;
     }
 
-    public void open(Player p, int page) {
+    public void open(Player player, int page) {
         try {
-            this.instance.page.put(p, page);
+            PlayerData playerData = instance.getPlayerActionManager().getPlayerAction(player);
+            playerData.setCurrentPage(page);
 
             List<SpawnerData> entities = new ArrayList<>();
 
@@ -47,7 +47,7 @@ public class Shop {
             for (SpawnerData spawnerData : instance.getSpawnerManager().getAllSpawnerData()) {
                 if (!spawnerData.getIdentifyingName().toLowerCase().equals("omni")
                         && spawnerData.isInShop() && spawnerData.isActive()
-                        && p.hasPermission("epicspawners.shop." + Methods.getTypeFromString(spawnerData.getIdentifyingName()).replaceAll(" ", "_"))) {
+                        && player.hasPermission("epicspawners.shop." + Methods.getTypeFromString(spawnerData.getIdentifyingName()).replaceAll(" ", "_"))) {
                     if (num >= start && show <= 33) {
                         entities.add(spawnerData);
                         show++;
@@ -93,7 +93,7 @@ public class Shop {
                 lore.add(TextComponent.formatText(instance.getLocale().getMessage("interface.shop.buyprice", TextComponent.formatEconomy(price))));
                 String loreString = instance.getLocale().getMessage("interface.shop.lore", Methods.getTypeFromString(Methods.getTypeFromString(spawnerData.getDisplayName())));
                 if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-                    loreString = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(p, loreString.replace(" ", "_")).replace("_", " ");
+                    loreString = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, loreString.replace(" ", "_")).replace("_", " ");
                 }
                 lore.add(loreString);
                 itemmeta.setLore(lore);
@@ -164,7 +164,7 @@ public class Shop {
                 inventory.setItem(max22 - 2, skull);
             }
 
-            p.openInventory(inventory);
+            player.openInventory(inventory);
         } catch (Exception e) {
             Debugger.runReport(e);
         }

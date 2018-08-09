@@ -559,7 +559,9 @@ public class ESpawner implements Spawner {
     public void convertOverview(Player player, int page) {
         try {
             EpicSpawnersPlugin instance = EpicSpawnersPlugin.getInstance();
-            instance.page.put(player, page);
+            PlayerData playerData = instance.getPlayerActionManager().getPlayerAction(player);
+
+            playerData.setCurrentPage(page);
 
             List<SpawnerData> entities = new ArrayList<>();
 
@@ -690,7 +692,6 @@ public class ESpawner implements Spawner {
             }
 
             player.openInventory(i);
-            PlayerData playerData = instance.getPlayerActionManager().getPlayerAction(player);
 
             playerData.setInMenu(MenuType.CONVERT);
             playerData.setLastSpawner(this);

@@ -49,7 +49,7 @@ public class InventoryListeners implements Listener {
                 event.setCancelled(true);
                 int amt = event.getInventory().getItem(22).getAmount();
                 if (event.getSlot() == 0) {
-                    int page = instance.page.get(player);
+                    int page = playerData.getCurrentPage();
                     instance.getShop().open(player, page);
                 } else if (event.getSlot() == 8) {
                     player.closeInventory();
@@ -104,7 +104,7 @@ public class InventoryListeners implements Listener {
                 ItemStack clicked = event.getCurrentItem();
                 ESpawner spawner = instance.getPlayerActionManager().getPlayerAction(player).getLastSpawner();
 
-                int page = instance.page.get(player);
+                int page = playerData.getCurrentPage();
 
                 if (event.getInventory().getType() == InventoryType.CHEST) {
                     if (event.getSlot() == 8) {
@@ -162,12 +162,12 @@ public class InventoryListeners implements Listener {
                 if (editingMenu == EditingMenu.OVERVIEW) {
                     event.setCancelled(true);
                     if (event.getCurrentItem().getItemMeta().getDisplayName().equals(instance.getLocale().getMessage("general.nametag.back")))
-                        instance.getSpawnerEditor().openSpawnerSelector(player, instance.page.get(player));
+                        instance.getSpawnerEditor().openSpawnerSelector(player, playerData.getCurrentPage());
                     else if (event.getSlot() == 11) {
                         if (!event.getClick().isLeftClick() && !event.getClick().isRightClick()) {
                             SpawnerData spawnerData = instance.getSpawnerEditor().getType(editingData.getSpawnerSlot());
-                            spawnerData.setDisplayItem(Material.valueOf(player.getItemInHand().getType().toString()));
-                            player.sendMessage(TextComponent.formatText(instance.references.getPrefix() + "&7Display Item for &6" + spawnerData.getIdentifyingName() + " &7set to &6" + player.getItemInHand().getType().toString() + "&7."));
+                            spawnerData.setDisplayItem(Material.valueOf(player.getInventory().getItemInMainHand().getType().toString()));
+                            player.sendMessage(TextComponent.formatText(instance.references.getPrefix() + "&7Display Item for &6" + spawnerData.getIdentifyingName() + " &7set to &6" + player.getInventory().getItemInMainHand().getType().toString() + "&7."));
                             instance.getSpawnerEditor().overview(player, editingData.getSpawnerSlot());
                         } else if (event.getClick().isLeftClick()) {
                             instance.getSpawnerEditor().editSpawnerName(player);
@@ -346,7 +346,7 @@ public class InventoryListeners implements Listener {
                 }
             } else if (event.getInventory().getTitle().equals("Spawner Editor")) {
                 event.setCancelled(true);
-                int page = instance.page.get(player);
+                int page = playerData.getCurrentPage();
                 if (event.getSlot() == 8) {
                     player.closeInventory();
                 } else if (event.getCurrentItem().getItemMeta().getDisplayName().equals(TextComponent.formatText("&9&lNew Spawner"))) {
@@ -374,7 +374,7 @@ public class InventoryListeners implements Listener {
                 event.setCancelled(true);
                 ItemStack clicked = event.getCurrentItem();
 
-                int page = instance.page.get(player);
+                int page = playerData.getCurrentPage();
 
                 if (event.getInventory().getType() == InventoryType.CHEST) {
                     if (event.getSlot() == 8) {

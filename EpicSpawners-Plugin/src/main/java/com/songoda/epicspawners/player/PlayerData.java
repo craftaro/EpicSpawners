@@ -24,6 +24,8 @@ public class PlayerData {
     private Map<EntityType, Integer> entityKills = new EnumMap<>(EntityType.class);
     private int infoPage = 1;
 
+    private int currentPage = 0;
+
     public PlayerData(UUID playerUUID) {
         this.playerUUID = playerUUID;
     }
@@ -75,6 +77,14 @@ public class PlayerData {
 
     public void setLastData(SpawnerData lastData) {
         this.lastData = lastData;
+    }
+
+    public int getCurrentPage() {
+        return currentPage;
+    }
+
+    public void setCurrentPage(int currentPage) {
+        this.currentPage = currentPage;
     }
 
     @Override

@@ -11,6 +11,7 @@ import com.songoda.arconix.api.methods.formatting.TextComponent;
 import com.songoda.arconix.plugin.Arconix;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.api.spawner.SpawnerData;
+import com.songoda.epicspawners.player.PlayerData;
 import com.songoda.epicspawners.spawners.object.ESpawnerData;
 import com.songoda.epicspawners.utils.Debugger;
 import com.songoda.epicspawners.utils.Methods;
@@ -44,7 +45,10 @@ public class SpawnerEditor {
             EditingData editingData = new EditingData();
             editingData.setMenu(EditingMenu.SPAWNER_SELECTOR);
             editingData.setNewSpawnerName(null);
-            this.instance.page.put(player, page);
+
+            PlayerData playerData = instance.getPlayerActionManager().getPlayerAction(player);
+
+            playerData.setCurrentPage(page);
 
             List<SpawnerData> entities = new ArrayList<>();
 

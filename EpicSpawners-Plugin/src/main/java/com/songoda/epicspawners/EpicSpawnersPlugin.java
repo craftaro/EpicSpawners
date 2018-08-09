@@ -77,7 +77,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
     public Map<Player, Integer> boostAmt = new HashMap<>();
 
     public Map<Player, String> chatEditing = new HashMap<>();
-    public Map<Player, Integer> page = new HashMap<>();
+
     public ConfigWrapper dataFile = new ConfigWrapper(this, "", "data.yml");
     public ConfigWrapper spawnerFile = new ConfigWrapper(this, "", "spawners.yml");
     public References references = null;
