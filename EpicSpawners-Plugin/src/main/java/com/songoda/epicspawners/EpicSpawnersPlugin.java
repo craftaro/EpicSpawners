@@ -245,9 +245,8 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
 
         Bukkit.getScheduler().runTaskTimerAsynchronously(this, this::saveToFile, 6000, 6000);
 
-        if (isServerVersionAtLeast(ServerVersion.V1_8)) {
-            Bukkit.getPluginManager().registerEvents(new PlayerJoinListeners(), this);
-        }
+        Bukkit.getPluginManager().registerEvents(new PlayerJoinListeners(), this);
+
         console.sendMessage(TextComponent.formatText("&a============================="));
 
         // Register default hooks

@@ -66,11 +66,7 @@ public class SpawnOptionEntity implements SpawnOption {
 
         if (nmsSpawnMethod == null) {
             try {
-                if (instance.isServerVersionAtLeast(ServerVersion.V1_11)) {
-                    nmsSpawnMethod = world.getClass().getMethod("spawn", Location.class, Class.class, Consumer.class, CreatureSpawnEvent.SpawnReason.class);
-                } else {
-                    nmsSpawnMethod = world.getClass().getMethod("spawn", Location.class, Class.class, CreatureSpawnEvent.SpawnReason.class);
-                }
+                nmsSpawnMethod = world.getClass().getMethod("spawn", Location.class, Class.class, Consumer.class, CreatureSpawnEvent.SpawnReason.class);
             } catch (ReflectiveOperationException e) {
                 e.printStackTrace();
                 return;
@@ -193,7 +189,7 @@ public class SpawnOptionEntity implements SpawnOption {
 
     public boolean isWater(Material type) {
         try {
-            if (type == Material.WATER || type == Material.WATER) {
+            if (type == Material.WATER) {
                 return true;
             }
 
@@ -207,16 +203,11 @@ public class SpawnOptionEntity implements SpawnOption {
         World world = location.getWorld();
 
         try {
-            Entity entity;
 
-            if (instance.isServerVersionAtLeast(ServerVersion.V1_11))
-                entity = (Entity) nmsSpawnMethod.invoke(world, location, type.getEntityClass(), null, CreatureSpawnEvent.SpawnReason.SPAWNER); //ToDo: account for all mobs in the spawner.
-            else
-                entity = (Entity) nmsSpawnMethod.invoke(world, location, type.getEntityClass(), CreatureSpawnEvent.SpawnReason.SPAWNER);
+            Entity entity = (Entity) nmsSpawnMethod.invoke(world, location, type.getEntityClass(), null, CreatureSpawnEvent.SpawnReason.SPAWNER); //ToDo: account for all mobs in the spawner.
 
-            if (data.isSpawnOnFire()) {
+            if (data.isSpawnOnFire())
                 entity.setFireTicks(160);
-            }
 
             entity.setMetadata("ES", new FixedMetadataValue(instance, data.getIdentifyingName()));
 
