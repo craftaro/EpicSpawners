@@ -23,9 +23,9 @@ import com.songoda.epicspawners.api.utils.SpawnerDataBuilder;
 import com.songoda.epicspawners.boost.BoostData;
 import com.songoda.epicspawners.boost.BoostManager;
 import com.songoda.epicspawners.boost.BoostType;
+import com.songoda.epicspawners.command.CommandManager;
 import com.songoda.epicspawners.handlers.AppearanceHandler;
 import com.songoda.epicspawners.handlers.BlacklistHandler;
-import com.songoda.epicspawners.handlers.CommandHandler;
 import com.songoda.epicspawners.handlers.HologramHandler;
 import com.songoda.epicspawners.hooks.*;
 import com.songoda.epicspawners.listeners.*;
@@ -48,7 +48,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
-import org.bukkit.block.CreatureSpawner;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -230,9 +229,9 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         new MCUpdate(this, true);
 
         // Command registration
-        this.getCommand("EpicSpawners").setExecutor(new CommandHandler(this));
-        this.getCommand("SpawnerStats").setExecutor(new CommandHandler(this));
-        this.getCommand("SpawnerShop").setExecutor(new CommandHandler(this));
+        this.getCommand("EpicSpawners").setExecutor(new CommandManager(this));
+        this.getCommand("SpawnerStats").setExecutor(new CommandManager(this));
+        this.getCommand("SpawnerShop").setExecutor(new CommandManager(this));
 
         // Event registration
         PluginManager manager = Bukkit.getPluginManager();
@@ -277,7 +276,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
                 List<Material> spawnBlocks = new ArrayList<>();
                 List<ItemStack> itemDrops = (List<ItemStack>) currentSection.getList("itemDrops", new ArrayList<>());
                 List<ItemStack> items = (List<ItemStack>) currentSection.getList("items", new ArrayList<>());
-                List<String> commands = currentSection.getStringList("commands");
+                List<String> commands = currentSection.getStringList("command");
 
                 for (String block : currentSection.getStringList("blocks")) {
                     blocks.add(Material.matchMaterial(block.toUpperCase()));
@@ -365,7 +364,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
             currentSection.set("entities", getStrings(spawnerData.getEntities()));
             currentSection.set("itemDrops", spawnerData.getEntityDroppedItems());
             currentSection.set("items", spawnerData.getItems());
-            currentSection.set("commands", spawnerData.getCommands());
+            currentSection.set("command", spawnerData.getCommands());
 
             currentSection.set("Spawn-Block", String.join(", ", getStrings(spawnerData.getSpawnBlocksList())));
             currentSection.set("Allowed", spawnerData.isActive());
