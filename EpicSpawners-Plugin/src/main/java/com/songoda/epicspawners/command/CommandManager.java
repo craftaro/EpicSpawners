@@ -40,7 +40,6 @@ public class CommandManager implements CommandExecutor {
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
         for (AbstractCommand abstractCommand : commands) {
             if (abstractCommand.getCommand().equalsIgnoreCase(command.getName())) {
-                System.out.println(strings.length);
                 if (strings.length == 0) {
                     abstractCommand.runCommand(instance, commandSender, strings);
                     return true;
