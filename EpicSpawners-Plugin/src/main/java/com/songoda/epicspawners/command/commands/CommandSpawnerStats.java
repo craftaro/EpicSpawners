@@ -20,16 +20,11 @@ import java.util.Map;
 public class CommandSpawnerStats extends AbstractCommand {
 
     public CommandSpawnerStats() {
-        super("spawnerstats", null);
+        super("spawnerstats", "epicspawners.stats", null);
     }
 
     @Override
     protected boolean runCommand(EpicSpawnersPlugin instance, CommandSender sender, String... args) {
-
-        if (!sender.hasPermission("epicspawners.stats")) {
-            sender.sendMessage(instance.references.getPrefix() + instance.getLocale().getMessage("event.general.nopermission"));
-            return true;
-        }
 
         Player p = (Player) sender;
 

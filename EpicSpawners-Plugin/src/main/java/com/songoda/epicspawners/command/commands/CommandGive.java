@@ -18,17 +18,13 @@ import java.util.Random;
 public class CommandGive extends AbstractCommand {
 
     public CommandGive(AbstractCommand abstractCommand) {
-        super("give", abstractCommand);
+        super("give", "epicspawners.admin", abstractCommand);
     }
 
     @Override
     protected boolean runCommand(EpicSpawnersPlugin instance, CommandSender sender, String... args) {
         if (args.length <= 3 && args.length != 6) {
             sender.sendMessage(instance.references.getPrefix() + TextComponent.formatText("&7Syntax error..."));
-            return true;
-        }
-        if (!sender.hasPermission("epicspawners.admin")) {
-            sender.sendMessage(instance.references.getPrefix() + instance.getLocale().getMessage("event.general.nopermission"));
             return true;
         }
         if (Bukkit.getPlayerExact(args[1]) == null && !args[1].toLowerCase().equals("all")) {

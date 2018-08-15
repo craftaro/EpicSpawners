@@ -41,18 +41,27 @@ public class CommandManager implements CommandExecutor {
         for (AbstractCommand abstractCommand : commands) {
             if (abstractCommand.getCommand().equalsIgnoreCase(command.getName())) {
                 if (strings.length == 0) {
-                    abstractCommand.runCommand(instance, commandSender, strings);
+                    processPerms(abstractCommand, commandSender, strings);
                     return true;
                 }
             } else if (strings.length != 0 && abstractCommand.getParent() != null && abstractCommand.getParent().getCommand().equalsIgnoreCase(command.getName())) {
                 String cmd = strings[0];
                 if (cmd.equalsIgnoreCase(abstractCommand.getCommand())) {
-                    abstractCommand.runCommand(instance, commandSender, strings);
+                    processPerms(abstractCommand, commandSender, strings);
                     return true;
                 }
             }
         }
-            commandSender.sendMessage(instance.references.getPrefix() + TextComponent.formatText("&7The command you entered does not exist or is spelt incorrectly."));
+        commandSender.sendMessage(instance.references.getPrefix() + TextComponent.formatText("&7The command you entered does not exist or is spelt incorrectly."));
         return true;
+    }
+
+    private void processPerms(AbstractCommand command, CommandSender sender, String[] strings) {
+        if (command.getPermissionNode() == null || sender.hasPermission(command.getPermissionNode())) {
+            command.runCommand(instance, sender, strings);
+            return;
+        }
+        sender.sendMessage(instance.references.getPrefix() + instance.getLocale().getMessage("event.general.nopermission"));
+
     }
 }

@@ -16,7 +16,7 @@ import org.bukkit.entity.Player;
 public class CommandChange extends AbstractCommand {
 
     public CommandChange(AbstractCommand abstractCommand) {
-        super("change", abstractCommand);
+        super("change", null, abstractCommand);
     }
 
     @Override
