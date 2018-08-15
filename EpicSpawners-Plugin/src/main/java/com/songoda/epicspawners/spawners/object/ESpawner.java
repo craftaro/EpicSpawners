@@ -38,7 +38,6 @@ import com.songoda.epicspawners.player.MenuType;
 import com.songoda.epicspawners.player.PlayerData;
 import com.songoda.epicspawners.utils.Debugger;
 import com.songoda.epicspawners.utils.Methods;
-import com.songoda.epicspawners.utils.ServerVersion;
 
 import net.milkbowl.vault.economy.Economy;
 
@@ -445,24 +444,15 @@ public class ESpawner implements Spawner {
             i.setItem(26, Methods.getBackgroundGlass(true));
 
             ItemStack head = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
-            ItemStack skull = head;
-            boolean v1_7 = EpicSpawnersPlugin.getInstance().isServerVersion(ServerVersion.V1_7);
-            if (!v1_7)
-                skull = Arconix.pl().getApi().getGUI().addTexture(head, "http://textures.minecraft.net/texture/1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b");
+            ItemStack skull = Arconix.pl().getApi().getGUI().addTexture(head, "http://textures.minecraft.net/texture/1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b");
             SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
-            if (v1_7)
-                skullMeta.setOwner("MHF_ArrowRight");
             skull.setDurability((short) 3);
             skullMeta.setDisplayName(TextComponent.formatText("&6&l+1"));
             skull.setItemMeta(skullMeta);
 
             ItemStack head2 = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
-            ItemStack skull2 = head2;
-            if (!v1_7)
-                skull2 = Arconix.pl().getApi().getGUI().addTexture(head2, "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23");
+            ItemStack skull2 = Arconix.pl().getApi().getGUI().addTexture(head2, "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23");
             SkullMeta skull2Meta = (SkullMeta) skull2.getItemMeta();
-            if (v1_7)
-                skullMeta.setOwner("MHF_ArrowLeft");
             skull2.setDurability((short) 3);
             skull2Meta.setDisplayName(TextComponent.formatText("&6&l-1"));
             skull2.setItemMeta(skull2Meta);
@@ -903,11 +893,7 @@ public class ESpawner implements Spawner {
         }
 
         if (instance.getConfig().getBoolean("Main.Sounds Enabled")) {
-            if (instance.isServerVersionAtLeast(ServerVersion.V1_9)) {
                 player.playSound(player.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 0.6F, 15.0F);
-            } else {
-                player.playSound(player.getLocation(), Sound.valueOf("ARROW_HIT"), 0.6F, 15.0F);
-            }
         }
         ItemStack item = stack.getSpawnerData().toItemStack(1, stackSize);
 

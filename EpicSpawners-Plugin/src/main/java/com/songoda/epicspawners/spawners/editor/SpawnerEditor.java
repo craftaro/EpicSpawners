@@ -15,7 +15,6 @@ import com.songoda.epicspawners.player.PlayerData;
 import com.songoda.epicspawners.spawners.object.ESpawnerData;
 import com.songoda.epicspawners.utils.Debugger;
 import com.songoda.epicspawners.utils.Methods;
-import com.songoda.epicspawners.utils.ServerVersion;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

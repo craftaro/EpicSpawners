@@ -98,7 +98,6 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
     private Shop shop;
     private Locale locale;
 
-    private ServerVersion serverVersion = ServerVersion.fromPackageName(Bukkit.getServer().getClass().getPackage().getName());
     private List<ProtectionPluginHook> protectionHooks = new ArrayList<>();
     private ClaimableProtectionPluginHook factionsHook, townyHook, aSkyblockHook, uSkyblockHook;
 
@@ -654,22 +653,6 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
 
     public Heads getHeads() {
         return heads;
-    }
-
-    public ServerVersion getServerVersion() {
-        return serverVersion;
-    }
-
-    public boolean isServerVersion(ServerVersion version) {
-        return serverVersion == version;
-    }
-
-    public boolean isServerVersion(ServerVersion... versions) {
-        return ArrayUtils.contains(versions, serverVersion);
-    }
-
-    public boolean isServerVersionAtLeast(ServerVersion version) {
-        return serverVersion.ordinal() >= version.ordinal();
     }
 
     public boolean canBuild(Player player, Location location) {

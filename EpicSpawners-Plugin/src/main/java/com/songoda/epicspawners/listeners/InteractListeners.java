@@ -21,6 +21,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -135,14 +136,14 @@ public class InteractListeners implements Listener {
     }
 
     @EventHandler(ignoreCancelled = true)
-    public void PlayerInteractEvent(PlayerInteractEvent e) {
+    public void PlayerInteractEvent(PlayerInteractEvent event) {
         try {
-            if (Methods.isOffhand(e)) return;
+            if (event.getHand() == EquipmentSlot.OFF_HAND) return;
 
-            Player player = e.getPlayer();
-            Block block = e.getClickedBlock();
+            Player player = event.getPlayer();
+            Block block = event.getClickedBlock();
             Location location = block.getLocation();
-            ItemStack item = e.getItem();
+            ItemStack item = event.getItem();
 
             if (block.getType() == Material.SPAWNER) {
                 if (!instance.getSpawnerManager().isSpawner(location)) {
@@ -153,19 +154,19 @@ public class InteractListeners implements Listener {
                 }
             }
 
-            if (e.getClickedBlock() == null
-                    || e.getAction() != Action.RIGHT_CLICK_BLOCK
-                    || !EpicSpawnersPlugin.getInstance().canBuild(e.getPlayer(), e.getClickedBlock().getLocation())) {
+            if (event.getClickedBlock() == null
+                    || event.getAction() != Action.RIGHT_CLICK_BLOCK
+                    || !EpicSpawnersPlugin.getInstance().canBuild(event.getPlayer(), event.getClickedBlock().getLocation())) {
                 return;
             }
 
             Material is = null;
-            if (e.getItem() != null) {
+            if (event.getItem() != null) {
                 is = item.getType();
             }
             if (is != null && is.name().contains("SPAWN_EGG"))
                 return;
-            if (e.getClickedBlock().getType() == Material.SPAWNER && is == Material.SPAWNER && !EpicSpawnersPlugin.getInstance().getBlacklistHandler().isBlacklisted(player, true)) {
+            if (event.getClickedBlock().getType() == Material.SPAWNER && is == Material.SPAWNER && !EpicSpawnersPlugin.getInstance().getBlacklistHandler().isBlacklisted(player, true)) {
 
                 Spawner spawner = instance.getSpawnerManager().getSpawnerFromWorld(location);
                 if (!player.isSneaking() && item.getItemMeta().getDisplayName() != null) {
@@ -173,16 +174,16 @@ public class InteractListeners implements Listener {
                     if (player.hasPermission("epicspawners.stack." + spawnerData.getIdentifyingName()) || player.hasPermission("epicspawners.stack.*")) {
                         spawner.preStack(player, item);
                         instance.getHologramHandler().updateHologram(spawner);
-                        e.setCancelled(true);
+                        event.setCancelled(true);
                     }
                 }
-            } else if (e.getClickedBlock().getType() == Material.SPAWNER && !EpicSpawnersPlugin.getInstance().getBlacklistHandler().isBlacklisted(player, false)) {
+            } else if (event.getClickedBlock().getType() == Material.SPAWNER && !EpicSpawnersPlugin.getInstance().getBlacklistHandler().isBlacklisted(player, false)) {
                 if (!player.isSneaking()) {
                     Spawner spawner = EpicSpawnersPlugin.getInstance().getSpawnerManager().getSpawnerFromWorld(location);
 
                     ((ESpawner) spawner).overview(player, 1);
                     EpicSpawnersPlugin.getInstance().getHologramHandler().processChange(block);
-                    e.setCancelled(true);
+                    event.setCancelled(true);
                 }
             }
         } catch (Exception ex) {

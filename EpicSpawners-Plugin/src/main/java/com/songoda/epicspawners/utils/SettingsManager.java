@@ -194,8 +194,6 @@ public class SettingsManager implements Listener {
             if (config.contains("settings." + setting.oldSetting)) {
                 config.addDefault(setting.setting, instance.getConfig().get("settings." + setting.oldSetting));
                 config.set("settings." + setting.oldSetting, null);
-            } else if (setting.setting.equals("Main.Upgrade Particle Type")) {
-                config.addDefault(setting.setting, instance.isServerVersion(ServerVersion.V1_7, ServerVersion.V1_8) ? "WITCH_MAGIC" : setting.option);
             } else {
                 config.addDefault(setting.setting, setting.option);
             }

@@ -34,10 +34,6 @@ public class Heads {
         try {
             String headURL = textureURL.get(getHeadTypeOrDefault(spawnerData.getIdentifyingName().toUpperCase().replace(" ", "_"), HeadType.DROPPED_ITEM));
 
-            if (instance.isServerVersion(ServerVersion.V1_7)) {
-                return (item = new ItemStack(Material.SPAWNER, 1));
-            }
-
             return Arconix.pl().getApi().getGUI().addTexture(item, headURL);
         } catch (Exception e) {
             Debugger.runReport(e);

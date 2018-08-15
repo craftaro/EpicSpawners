@@ -41,14 +41,6 @@ public class Methods {
         player.setItemInHand(result > 0 ? item : null);
     }
 
-    public static boolean isOffhand(PlayerInteractEvent event) {
-        return EpicSpawnersPlugin.getInstance().isServerVersionAtLeast(ServerVersion.V1_9) && event.getHand() == EquipmentSlot.OFF_HAND;
-    }
-
-    public static boolean isOffhand(BlockPlaceEvent event) {
-        return EpicSpawnersPlugin.getInstance().isServerVersionAtLeast(ServerVersion.V1_9) && event.getHand() == EquipmentSlot.OFF_HAND;
-    }
-
     public static String getBoostCost(int time, int amount) {
         StringBuilder cost = new StringBuilder("&6&l");
         String[] parts = EpicSpawnersPlugin.getInstance().getConfig().getString("Spawner Boosting.Item Charged For A Boost").split(":");
@@ -152,18 +144,13 @@ public class Methods {
     }
 
 
-    public static Collection<Entity> getNearbyEntities(Location location, double x, double y, double z) {
-        return !EpicSpawnersPlugin.getInstance().isServerVersion(ServerVersion.V1_7)
-                ? location.getWorld().getNearbyEntities(location, x, y, z)
-                : Collections.emptyList();
-    }
 
     public static int countEntitiesAroundLoation(Location location) {
         try {
             int amt = 0;
 
             String[] arr = EpicSpawnersPlugin.getInstance().getConfig().getString("Main.Radius To Search Around Spawners").split("x");
-            Collection<Entity> nearbyEntite = getNearbyEntities(location.clone().add(0.5, 0.5, 0.5), Integer.parseInt(arr[0]), Integer.parseInt(arr[1]), Integer.parseInt(arr[2]));
+            Collection<Entity> nearbyEntite = location.getWorld().getNearbyEntities(location.clone().add(0.5, 0.5, 0.5), Integer.parseInt(arr[0]), Integer.parseInt(arr[1]), Integer.parseInt(arr[2]));
             if (nearbyEntite.size() < 1) return amt;
 
             for (Entity ee : nearbyEntite) {
