@@ -159,32 +159,34 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         FileConfiguration dataConfig = dataFile.getConfig();
 
         // Adding in spawners.
-        if (dataConfig.contains("data.spawners")) {
-            for (String key : dataConfig.getConfigurationSection("data.spawners").getKeys(false)) {
-                Location location = Serialize.getInstance().unserializeLocation(key);
+        Bukkit.getScheduler().runTaskLater(this, () -> {
+            if (dataConfig.contains("data.spawners")) {
+                for (String key : dataConfig.getConfigurationSection("data.spawners").getKeys(false)) {
+                    Location location = Serialize.getInstance().unserializeLocation(key);
 
-                if (location.getWorld() == null || location.getBlock().getType() != Material.SPAWNER) {
-                    if (location.getWorld() != null && location.getBlock().getType() != Material.SPAWNER) {
-                        this.hologramHandler.despawn(location.getBlock());
+                    if (location.getWorld() == null || location.getBlock().getType() != Material.SPAWNER) {
+                        if (location.getWorld() != null && location.getBlock().getType() != Material.SPAWNER) {
+                            this.hologramHandler.despawn(location.getBlock());
+                        }
+
+                        continue;
                     }
 
-                    continue;
+                    ESpawner spawner = new ESpawner(location);
+
+                    for (String stackKey : dataConfig.getConfigurationSection("data.spawners." + key + ".Stacks").getKeys(false)) {
+                        if (!spawnerManager.isSpawnerData(stackKey.toLowerCase())) continue;
+                        spawner.addSpawnerStack(new ESpawnerStack(spawnerManager.getSpawnerData(stackKey), dataConfig.getInt("data.spawners." + key + ".Stacks." + stackKey)));
+                    }
+
+                    if (dataConfig.contains("data.spawners." + key + ".PlacedBy"))
+                        spawner.setPlacedBy(UUID.fromString(dataConfig.getString("data.spawners." + key + ".PlacedBy")));
+
+                    spawner.setSpawnCount(dataConfig.getInt("data.spawners." + key + ".Spawns"));
+                    this.spawnerManager.addSpawnerToWorld(location, spawner);
                 }
-
-                ESpawner spawner = new ESpawner(location);
-
-                for (String stackKey : dataConfig.getConfigurationSection("data.spawners." + key + ".Stacks").getKeys(false)) {
-                    if (!spawnerManager.isSpawnerData(stackKey.toLowerCase())) continue;
-                    spawner.addSpawnerStack(new ESpawnerStack(spawnerManager.getSpawnerData(stackKey), dataConfig.getInt("data.spawners." + key + ".Stacks." + stackKey)));
-                }
-
-                if (dataConfig.contains("data.spawners." + key + ".PlacedBy"))
-                    spawner.setPlacedBy(UUID.fromString(dataConfig.getString("data.spawners." + key + ".PlacedBy")));
-
-                spawner.setSpawnCount(dataConfig.getInt("data.spawners." + key + ".Spawns"));
-                this.spawnerManager.addSpawnerToWorld(location, spawner);
             }
-        }
+        }, 10);
 
         // Adding in Boosts
         if (dataConfig.contains("data.boosts")) {
@@ -324,7 +326,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
                     if (biomeString.toLowerCase().equals("all"))
                         biomes = EnumSet.copyOf(BIOMES);
                     else {
-                    	biomes = new HashSet<>();
+                        biomes = new HashSet<>();
                         for (String string : biomeString.split(", ")) {
                             biomes.add(Biome.valueOf(string));
                         }
@@ -396,15 +398,15 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
                     }
                 }
                 if (spawnCondition instanceof SpawnConditionHeight)
-                    currentSection.set("Conditions.Height", ((SpawnConditionHeight)spawnCondition).getMin() + ":" + ((SpawnConditionHeight)spawnCondition).getMax());
+                    currentSection.set("Conditions.Height", ((SpawnConditionHeight) spawnCondition).getMin() + ":" + ((SpawnConditionHeight) spawnCondition).getMax());
                 if (spawnCondition instanceof SpawnConditionLightDark)
-                    currentSection.set("Conditions.Light", ((SpawnConditionLightDark)spawnCondition).getType().name());
+                    currentSection.set("Conditions.Light", ((SpawnConditionLightDark) spawnCondition).getType().name());
                 if (spawnCondition instanceof SpawnConditionStorm)
-                    currentSection.set("Conditions.Storm Only", ((SpawnConditionStorm)spawnCondition).isStormOnly());
+                    currentSection.set("Conditions.Storm Only", ((SpawnConditionStorm) spawnCondition).isStormOnly());
                 if (spawnCondition instanceof SpawnConditionNearbyEntities)
-                    currentSection.set("Conditions.Max Entities Around Spawner", ((SpawnConditionNearbyEntities)spawnCondition).getMax());
+                    currentSection.set("Conditions.Max Entities Around Spawner", ((SpawnConditionNearbyEntities) spawnCondition).getMax());
                 if (spawnCondition instanceof SpawnConditionNearbyPlayers)
-                    currentSection.set("Conditions.Required Player Distance And Amount", ((SpawnConditionNearbyPlayers)spawnCondition).getDistance() + ":" + ((SpawnConditionNearbyPlayers)spawnCondition).getAmount());
+                    currentSection.set("Conditions.Required Player Distance And Amount", ((SpawnConditionNearbyPlayers) spawnCondition).getDistance() + ":" + ((SpawnConditionNearbyPlayers) spawnCondition).getAmount());
             }
 
             if (spawnerData.getDisplayItem() != null) {
@@ -508,9 +510,9 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         FileConfiguration spawnerConfig = spawnerFile.getConfig();
 
         String type = Methods.getTypeFromString(value);
-            Random rn = new Random();
-            int uuid = rn.nextInt(9999);
-            spawnerConfig.addDefault("Entities." + type + ".uuid", uuid);
+        Random rn = new Random();
+        int uuid = rn.nextInt(9999);
+        spawnerConfig.addDefault("Entities." + type + ".uuid", uuid);
 
         if (!spawnerConfig.contains("Entities." + type + ".Display-Name")) {
             spawnerConfig.set("Entities." + type + ".Display-Name", type);
