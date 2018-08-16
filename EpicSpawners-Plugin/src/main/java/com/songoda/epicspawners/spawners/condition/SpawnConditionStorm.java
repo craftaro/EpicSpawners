@@ -23,7 +23,7 @@ public class SpawnConditionStorm implements SpawnCondition {
 
     @Override
     public boolean isMet(Spawner spawner) {
-        return (stormOnly && spawner.getLocation().getWorld().hasStorm()) || (!stormOnly && !spawner.getLocation().getWorld().hasStorm());
+        return !stormOnly || spawner.getLocation().getWorld().hasStorm();
     }
 
     public boolean isStormOnly() {
