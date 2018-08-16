@@ -158,8 +158,8 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
 
         FileConfiguration dataConfig = dataFile.getConfig();
 
-        // Adding in spawners.
         Bukkit.getScheduler().runTaskLater(this, () -> {
+            // Adding in spawners.
             if (dataConfig.contains("data.spawners")) {
                 for (String key : dataConfig.getConfigurationSection("data.spawners").getKeys(false)) {
                     Location location = Serialize.getInstance().unserializeLocation(key);
@@ -186,42 +186,42 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
                     this.spawnerManager.addSpawnerToWorld(location, spawner);
                 }
             }
-        }, 10);
 
-        // Adding in Boosts
-        if (dataConfig.contains("data.boosts")) {
-            for (String key : dataConfig.getConfigurationSection("data.boosts").getKeys(false)) {
-                if (!dataConfig.contains("data.boosts." + key + ".BoostType")) continue;
+            // Adding in Boosts
+            if (dataConfig.contains("data.boosts")) {
+                for (String key : dataConfig.getConfigurationSection("data.boosts").getKeys(false)) {
+                    if (!dataConfig.contains("data.boosts." + key + ".BoostType")) continue;
 
-                BoostData boostData = new BoostData(
-                        BoostType.valueOf(dataConfig.getString("data.boosts." + key + ".BoostType")),
-                        dataConfig.getInt("data.boosts." + key + ".Amount"),
-                        Long.parseLong(key),
-                        dataConfig.get("data.boosts." + key + ".Data"));
+                    BoostData boostData = new BoostData(
+                            BoostType.valueOf(dataConfig.getString("data.boosts." + key + ".BoostType")),
+                            dataConfig.getInt("data.boosts." + key + ".Amount"),
+                            Long.parseLong(key),
+                            dataConfig.get("data.boosts." + key + ".Data"));
 
-                this.boostManager.addBoostToSpawner(boostData);
-            }
-        }
-
-        // Adding in Player Data
-        if (dataConfig.contains("data.players")) {
-            for (String key : dataConfig.getConfigurationSection("data.players").getKeys(false)) {
-                PlayerData playerData = playerActionManager.getPlayerAction(UUID.fromString(key));
-
-                Map<EntityType, Integer> entityKills = new HashMap<>();
-                if (!dataConfig.contains("data.players." + key + ".EntityKills")) continue;
-                for (String key2 : dataConfig.getConfigurationSection("data.players." + key + ".EntityKills").getKeys(false)) {
-                    EntityType entityType = EntityType.valueOf(key2);
-                    int amt = dataConfig.getInt("data.players." + key + ".EntityKills." + key2);
-                    entityKills.put(entityType, amt);
+                    this.boostManager.addBoostToSpawner(boostData);
                 }
-
-                playerData.setEntityKills(entityKills);
             }
-        }
 
-        // Save data initially so that if the person reloads again fast they don't lose all their data.
-        this.saveToFile();
+            // Adding in Player Data
+            if (dataConfig.contains("data.players")) {
+                for (String key : dataConfig.getConfigurationSection("data.players").getKeys(false)) {
+                    PlayerData playerData = playerActionManager.getPlayerAction(UUID.fromString(key));
+
+                    Map<EntityType, Integer> entityKills = new HashMap<>();
+                    if (!dataConfig.contains("data.players." + key + ".EntityKills")) continue;
+                    for (String key2 : dataConfig.getConfigurationSection("data.players." + key + ".EntityKills").getKeys(false)) {
+                        EntityType entityType = EntityType.valueOf(key2);
+                        int amt = dataConfig.getInt("data.players." + key + ".EntityKills." + key2);
+                        entityKills.put(entityType, amt);
+                    }
+
+                    playerData.setEntityKills(entityKills);
+                }
+            }
+
+            // Save data initially so that if the person reloads again fast they don't lose all their data.
+            this.saveToFile();
+        }, 10);
 
         this.shop = new Shop(this);
         this.spawnerEditor = new SpawnerEditor(this);
