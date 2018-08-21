@@ -1,14 +1,12 @@
 package com.songoda.epicspawners.utils;
 
-import java.util.EnumMap;
-import java.util.Map;
-
 import com.songoda.arconix.plugin.Arconix;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.api.spawner.SpawnerData;
-
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.EnumMap;
+import java.util.Map;
 
 /**
  * Created by songoda on 3/19/2017.

@@ -1,12 +1,8 @@
 package com.songoda.epicspawners.utils;
 
-import java.util.Collection;
-import java.util.Collections;
-
 import com.songoda.arconix.api.methods.formatting.TextComponent;
 import com.songoda.arconix.plugin.Arconix;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
-
 import com.songoda.epicspawners.api.spawner.SpawnerData;
 import org.apache.commons.lang.WordUtils;
 import org.apache.commons.lang.math.NumberUtils;
@@ -18,10 +14,9 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.Collection;
 
 /**
  * Created by songoda on 2/24/2017.
@@ -99,7 +94,7 @@ public class Methods {
 
             String info = "";
             if (full) {
-                info += TextComponent.convertToInvisibleString( uuidStr + ":" + multiStr + ":");
+                info += TextComponent.convertToInvisibleString(uuidStr + ":" + multiStr + ":");
             }
 
             return info + TextComponent.formatText(nameFormat).trim();
@@ -142,7 +137,6 @@ public class Methods {
     public static boolean isAir(Material type) {
         return type == Material.AIR || type.name().contains("PRESSURE");
     }
-
 
 
     public static int countEntitiesAroundLoation(Location location) {

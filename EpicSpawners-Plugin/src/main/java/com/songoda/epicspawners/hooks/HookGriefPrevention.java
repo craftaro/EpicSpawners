@@ -1,10 +1,8 @@
 package com.songoda.epicspawners.hooks;
 
 import com.songoda.epicspawners.api.utils.ProtectionPluginHook;
-
 import me.ryanhamshire.GriefPrevention.Claim;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

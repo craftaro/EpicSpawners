@@ -2,7 +2,7 @@ package com.songoda.epicspawners.listeners;
 
 import com.songoda.arconix.api.methods.formatting.TextComponent;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
-import com.songoda.epicspawners.api.*;
+import com.songoda.epicspawners.api.CostType;
 import com.songoda.epicspawners.api.particles.ParticleDensity;
 import com.songoda.epicspawners.api.particles.ParticleEffect;
 import com.songoda.epicspawners.api.particles.ParticleType;
@@ -211,7 +211,7 @@ public class InventoryListeners implements Listener {
 
                     if (event.getCurrentItem().getItemMeta().getDisplayName().equals(instance.getLocale().getMessage("general.nametag.back")))
                         instance.getSpawnerEditor().overview(player, editingData.getSpawnerSlot());
-                     else if (event.getSlot() == 20) {
+                    else if (event.getSlot() == 20) {
                         ParticleType currentParticleType;
                         if (event.isLeftClick()) {
                             currentParticleType = spawnerData.getEntitySpawnParticle();
@@ -387,7 +387,7 @@ public class InventoryListeners implements Listener {
                         instance.getShop().open(player, page + 1);
                     } else if (event.getSlot() >= 10 && event.getSlot() <= (event.getInventory().getSize() - 10) && event.getSlot() != 17 && event.getSlot() != (event.getInventory().getSize() - 18))
                         playerData.setLastData(instance.getSpawnerDataFromItem(clicked));
-                        instance.getShop().show(1, player);
+                    instance.getShop().show(1, player);
                 }
             }
             if (event.getSlot() != 64537) {

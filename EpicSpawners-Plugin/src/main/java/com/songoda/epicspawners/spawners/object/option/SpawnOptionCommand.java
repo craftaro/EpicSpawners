@@ -1,20 +1,19 @@
 package com.songoda.epicspawners.spawners.object.option;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Random;
-
 import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.api.spawner.Spawner;
 import com.songoda.epicspawners.api.spawner.SpawnerData;
 import com.songoda.epicspawners.api.spawner.SpawnerStack;
 import com.songoda.epicspawners.spawners.object.SpawnOptionType;
-
 import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Random;
 
 public class SpawnOptionCommand implements SpawnOption {
 

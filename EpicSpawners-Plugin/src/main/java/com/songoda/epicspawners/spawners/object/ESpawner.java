@@ -1,26 +1,5 @@
 package com.songoda.epicspawners.spawners.object;
 
-import java.time.Instant;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Random;
-import java.util.Set;
-import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-
 import com.songoda.arconix.api.methods.formatting.TextComponent;
 import com.songoda.arconix.api.methods.formatting.TimeComponent;
 import com.songoda.arconix.plugin.Arconix;
@@ -38,9 +17,7 @@ import com.songoda.epicspawners.player.MenuType;
 import com.songoda.epicspawners.player.PlayerData;
 import com.songoda.epicspawners.utils.Debugger;
 import com.songoda.epicspawners.utils.Methods;
-
 import net.milkbowl.vault.economy.Economy;
-
 import org.bukkit.*;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.enchantments.Enchantment;
@@ -52,22 +29,29 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import java.time.Instant;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class ESpawner implements Spawner {
 
-    private Location location;
-
-    private int spawnCount;
-
-    private String omniState = null;
-
-    private UUID placedBy = null;
-
-    private CreatureSpawner creatureSpawner;
-
+    private static final Random rand = new Random();
     //Holds the different types of spawners contained by this creatureSpawner.
     private final Deque<SpawnerStack> spawnerStacks = new ArrayDeque<>();
-
     private final ScriptEngine engine;
+    private Location location;
+    private int spawnCount;
+    private String omniState = null;
+    private UUID placedBy = null;
+    private CreatureSpawner creatureSpawner;
+    //ToDo: Use this for all spawner things (Like items, commands and what not) instead of the old shit
+    //ToDO: There is a weird error that is triggered when a spawner is not found in the config.
+    private Map<Location, Date> lastSpawns = new HashMap<>();
+    private int lastDelay = 0;
+    private int lastMulti = 0;
 
     public ESpawner(Location location) {
         this.location = location;
@@ -75,10 +59,6 @@ public class ESpawner implements Spawner {
         ScriptEngineManager mgr = new ScriptEngineManager();
         this.engine = mgr.getEngineByName("JavaScript");
     }
-
-    //ToDo: Use this for all spawner things (Like items, commands and what not) instead of the old shit
-    //ToDO: There is a weird error that is triggered when a spawner is not found in the config.
-    private Map<Location, Date> lastSpawns = new HashMap<>();
 
     @Override
     public void spawn() {
@@ -108,7 +88,7 @@ public class ESpawner implements Spawner {
         Arconix.pl().getApi().packetLibrary.getParticleManager().broadcastParticle(particleLocation, x, y, z, 0, spawnerData.getSpawnerSpawnParticle().getEffect(), spawnerData.getParticleDensity().getSpawnerSpawn());
 
         for (SpawnerStack stack : getSpawnerStacks()) {
-            ((ESpawnerData)stack.getSpawnerData()).spawn(this, stack);
+            ((ESpawnerData) stack.getSpawnerData()).spawn(this, stack);
         }
         Bukkit.getScheduler().runTaskLater(instance, this::updateDelay, 10);
     }
@@ -690,7 +670,6 @@ public class ESpawner implements Spawner {
         }
     }
 
-
     public void convert(SpawnerData type, Player p) {
         try {
             EpicSpawnersPlugin instance = EpicSpawnersPlugin.getInstance();
@@ -893,7 +872,7 @@ public class ESpawner implements Spawner {
         }
 
         if (instance.getConfig().getBoolean("Main.Sounds Enabled")) {
-                player.playSound(player.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 0.6F, 15.0F);
+            player.playSound(player.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 0.6F, 15.0F);
         }
         ItemStack item = stack.getSpawnerData().toItemStack(1, stackSize);
 
@@ -962,7 +941,7 @@ public class ESpawner implements Spawner {
         }
 
         if ((getSpawnerDataCount() + amount) > max) {
-            ItemStack item = data.toItemStack( 1, (getSpawnerDataCount() + amount) - max);
+            ItemStack item = data.toItemStack(1, (getSpawnerDataCount() + amount) - max);
             if (player.getInventory().firstEmpty() == -1)
                 location.getWorld().dropItemNaturally(location.clone().add(.5, 0, .5), item);
             else
@@ -983,7 +962,8 @@ public class ESpawner implements Spawner {
             return true;
         }
 
-        if (!instance.getConfig().getBoolean("Main.OmniSpawners Enabled") || !player.hasPermission("epicspawners.omni")) return false;
+        if (!instance.getConfig().getBoolean("Main.OmniSpawners Enabled") || !player.hasPermission("epicspawners.omni"))
+            return false;
 
         ESpawnerStack stack = new ESpawnerStack(data, amount);
         spawnerStacks.push(stack);
@@ -1011,26 +991,25 @@ public class ESpawner implements Spawner {
             loc.setX(loc.getX() + .5);
             loc.setY(loc.getY() + .5);
             loc.setZ(loc.getZ() + .5);
-                player.getWorld().spawnParticle(org.bukkit.Particle.valueOf(EpicSpawnersPlugin.getInstance().getConfig().getString("Main.Upgrade Particle Type")), loc, 100, .5, .5, .5);
+            player.getWorld().spawnParticle(org.bukkit.Particle.valueOf(EpicSpawnersPlugin.getInstance().getConfig().getString("Main.Upgrade Particle Type")), loc, 100, .5, .5, .5);
 
 
             if (!EpicSpawnersPlugin.getInstance().getConfig().getBoolean("Main.Sounds Enabled")) {
                 return;
             }
             if (currentStackSize != EpicSpawnersPlugin.getInstance().getConfig().getInt("Main.Spawner Max Upgrade")) {
-                    player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 0.6F, 15.0F);
+                player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 0.6F, 15.0F);
             } else {
-                    player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 2F, 25.0F);
-                    player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 2F, 25.0F);
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(EpicSpawnersPlugin.getInstance(), () -> player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 1.2F, 35.0F), 5L);
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(EpicSpawnersPlugin.getInstance(), () -> player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 1.8F, 35.0F), 10L);
+                player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 2F, 25.0F);
+                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 2F, 25.0F);
+                Bukkit.getScheduler().scheduleSyncDelayedTask(EpicSpawnersPlugin.getInstance(), () -> player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 1.2F, 35.0F), 5L);
+                Bukkit.getScheduler().scheduleSyncDelayedTask(EpicSpawnersPlugin.getInstance(), () -> player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 1.8F, 35.0F), 10L);
             }
             EpicSpawnersPlugin.getInstance().getHologramHandler().updateHologram(this);
         } catch (Exception e) {
             Debugger.runReport(e);
         }
     }
-
 
     public void upgrade(Player player, CostType type) {
         try {
@@ -1153,10 +1132,6 @@ public class ESpawner implements Spawner {
         return null;
     }
 
-    private int lastDelay = 0;
-    private int lastMulti = 0;
-    private static final Random rand = new Random();
-
     @Override
     public int updateDelay() { //ToDO: Should be redesigned to work with spawner.setmaxdelay
         try {
@@ -1259,12 +1234,12 @@ public class ESpawner implements Spawner {
         return Bukkit.getOfflinePlayer(placedBy);
     }
 
-    public void setPlacedBy(Player placedBy) {
-        this.placedBy = placedBy.getUniqueId();
-    }
-
     public void setPlacedBy(UUID placedBy) {
         this.placedBy = placedBy;
+    }
+
+    public void setPlacedBy(Player placedBy) {
+        this.placedBy = placedBy.getUniqueId();
     }
 
     @Override
@@ -1306,13 +1281,13 @@ public class ESpawner implements Spawner {
         return "ESpawner:{"
                 + "Owner:\"" + placedBy + "\","
                 + "Location:{"
-                    + "World:\"" + location.getWorld().getName() + "\","
-                    + "X:" + location.getBlockX() + ","
-                    + "Y:" + location.getBlockY() + ","
-                    + "Z:" + location.getBlockZ()
+                + "World:\"" + location.getWorld().getName() + "\","
+                + "X:" + location.getBlockX() + ","
+                + "Y:" + location.getBlockY() + ","
+                + "Z:" + location.getBlockZ()
                 + "},"
                 + "StackCount:" + spawnerStacks.size()
-             + "}";
+                + "}";
     }
 
 }

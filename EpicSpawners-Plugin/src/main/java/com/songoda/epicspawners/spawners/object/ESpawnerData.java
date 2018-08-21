@@ -1,7 +1,5 @@
 package com.songoda.epicspawners.spawners.object;
 
-import java.util.*;
-
 import com.google.common.base.Preconditions;
 import com.songoda.epicspawners.api.EpicSpawnersAPI;
 import com.songoda.epicspawners.api.particles.ParticleDensity;
@@ -12,22 +10,18 @@ import com.songoda.epicspawners.api.spawner.SpawnerData;
 import com.songoda.epicspawners.api.spawner.SpawnerStack;
 import com.songoda.epicspawners.api.spawner.condition.SpawnCondition;
 import com.songoda.epicspawners.spawners.condition.*;
-import com.songoda.epicspawners.spawners.object.option.SpawnOption;
-import com.songoda.epicspawners.spawners.object.option.SpawnOptionBlock;
-import com.songoda.epicspawners.spawners.object.option.SpawnOptionCommand;
-import com.songoda.epicspawners.spawners.object.option.SpawnOptionEntity;
-import com.songoda.epicspawners.spawners.object.option.SpawnOptionItem;
-
-import org.bukkit.Bukkit;
+import com.songoda.epicspawners.spawners.object.option.*;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.*;
+
 public class ESpawnerData implements SpawnerData {
 
-    private int uuid;
     private final String name;
+    private int uuid;
     private double pickupCost = 0.0;
     private List<Material> spawnBlocks = Collections.singletonList(Material.DIRT);
     private boolean active = true, inShop = true;
@@ -152,6 +146,11 @@ public class ESpawnerData implements SpawnerData {
         return spawnBlocks.toArray(new Material[spawnBlocks.size()]);
     }
 
+    @Override
+    public void setSpawnBlocks(List<Material> spawnBlock) {
+        this.spawnBlocks = spawnBlock;
+    }
+
     public void setSpawnBlocks(String[] spawnBlock) {
         this.spawnBlocks = new ArrayList<>();
         for (String block : spawnBlock) {
@@ -163,11 +162,6 @@ public class ESpawnerData implements SpawnerData {
     @Override
     public List<Material> getSpawnBlocksList() {
         return Collections.unmodifiableList(spawnBlocks);
-    }
-
-    @Override
-    public void setSpawnBlocks(List<Material> spawnBlock) {
-        this.spawnBlocks = spawnBlock;
     }
 
     @Override

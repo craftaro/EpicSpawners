@@ -1,17 +1,16 @@
 package com.songoda.epicspawners.hooks;
 
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-
 import com.songoda.epicspawners.api.utils.ClaimableProtectionPluginHook;
 import com.wasteofplastic.askyblock.ASkyBlock;
 import com.wasteofplastic.askyblock.ASkyBlockAPI;
 import com.wasteofplastic.askyblock.Island;
-
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 public class HookASkyBlock implements ClaimableProtectionPluginHook {
 

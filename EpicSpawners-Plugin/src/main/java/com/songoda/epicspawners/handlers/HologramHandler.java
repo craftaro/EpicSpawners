@@ -5,7 +5,6 @@ import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.api.spawner.Spawner;
 import com.songoda.epicspawners.utils.Debugger;
 import com.songoda.epicspawners.utils.Methods;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -150,26 +149,26 @@ public class HologramHandler {
 
     public void processChange(Block b) {
         try {
-                Block spawner = null;
-                if (b.getType() == Material.SPAWNER) {
-                    spawner = b;
-                } else if (b.getRelative(BlockFace.UP).getType() == Material.SPAWNER) {
-                    spawner = b.getRelative(BlockFace.UP);
-                } else if (b.getRelative(BlockFace.DOWN).getType() == Material.SPAWNER) {
-                    spawner = b.getRelative(BlockFace.DOWN);
-                } else if (b.getRelative(BlockFace.NORTH).getType() == Material.SPAWNER) {
-                    spawner = b.getRelative(BlockFace.NORTH);
-                } else if (b.getRelative(BlockFace.SOUTH).getType() == Material.SPAWNER) {
-                    spawner = b.getRelative(BlockFace.SOUTH);
-                } else if (b.getRelative(BlockFace.WEST).getType() == Material.SPAWNER) {
-                    spawner = b.getRelative(BlockFace.WEST);
-                } else if (b.getRelative(BlockFace.EAST).getType() == Material.SPAWNER) {
-                    spawner = b.getRelative(BlockFace.EAST);
-                }
-                if (spawner != null) {
-                    Spawner block = instance.getSpawnerManager().getSpawnerFromWorld(spawner.getLocation());
-                    Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(instance, () -> instance.getHologramHandler().updateHologram(block), 1L);
-                }
+            Block spawner = null;
+            if (b.getType() == Material.SPAWNER) {
+                spawner = b;
+            } else if (b.getRelative(BlockFace.UP).getType() == Material.SPAWNER) {
+                spawner = b.getRelative(BlockFace.UP);
+            } else if (b.getRelative(BlockFace.DOWN).getType() == Material.SPAWNER) {
+                spawner = b.getRelative(BlockFace.DOWN);
+            } else if (b.getRelative(BlockFace.NORTH).getType() == Material.SPAWNER) {
+                spawner = b.getRelative(BlockFace.NORTH);
+            } else if (b.getRelative(BlockFace.SOUTH).getType() == Material.SPAWNER) {
+                spawner = b.getRelative(BlockFace.SOUTH);
+            } else if (b.getRelative(BlockFace.WEST).getType() == Material.SPAWNER) {
+                spawner = b.getRelative(BlockFace.WEST);
+            } else if (b.getRelative(BlockFace.EAST).getType() == Material.SPAWNER) {
+                spawner = b.getRelative(BlockFace.EAST);
+            }
+            if (spawner != null) {
+                Spawner block = instance.getSpawnerManager().getSpawnerFromWorld(spawner.getLocation());
+                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(instance, () -> instance.getHologramHandler().updateHologram(block), 1L);
+            }
         } catch (Exception e) {
             Debugger.runReport(e);
         }

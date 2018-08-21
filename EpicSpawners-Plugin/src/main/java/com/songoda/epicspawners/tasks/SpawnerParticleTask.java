@@ -9,7 +9,6 @@ import com.songoda.epicspawners.api.particles.ParticleType;
 import com.songoda.epicspawners.api.spawner.Spawner;
 import com.songoda.epicspawners.api.spawner.SpawnerData;
 import com.songoda.epicspawners.api.spawner.SpawnerManager;
-
 import org.bukkit.Location;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -19,27 +18,36 @@ public class SpawnerParticleTask extends BukkitRunnable {
     private static final int HALO_RADIUS = 1;
 
     private static SpawnerParticleTask instance;
-
-    private double theta = 0;
-
     private final SpawnerManager manager;
     private final Particle particleManager;
+    private double theta = 0;
 
     private SpawnerParticleTask(EpicSpawnersPlugin plugin) {
         this.manager = plugin.getSpawnerManager();
         this.particleManager = Arconix.pl().getApi().packetLibrary.getParticleManager();
     }
 
+    public static SpawnerParticleTask startTask(EpicSpawnersPlugin plugin) {
+        if (instance == null) {
+            instance = new SpawnerParticleTask(plugin);
+            instance.runTaskTimerAsynchronously(plugin, 0, 1);
+        }
+
+        return instance;
+    }
+
     @Override
     public void run() {
         for (Spawner spawner : manager.getSpawners()) {
-            if (spawner == null || spawner.getLocation() == null || spawner.getSpawnerDataCount() == 0 || spawner.getFirstStack().getSpawnerData() == null) continue;
+            if (spawner == null || spawner.getLocation() == null || spawner.getSpawnerDataCount() == 0 || spawner.getFirstStack().getSpawnerData() == null)
+                continue;
 
             SpawnerData data = spawner.getFirstStack().getSpawnerData();
             if (data == null) return;
 
             ParticleEffect effect = data.getParticleEffect();
-            if (effect == null || effect == ParticleEffect.NONE || (data.isParticleEffectBoostedOnly() && spawner.getBoost() == 0)) continue;
+            if (effect == null || effect == ParticleEffect.NONE || (data.isParticleEffectBoostedOnly() && spawner.getBoost() == 0))
+                continue;
 
             Location centre = spawner.getLocation().add(0.5, 0.5, 0.5);
 
@@ -55,8 +63,7 @@ public class SpawnerParticleTask extends BukkitRunnable {
 
                 centre.add(x, 0.2, z);
                 this.particleManager.broadcastParticle(centre, 0, 0, 0, 0, particle.getEffect(), density.getEffect());
-            }
-            else if (effect == ParticleEffect.TARGET) {
+            } else if (effect == ParticleEffect.TARGET) {
                 for (int i = 0; i < 360; i += 10) {
                     double angle = Math.toRadians(i);
                     double cosAngle = Math.cos(angle), sinAngle = Math.sin(angle);
@@ -80,15 +87,6 @@ public class SpawnerParticleTask extends BukkitRunnable {
         if ((theta += THETA_INCREMENT) > 360) {
             this.theta = 0;
         }
-    }
-
-    public static SpawnerParticleTask startTask(EpicSpawnersPlugin plugin) {
-        if (instance == null) {
-            instance = new SpawnerParticleTask(plugin);
-            instance.runTaskTimerAsynchronously(plugin, 0, 1);
-        }
-
-        return instance;
     }
 
 }

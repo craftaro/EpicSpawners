@@ -6,7 +6,6 @@ import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.TownyUniverse;
 import com.songoda.epicspawners.api.utils.ClaimableProtectionPluginHook;
 import com.songoda.epicspawners.utils.Debugger;
-
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -26,8 +25,9 @@ public class HookTowny implements ClaimableProtectionPluginHook {
 
     @Override
     public boolean canBuild(Player player, Location location) {
-        if (TownyUniverse.isWilderness(location.getBlock()) || !TownyUniverse.getTownBlock(location).hasTown()) return true;
-        
+        if (TownyUniverse.isWilderness(location.getBlock()) || !TownyUniverse.getTownBlock(location).hasTown())
+            return true;
+
         try {
             Resident resident = TownyUniverse.getDataSource().getResident(player.getName());
             return resident.hasTown() && TownyUniverse.getTownName(location).equals(resident.getTown().getName());

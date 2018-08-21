@@ -1,12 +1,5 @@
 package com.songoda.epicspawners.spawners.editor;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
 import com.songoda.arconix.api.methods.formatting.TextComponent;
 import com.songoda.arconix.plugin.Arconix;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
@@ -15,7 +8,6 @@ import com.songoda.epicspawners.player.PlayerData;
 import com.songoda.epicspawners.spawners.object.ESpawnerData;
 import com.songoda.epicspawners.utils.Debugger;
 import com.songoda.epicspawners.utils.Methods;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -25,6 +17,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+
+import java.util.*;
 
 /**
  * Created by songo on 9/3/2017.
@@ -115,7 +109,6 @@ public class SpawnerEditor {
                 }
 
                 ItemMeta meta = item.getItemMeta();
-
 
 
                 StringBuilder hidden = new StringBuilder();

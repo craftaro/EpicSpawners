@@ -2,7 +2,6 @@ package com.songoda.epicspawners.spawners.condition;
 
 import com.songoda.epicspawners.api.spawner.Spawner;
 import com.songoda.epicspawners.api.spawner.condition.SpawnCondition;
-import com.songoda.epicspawners.utils.Methods;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;

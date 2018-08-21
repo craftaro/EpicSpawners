@@ -1,9 +1,9 @@
 package com.songoda.epicspawners.utils;
 
-import java.lang.reflect.Method;
-
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
+
+import java.lang.reflect.Method;
 
 /**
  * Created by songoda on 2/25/2017.
@@ -40,7 +40,7 @@ public class Reflection {
 
     private static Class<?> getCraftItemStack() {
         if (classCraftItemStack != null) return classCraftItemStack;
-        
+
         String version = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
         try {
             return (classCraftItemStack = Class.forName("org.bukkit.craftbukkit." + version + ".inventory.CraftItemStack"));
@@ -53,7 +53,7 @@ public class Reflection {
 
     private static Class<?> getNMSItemStack() {
         if (classNMSItemStack != null) return classNMSItemStack;
-        
+
         String version = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
         try {
             return (classNMSItemStack = Class.forName("net.minecraft.server." + version + ".ItemStack"));

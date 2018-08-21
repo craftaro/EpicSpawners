@@ -3,7 +3,6 @@ package com.songoda.epicspawners.tasks;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.api.spawner.Spawner;
 import com.songoda.epicspawners.api.spawner.SpawnerManager;
-import org.bukkit.Location;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;

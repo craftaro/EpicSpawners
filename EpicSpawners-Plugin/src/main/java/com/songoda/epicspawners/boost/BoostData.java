@@ -50,7 +50,7 @@ public class BoostData {
 
         BoostData other = (BoostData) obj;
         return amtBoosted == other.amtBoosted && boostType == other.boostType
-            && endTime == other.endTime && Objects.equals(data, other.data);
+                && endTime == other.endTime && Objects.equals(data, other.data);
     }
 
 }

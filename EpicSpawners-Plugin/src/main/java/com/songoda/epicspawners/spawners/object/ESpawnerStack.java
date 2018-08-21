@@ -1,9 +1,9 @@
 package com.songoda.epicspawners.spawners.object;
 
-import java.util.Objects;
-
 import com.songoda.epicspawners.api.spawner.SpawnerData;
 import com.songoda.epicspawners.api.spawner.SpawnerStack;
+
+import java.util.Objects;
 
 /*
  * This is object that will contain SpawnerData
@@ -35,13 +35,13 @@ public class ESpawnerStack implements SpawnerStack {
     }
 
     @Override
-    public boolean hasSpawnerData() {
-        return spawnerData != null;
+    public void setSpawnerData(SpawnerData spawnerData) {
+        this.spawnerData = spawnerData;
     }
 
     @Override
-    public void setSpawnerData(SpawnerData spawnerData) {
-        this.spawnerData = spawnerData;
+    public boolean hasSpawnerData() {
+        return spawnerData != null;
     }
 
     @Override
@@ -58,7 +58,7 @@ public class ESpawnerStack implements SpawnerStack {
     public int hashCode() {
         int result = 31 * (spawnerData == null ? 0 : spawnerData.hashCode());
         result = 31 * result + this.stackSize;
-        
+
         return result;
     }
 
@@ -74,9 +74,9 @@ public class ESpawnerStack implements SpawnerStack {
     @Override
     public String toString() {
         return "ESpawnerStack:{"
-                    + "Size:" + stackSize + ","
-                    + "Data:" + (spawnerData == null ? null : spawnerData.toString())
-             + "}";
+                + "Size:" + stackSize + ","
+                + "Data:" + (spawnerData == null ? null : spawnerData.toString())
+                + "}";
     }
 
 }

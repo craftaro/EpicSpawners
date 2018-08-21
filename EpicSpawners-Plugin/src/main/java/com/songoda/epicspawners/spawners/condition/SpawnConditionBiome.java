@@ -1,14 +1,13 @@
 package com.songoda.epicspawners.spawners.condition;
 
-import java.util.EnumSet;
-import java.util.Set;
-
 import com.google.common.collect.Iterables;
 import com.songoda.epicspawners.api.spawner.Spawner;
 import com.songoda.epicspawners.api.spawner.condition.SpawnCondition;
-
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.block.Biome;
+
+import java.util.EnumSet;
+import java.util.Set;
 
 public class SpawnConditionBiome implements SpawnCondition {
 

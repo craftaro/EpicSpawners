@@ -3,11 +3,8 @@ package com.songoda.epicspawners.spawners.condition;
 import com.songoda.epicspawners.api.spawner.Spawner;
 import com.songoda.epicspawners.api.spawner.condition.SpawnCondition;
 import org.bukkit.Location;
-import org.bukkit.World;
 
 public class SpawnConditionLightDark implements SpawnCondition {
-
-    public enum Type { LIGHT, DARK, BOTH }
 
     private final Type lightDark;
 
@@ -22,7 +19,7 @@ public class SpawnConditionLightDark implements SpawnCondition {
 
     @Override
     public String getDescription() {
-        switch(lightDark) {
+        switch (lightDark) {
             case BOTH:
                 return "Spawns in all lighting";
             case LIGHT:
@@ -36,7 +33,7 @@ public class SpawnConditionLightDark implements SpawnCondition {
     @Override
     public boolean isMet(Spawner spawner) {
         Location location = spawner.getLocation();
-        switch(lightDark) {
+        switch (lightDark) {
             case LIGHT:
                 return !isDark(location);
             case DARK:
@@ -52,4 +49,6 @@ public class SpawnConditionLightDark implements SpawnCondition {
     public Type getType() {
         return lightDark;
     }
+
+    public enum Type {LIGHT, DARK, BOTH}
 }

@@ -1,15 +1,5 @@
 package com.songoda.epicspawners.spawners.object.option;
 
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
-
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
-
 import com.songoda.arconix.plugin.Arconix;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.api.spawner.Spawner;
@@ -20,7 +10,6 @@ import com.songoda.epicspawners.spawners.condition.SpawnConditionNearbyEntities;
 import com.songoda.epicspawners.spawners.object.SpawnOptionType;
 import com.songoda.epicspawners.utils.Debugger;
 import com.songoda.epicspawners.utils.Methods;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -29,6 +18,15 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Consumer;
+
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class SpawnOptionEntity implements SpawnOption {
 
@@ -94,7 +92,7 @@ public class SpawnOptionEntity implements SpawnOption {
         int limit = 0;
         for (SpawnCondition spawnCondition : data.getConditions()) {
             if (spawnCondition instanceof SpawnConditionNearbyEntities)
-                limit = ((SpawnConditionNearbyEntities)spawnCondition).getMax();
+                limit = ((SpawnConditionNearbyEntities) spawnCondition).getMax();
         }
 
         int spawnerBoost = spawner.getBoost();
@@ -144,12 +142,12 @@ public class SpawnOptionEntity implements SpawnOption {
 
                 Location loc = spot.clone();
                 loc.subtract(0, 1, 0);
-                    spot = spot.clone().getBlock().getLocation();
+                spot = spot.clone().getBlock().getLocation();
 
-                    double spawnX = ThreadLocalRandom.current().nextDouble(0.4, 0.6);
-                    double spawnZ = ThreadLocalRandom.current().nextDouble(0.4, 0.6);
+                double spawnX = ThreadLocalRandom.current().nextDouble(0.4, 0.6);
+                double spawnZ = ThreadLocalRandom.current().nextDouble(0.4, 0.6);
 
-                    spot.add(spawnX, .5, spawnZ);
+                spot.add(spawnX, .5, spawnZ);
 
 
                 spawnFinal(spot, data, type);

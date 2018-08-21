@@ -1,18 +1,8 @@
 package com.songoda.epicspawners.utils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import com.songoda.arconix.api.methods.formatting.TextComponent;
 import com.songoda.arconix.api.utils.ConfigWrapper;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -26,6 +16,10 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * Created by songo on 6/4/2017.
  */
@@ -34,11 +28,10 @@ public class SettingsManager implements Listener {
     private static final Pattern SETTINGS_PATTERN = Pattern.compile("(.{1,28}(?:\\s|$))|(.{0,28})", Pattern.DOTALL);
 
     private static ConfigWrapper defs;
-
+    private final EpicSpawnersPlugin instance;
     private String pluginName = "EpicSpawners";
     private Map<Player, String> cat = new HashMap<>();
-
-    private final EpicSpawnersPlugin instance;
+    private Map<Player, String> current = new HashMap<>();
 
     public SettingsManager(EpicSpawnersPlugin plugin) {
         this.instance = plugin;
@@ -48,8 +41,6 @@ public class SettingsManager implements Listener {
         defs.createNewFile("Loading data file", pluginName + " SettingDefinitions file");
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
-
-    private Map<Player, String> current = new HashMap<>();
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {

@@ -1,12 +1,10 @@
 package com.songoda.epicspawners.hooks;
 
 import com.songoda.epicspawners.api.utils.ClaimableProtectionPluginHook;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-
 import us.talabrek.ultimateskyblock.api.uSkyBlockAPI;
 
 public class HookUSkyBlock implements ClaimableProtectionPluginHook {

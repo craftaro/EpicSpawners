@@ -39,15 +39,11 @@ public class MassiveStats implements Listener {
 
     public static final String MASSIVE_UPDATE_PERMISSION = "massivestats.update";
     /* END: MASSIVESTATS SETTINGS */
-
+    private final JavaPlugin plugin;
     private MassiveStatsUpdateTask task = null;
     private int pingInterval;
-
     private MassiveStatsDataResponse lastResponse;
     private boolean listenerDisabled;
-
-    private final JavaPlugin plugin;
-
     private Class jsonElement;
     private Class jsonParser;
     private Class jsonObject;
@@ -168,6 +164,16 @@ public class MassiveStats implements Listener {
     }
 
     /**
+     * Returns the duration, in seconds, that MassiveStats will wait before sending another request to the server.
+     *
+     * @return Duration between requests.
+     * @author Sam Jakob Harker
+     */
+    public int getPingInterval() {
+        return pingInterval;
+    }
+
+    /**
      * Sets the duration, in seconds, that MassiveStats should wait before sending another request to the server.
      *
      * @param pingInterval Duration between requests.
@@ -181,16 +187,6 @@ public class MassiveStats implements Listener {
     }
 
     /**
-     * Returns the duration, in seconds, that MassiveStats will wait before sending another request to the server.
-     *
-     * @return Duration between requests.
-     * @author Sam Jakob Harker
-     */
-    public int getPingInterval() {
-        return pingInterval;
-    }
-
-    /**
      * Returns the plugin that this MassiveStats instance is collecting data for.
      *
      * @return MassiveStats instance plugin.
@@ -198,10 +194,6 @@ public class MassiveStats implements Listener {
      */
     public JavaPlugin getPlugin() {
         return plugin;
-    }
-
-    void setLastResponse(MassiveStatsDataResponse lastResponse) {
-        this.lastResponse = lastResponse;
     }
 
     /**
@@ -212,6 +204,10 @@ public class MassiveStats implements Listener {
      */
     public MassiveStatsDataResponse getLastResponse() {
         return lastResponse;
+    }
+
+    void setLastResponse(MassiveStatsDataResponse lastResponse) {
+        this.lastResponse = lastResponse;
     }
 
     @EventHandler

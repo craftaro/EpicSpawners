@@ -1,19 +1,18 @@
 package com.songoda.epicspawners.utils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-
 import com.songoda.epicspawners.api.particles.ParticleDensity;
 import com.songoda.epicspawners.api.particles.ParticleEffect;
 import com.songoda.epicspawners.api.particles.ParticleType;
 import com.songoda.epicspawners.api.spawner.SpawnerData;
 import com.songoda.epicspawners.api.utils.SpawnerDataBuilder;
 import com.songoda.epicspawners.spawners.object.ESpawnerData;
-
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 
 public final class ESpawnerDataBuilder implements SpawnerDataBuilder {
 

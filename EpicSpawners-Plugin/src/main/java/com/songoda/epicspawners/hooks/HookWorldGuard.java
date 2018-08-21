@@ -2,7 +2,6 @@ package com.songoda.epicspawners.hooks;
 
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.songoda.epicspawners.api.utils.ProtectionPluginHook;
-
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;

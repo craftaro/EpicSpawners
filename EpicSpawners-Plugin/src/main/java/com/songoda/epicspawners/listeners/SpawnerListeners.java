@@ -7,7 +7,6 @@ import com.songoda.epicspawners.spawners.object.ESpawner;
 import com.songoda.epicspawners.spawners.object.ESpawnerStack;
 import com.songoda.epicspawners.utils.Debugger;
 import com.songoda.epicspawners.utils.Methods;
-
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;

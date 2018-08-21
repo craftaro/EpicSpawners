@@ -108,16 +108,16 @@ public class BlockListeners implements Listener {
             SpawnerData spawnerData = instance.getSpawnerDataFromItem(event.getItemInHand());
             int spawnerStackSize = instance.getStackSizeFromItem(event.getItemInHand());
             spawner.addSpawnerStack(new ESpawnerStack(spawnerData, spawnerStackSize));
-            
+
             Player player = event.getPlayer();
-            
+
             SpawnerPlaceEvent placeEvent = new SpawnerPlaceEvent(player, spawner);
             Bukkit.getPluginManager().callEvent(placeEvent);
             if (placeEvent.isCancelled()) {
                 event.setCancelled(true);
                 return;
             }
-            
+
             doLiquidRepel(event.getBlock(), true);
 
             if (instance.getBlacklistHandler().isBlacklisted(player, true)) {
@@ -210,15 +210,15 @@ public class BlockListeners implements Listener {
             boolean naturalOnly = instance.getConfig().getBoolean("Main.Only Charge Natural Spawners");
 
             if (spawner.getFirstStack().getSpawnerData().getPickupCost() != 0 && (!naturalOnly || spawner.getPlacedBy() == null)) {
-                if (!((ESpawnerManager)instance.getSpawnerManager()).hasCooldown(spawner)) {
+                if (!((ESpawnerManager) instance.getSpawnerManager()).hasCooldown(spawner)) {
                     player.sendMessage(instance.getLocale().getMessage("event.block.chargebreak", spawner.getFirstStack().getSpawnerData().getPickupCost()));
-                    ((ESpawnerManager)instance.getSpawnerManager()).addCooldown(spawner);
-                    Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(instance, () -> ((ESpawnerManager)instance.getSpawnerManager()).removeCooldown(spawner), 300L);
+                    ((ESpawnerManager) instance.getSpawnerManager()).addCooldown(spawner);
+                    Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(instance, () -> ((ESpawnerManager) instance.getSpawnerManager()).removeCooldown(spawner), 300L);
                     event.setCancelled(true);
                     return;
                 }
 
-                ((ESpawnerManager)instance.getSpawnerManager()).removeCooldown(spawner);
+                ((ESpawnerManager) instance.getSpawnerManager()).removeCooldown(spawner);
                 //ToDO: Do this somewhere else.
                 double cost = spawner.getFirstStack().getSpawnerData().getPickupCost();
                 RegisteredServiceProvider<Economy> rsp = instance.getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);

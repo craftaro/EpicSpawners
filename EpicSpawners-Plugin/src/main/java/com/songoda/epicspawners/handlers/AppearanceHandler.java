@@ -55,7 +55,7 @@ public class AppearanceHandler {
                 SpawnerData next = null;
                 List<SpawnerStack> list = new ArrayList<>(spawner.getSpawnerStacks());
                 for (SpawnerStack stack : list) {
-                    if (stack.getSpawnerData().getIdentifyingName().equals(((ESpawner)spawner).getOmniState())) {
+                    if (stack.getSpawnerData().getIdentifyingName().equals(((ESpawner) spawner).getOmniState())) {
                         last = stack.getSpawnerData().getIdentifyingName();
                     } else if (last != null && next == null) {
                         next = stack.getSpawnerData();
@@ -65,7 +65,7 @@ public class AppearanceHandler {
                     next = list.get(0).getSpawnerData();
                 }
                 updateDisplayItem(spawner, next);
-                ((ESpawner)spawner).setOmniState(next.getIdentifyingName());
+                ((ESpawner) spawner).setOmniState(next.getIdentifyingName());
 
             }
         } catch (Exception e) {
