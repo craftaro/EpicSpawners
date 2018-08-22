@@ -44,6 +44,7 @@ import com.songoda.epicspawners.utils.ESpawnerDataBuilder;
 import com.songoda.epicspawners.utils.Heads;
 import com.songoda.epicspawners.utils.Methods;
 import com.songoda.epicspawners.utils.SettingsManager;
+import com.songoda.epicspawners.utils.gui.AbstractGUI;
 import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -244,6 +245,8 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         manager.registerEvents(new InteractListeners(this), this);
         manager.registerEvents(new InventoryListeners(this), this);
         manager.registerEvents(new SpawnerListeners(this), this);
+
+        AbstractGUI.initializeListeners(this);
 
         Bukkit.getScheduler().runTaskTimerAsynchronously(this, this::saveToFile, 6000, 6000);
 

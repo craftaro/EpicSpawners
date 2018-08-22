@@ -48,7 +48,7 @@ public class HologramHandler {
             Block b = olocation.getBlock();
             if (b.getType() != Material.SPAWNER) return;
             String face = null;
-            Collection<Entity> nearbyEntites = location.getWorld().getNearbyEntities(olocation, 5, 5, 5);
+            Collection<Entity> nearbyEntites = olocation.getWorld().getNearbyEntities(olocation, 5, 5, 5);
             for (Entity entity : nearbyEntites) {
                 if (entity instanceof Player) {
                     face = Arconix.pl().getApi().getPlayer((Player) entity).getPlayerDirection();

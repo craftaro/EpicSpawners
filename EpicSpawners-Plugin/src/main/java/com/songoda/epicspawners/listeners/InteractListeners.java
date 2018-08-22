@@ -181,7 +181,7 @@ public class InteractListeners implements Listener {
                 if (!player.isSneaking()) {
                     Spawner spawner = EpicSpawnersPlugin.getInstance().getSpawnerManager().getSpawnerFromWorld(location);
 
-                    ((ESpawner) spawner).overview(player, 1);
+                    ((ESpawner) spawner).overview(player);
                     EpicSpawnersPlugin.getInstance().getHologramHandler().processChange(block);
                     event.setCancelled(true);
                 }
