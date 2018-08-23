@@ -15,7 +15,7 @@ public class CommandEpicSpawners extends AbstractCommand {
     protected boolean runCommand(EpicSpawnersPlugin instance, CommandSender sender, String... args) {
         sender.sendMessage("");
         sender.sendMessage(TextComponent.formatText("&f>>&m------------&6&l EpicSpawners Help &f&m------------&f<<"));
-        sender.sendMessage(TextComponent.formatText("                   &7" + instance.getDescription().getVersion() + " Created by &5&l&oBrianna"));
+        sender.sendMessage(TextComponent.formatText("              &7Version " + instance.getDescription().getVersion() + " Created by &5&l&oBrianna"));
 
         sender.sendMessage(TextComponent.formatText("&6/EpicSpawners&7 - Displays this page."));
         sender.sendMessage(TextComponent.formatText("&6/SpawnerShop&7 - Opens the spawner shop."));
