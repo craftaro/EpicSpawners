@@ -1,5 +1,6 @@
 package com.songoda.epicspawners.boost;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,6 +17,6 @@ public class BoostManager {
     }
 
     public Set<BoostData> getBoosts() {
-        return boostedSpawners;
+        return Collections.unmodifiableSet(boostedSpawners);
     }
 }
