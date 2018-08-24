@@ -9,7 +9,6 @@ import com.songoda.epicspawners.spawners.object.ESpawner;
 import com.songoda.epicspawners.spawners.object.ESpawnerStack;
 import com.songoda.epicspawners.utils.Debugger;
 import com.songoda.epicspawners.utils.Methods;
-import com.songoda.epicspawners.utils.Reflection;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -46,6 +45,7 @@ public class InteractListeners implements Listener {
             Player p = e.getPlayer();
             Block b = e.getClickedBlock();
             ItemStack i = e.getItem();
+
             Material is = null;
             if (e.getItem() != null) {
                 is = i.getType();
@@ -92,13 +92,7 @@ public class InteractListeners implements Listener {
 
             int bmulti = spawner.getSpawnerDataCount();
             int amt = p.getInventory().getItemInHand().getAmount();
-            EntityType itype;
-
-            String str = Reflection.getNBTTagCompound(Reflection.getNMSItemStack(i)).toString();
-            if (str.contains("minecraft:"))
-                itype = EntityType.fromName(str.substring(str.indexOf("minecraft:") + 10, str.indexOf("\"}")));
-            else
-                itype = EntityType.fromName(str.substring(str.indexOf("EntityTag:{id:") + 15, str.indexOf("\"}")));
+            EntityType itype = EntityType.valueOf(i.getType().name().replace("_SPAWN_EGG", ""));
 
             SpawnerData itemType = instance.getSpawnerManager().getSpawnerData(itype);
 
