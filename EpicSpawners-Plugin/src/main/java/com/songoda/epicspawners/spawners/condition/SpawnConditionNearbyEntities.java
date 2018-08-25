@@ -1,9 +1,12 @@
 package com.songoda.epicspawners.spawners.condition;
 
+import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.api.spawner.Spawner;
 import com.songoda.epicspawners.api.spawner.condition.SpawnCondition;
-import com.songoda.epicspawners.utils.Methods;
 import org.bukkit.Location;
+import org.bukkit.entity.*;
+
+import java.util.Collection;
 
 public class SpawnConditionNearbyEntities implements SpawnCondition {
 
@@ -27,9 +30,12 @@ public class SpawnConditionNearbyEntities implements SpawnCondition {
     public boolean isMet(Spawner spawner) {
         Location location = spawner.getLocation().add(0.5, 0.5, 0.5);
 
-        int amt = Methods.countEntitiesAroundLoation(location);
+        String[] arr = EpicSpawnersPlugin.getInstance().getConfig().getString("Main.Radius To Search Around Spawners").split("x");
 
-        return amt < max;
+        Collection<Entity> amt = location.getWorld().getNearbyEntities(location, Integer.parseInt(arr[0]), Integer.parseInt(arr[1]), Integer.parseInt(arr[2]));
+        amt.removeIf(e -> e instanceof Player || !(e instanceof LivingEntity) || e instanceof ArmorStand);
+
+        return amt.size() < max;
     }
 
     public int getMax() {

@@ -52,8 +52,6 @@ public class ESpawner implements Spawner {
     //ToDo: Use this for all spawner things (Like items, commands and what not) instead of the old shit
     //ToDO: There is a weird error that is triggered when a spawner is not found in the config.
     private Map<Location, Date> lastSpawns = new HashMap<>();
-    private int lastDelay = 0;
-    private int lastMulti = 0;
 
     public ESpawner(Location location) {
         this.location = location;
@@ -949,8 +947,6 @@ public class ESpawner implements Spawner {
             if (!EpicSpawnersPlugin.getInstance().getConfig().getBoolean("Main.Default Minecraft Spawner Cooldowns"))
                 return 0;
 
-            String equation = EpicSpawnersPlugin.getInstance().getConfig().getString("Main.Equations.Cooldown Between Spawns");
-
             int max = 0;
             int min = 0;
             for (SpawnerStack stack : spawnerStacks) { //ToDo: You can probably do this only on spawner stack or upgrade.
@@ -970,22 +966,9 @@ public class ESpawner implements Spawner {
                     min = tickMin;
                 }
             }
+            int extraTicks = EpicSpawnersPlugin.getInstance().getConfig().getInt("Main.Extra Ticks Added To Each Spawn");
 
-            int delay;
-            if (!EpicSpawnersPlugin.getInstance().cache.containsKey(equation) || (max + min) != lastDelay || getSpawnerDataCount() != lastMulti) {
-                equation = equation.replace("{DEFAULT}", Integer.toString(rand.nextInt(Math.max(max, 0) + min)));
-                equation = equation.replace("{MULTI}", Integer.toString(getSpawnerDataCount()));
-                try {
-                    delay = (int) Math.round(Double.parseDouble(engine.eval(equation).toString()));
-                } catch (IllegalArgumentException ex) {
-                    delay = 30;
-                }
-                EpicSpawnersPlugin.getInstance().cache.put(equation, delay);
-                lastDelay = max + min;
-                lastMulti = getSpawnerDataCount();
-            } else {
-                delay = EpicSpawnersPlugin.getInstance().cache.get(equation);
-            }
+            int delay = (rand.nextInt(Math.max(max, 0) + min) / getSpawnerDataCount()) + extraTicks;
 
             if (getCreatureSpawner().getSpawnedType() != EntityType.DROPPED_ITEM)
                 getCreatureSpawner().setDelay(delay);

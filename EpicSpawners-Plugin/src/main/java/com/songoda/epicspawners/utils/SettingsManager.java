@@ -224,11 +224,11 @@ public class SettingsManager implements Listener {
         SPAWNERS_DONT_EXPLODE("spawners-dont-explode", "Main.Prevent Spawners From Exploding", false),
         SPAWNERS_TO_INVENTORY("Add-spawners-To-Inventory-On-Drop", "Main.Add Spawners To Inventory On Drop", false),
         UPGRADE_PARTICLE_TYPE("Upgrade-particle-Type", "Main.Upgrade Particle Type", "SPELL_WITCH"),
+        EXTRA_SPAWN_TICKS("Upgrade-particle-Type", "Main.Extra Ticks Added To Each Spawn", 0),
 
         COST_EQUATION_XP("XP-cost-equation", "Main.Equations.Calculate XP Upgrade Cost", "{XPCost} * {Level}"),
         COST_EQUATION_ECO("ECO-cost-equation", "Main.Equations.Calculate Economy Upgrade Cost", "{ECOCost} * {Level}"),
         SPAWNER_EQUATION_SPAWNS("spawners-Spawn-Equation", "Main.Equations.Mobs Spawned Per Spawn", "{MULTI} + {RAND}"),
-        SPAWNER_EQUATION_RATE("spawners-Rate-Equation", "Main.Equations.Cooldown Between Spawns", "{DEFAULT} / {MULTI}"),
 
         NAMED_SPAWNER_TIERS("-", "Main.Named Spawners Tiers", false),
         TIER_NAMES("-", "Main.Tier Names", Arrays.asList("&7Common", "&6Uncommon", "&4Rare", "&5Mythic")),

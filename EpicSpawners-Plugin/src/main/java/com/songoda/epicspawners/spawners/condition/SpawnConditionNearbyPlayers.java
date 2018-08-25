@@ -5,6 +5,7 @@ import com.songoda.epicspawners.api.spawner.condition.SpawnCondition;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 
 import java.util.Collection;
 
@@ -33,7 +34,7 @@ public class SpawnConditionNearbyPlayers implements SpawnCondition {
         Location location = spawner.getLocation().add(0.5, 0.5, 0.5);
 
         Collection<Entity> players = location.getWorld().getNearbyEntities(location, distance, distance, distance);
-        players.removeIf(e -> e.getType() != EntityType.PLAYER);
+        players.removeIf(e -> e instanceof Player);
 
         return players.size() >= amount;
     }
