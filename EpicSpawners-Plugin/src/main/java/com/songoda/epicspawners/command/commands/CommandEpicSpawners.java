@@ -21,6 +21,7 @@ public class CommandEpicSpawners extends AbstractCommand {
         sender.sendMessage(TextComponent.formatText("&6/SpawnerShop&7 - Opens the spawner shop."));
         sender.sendMessage(TextComponent.formatText("&6/spawnerstats&7 - Allows a player to overview their current EpicSpawners stats and see how many kills they have left to get a specific spawner drop."));
         if (sender.hasPermission("epicspawners.admin")) {
+            sender.sendMessage(TextComponent.formatText("&6/es reload &7Reload the Configuration and Language files."));
             sender.sendMessage(TextComponent.formatText("&6/es editor&7 - Opens the spawner editor."));
             sender.sendMessage(TextComponent.formatText("&6/es change <Type>&7 - Changes the entity for the spawner you are looking at."));
             sender.sendMessage(TextComponent.formatText("&6/es give [player/all] [spawnertype/random] [multiplier] [amount]&7 - Gives an operator the ability to spawn a spawner of his or her choice."));
