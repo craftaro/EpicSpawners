@@ -34,7 +34,7 @@ public class SpawnConditionNearbyPlayers implements SpawnCondition {
         Location location = spawner.getLocation().add(0.5, 0.5, 0.5);
 
         Collection<Entity> players = location.getWorld().getNearbyEntities(location, distance, distance, distance);
-        players.removeIf(e -> e instanceof Player);
+        players.removeIf(e -> !(e instanceof Player));
 
         return players.size() >= amount;
     }
