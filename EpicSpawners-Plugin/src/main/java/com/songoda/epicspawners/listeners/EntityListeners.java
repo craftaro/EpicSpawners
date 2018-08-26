@@ -98,8 +98,6 @@ public class EntityListeners implements Listener {
     public void onDeath(EntityDeathEvent event) {
         try {
             EpicSpawnersPlugin instance = EpicSpawnersPlugin.getInstance();
-            if (event.getEntity().getKiller() == null) return;
-            Player player = event.getEntity().getKiller();
             if (event.getEntity().hasMetadata("ES")) {
                 SpawnerData spawnerData = instance.getSpawnerManager().getSpawnerData(event.getEntity().getMetadata("ES").get(0).asString());
                 for (ItemStack itemStack : spawnerData.getEntityDroppedItems()) {
@@ -108,6 +106,8 @@ public class EntityListeners implements Listener {
                 }
 
             }
+            if (event.getEntity().getKiller() == null) return;
+            Player player = event.getEntity().getKiller();
             if (!player.hasPermission("epicspawners.Killcounter") || !instance.getConfig().getBoolean("Spawner Drops.Allow Killing Mobs To Drop Spawners"))
                 return;
 

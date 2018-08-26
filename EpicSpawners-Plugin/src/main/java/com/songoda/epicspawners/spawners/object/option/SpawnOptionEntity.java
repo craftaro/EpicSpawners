@@ -13,8 +13,7 @@ import com.songoda.epicspawners.utils.Methods;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
+import org.bukkit.entity.*;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Consumer;
@@ -96,9 +95,13 @@ public class SpawnOptionEntity implements SpawnOption {
         }
 
         int spawnerBoost = spawner.getBoost();
-        int amtOfCurrentEntities = Methods.countEntitiesAroundLoation(location);
-        if (amtOfCurrentEntities == limit && spawnerBoost == 0) return;
-        spawnCount = Math.min(limit - amtOfCurrentEntities, spawnCount) + spawner.getBoost();
+
+        String[] arr = EpicSpawnersPlugin.getInstance().getConfig().getString("Main.Radius To Search Around Spawners").split("x");
+        Collection<Entity> amt = location.getWorld().getNearbyEntities(location, Integer.parseInt(arr[0]), Integer.parseInt(arr[1]), Integer.parseInt(arr[2]));
+        amt.removeIf(e -> e instanceof Player || !(e instanceof LivingEntity) || e instanceof ArmorStand);
+
+        if (amt.size() == limit && spawnerBoost == 0) return;
+        spawnCount = Math.min(limit - amt.size(), spawnCount) + spawner.getBoost();
 
         while (spawnCount-- > 0) {
             EntityType type = types[ThreadLocalRandom.current().nextInt(types.length)];

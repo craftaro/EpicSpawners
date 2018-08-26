@@ -139,36 +139,4 @@ public class Methods {
         return type == Material.AIR || type.name().contains("PRESSURE");
     }
 
-
-    public static int countEntitiesAroundLoation(Location location) {
-        try {
-            int amt = 0;
-
-            String[] arr = EpicSpawnersPlugin.getInstance().getConfig().getString("Main.Radius To Search Around Spawners").split("x");
-
-
-            Collection<Entity> players = location.getWorld().getNearbyEntities(location, Integer.parseInt(arr[0]), Integer.parseInt(arr[1]), Integer.parseInt(arr[2]));
-            players.removeIf(e -> e.getType() != EntityType.PLAYER);
-
-            Collection<Entity> nearbyEntite = location.getWorld().getNearbyEntities(location.clone().add(0.5, 0.5, 0.5), Integer.parseInt(arr[0]), Integer.parseInt(arr[1]), Integer.parseInt(arr[2]));
-            if (nearbyEntite.size() < 1) return amt;
-
-            for (Entity ee : nearbyEntite) {
-                if (!(ee instanceof LivingEntity) || ee instanceof Player || ee.getType() == EntityType.ARMOR_STAND) {
-                    continue;
-                }
-                if (EpicSpawnersPlugin.getInstance().getServer().getPluginManager().getPlugin("StackMob") != null
-                        && ee.getMetadata(uk.antiperson.stackmob.tools.extras.GlobalValues.METATAG).size() != 0) {
-                    amt = amt + ee.getMetadata(uk.antiperson.stackmob.tools.extras.GlobalValues.METATAG).get(0).asInt();
-                } else {
-                    amt++;
-                }
-            }
-            return amt;
-        } catch (Exception e) {
-            Debugger.runReport(e);
-        }
-        return 0;
-    }
-
 }
