@@ -100,11 +100,12 @@ public class EntityListeners implements Listener {
             EpicSpawnersPlugin instance = EpicSpawnersPlugin.getInstance();
             if (event.getEntity().hasMetadata("ES")) {
                 SpawnerData spawnerData = instance.getSpawnerManager().getSpawnerData(event.getEntity().getMetadata("ES").get(0).asString());
-                for (ItemStack itemStack : spawnerData.getEntityDroppedItems()) {
-                    Location location = event.getEntity().getLocation();
-                    location.getWorld().dropItemNaturally(location, itemStack);
+                if (!spawnerData.getEntityDroppedItems().isEmpty()) {
+                    event.getDrops().clear();
                 }
-
+                for (ItemStack itemStack : spawnerData.getEntityDroppedItems()) {
+                    event.getDrops().add(itemStack);
+                }
             }
             if (event.getEntity().getKiller() == null) return;
             Player player = event.getEntity().getKiller();
