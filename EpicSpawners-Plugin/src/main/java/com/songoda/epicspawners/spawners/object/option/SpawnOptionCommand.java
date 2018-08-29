@@ -8,6 +8,7 @@ import com.songoda.epicspawners.spawners.object.SpawnOptionType;
 import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
@@ -65,6 +66,12 @@ public class SpawnOptionCommand implements SpawnOption {
                     if (nearbyPlayer == null) continue;
 
                     finalCommand = finalCommand.replaceAll("@[pP]", nearbyPlayer.getName());
+                }
+
+                if (lowercaseCommand.contains("@n")) {
+                    OfflinePlayer whoPlaced = spawner.getPlacedBy();
+
+                    finalCommand = finalCommand.replaceAll("@[nN]", whoPlaced.getName());
                 }
 
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), finalCommand);

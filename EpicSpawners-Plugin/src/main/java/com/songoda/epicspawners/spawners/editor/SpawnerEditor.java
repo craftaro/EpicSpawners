@@ -183,15 +183,14 @@ public class SpawnerEditor {
     public void overview(Player player, int id) {
         try {
             EpicSpawnersPlugin instance = EpicSpawnersPlugin.getInstance();
-            EditingData editingData = this.userEditingData.get(player);
+            EditingData editingData = getEditingData(player);
 
             int csp = 1;
             for (SpawnerData spawnerData : instance.getSpawnerManager().getAllSpawnerData()) {
                 if (spawnerData.getIdentifyingName().toLowerCase().contains("custom"))
                     csp++;
             }
-
-            String type = "Custom " + (editingData.getNewSpawnerName() != null ? editingData.getNewSpawnerName() : "");
+            String type = "Custom " + (editingData.getNewSpawnerName() != null ? editingData.getNewSpawnerName() : csp);
 
             if (id != 0)
                 type = getType(id).getIdentifyingName();
@@ -939,6 +938,7 @@ public class SpawnerEditor {
             p.sendMessage("");
             p.sendMessage(TextComponent.formatText("&7Please Type a command. Example: &6eco give @p 1000&7."));
             p.sendMessage(TextComponent.formatText("&7You can use @X @Y and @Z for random X Y and Z coordinates around the spawner."));
+            p.sendMessage(TextComponent.formatText("&7@n will execute the command for the person who originally placed the spawner."));
             p.sendMessage(TextComponent.formatText("&7If you're getting command output try &6/gamerule sendCommandFeedback false&7."));
             p.sendMessage(TextComponent.formatText("&7do not include a &a/"));
             p.sendMessage("");

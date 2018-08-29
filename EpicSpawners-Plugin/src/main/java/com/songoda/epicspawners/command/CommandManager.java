@@ -26,6 +26,7 @@ public class CommandManager implements CommandExecutor {
         addCommand(new CommandEditor(commandEpicSpawners));
         addCommand(new CommandGive(commandEpicSpawners));
         addCommand(new CommandChange(commandEpicSpawners));
+        addCommand(new CommandBoost(commandEpicSpawners));
         addCommand(new CommandSettings(commandEpicSpawners));
         addCommand(new CommandSpawnerShop());
         addCommand(new CommandSpawnerStats());
