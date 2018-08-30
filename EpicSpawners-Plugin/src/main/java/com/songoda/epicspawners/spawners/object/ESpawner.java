@@ -35,12 +35,13 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import java.time.Instant;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ESpawner implements Spawner {
 
-    private static final Random rand = new Random();
+    private static final ThreadLocalRandom rand = ThreadLocalRandom.current();
     //Holds the different types of spawners contained by this creatureSpawner.
     private final Deque<SpawnerStack> spawnerStacks = new ArrayDeque<>();
     private final ScriptEngine engine;
@@ -862,7 +863,7 @@ public class ESpawner implements Spawner {
             }
             int extraTicks = EpicSpawnersPlugin.getInstance().getConfig().getInt("Main.Extra Ticks Added To Each Spawn");
 
-            int delay = (rand.nextInt(Math.max(max, 0) + min) / getSpawnerDataCount()) + extraTicks;
+            int delay = (rand.nextInt(min, max + 1) / getSpawnerDataCount()) + extraTicks;
 
             if (getCreatureSpawner().getSpawnedType() != EntityType.DROPPED_ITEM)
                 getCreatureSpawner().setDelay(delay);

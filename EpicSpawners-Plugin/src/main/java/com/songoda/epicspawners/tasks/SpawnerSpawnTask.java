@@ -43,7 +43,7 @@ public class SpawnerSpawnTask extends BukkitRunnable {
 
                 // If not present in map, init to 0 and put in map. Otherwise, add 30 to existing value
                 int amount = timer.merge(spawner, 30, (oldValue, value) -> (oldValue == null) ? 0 : oldValue + value);
-                int delay = spawner.updateDelay();
+                int delay = spawner.getCreatureSpawner().getDelay();
                 if (amount < delay) continue;
 
                 this.timer.remove(spawner);
