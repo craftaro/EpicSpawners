@@ -865,7 +865,6 @@ public class ESpawner implements Spawner {
 
             int delay = (rand.nextInt(min, max + 1) / getSpawnerDataCount()) + extraTicks;
 
-            if (getCreatureSpawner().getSpawnedType() != EntityType.DROPPED_ITEM)
                 getCreatureSpawner().setDelay(delay);
             getCreatureSpawner().update();
 
