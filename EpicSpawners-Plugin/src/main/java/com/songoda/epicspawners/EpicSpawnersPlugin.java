@@ -122,8 +122,25 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         console.sendMessage(TextComponent.formatText("&a============================="));
     }
 
+    private void checkVersion() {
+        int workingVersion = 13;
+        int currentVersion = Integer.parseInt(Bukkit.getServer().getClass()
+                .getPackage().getName().split("\\.")[3].split("_")[1]);
+
+        if (currentVersion < workingVersion) {
+            Bukkit.getScheduler().scheduleSyncDelayedTask(this, () -> {
+                Bukkit.getConsoleSender().sendMessage("");
+                Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "You installed the 1." + workingVersion + "+ only version of " + this.getDescription().getName() + " on a 1." + currentVersion + " server. Since you are on the wrong version we disabled the plugin for you. Please install correct version to continue using " + this.getDescription().getName() + ".");
+                Bukkit.getConsoleSender().sendMessage("");
+            }, 20L);
+        }
+    }
+
     @Override
     public void onEnable() {
+        // Check to make sure the Bukkit version is compatible.
+        checkVersion();
+
         INSTANCE = this;
         EpicSpawnersAPI.setImplementation(this);
 
@@ -273,83 +290,82 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
     private void loadSpawnersFromFile() {
         // Register spawner data into SpawnerRegistry from configuration.
         FileConfiguration spawnerConfig = spawnerFile.getConfig();
-        if (spawnerConfig.contains("Entities")) {
-            for (String key : spawnerConfig.getConfigurationSection("Entities").getKeys(false)) {
-                ConfigurationSection currentSection = spawnerConfig.getConfigurationSection("Entities." + key);
+        if (!spawnerConfig.contains("Entities")) return;
+        for (String key : spawnerConfig.getConfigurationSection("Entities").getKeys(false)) {
+            ConfigurationSection currentSection = spawnerConfig.getConfigurationSection("Entities." + key);
 
-                List<EntityType> entities = new ArrayList<>();
-                List<Material> blocks = new ArrayList<>();
-                List<Material> spawnBlocks = new ArrayList<>();
-                List<ItemStack> itemDrops = (List<ItemStack>) currentSection.getList("itemDrops", new ArrayList<>());
-                List<ItemStack> items = (List<ItemStack>) currentSection.getList("items", new ArrayList<>());
-                List<String> commands = currentSection.getStringList("command");
+            List<EntityType> entities = new ArrayList<>();
+            List<Material> blocks = new ArrayList<>();
+            List<Material> spawnBlocks = new ArrayList<>();
+            List<ItemStack> itemDrops = (List<ItemStack>) currentSection.getList("itemDrops", new ArrayList<>());
+            List<ItemStack> items = (List<ItemStack>) currentSection.getList("items", new ArrayList<>());
+            List<String> commands = currentSection.getStringList("command");
 
-                for (String block : currentSection.getStringList("blocks")) {
-                    blocks.add(Material.matchMaterial(block.toUpperCase()));
-                }
-                for (String block : currentSection.getString("Spawn-Block").split(",")) {
-                    spawnBlocks.add(Material.matchMaterial(block.toUpperCase()));
-                }
-                for (String entity : currentSection.getStringList("entities")) {
-                    entities.add(EntityType.valueOf(entity));
-                }
-
-                SpawnerDataBuilder dataBuilder = new ESpawnerDataBuilder(key).uuid(currentSection.getInt("uuid"))
-                        .entities(entities).blocks(blocks).items(items).entityDroppedItems(itemDrops).commands(commands)
-                        .spawnBlocks(spawnBlocks)
-                        .active(currentSection.getBoolean("Allowed"))
-                        .spawnOnFire(currentSection.getBoolean("Spawn-On-Fire"))
-                        .upgradeable(currentSection.getBoolean("Upgradable"))
-                        .convertible(currentSection.getBoolean("Convertible"))
-                        .convertRatio(currentSection.getString("Convert-Ratio"))
-                        .inShop(currentSection.getBoolean("In-Shop"))
-                        .pickupCost(currentSection.getDouble("Pickup-Cost"))
-                        .shopPrice(currentSection.getDouble("Shop-Price"))
-                        .killGoal(currentSection.getInt("CustomGoal"))
-                        .upgradeCostEconomy(currentSection.getInt("Custom-ECO-Cost"))
-                        .upgradeCostExperience(currentSection.getInt("Custom-XP-Cost"))
-                        .tickRate(currentSection.getString("Tick-Rate"))
-                        .particleEffect(ParticleEffect.valueOf(currentSection.getString("Spawn-Effect", "HALO")))
-                        .spawnEffectParticle(ParticleType.valueOf(currentSection.getString("Spawn-Effect-Particle", "REDSTONE")))
-                        .entitySpawnParticle(ParticleType.valueOf(currentSection.getString("Entity-Spawn-Particle", "SMOKE")))
-                        .spawnerSpawnParticle(ParticleType.valueOf(currentSection.getString("Spawner-Spawn-Particle", "FIRE")))
-                        .particleDensity(ParticleDensity.valueOf(currentSection.getString("Particle-Amount", "NORMAL")))
-                        .particleEffectBoostedOnly(currentSection.getBoolean("Particle-Effect-Boosted-Only"));
-
-                if (currentSection.contains("Display-Name")) {
-                    dataBuilder.displayName(currentSection.getString("Display-Name"));
-                }
-                if (currentSection.contains("Display-Item")) {
-                    dataBuilder.displayItem(Material.valueOf(currentSection.getString("Display-Item")));
-                }
-
-                SpawnerData data = dataBuilder.build();
-
-                if (currentSection.contains("Conditions")) {
-                    String biomeString = currentSection.getString("Conditions.Biomes");
-                    Set<Biome> biomes = null;
-                    if (biomeString.toLowerCase().equals("all"))
-                        biomes = EnumSet.copyOf(BIOMES);
-                    else {
-                        biomes = new HashSet<>();
-                        for (String string : biomeString.split(", ")) {
-                            biomes.add(Biome.valueOf(string));
-                        }
-                    }
-
-                    String[] heightString = currentSection.getString("Conditions.Height").split(":");
-                    String[] playerString = currentSection.getString("Conditions.Required Player Distance And Amount").split(":");
-
-                    data.addCondition(new SpawnConditionNearbyPlayers(Integer.parseInt(playerString[0]), Integer.parseInt(playerString[1])));
-                    data.addCondition(new SpawnConditionNearbyEntities(currentSection.getInt("Conditions.Max Entities Around Spawner")));
-                    data.addCondition(new SpawnConditionBiome(biomes));
-                    data.addCondition(new SpawnConditionHeight(Integer.parseInt(heightString[0]), Integer.parseInt(heightString[1])));
-                    data.addCondition(new SpawnConditionLightDark(SpawnConditionLightDark.Type.valueOf(currentSection.getString("Conditions.Light"))));
-                    data.addCondition(new SpawnConditionStorm(currentSection.getBoolean("Conditions.Storm Only")));
-                }
-
-                this.spawnerManager.addSpawnerData(key, data);
+            for (String block : currentSection.getStringList("blocks")) {
+                blocks.add(Material.matchMaterial(block.toUpperCase()));
             }
+            for (String block : currentSection.getString("Spawn-Block").split(",")) {
+                spawnBlocks.add(Material.matchMaterial(block.toUpperCase()));
+            }
+            for (String entity : currentSection.getStringList("entities")) {
+                entities.add(EntityType.valueOf(entity));
+            }
+
+            SpawnerDataBuilder dataBuilder = new ESpawnerDataBuilder(key).uuid(currentSection.getInt("uuid"))
+                    .entities(entities).blocks(blocks).items(items).entityDroppedItems(itemDrops).commands(commands)
+                    .spawnBlocks(spawnBlocks)
+                    .active(currentSection.getBoolean("Allowed"))
+                    .spawnOnFire(currentSection.getBoolean("Spawn-On-Fire"))
+                    .upgradeable(currentSection.getBoolean("Upgradable"))
+                    .convertible(currentSection.getBoolean("Convertible"))
+                    .convertRatio(currentSection.getString("Convert-Ratio"))
+                    .inShop(currentSection.getBoolean("In-Shop"))
+                    .pickupCost(currentSection.getDouble("Pickup-Cost"))
+                    .shopPrice(currentSection.getDouble("Shop-Price"))
+                    .killGoal(currentSection.getInt("CustomGoal"))
+                    .upgradeCostEconomy(currentSection.getInt("Custom-ECO-Cost"))
+                    .upgradeCostExperience(currentSection.getInt("Custom-XP-Cost"))
+                    .tickRate(currentSection.getString("Tick-Rate"))
+                    .particleEffect(ParticleEffect.valueOf(currentSection.getString("Spawn-Effect", "HALO")))
+                    .spawnEffectParticle(ParticleType.valueOf(currentSection.getString("Spawn-Effect-Particle", "REDSTONE")))
+                    .entitySpawnParticle(ParticleType.valueOf(currentSection.getString("Entity-Spawn-Particle", "SMOKE")))
+                    .spawnerSpawnParticle(ParticleType.valueOf(currentSection.getString("Spawner-Spawn-Particle", "FIRE")))
+                    .particleDensity(ParticleDensity.valueOf(currentSection.getString("Particle-Amount", "NORMAL")))
+                    .particleEffectBoostedOnly(currentSection.getBoolean("Particle-Effect-Boosted-Only"));
+
+            if (currentSection.contains("Display-Name")) {
+                dataBuilder.displayName(currentSection.getString("Display-Name"));
+            }
+            if (currentSection.contains("Display-Item")) {
+                dataBuilder.displayItem(Material.valueOf(currentSection.getString("Display-Item")));
+            }
+
+            SpawnerData data = dataBuilder.build();
+
+            if (currentSection.contains("Conditions")) {
+                String biomeString = currentSection.getString("Conditions.Biomes");
+                Set<Biome> biomes;
+                if (biomeString.toLowerCase().equals("all"))
+                    biomes = EnumSet.copyOf(BIOMES);
+                else {
+                    biomes = new HashSet<>();
+                    for (String string : biomeString.split(", ")) {
+                        biomes.add(Biome.valueOf(string));
+                    }
+                }
+
+                String[] heightString = currentSection.getString("Conditions.Height").split(":");
+                String[] playerString = currentSection.getString("Conditions.Required Player Distance And Amount").split(":");
+
+                data.addCondition(new SpawnConditionNearbyPlayers(Integer.parseInt(playerString[0]), Integer.parseInt(playerString[1])));
+                data.addCondition(new SpawnConditionNearbyEntities(currentSection.getInt("Conditions.Max Entities Around Spawner")));
+                data.addCondition(new SpawnConditionBiome(biomes));
+                data.addCondition(new SpawnConditionHeight(Integer.parseInt(heightString[0]), Integer.parseInt(heightString[1])));
+                data.addCondition(new SpawnConditionLightDark(SpawnConditionLightDark.Type.valueOf(currentSection.getString("Conditions.Light"))));
+                data.addCondition(new SpawnConditionStorm(currentSection.getBoolean("Conditions.Storm Only")));
+            }
+
+            this.spawnerManager.addSpawnerData(key, data);
         }
     }
 
@@ -511,7 +527,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         this.registerProtectionHook(hookSupplier.get());
     }
 
-    public void processDefault(String value) {
+    private void processDefault(String value) {
         FileConfiguration spawnerConfig = spawnerFile.getConfig();
 
         String type = Methods.getTypeFromString(value);
