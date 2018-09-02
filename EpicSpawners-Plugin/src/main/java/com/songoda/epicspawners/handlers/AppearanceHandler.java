@@ -13,6 +13,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -77,9 +78,23 @@ public class AppearanceHandler {
     public void updateDisplayItem(Spawner spawner, SpawnerData spawnerData) {
         try {
 
-            Location nloc = spawner.getLocation();
-            nloc.add(.5, -.4, .5);
-            removeDisplayItem(spawner);
+            Location location = spawner.getLocation();
+            location.add(.5, -.4, .5);
+
+            ItemStack itemStack = new ItemStack(Material.DIRT);
+            if (spawner.getFirstStack().getSpawnerData().getDisplayItem() != null)
+                itemStack.setType(spawnerData.getDisplayItem());
+
+            ArmorStand entity = (ArmorStand)getDisplayItem(spawner);
+
+            if (entity != null) {
+                if (entity.getHelmet().getType() != itemStack.getType()) {
+                    entity.remove();
+                    return;
+                } else {
+                    return;
+                }
+            }
 
             try {
                 EntityType next = EntityType.valueOf(Methods.restoreType(spawnerData.getIdentifyingName()));
@@ -87,26 +102,15 @@ public class AppearanceHandler {
             } catch (Exception ex) {
                 spawner.getCreatureSpawner().setSpawnedType(EntityType.DROPPED_ITEM);
 
-                Location location = spawner.getLocation();
-
                 location.setPitch(-360);
-
-                ArmorStand as = (ArmorStand) location.getWorld().spawnEntity(nloc, EntityType.ARMOR_STAND);
+                ArmorStand as = (ArmorStand) location.getWorld().spawnEntity(location, EntityType.ARMOR_STAND);
                 as.setSmall(true);
                 as.setVisible(false);
                 as.setCustomNameVisible(false);
                 as.setGravity(false);
                 as.setCanPickupItems(false);
                 as.setBasePlate(true);
-                try {
-                    if (spawner.getFirstStack().getSpawnerData().getDisplayItem() != null) {
-                        as.setHelmet(new ItemStack(spawnerData.getDisplayItem()));
-                    } else {
-                        as.setHelmet(new ItemStack(Material.DIRT));
-                    }
-                } catch (Exception ee) {
-                    as.setHelmet(new ItemStack(Material.DIRT));
-                }
+                as.setHelmet(itemStack);
             }
         } catch (Exception e) {
             Debugger.runReport(e);
@@ -114,14 +118,21 @@ public class AppearanceHandler {
     }
 
     public void removeDisplayItem(Spawner spawner) {
-        Location nloc = spawner.getLocation();
-        nloc.add(.5, -.4, .5);
-        List<Entity> near = (List<Entity>) nloc.getWorld().getNearbyEntities(nloc, 8, 8, 8);
-        for (Entity e : near) {
-            if (e.getLocation().getX() == nloc.getX() && e.getLocation().getY() == nloc.getY() && e.getLocation().getZ() == nloc.getZ()) {
-                e.remove();
-            }
+        Entity entity = getDisplayItem(spawner);
+        if (entity == null) return;
+        entity.remove();
+    }
+
+    private Entity getDisplayItem(Spawner spawner) {
+        Location location = spawner.getLocation();
+        location.add(.5, -.4, .5);
+
+        List<Entity> near = (List<Entity>) location.getWorld().getNearbyEntities(location, 8, 8, 8);
+        near.removeIf(e -> e.getLocation().getX() != location.getX() || e.getLocation().getY() != location.getY() || e.getLocation().getZ() != location.getZ());
+        if (near.size() != 0) {
+            return near.get(0);
         }
+        return null;
     }
 
 }

@@ -122,7 +122,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         console.sendMessage(TextComponent.formatText("&a============================="));
     }
 
-    private void checkVersion() {
+    private boolean checkVersion() {
         int workingVersion = 13;
         int currentVersion = Integer.parseInt(Bukkit.getServer().getClass()
                 .getPackage().getName().split("\\.")[3].split("_")[1]);
@@ -133,13 +133,15 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
                 Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "You installed the 1." + workingVersion + "+ only version of " + this.getDescription().getName() + " on a 1." + currentVersion + " server. Since you are on the wrong version we disabled the plugin for you. Please install correct version to continue using " + this.getDescription().getName() + ".");
                 Bukkit.getConsoleSender().sendMessage("");
             }, 20L);
+            return false;
         }
+        return true;
     }
 
     @Override
     public void onEnable() {
         // Check to make sure the Bukkit version is compatible.
-        checkVersion();
+        if (!checkVersion()) return;
 
         INSTANCE = this;
         EpicSpawnersAPI.setImplementation(this);
