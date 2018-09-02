@@ -548,7 +548,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         if (value.equalsIgnoreCase("pig") || value.equalsIgnoreCase("sheep") || value.equalsIgnoreCase("chicken") ||
                 value.equalsIgnoreCase("cow") || value.equalsIgnoreCase("rabbit") || value.equalsIgnoreCase("llamma") ||
                 value.equalsIgnoreCase("horse") || value.equalsIgnoreCase("OCELOT")) {
-            spawnBlock = "GRASS";
+            spawnBlock = "GRASS_BLOCK";
         }
 
         if (value.equalsIgnoreCase("MUSHROOM_COW")) {

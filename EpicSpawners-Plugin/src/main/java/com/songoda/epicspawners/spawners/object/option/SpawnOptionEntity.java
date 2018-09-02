@@ -10,6 +10,7 @@ import com.songoda.epicspawners.spawners.condition.SpawnConditionNearbyEntities;
 import com.songoda.epicspawners.spawners.object.SpawnOptionType;
 import com.songoda.epicspawners.utils.Debugger;
 import com.songoda.epicspawners.utils.Methods;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -52,6 +53,7 @@ public class SpawnOptionEntity implements SpawnOption {
     @Override
     public void spawn(SpawnerData data, SpawnerStack stack, Spawner spawner) {
         Location location = spawner.getLocation();
+        location.add(.5,.5,.5);
         if (location == null || location.getWorld() == null) return;
 
         World world = location.getWorld();
@@ -161,28 +163,25 @@ public class SpawnOptionEntity implements SpawnOption {
     }
 
     public boolean canSpawn(SpawnerData data, Location location) {
-        boolean canSpawn = true;
         try {
             List<Material> spawnBlocks = Arrays.asList(data.getSpawnBlocks());
 
             if (!Methods.isAir(location.getBlock().getType()) && (!isWater(location.getBlock().getType()) && !spawnBlocks.contains("WATER"))) {
-                canSpawn = false;
+                return false;
             }
 
-            boolean canSpawnUnder = false;
-            if (canSpawn) {
                 for (Material material : spawnBlocks) {
                     Location loc = location.clone().subtract(0, 1, 0);
-                    if (loc.getBlock().getType().toString().equalsIgnoreCase(material.name()) || isWater(loc.getBlock().getType()) && spawnBlocks.contains("WATER")) {
-                        canSpawnUnder = true;
+                    if (loc.getBlock().getType().toString().equalsIgnoreCase(material.name())
+                            || (material.toString().equals("GRASS") && loc.getBlock().getType() == Material.GRASS_BLOCK)
+                            || isWater(loc.getBlock().getType()) && spawnBlocks.contains("WATER")) {
+                        return true;
                     }
                 }
-                canSpawn = canSpawnUnder;
-            }
         } catch (Exception e) {
             Debugger.runReport(e);
         }
-        return canSpawn;
+        return false;
     }
 
     public boolean isWater(Material type) {
