@@ -59,6 +59,7 @@ public class HologramHandler {
     private void addHologram(Location location, Spawner spawner) {
         try {
             int multi = spawner.getSpawnerDataCount();
+            if (spawner.getSpawnerStacks().size() == 0) return;
             String name = Methods.compileName(instance.getSpawnerManager().getSpawnerData(spawner.getIdentifyingName()), multi, false);
 
             Arconix.pl().getApi().packetLibrary.getHologramManager().spawnHologram(location, name.trim());
