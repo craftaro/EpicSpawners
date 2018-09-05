@@ -13,6 +13,11 @@ public class CommandSettings extends AbstractCommand {
 
     @Override
     protected boolean runCommand(EpicSpawnersPlugin instance, CommandSender sender, String... args) {
+        if (!(sender instanceof Player)) {
+            sender.sendMessage("You must be a player to use this command.");
+            return true;
+        }
+
         Player p = (Player) sender;
         instance.getSettingsManager().openSettingsManager(p);
         return false;

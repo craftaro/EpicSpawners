@@ -26,6 +26,10 @@ public class CommandSpawnerStats extends AbstractCommand {
     @Override
     protected boolean runCommand(EpicSpawnersPlugin instance, CommandSender sender, String... args) {
 
+        if (!(sender instanceof Player)) {
+            sender.sendMessage("You must be a player to use this command.");
+            return true;
+        }
         Player p = (Player) sender;
 
         int size = 0;
