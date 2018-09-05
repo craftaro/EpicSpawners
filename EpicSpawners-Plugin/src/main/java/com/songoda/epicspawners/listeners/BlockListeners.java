@@ -111,13 +111,6 @@ public class BlockListeners implements Listener {
 
             Player player = event.getPlayer();
 
-            SpawnerPlaceEvent placeEvent = new SpawnerPlaceEvent(player, spawner);
-            Bukkit.getPluginManager().callEvent(placeEvent);
-            if (placeEvent.isCancelled()) {
-                event.setCancelled(true);
-                return;
-            }
-
             doLiquidRepel(event.getBlock(), true);
 
             if (instance.getBlacklistHandler().isBlacklisted(player, true)) {
@@ -126,6 +119,13 @@ public class BlockListeners implements Listener {
             }
 
             if (doForceCombine(player, spawner)) {
+                event.setCancelled(true);
+                return;
+            }
+
+            SpawnerPlaceEvent placeEvent = new SpawnerPlaceEvent(player, spawner);
+            Bukkit.getPluginManager().callEvent(placeEvent);
+            if (placeEvent.isCancelled()) {
                 event.setCancelled(true);
                 return;
             }
