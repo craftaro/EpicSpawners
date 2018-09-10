@@ -275,7 +275,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
 
         // Register default hooks
         if (Bukkit.getPluginManager().isPluginEnabled("ASkyBlock")) this.register(HookASkyBlock::new);
-        if (Bukkit.getPluginManager().isPluginEnabled("Factions")) this.register(HookFactions::new);
+        if (Bukkit.getPluginManager().isPluginEnabled("FactionsFramework")) this.register(HookFactions::new);
         if (Bukkit.getPluginManager().isPluginEnabled("GriefPrevention")) this.register(HookGriefPrevention::new);
         if (Bukkit.getPluginManager().isPluginEnabled("Kingdoms")) this.register(HookKingdoms::new);
         if (Bukkit.getPluginManager().isPluginEnabled("PlotSquared")) this.register(HookPlotSquared::new);
