@@ -4,8 +4,9 @@ import com.songoda.arconix.api.methods.formatting.TextComponent;
 import com.songoda.arconix.plugin.Arconix;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.api.spawner.SpawnerData;
+import com.songoda.epicspawners.listeners.ChatListeners;
 import com.songoda.epicspawners.player.PlayerData;
-import com.songoda.epicspawners.spawners.object.ESpawnerData;
+import com.songoda.epicspawners.spawners.spawner.ESpawnerData;
 import com.songoda.epicspawners.utils.Debugger;
 import com.songoda.epicspawners.utils.Methods;
 import org.bukkit.Bukkit;
@@ -760,44 +761,44 @@ public class SpawnerEditor {
         }
     }
 
-    public void alterSetting(Player p, String type) {
+    public void alterSetting(Player p, ChatListeners.EditingType type) {
         try {
             EditingData editingData = userEditingData.get(p.getUniqueId());
             SpawnerData entity = getType(editingData.getSpawnerSlot());
             p.sendMessage("");
             switch (type) {
-                case "Shop-Price":
+                case SHOP_PRICE:
                     p.sendMessage(TextComponent.formatText("&7Enter a sale price for &6" + Methods.getTypeFromString(entity.getIdentifyingName()) + "&7."));
                     p.sendMessage(TextComponent.formatText("&7Example: &619.99&7."));
                     break;
-                case "Custom-ECO-Cost":
+                case CUSTOM_ECO_COST:
                     p.sendMessage(TextComponent.formatText("&7Enter a custom eco cost for " + Methods.getTypeFromString(entity.getIdentifyingName()) + "&7."));
                     p.sendMessage(TextComponent.formatText("&7Use &60 &7to use the default cost."));
                     p.sendMessage(TextComponent.formatText("&7Example: &619.99&7."));
                     break;
-                case "Custom-XP-Cost":
+                case CUSTOM_XP_COST:
                     p.sendMessage(TextComponent.formatText("&7Enter a custom xp cost for " + Methods.getTypeFromString(entity.getIdentifyingName()) + "&7."));
                     p.sendMessage(TextComponent.formatText("&7Use &60 &7to use the default cost."));
                     p.sendMessage(TextComponent.formatText("&7Example: &625&7."));
                     break;
-                case "Pickup-cost":
+                case PICKUP_COST:
                     p.sendMessage(TextComponent.formatText("&7Enter a pickup cost for " + Methods.getTypeFromString(entity.getIdentifyingName()) + "&7."));
                     p.sendMessage(TextComponent.formatText("&7Use &60 &7to disable."));
                     p.sendMessage(TextComponent.formatText("&7Example: &719.99&6."));
                     p.sendMessage(TextComponent.formatText("&7Example: &625&7."));
                     break;
-                case "CustomGoal":
+                case CUSTOM_GOAL:
                     p.sendMessage(TextComponent.formatText("&7Enter a custom goal for " + Methods.getTypeFromString(entity.getIdentifyingName()) + "&7."));
                     p.sendMessage(TextComponent.formatText("&7Use &60 &7to use the default price."));
                     p.sendMessage(TextComponent.formatText("&7Example: &35&6."));
                     break;
-                case "Tick-Rate":
+                case TICK_RATE:
                     p.sendMessage(TextComponent.formatText("&7Enter a tick rate min and max for " + Methods.getTypeFromString(entity.getIdentifyingName()) + "&7."));
                     p.sendMessage(TextComponent.formatText("&7Example: &3800:200&6."));
                     break;
             }
             p.sendMessage("");
-            EpicSpawnersPlugin.getInstance().chatEditing.put(p, type);
+            EpicSpawnersPlugin.getInstance().getChatListeners().addToEditor(p, type);
             p.closeInventory();
         } catch (Exception e) {
             Debugger.runReport(e);
@@ -876,7 +877,7 @@ public class SpawnerEditor {
             p.sendMessage(TextComponent.formatText("&6" + list));
             p.sendMessage("Enter an entity Type.");
             p.sendMessage("");
-            EpicSpawnersPlugin.getInstance().chatEditing.put(p, "addEntity");
+            EpicSpawnersPlugin.getInstance().getChatListeners().addToEditor(p, ChatListeners.EditingType.ADD_ENTITY);
             p.closeInventory();
         } catch (Exception e) {
             Debugger.runReport(e);
@@ -890,7 +891,7 @@ public class SpawnerEditor {
             p.sendMessage(TextComponent.formatText("&cAre you sure you want to destroy &6" + getType(editingData.getSpawnerSlot()).getIdentifyingName() + "&7."));
             p.sendMessage(TextComponent.formatText("&7Type &l&6CONFIRM &7to continue. Otherwise Type anything else to cancel."));
             p.sendMessage("");
-            EpicSpawnersPlugin.getInstance().chatEditing.put(p, "destroy");
+            EpicSpawnersPlugin.getInstance().getChatListeners().addToEditor(p, ChatListeners.EditingType.DESTROY);
             p.closeInventory();
         } catch (Exception e) {
             Debugger.runReport(e);
@@ -901,7 +902,6 @@ public class SpawnerEditor {
         try {
             int type = userEditingData.get(p.getUniqueId()).getSpawnerSlot();
 
-            EpicSpawnersPlugin.getInstance().chatEditing.remove(p);
             if (msg.toLowerCase().equals("confirm")) {
                 p.sendMessage(TextComponent.formatText("&6" + getType(type).getIdentifyingName() + " Spawner &7 has been destroyed successfully"));
                 EpicSpawnersPlugin.getInstance().getSpawnerManager().removeSpawnerData(getType(type).getIdentifyingName());
@@ -925,7 +925,7 @@ public class SpawnerEditor {
                 p.sendMessage("");
                 p.sendMessage(TextComponent.formatText("&7Enter a spawn limit for &6" + Methods.getTypeFromString(spawnerData.getIdentifyingName()) + "&7."));
                 p.sendMessage("");
-                EpicSpawnersPlugin.getInstance().chatEditing.put(p, "spawnLimit");
+                EpicSpawnersPlugin.getInstance().getChatListeners().addToEditor(p, ChatListeners.EditingType.SPAWN_LIMIT);
                 p.closeInventory();
             }
         } catch (Exception e) {
@@ -943,7 +943,7 @@ public class SpawnerEditor {
             p.sendMessage(TextComponent.formatText("&7do not include a &a/"));
             p.sendMessage("");
 
-            EpicSpawnersPlugin.getInstance().chatEditing.put(p, "Command");
+            EpicSpawnersPlugin.getInstance().getChatListeners().addToEditor(p, ChatListeners.EditingType.COMMAND);
             p.closeInventory();
         } catch (Exception e) {
             Debugger.runReport(e);
@@ -960,7 +960,6 @@ public class SpawnerEditor {
             spawnerData.setCommands(commands);
 
             editor(p, EditingMenu.COMMAND);
-            EpicSpawnersPlugin.getInstance().chatEditing.remove(p);
         } catch (Exception e) {
             Debugger.runReport(e);
         }
@@ -975,7 +974,7 @@ public class SpawnerEditor {
             p.sendMessage("");
             p.sendMessage(TextComponent.formatText("&7Enter a display name for &6" + Methods.getTypeFromString(spawnerData.getIdentifyingName()) + "&7."));
             p.sendMessage("");
-            EpicSpawnersPlugin.getInstance().chatEditing.put(p, "name");
+            EpicSpawnersPlugin.getInstance().getChatListeners().addToEditor(p, ChatListeners.EditingType.NAME);
             p.closeInventory();
         } catch (Exception e) {
             Debugger.runReport(e);
@@ -1003,7 +1002,6 @@ public class SpawnerEditor {
             entities.add(EntityType.valueOf(ent));
             spawnerData.setEntities(entities);
             editor(p, EditingMenu.ENTITY);
-            EpicSpawnersPlugin.getInstance().chatEditing.remove(p);
 
         } catch (Exception e) {
             Debugger.runReport(e);

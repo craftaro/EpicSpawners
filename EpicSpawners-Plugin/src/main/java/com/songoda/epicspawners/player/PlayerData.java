@@ -1,7 +1,7 @@
 package com.songoda.epicspawners.player;
 
 import com.songoda.epicspawners.api.spawner.SpawnerData;
-import com.songoda.epicspawners.spawners.object.ESpawner;
+import com.songoda.epicspawners.spawners.spawner.ESpawner;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.EntityType;

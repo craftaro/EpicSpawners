@@ -13,21 +13,27 @@ import org.bukkit.event.player.PlayerJoinEvent;
  */
 public class PlayerJoinListeners implements Listener {
 
+    private EpicSpawnersPlugin instance;
+
+    public PlayerJoinListeners(EpicSpawnersPlugin instance) {
+        this.instance = instance;
+    }
+
     @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent e) {
+    public void onPlayerJoin(PlayerJoinEvent event) {
         try {
-            Player p = e.getPlayer();
-            if (p.isOp() && EpicSpawnersPlugin.getInstance().getConfig().getBoolean("Main.Display Helpful Tips For Operators")) {
-                if (EpicSpawnersPlugin.getInstance().getServer().getPluginManager().getPlugin("Factions") != null && EpicSpawnersPlugin.getInstance().getServer().getPluginManager().getPlugin("FactionsFramework") == null) {
-                    p.sendMessage("");
-                    p.sendMessage(TextComponent.formatText(EpicSpawnersPlugin.getInstance().getReferences().getPrefix() + "&7Here's the deal,"));
-                    p.sendMessage(TextComponent.formatText("&7I cannot give you full support for Factions out of the box."));
-                    p.sendMessage(TextComponent.formatText("&7Things will work without it but if you wan't a flawless"));
-                    p.sendMessage(TextComponent.formatText("&7experience you need to download"));
-                    p.sendMessage(TextComponent.formatText("&7&6https://www.spigotmc.org/resources/54337/&7."));
-                    p.sendMessage(TextComponent.formatText("&7If you don't care and don't want to see this message again"));
-                    p.sendMessage(TextComponent.formatText("&7turn &6Helpful-Tips &7off in the config."));
-                    p.sendMessage("");
+            Player player = event.getPlayer();
+            if (player.isOp() && instance.getConfig().getBoolean("Main.Display Helpful Tips For Operators")) {
+                if (instance.getServer().getPluginManager().getPlugin("Factions") != null && instance.getServer().getPluginManager().getPlugin("FactionsFramework") == null) {
+                    player.sendMessage("");
+                    player.sendMessage(TextComponent.formatText(instance.getReferences().getPrefix() + "&7Here's the deal,"));
+                    player.sendMessage(TextComponent.formatText("&7I cannot give you full support for Factions out of the box."));
+                    player.sendMessage(TextComponent.formatText("&7Things will work without it but if you wan't a flawless"));
+                    player.sendMessage(TextComponent.formatText("&7experience you need to download"));
+                    player.sendMessage(TextComponent.formatText("&7&6https://www.spigotmc.org/resources/54337/&7."));
+                    player.sendMessage(TextComponent.formatText("&7If you don't care and don't want to see this message again"));
+                    player.sendMessage(TextComponent.formatText("&7turn &6Helpful-Tips &7off in the config."));
+                    player.sendMessage("");
                 }
             }
         } catch (Exception ee) {

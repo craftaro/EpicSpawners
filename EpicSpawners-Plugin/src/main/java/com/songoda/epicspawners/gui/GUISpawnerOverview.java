@@ -1,7 +1,6 @@
 package com.songoda.epicspawners.gui;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -15,12 +14,11 @@ import com.songoda.epicspawners.api.CostType;
 import com.songoda.epicspawners.api.spawner.SpawnerData;
 import com.songoda.epicspawners.api.spawner.SpawnerStack;
 import com.songoda.epicspawners.player.MenuType;
-import com.songoda.epicspawners.spawners.object.ESpawner;
+import com.songoda.epicspawners.spawners.spawner.ESpawner;
 import com.songoda.epicspawners.utils.Debugger;
 import com.songoda.epicspawners.utils.Methods;
 
 import com.songoda.epicspawners.utils.gui.AbstractGUI;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;

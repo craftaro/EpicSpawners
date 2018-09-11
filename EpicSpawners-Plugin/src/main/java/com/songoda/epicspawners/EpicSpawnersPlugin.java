@@ -1,7 +1,6 @@
 package com.songoda.epicspawners;
 
 import com.google.common.base.Preconditions;
-import com.songoda.arconix.api.mcupdate.MCUpdate;
 import com.songoda.arconix.api.methods.Maths;
 import com.songoda.arconix.api.methods.formatting.TextComponent;
 import com.songoda.arconix.api.methods.serialize.Serialize;
@@ -31,13 +30,13 @@ import com.songoda.epicspawners.hooks.*;
 import com.songoda.epicspawners.listeners.*;
 import com.songoda.epicspawners.player.PlayerActionManager;
 import com.songoda.epicspawners.player.PlayerData;
-import com.songoda.epicspawners.spawners.Shop;
+import com.songoda.epicspawners.spawners.shop.Shop;
 import com.songoda.epicspawners.spawners.SpawnManager;
 import com.songoda.epicspawners.spawners.condition.*;
 import com.songoda.epicspawners.spawners.editor.SpawnerEditor;
-import com.songoda.epicspawners.spawners.object.ESpawner;
-import com.songoda.epicspawners.spawners.object.ESpawnerManager;
-import com.songoda.epicspawners.spawners.object.ESpawnerStack;
+import com.songoda.epicspawners.spawners.spawner.ESpawner;
+import com.songoda.epicspawners.spawners.spawner.ESpawnerManager;
+import com.songoda.epicspawners.spawners.spawner.ESpawnerStack;
 import com.songoda.epicspawners.tasks.SpawnerParticleTask;
 import com.songoda.epicspawners.tasks.SpawnerSpawnTask;
 import com.songoda.epicspawners.utils.ESpawnerDataBuilder;
@@ -74,17 +73,14 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
 
     private static EpicSpawnersPlugin INSTANCE;
 
-    public Map<String, Integer> cache = new HashMap<>();
-
-    public Map<Player, Integer> boostAmt = new HashMap<>();
-
-    public Map<Player, String> chatEditing = new HashMap<>();
-
     private References references;
+
+    private ChatListeners chatListeners;
 
     private ConfigWrapper dataFile = new ConfigWrapper(this, "", "data.yml");
     private ConfigWrapper spawnerFile = new ConfigWrapper(this, "", "spawners.yml");
     private ConfigWrapper hooksFile = new ConfigWrapper(this, "", "hooks.yml");
+
     private SpawnManager spawnManager;
     private PlayerActionManager playerActionManager;
     private SpawnerManager spawnerManager;
@@ -176,6 +172,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         this.blacklistHandler = new BlacklistHandler();
         this.hologramHandler = new HologramHandler(this);
         this.playerActionManager = new PlayerActionManager();
+        this.chatListeners = new ChatListeners(this);
 
         loadSpawnersFromFile();
 
@@ -255,15 +252,16 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         this.getCommand("SpawnerStats").setExecutor(new CommandManager(this));
         this.getCommand("SpawnerShop").setExecutor(new CommandManager(this));
 
-        // Event registration
         PluginManager pluginManager = Bukkit.getPluginManager();
+
+        // Event registration
         pluginManager.registerEvents(new BlockListeners(this), this);
-        pluginManager.registerEvents(new ChatListeners(this), this);
+        pluginManager.registerEvents(chatListeners, this);
         pluginManager.registerEvents(new EntityListeners(this), this);
         pluginManager.registerEvents(new InteractListeners(this), this);
         pluginManager.registerEvents(new InventoryListeners(this), this);
         pluginManager.registerEvents(new SpawnerListeners(this), this);
-        pluginManager.registerEvents(new PlayerJoinListeners(), this);
+        pluginManager.registerEvents(new PlayerJoinListeners(this), this);
 
         AbstractGUI.initializeListeners(this);
 
@@ -682,6 +680,10 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
 
     public References getReferences() {
         return references;
+    }
+
+    public ChatListeners getChatListeners() {
+        return chatListeners;
     }
 
     public boolean canBuild(Player player, Location location) {

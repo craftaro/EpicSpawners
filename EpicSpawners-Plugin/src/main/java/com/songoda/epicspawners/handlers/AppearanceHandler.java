@@ -4,7 +4,7 @@ import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.api.spawner.Spawner;
 import com.songoda.epicspawners.api.spawner.SpawnerData;
 import com.songoda.epicspawners.api.spawner.SpawnerStack;
-import com.songoda.epicspawners.spawners.object.ESpawner;
+import com.songoda.epicspawners.spawners.spawner.ESpawner;
 import com.songoda.epicspawners.utils.Debugger;
 import com.songoda.epicspawners.utils.Methods;
 import org.bukkit.Bukkit;
@@ -13,7 +13,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;

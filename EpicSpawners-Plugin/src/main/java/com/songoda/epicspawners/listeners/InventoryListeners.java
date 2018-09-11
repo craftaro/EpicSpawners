@@ -2,7 +2,6 @@ package com.songoda.epicspawners.listeners;
 
 import com.songoda.arconix.api.methods.formatting.TextComponent;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
-import com.songoda.epicspawners.api.CostType;
 import com.songoda.epicspawners.api.particles.ParticleDensity;
 import com.songoda.epicspawners.api.particles.ParticleEffect;
 import com.songoda.epicspawners.api.particles.ParticleType;
@@ -11,7 +10,7 @@ import com.songoda.epicspawners.player.MenuType;
 import com.songoda.epicspawners.player.PlayerData;
 import com.songoda.epicspawners.spawners.editor.EditingData;
 import com.songoda.epicspawners.spawners.editor.EditingMenu;
-import com.songoda.epicspawners.spawners.object.ESpawner;
+import com.songoda.epicspawners.spawners.spawner.ESpawner;
 import com.songoda.epicspawners.utils.Debugger;
 import com.songoda.epicspawners.utils.Methods;
 import org.bukkit.Bukkit;
@@ -85,10 +84,10 @@ public class InventoryListeners implements Listener {
                 event.setCancelled(true);
                 ESpawner spawner = instance.getPlayerActionManager().getPlayerAction(player).getLastSpawner();
                 if (event.getSlot() == 8) {
-                    instance.boostAmt.put(player, instance.boostAmt.get(player) + 1);
+                    spawner.addBoostAmt(player, spawner.getBoostAmt(player) + 1);
                     spawner.playerBoost(player);
                 } else if (event.getSlot() == 0) {
-                    instance.boostAmt.put(player, instance.boostAmt.get(player) - 1);
+                    spawner.addBoostAmt(player, spawner.getBoostAmt(player) - 1);
                     spawner.playerBoost(player);
                 } else if (event.getSlot() == 10) {
                     spawner.purchaseBoost(player, 5);
@@ -267,7 +266,7 @@ public class InventoryListeners implements Listener {
                                 spawnerData.setUpgradeable(true);
                             instance.getSpawnerEditor().basicSettings(player);
                         } else if (event.getSlot() == 19) {
-                            instance.getSpawnerEditor().alterSetting(player, "Shop-Price");
+                            instance.getSpawnerEditor().alterSetting(player, ChatListeners.EditingType.SHOP_PRICE);
                         } else if (event.getSlot() == 20) {
                             if (spawnerData.isInShop())
                                 spawnerData.setInShop(false);
@@ -281,15 +280,15 @@ public class InventoryListeners implements Listener {
                                 spawnerData.setSpawnOnFire(true);
                             instance.getSpawnerEditor().basicSettings(player);
                         } else if (event.getSlot() == 24) {
-                            instance.getSpawnerEditor().alterSetting(player, "Custom-ECO-Cost");
+                            instance.getSpawnerEditor().alterSetting(player, ChatListeners.EditingType.CUSTOM_ECO_COST);
                         } else if (event.getSlot() == 25) {
-                            instance.getSpawnerEditor().alterSetting(player, "Custom-XP-Cost");
+                            instance.getSpawnerEditor().alterSetting(player, ChatListeners.EditingType.CUSTOM_XP_COST);
                         } else if (event.getSlot() == 30) {
-                            instance.getSpawnerEditor().alterSetting(player, "CustomGoal");
+                            instance.getSpawnerEditor().alterSetting(player, ChatListeners.EditingType.CUSTOM_GOAL);
                         } else if (event.getSlot() == 32) {
-                            instance.getSpawnerEditor().alterSetting(player, "Pickup-cost");
+                            instance.getSpawnerEditor().alterSetting(player, ChatListeners.EditingType.PICKUP_COST);
                         } else if (event.getSlot() == 40) {
-                            instance.getSpawnerEditor().alterSetting(player, "Tick-Rate");
+                            instance.getSpawnerEditor().alterSetting(player, ChatListeners.EditingType.TICK_RATE);
                         }
                         event.setCancelled(true);
                     }

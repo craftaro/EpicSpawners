@@ -5,7 +5,7 @@ import com.songoda.epicspawners.api.particles.ParticleEffect;
 import com.songoda.epicspawners.api.particles.ParticleType;
 import com.songoda.epicspawners.api.spawner.SpawnerData;
 import com.songoda.epicspawners.api.utils.SpawnerDataBuilder;
-import com.songoda.epicspawners.spawners.object.ESpawnerData;
+import com.songoda.epicspawners.spawners.spawner.ESpawnerData;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
