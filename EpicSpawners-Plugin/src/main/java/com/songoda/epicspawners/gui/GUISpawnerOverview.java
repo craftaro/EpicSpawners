@@ -405,8 +405,9 @@ public class GUISpawnerOverview extends AbstractGUI {
                                     text = "";
                                 } else {
                                     text = text.replace("<TYPE>", spawner.getIdentifyingName().toLowerCase());
-                                    if (plugin.spawnerFile.getConfig().getInt("Entities." + Methods.getTypeFromString(spawner.getIdentifyingName()) + ".CustomGoal") != 0)
-                                        text = text.replace("<AMT>", Integer.toString(plugin.spawnerFile.getConfig().getInt("Entities." + Methods.getTypeFromString(spawner.getIdentifyingName()) + ".CustomGoal")));
+                                    spawner.getFirstStack().getSpawnerData().getKillGoal();
+                                    if (spawner.getFirstStack().getSpawnerData().getKillGoal() != 0)
+                                        text = text.replace("<AMT>", Integer.toString(spawner.getFirstStack().getSpawnerData().getKillGoal()));
                                     else
                                         text = text.replace("<AMT>", Integer.toString(config.getInt("Spawner Drops.Kills Needed for Drop")));
                                 }

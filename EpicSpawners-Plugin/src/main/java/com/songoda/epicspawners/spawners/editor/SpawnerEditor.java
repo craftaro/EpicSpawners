@@ -856,7 +856,7 @@ public class SpawnerEditor {
                 }
                 spawnerData.setCommands(list);
             }
-            p.sendMessage(TextComponent.formatText(EpicSpawnersPlugin.getInstance().references.getPrefix() + "&7Spawner Saved."));
+            p.sendMessage(TextComponent.formatText(EpicSpawnersPlugin.getInstance().getReferences().getPrefix() + "&7Spawner Saved."));
             spawnerData.reloadSpawnMethods();
         } catch (Exception e) {
             Debugger.runReport(e);

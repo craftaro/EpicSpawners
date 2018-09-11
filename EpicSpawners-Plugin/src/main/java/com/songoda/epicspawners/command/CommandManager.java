@@ -53,7 +53,7 @@ public class CommandManager implements CommandExecutor {
                 }
             }
         }
-        commandSender.sendMessage(instance.references.getPrefix() + TextComponent.formatText("&7The command you entered does not exist or is spelt incorrectly."));
+        commandSender.sendMessage(instance.getReferences().getPrefix() + TextComponent.formatText("&7The command you entered does not exist or is spelt incorrectly."));
         return true;
     }
 
@@ -62,7 +62,7 @@ public class CommandManager implements CommandExecutor {
             command.runCommand(instance, sender, strings);
             return;
         }
-        sender.sendMessage(instance.references.getPrefix() + instance.getLocale().getMessage("event.general.nopermission"));
+        sender.sendMessage(instance.getReferences().getPrefix() + instance.getLocale().getMessage("event.general.nopermission"));
 
     }
 }

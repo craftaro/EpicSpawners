@@ -24,11 +24,11 @@ public class CommandGive extends AbstractCommand {
     @Override
     protected boolean runCommand(EpicSpawnersPlugin instance, CommandSender sender, String... args) {
         if (args.length <= 3 && args.length != 6) {
-            sender.sendMessage(instance.references.getPrefix() + TextComponent.formatText("&7Syntax error..."));
+            sender.sendMessage(instance.getReferences().getPrefix() + TextComponent.formatText("&7Syntax error..."));
             return true;
         }
         if (Bukkit.getPlayerExact(args[1]) == null && !args[1].toLowerCase().equals("all")) {
-            sender.sendMessage(TextComponent.formatText(instance.references.getPrefix() + "&cThat username does not exist, or the user is not online!"));
+            sender.sendMessage(TextComponent.formatText(instance.getReferences().getPrefix() + "&cThat username does not exist, or the user is not online!"));
             return true;
         }
         int multi = 1;
@@ -42,7 +42,7 @@ public class CommandGive extends AbstractCommand {
         }
 
         if (data == null && !args[2].equalsIgnoreCase("random")) {
-            sender.sendMessage(instance.references.getPrefix() + TextComponent.formatText(instance.references.getPrefix() + "&7The entity Type &6" + args[2] + " &7does not exist. Try one of these:"));
+            sender.sendMessage(instance.getReferences().getPrefix() + TextComponent.formatText(instance.getReferences().getPrefix() + "&7The entity Type &6" + args[2] + " &7does not exist. Try one of these:"));
             StringBuilder list = new StringBuilder();
 
             for (SpawnerData spawnerData : instance.getSpawnerManager().getAllSpawnerData()) {
@@ -57,7 +57,7 @@ public class CommandGive extends AbstractCommand {
             }
             if (args.length == 4) {
                 if (!AMath.isInt(args[3])) {
-                    sender.sendMessage(TextComponent.formatText(instance.references.getPrefix() + "&6" + args[3] + "&7 is not a number."));
+                    sender.sendMessage(TextComponent.formatText(instance.getReferences().getPrefix() + "&6" + args[3] + "&7 is not a number."));
                     return true;
                 }
                 int amt = Integer.parseInt(args[3]);
@@ -65,21 +65,21 @@ public class CommandGive extends AbstractCommand {
                 if (args[1].toLowerCase().equals("all")) {
                     for (Player pl : Bukkit.getOnlinePlayers()) {
                         pl.getInventory().addItem(spawnerItem);
-                        pl.sendMessage(TextComponent.formatText(instance.references.getPrefix() + instance.getLocale().getMessage("command.give.success", amt, Methods.compileName(data, multi, false))));
+                        pl.sendMessage(TextComponent.formatText(instance.getReferences().getPrefix() + instance.getLocale().getMessage("command.give.success", amt, Methods.compileName(data, multi, false))));
                     }
                 } else {
                     Player pl = Bukkit.getPlayerExact(args[1]);
                     pl.getInventory().addItem(spawnerItem);
-                    pl.sendMessage(TextComponent.formatText(instance.references.getPrefix() + instance.getLocale().getMessage("command.give.success", amt, Methods.compileName(data, multi, false))));
+                    pl.sendMessage(TextComponent.formatText(instance.getReferences().getPrefix() + instance.getLocale().getMessage("command.give.success", amt, Methods.compileName(data, multi, false))));
 
                 }
             } else {
                 if (!AMath.isInt(args[3])) {
-                    sender.sendMessage(TextComponent.formatText(instance.references.getPrefix() + "&6" + args[3] + "&7 is not a number."));
+                    sender.sendMessage(TextComponent.formatText(instance.getReferences().getPrefix() + "&6" + args[3] + "&7 is not a number."));
                     return true;
                 }
                 if (!AMath.isInt(args[4])) {
-                    sender.sendMessage(TextComponent.formatText(instance.references.getPrefix() + "&6" + args[4] + "&7 is not a number."));
+                    sender.sendMessage(TextComponent.formatText(instance.getReferences().getPrefix() + "&6" + args[4] + "&7 is not a number."));
                     return true;
                 }
                 int amt = Integer.parseInt(args[3]);
@@ -88,12 +88,12 @@ public class CommandGive extends AbstractCommand {
                 if (args[1].toLowerCase().equals("all")) {
                     for (Player pl : Bukkit.getOnlinePlayers()) {
                         pl.getInventory().addItem(spawnerItem);
-                        pl.sendMessage(TextComponent.formatText(instance.references.getPrefix() + instance.getLocale().getMessage("command.give.success", amt, Methods.compileName(data, multi, false))));
+                        pl.sendMessage(TextComponent.formatText(instance.getReferences().getPrefix() + instance.getLocale().getMessage("command.give.success", amt, Methods.compileName(data, multi, false))));
                     }
                 } else {
                     Player pl = Bukkit.getPlayerExact(args[1]);
                     pl.getInventory().addItem(spawnerItem);
-                    pl.sendMessage(TextComponent.formatText(instance.references.getPrefix() + instance.getLocale().getMessage("command.give.success", amt, Methods.compileName(data, multi, false))));
+                    pl.sendMessage(TextComponent.formatText(instance.getReferences().getPrefix() + instance.getLocale().getMessage("command.give.success", amt, Methods.compileName(data, multi, false))));
 
                 }
             }

@@ -133,7 +133,7 @@ public class InventoryListeners implements Listener {
                         if (!event.getClick().isLeftClick() && !event.getClick().isRightClick()) {
                             SpawnerData spawnerData = instance.getSpawnerEditor().getType(editingData.getSpawnerSlot());
                             spawnerData.setDisplayItem(Material.valueOf(player.getInventory().getItemInMainHand().getType().toString()));
-                            player.sendMessage(TextComponent.formatText(instance.references.getPrefix() + "&7Display Item for &6" + spawnerData.getIdentifyingName() + " &7set to &6" + player.getInventory().getItemInMainHand().getType().toString() + "&7."));
+                            player.sendMessage(TextComponent.formatText(instance.getReferences().getPrefix() + "&7Display Item for &6" + spawnerData.getIdentifyingName() + " &7set to &6" + player.getInventory().getItemInMainHand().getType().toString() + "&7."));
                             instance.getSpawnerEditor().overview(player, editingData.getSpawnerSlot());
                         } else if (event.getClick().isLeftClick()) {
                             instance.getSpawnerEditor().editSpawnerName(player);

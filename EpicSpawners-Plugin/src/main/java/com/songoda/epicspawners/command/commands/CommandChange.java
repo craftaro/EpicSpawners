@@ -27,7 +27,7 @@ public class CommandChange extends AbstractCommand {
         }
 
         if (!sender.hasPermission("epicspawners.admin") && !sender.hasPermission("epicspawners.change.*") && !sender.hasPermission("epicspawners.change." + args[1].toUpperCase())) {
-            sender.sendMessage(instance.references.getPrefix() + instance.getLocale().getMessage("event.general.nopermission"));
+            sender.sendMessage(instance.getReferences().getPrefix() + instance.getLocale().getMessage("event.general.nopermission"));
         } else {
             Player p = (Player) sender;
             Block b = p.getTargetBlock(null, 200);
@@ -60,12 +60,12 @@ public class CommandChange extends AbstractCommand {
                     }
                     spawner.getCreatureSpawner().update();
                     instance.getHologramHandler().processChange(b);
-                    sender.sendMessage(TextComponent.formatText(instance.references.getPrefix() + "&7Successfully changed this spawner to &6" + args[1] + "&7."));
+                    sender.sendMessage(TextComponent.formatText(instance.getReferences().getPrefix() + "&7Successfully changed this spawner to &6" + args[1] + "&7."));
                 } catch (Exception ee) {
-                    sender.sendMessage(TextComponent.formatText(instance.references.getPrefix() + "&7That entity does not exist."));
+                    sender.sendMessage(TextComponent.formatText(instance.getReferences().getPrefix() + "&7That entity does not exist."));
                 }
             } else {
-                sender.sendMessage(TextComponent.formatText(instance.references.getPrefix() + "&cThis is not a spawner."));
+                sender.sendMessage(TextComponent.formatText(instance.getReferences().getPrefix() + "&cThis is not a spawner."));
             }
         }
         return true;

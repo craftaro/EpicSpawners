@@ -74,7 +74,7 @@ public class ChatListeners implements Listener {
                             break;
                         case "Command":
                             String msg = e.getMessage();
-                            e.getPlayer().sendMessage(TextComponent.formatText(instance.references.getPrefix() + "&8Command &5" + msg + "&8 saved to your inventory."));
+                            e.getPlayer().sendMessage(TextComponent.formatText(instance.getReferences().getPrefix() + "&8Command &5" + msg + "&8 saved to your inventory."));
                             instance.getSpawnerEditor().addCommand(e.getPlayer(), e.getMessage());
                             break;
                         case "CustomGoal":

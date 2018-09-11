@@ -494,7 +494,7 @@ public class ESpawner implements Spawner {
             double price = type.getConvertPrice() * getSpawnerDataCount();
 
             if (!(econ.has(p, price) || p.isOp())) {
-                p.sendMessage(EpicSpawnersPlugin.getInstance().references.getPrefix() + EpicSpawnersPlugin.getInstance().getLocale().getMessage("event.upgrade.cannotafford"));
+                p.sendMessage(EpicSpawnersPlugin.getInstance().getReferences().getPrefix() + EpicSpawnersPlugin.getInstance().getLocale().getMessage("event.upgrade.cannotafford"));
                 return;
             }
             SpawnerChangeEvent event = new SpawnerChangeEvent(p, this, getFirstStack().getSpawnerData(), type);
@@ -511,7 +511,7 @@ public class ESpawner implements Spawner {
             }
             this.creatureSpawner.update();
 
-            p.sendMessage(EpicSpawnersPlugin.getInstance().references.getPrefix() + EpicSpawnersPlugin.getInstance().getLocale().getMessage("event.convert.success"));
+            p.sendMessage(EpicSpawnersPlugin.getInstance().getReferences().getPrefix() + EpicSpawnersPlugin.getInstance().getLocale().getMessage("event.convert.success"));
 
             instance.getHologramHandler().updateHologram(this);
             p.closeInventory();

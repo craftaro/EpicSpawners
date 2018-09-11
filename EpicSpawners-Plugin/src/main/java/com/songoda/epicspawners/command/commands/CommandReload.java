@@ -14,7 +14,7 @@ public class CommandReload extends AbstractCommand {
     @Override
     protected boolean runCommand(EpicSpawnersPlugin instance, CommandSender sender, String... args) {
         instance.reload();
-        sender.sendMessage(TextComponent.formatText(instance.references.getPrefix() + "&7Configuration and Language files reloaded."));
+        sender.sendMessage(TextComponent.formatText(instance.getReferences().getPrefix() + "&7Configuration and Language files reloaded."));
         return false;
     }
 }

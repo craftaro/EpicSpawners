@@ -69,11 +69,11 @@ public class CommandSpawnerStats extends AbstractCommand {
 
 
         if (instance.getPlayerActionManager().getPlayerAction(p).getEntityKills().size() == 0) {
-            p.sendMessage(instance.references.getPrefix() + instance.getLocale().getMessage("interface.spawnerstats.nokills"));
+            p.sendMessage(instance.getReferences().getPrefix() + instance.getLocale().getMessage("interface.spawnerstats.nokills"));
             return true;
         }
 
-        p.sendMessage(instance.references.getPrefix());
+        p.sendMessage(instance.getReferences().getPrefix());
         p.sendMessage(instance.getLocale().getMessage("interface.spawnerstats.prefix"));
         for (Map.Entry<EntityType, Integer> entry : instance.getPlayerActionManager().getPlayerAction(p).getEntityKills().entrySet()) {
             int goal = instance.getConfig().getInt("Spawner Drops.Kills Needed for Drop");

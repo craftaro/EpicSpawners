@@ -80,9 +80,10 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
 
     public Map<Player, String> chatEditing = new HashMap<>();
 
-    public ConfigWrapper dataFile = new ConfigWrapper(this, "", "data.yml");
-    public ConfigWrapper spawnerFile = new ConfigWrapper(this, "", "spawners.yml");
-    public References references = null;
+    private References references;
+
+    private ConfigWrapper dataFile = new ConfigWrapper(this, "", "data.yml");
+    private ConfigWrapper spawnerFile = new ConfigWrapper(this, "", "spawners.yml");
     private ConfigWrapper hooksFile = new ConfigWrapper(this, "", "hooks.yml");
     private SpawnManager spawnManager;
     private PlayerActionManager playerActionManager;
@@ -249,43 +250,42 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         this.spawnerEditor = new SpawnerEditor(this);
         this.appearanceHandler = new AppearanceHandler();
 
-        new MCUpdate(this, true);
-
         // Command registration
         this.getCommand("EpicSpawners").setExecutor(new CommandManager(this));
         this.getCommand("SpawnerStats").setExecutor(new CommandManager(this));
         this.getCommand("SpawnerShop").setExecutor(new CommandManager(this));
 
         // Event registration
-        PluginManager manager = Bukkit.getPluginManager();
-        manager.registerEvents(new BlockListeners(this), this);
-        manager.registerEvents(new ChatListeners(this), this);
-        manager.registerEvents(new EntityListeners(this), this);
-        manager.registerEvents(new InteractListeners(this), this);
-        manager.registerEvents(new InventoryListeners(this), this);
-        manager.registerEvents(new SpawnerListeners(this), this);
+        PluginManager pluginManager = Bukkit.getPluginManager();
+        pluginManager.registerEvents(new BlockListeners(this), this);
+        pluginManager.registerEvents(new ChatListeners(this), this);
+        pluginManager.registerEvents(new EntityListeners(this), this);
+        pluginManager.registerEvents(new InteractListeners(this), this);
+        pluginManager.registerEvents(new InventoryListeners(this), this);
+        pluginManager.registerEvents(new SpawnerListeners(this), this);
+        pluginManager.registerEvents(new PlayerJoinListeners(), this);
 
         AbstractGUI.initializeListeners(this);
 
+        // Register default hooks
+        if (pluginManager.isPluginEnabled("ASkyBlock")) this.register(HookASkyBlock::new);
+        if (pluginManager.isPluginEnabled("FactionsFramework")) this.register(HookFactions::new);
+        if (pluginManager.isPluginEnabled("GriefPrevention")) this.register(HookGriefPrevention::new);
+        if (pluginManager.isPluginEnabled("Kingdoms")) this.register(HookKingdoms::new);
+        if (pluginManager.isPluginEnabled("PlotSquared")) this.register(HookPlotSquared::new);
+        if (pluginManager.isPluginEnabled("RedProtect")) this.register(HookRedProtect::new);
+        if (pluginManager.isPluginEnabled("Towny")) this.register(HookTowny::new);
+        if (pluginManager.isPluginEnabled("USkyBlock")) this.register(HookUSkyBlock::new);
+        if (pluginManager.isPluginEnabled("WorldGuard")) this.register(HookWorldGuard::new);
+
         Bukkit.getScheduler().runTaskTimerAsynchronously(this, this::saveToFile, 6000, 6000);
 
-        Bukkit.getPluginManager().registerEvents(new PlayerJoinListeners(), this);
+        // Start tasks
+        this.particleTask = SpawnerParticleTask.startTask(this);
+        this.spawnerCustomSpawnTask = SpawnerSpawnTask.startTask(this);
 
         console.sendMessage(TextComponent.formatText("&a============================="));
 
-        // Register default hooks
-        if (Bukkit.getPluginManager().isPluginEnabled("ASkyBlock")) this.register(HookASkyBlock::new);
-        if (Bukkit.getPluginManager().isPluginEnabled("FactionsFramework")) this.register(HookFactions::new);
-        if (Bukkit.getPluginManager().isPluginEnabled("GriefPrevention")) this.register(HookGriefPrevention::new);
-        if (Bukkit.getPluginManager().isPluginEnabled("Kingdoms")) this.register(HookKingdoms::new);
-        if (Bukkit.getPluginManager().isPluginEnabled("PlotSquared")) this.register(HookPlotSquared::new);
-        if (Bukkit.getPluginManager().isPluginEnabled("RedProtect")) this.register(HookRedProtect::new);
-        if (Bukkit.getPluginManager().isPluginEnabled("Towny")) this.register(HookTowny::new);
-        if (Bukkit.getPluginManager().isPluginEnabled("USkyBlock")) this.register(HookUSkyBlock::new);
-        if (Bukkit.getPluginManager().isPluginEnabled("WorldGuard")) this.register(HookWorldGuard::new);
-
-        this.particleTask = SpawnerParticleTask.startTask(this);
-        this.spawnerCustomSpawnTask = SpawnerSpawnTask.startTask(this);
     }
 
     @SuppressWarnings("unchecked")
@@ -678,6 +678,10 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
 
     public Heads getHeads() {
         return heads;
+    }
+
+    public References getReferences() {
+        return references;
     }
 
     public boolean canBuild(Player player, Location location) {

@@ -27,7 +27,7 @@ public class CommandBoost extends AbstractCommand {
                     args[1].contains("i:") || args[1].contains("island:")) {
                 String[] arr = (args[1]).split(":");
                 if (!AMath.isInt(args[2])) {
-                    sender.sendMessage(TextComponent.formatText(instance.references.getPrefix() + "&6" + args[2] + " &7is not a number..."));
+                    sender.sendMessage(TextComponent.formatText(instance.getReferences().getPrefix() + "&6" + args[2] + " &7is not a number..."));
                 } else {
 
                     Calendar c = Calendar.getInstance();
@@ -54,7 +54,7 @@ public class CommandBoost extends AbstractCommand {
                             c.add(Calendar.YEAR, Integer.parseInt(arr2[1]));
                             response += " &7for &6" + arr2[1] + " years&7.";
                         } else {
-                            sender.sendMessage(TextComponent.formatText(instance.references.getPrefix() + "&7" + args[3] + " &7is invalid."));
+                            sender.sendMessage(TextComponent.formatText(instance.getReferences().getPrefix() + "&7" + args[3] + " &7is invalid."));
                             return true;
                         }
                     } else {
@@ -70,7 +70,7 @@ public class CommandBoost extends AbstractCommand {
 
                     if (arr[0].equalsIgnoreCase("p") || arr[0].equalsIgnoreCase("player")) {
                         if (Bukkit.getOfflinePlayer(arr[1]) == null) {
-                            sender.sendMessage(TextComponent.formatText(instance.references.getPrefix() + "&cThat player does not exist..."));
+                            sender.sendMessage(TextComponent.formatText(instance.getReferences().getPrefix() + "&cThat player does not exist..."));
                         } else {
                             start += "The player";
                             boostType = BoostType.PLAYER;
@@ -78,7 +78,7 @@ public class CommandBoost extends AbstractCommand {
                         }
                     } else if (arr[0].equalsIgnoreCase("f") || arr[0].equalsIgnoreCase("faction")) {
                         if (instance.getFactionId(arr[1]) == null) {
-                            sender.sendMessage(TextComponent.formatText(instance.references.getPrefix() + "&cThat faction does not exist..."));
+                            sender.sendMessage(TextComponent.formatText(instance.getReferences().getPrefix() + "&cThat faction does not exist..."));
                             return true;
                         }
 
@@ -87,7 +87,7 @@ public class CommandBoost extends AbstractCommand {
                         boostObject = instance.getFactionId(arr[1]);
                     } else if (arr[0].equalsIgnoreCase("t") || arr[0].equalsIgnoreCase("town")) {
                         if (instance.getTownId(arr[1]) == null) {
-                            sender.sendMessage(TextComponent.formatText(instance.references.getPrefix() + "&cThat town does not exist..."));
+                            sender.sendMessage(TextComponent.formatText(instance.getReferences().getPrefix() + "&cThat town does not exist..."));
                             return true;
                         }
 
@@ -96,7 +96,7 @@ public class CommandBoost extends AbstractCommand {
                         boostObject = instance.getTownId(arr[1]);
                     } else if (arr[0].equalsIgnoreCase("i") || arr[0].equalsIgnoreCase("island")) {
                         if (instance.getIslandId(arr[1]) == null) {
-                            sender.sendMessage(TextComponent.formatText(instance.references.getPrefix() + "&cThat island does not exist..."));
+                            sender.sendMessage(TextComponent.formatText(instance.getReferences().getPrefix() + "&cThat island does not exist..."));
                             return true;
                         }
 
@@ -112,13 +112,13 @@ public class CommandBoost extends AbstractCommand {
 
                     BoostData boostData = new BoostData(boostType, Integer.parseInt(args[2]), c.getTime().getTime(), boostObject);
                     instance.getBoostManager().addBoostToSpawner(boostData);
-                    sender.sendMessage(TextComponent.formatText(instance.references.getPrefix() + start + response));
+                    sender.sendMessage(TextComponent.formatText(instance.getReferences().getPrefix() + start + response));
                 }
             } else {
-                sender.sendMessage(TextComponent.formatText(instance.references.getPrefix() + "&6" + args[1] + " &7this is incorrect"));
+                sender.sendMessage(TextComponent.formatText(instance.getReferences().getPrefix() + "&6" + args[1] + " &7this is incorrect"));
             }
         } else {
-            sender.sendMessage(instance.references.getPrefix() + TextComponent.formatText("&7Syntax error..."));
+            sender.sendMessage(instance.getReferences().getPrefix() + TextComponent.formatText("&7Syntax error..."));
         }
         return false;
     }

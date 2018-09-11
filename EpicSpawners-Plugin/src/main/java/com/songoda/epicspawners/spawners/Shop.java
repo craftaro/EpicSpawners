@@ -314,7 +314,7 @@ public class Shop {
             net.milkbowl.vault.economy.Economy econ = rsp.getProvider();
             double price = spawnerData.getShopPrice() * amount;
             if (!player.isOp() && !econ.has(player, price)) {
-                player.sendMessage(EpicSpawnersPlugin.getInstance().references.getPrefix() + instance.getLocale().getMessage("event.shop.cannotafford"));
+                player.sendMessage(EpicSpawnersPlugin.getInstance().getReferences().getPrefix() + instance.getLocale().getMessage("event.shop.cannotafford"));
                 return;
             }
             ItemStack item = spawnerData.toItemStack(amount);
@@ -322,7 +322,7 @@ public class Shop {
 
             player.getInventory().addItem(item);
 
-            player.sendMessage(EpicSpawnersPlugin.getInstance().references.getPrefix() + instance.getLocale().getMessage("event.shop.purchasesuccess"));
+            player.sendMessage(EpicSpawnersPlugin.getInstance().getReferences().getPrefix() + instance.getLocale().getMessage("event.shop.purchasesuccess"));
 
 
             if (!player.isOp()) {
