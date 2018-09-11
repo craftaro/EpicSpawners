@@ -69,9 +69,9 @@ import java.util.function.Supplier;
  */
 public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
 
-    private static final Set<Biome> BIOMES = EnumSet.allOf(Biome.class);
-
     private static EpicSpawnersPlugin INSTANCE;
+
+    private static final Set<Biome> BIOMES = EnumSet.allOf(Biome.class);
 
     private References references;
 
@@ -114,7 +114,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         //this.spawnerRegistry.clearRegistry();
         ConsoleCommandSender console = Bukkit.getConsoleSender();
         console.sendMessage(TextComponent.formatText("&a============================="));
-        console.sendMessage(TextComponent.formatText("&7EpicSpawners " + this.getDescription().getVersion() + " by &5Songoda <3!"));
+        console.sendMessage(TextComponent.formatText("&7EpicSpawners " + this.getDescription().getVersion() + " by &5Brianna <3!"));
         console.sendMessage(TextComponent.formatText("&7Action: &cDisabling&7..."));
         console.sendMessage(TextComponent.formatText("&a============================="));
     }
@@ -475,8 +475,6 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
                 currentSection.set("EntityKills." + entry.getKey().name(), entry.getValue());
             }
         }
-
-        //ToDo: Save for player data.
 
         this.dataFile.saveConfig();
     }
