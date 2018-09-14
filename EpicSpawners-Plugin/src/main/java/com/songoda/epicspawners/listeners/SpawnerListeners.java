@@ -7,7 +7,9 @@ import com.songoda.epicspawners.spawners.spawner.ESpawner;
 import com.songoda.epicspawners.spawners.spawner.ESpawnerStack;
 import com.songoda.epicspawners.utils.Debugger;
 import com.songoda.epicspawners.utils.Methods;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -26,31 +28,28 @@ public class SpawnerListeners implements Listener {
     }
 
     @EventHandler
-    public void onSpawn(SpawnerSpawnEvent e) {
+    public void onSpawn(SpawnerSpawnEvent event) {
         try {
-            e.setCancelled(true);
-            Location location = e.getSpawner().getLocation();
+            Entity entity = event.getEntity();
+            if (entity.getVehicle() != null) {
+                entity.getVehicle().remove();
+                entity.remove();
+            } else if (entity.getPassengers().size() != 0) {
+                for (Entity e : entity.getPassengers()) {
+                    e.remove();
+                }
+                entity.remove();
+            }
+
+            Location location = event.getSpawner().getLocation();
 
             if (!instance.getSpawnerManager().isSpawner(location)) {
                 Spawner spawner = new ESpawner(location);
                 instance.getSpawnerManager().addSpawnerToWorld(location, spawner);
-                SpawnerData spawnerData = instance.getSpawnerManager().getSpawnerData(Methods.getTypeFromString(e.getEntityType().name()));
+                SpawnerData spawnerData = instance.getSpawnerManager().getSpawnerData(Methods.getTypeFromString(event.getEntityType().name()));
                 spawner.addSpawnerStack(new ESpawnerStack(spawnerData, 1));
             }
-            e.getSpawner().setDelay(5);
-            /*
-            Spawner spawner = instance.getSpawnerManager().getSpawnerFromWorld(e.getSpawner().getLocation());
-
-            // Remove entity so we can do our own method.
-            e.getEntity().remove();
-
-            if (instance.isServerVersionAtLeast(ServerVersion.V1_9)) {
-                for (Entity ee : e.getEntity().getPassengers()) {
-                    ee.remove();
-                }
-            }
-
-            spawner.spawn(); */
+            event.getSpawner().setDelay(20);
         } catch (Exception ex) {
             Debugger.runReport(ex);
         }
