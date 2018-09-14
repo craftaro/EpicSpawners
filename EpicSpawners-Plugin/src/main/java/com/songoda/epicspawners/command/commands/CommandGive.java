@@ -18,7 +18,7 @@ import java.util.Random;
 public class CommandGive extends AbstractCommand {
 
     public CommandGive(AbstractCommand abstractCommand) {
-        super("give", "epicspawners.admin", abstractCommand);
+        super("give", "epicspawners.admin", abstractCommand, false);
     }
 
     @Override

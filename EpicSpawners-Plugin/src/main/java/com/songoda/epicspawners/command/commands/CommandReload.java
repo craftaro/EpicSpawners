@@ -8,7 +8,7 @@ import org.bukkit.command.CommandSender;
 public class CommandReload extends AbstractCommand {
 
     public CommandReload(AbstractCommand parent) {
-        super("reload", "epicspawners.admin", parent);
+        super("reload", "epicspawners.admin", parent, false);
     }
 
     @Override

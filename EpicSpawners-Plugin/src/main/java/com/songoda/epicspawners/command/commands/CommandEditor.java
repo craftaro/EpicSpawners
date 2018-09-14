@@ -8,16 +8,11 @@ import org.bukkit.entity.Player;
 public class CommandEditor extends AbstractCommand {
 
     public CommandEditor(AbstractCommand abstractCommand) {
-        super("editor", "epicspawners.admin", abstractCommand);
+        super("editor", "epicspawners.admin", abstractCommand, true);
     }
 
     @Override
     protected boolean runCommand(EpicSpawnersPlugin instance, CommandSender sender, String... args) {
-        if (!(sender instanceof Player)) {
-            sender.sendMessage("You must be a player to use this command.");
-            return true;
-        }
-
         instance.getSpawnerEditor().openSpawnerSelector((Player) sender, 1);
         return true;
     }

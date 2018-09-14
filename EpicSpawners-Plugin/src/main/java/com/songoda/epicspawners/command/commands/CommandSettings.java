@@ -8,18 +8,12 @@ import org.bukkit.entity.Player;
 public class CommandSettings extends AbstractCommand {
 
     public CommandSettings(AbstractCommand parent) {
-        super("settings", "epicspawners.admin", parent);
+        super("settings", "epicspawners.admin", parent, true);
     }
 
     @Override
     protected boolean runCommand(EpicSpawnersPlugin instance, CommandSender sender, String... args) {
-        if (!(sender instanceof Player)) {
-            sender.sendMessage("You must be a player to use this command.");
-            return true;
-        }
-
-        Player p = (Player) sender;
-        instance.getSettingsManager().openSettingsManager(p);
+        instance.getSettingsManager().openSettingsManager((Player)sender);
         return false;
     }
 }

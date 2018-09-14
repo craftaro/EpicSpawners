@@ -11,10 +11,13 @@ public abstract class AbstractCommand {
 
     private final String command;
 
-    protected AbstractCommand(String command, String permissionNode, AbstractCommand parent) {
+    private final boolean noConsole;
+
+    protected AbstractCommand(String command, String permissionNode, AbstractCommand parent, boolean noConsole) {
         this.command = command;
         this.parent = parent;
         this.permissionNode = permissionNode;
+        this.noConsole = noConsole;
     }
 
     public AbstractCommand getParent() {
@@ -28,6 +31,10 @@ public abstract class AbstractCommand {
 
     public String getPermissionNode() {
         return permissionNode;
+    }
+
+    public boolean isNoConsole() {
+        return noConsole;
     }
 
     protected abstract boolean runCommand(EpicSpawnersPlugin instance, CommandSender sender, String... args);

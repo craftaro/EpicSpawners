@@ -20,21 +20,16 @@ import java.util.Map;
 public class CommandSpawnerStats extends AbstractCommand {
 
     public CommandSpawnerStats() {
-        super("spawnerstats", "epicspawners.stats", null);
+        super("spawnerstats", "epicspawners.stats", null, true);
     }
 
     @Override
     protected boolean runCommand(EpicSpawnersPlugin instance, CommandSender sender, String... args) {
-
-        if (!(sender instanceof Player)) {
-            sender.sendMessage("You must be a player to use this command.");
-            return true;
-        }
-        Player p = (Player) sender;
+        Player player = (Player) sender;
 
         int size = 0;
 
-        for (Map.Entry<EntityType, Integer> entry : instance.getPlayerActionManager().getPlayerAction(p).getEntityKills().entrySet()) {
+        for (Map.Entry<EntityType, Integer> entry : instance.getPlayerActionManager().getPlayerAction(player).getEntityKills().entrySet()) {
             if (instance.getSpawnerManager().getSpawnerData(entry.getKey()).getKillGoal() != 0) {
                 size++;
             }
@@ -65,17 +60,17 @@ public class CommandSpawnerStats extends AbstractCommand {
         i.setItem(8, exit);
 
         short place = 9;
-        p.sendMessage("");
+        player.sendMessage("");
 
 
-        if (instance.getPlayerActionManager().getPlayerAction(p).getEntityKills().size() == 0) {
-            p.sendMessage(instance.getReferences().getPrefix() + instance.getLocale().getMessage("interface.spawnerstats.nokills"));
+        if (instance.getPlayerActionManager().getPlayerAction(player).getEntityKills().size() == 0) {
+            player.sendMessage(instance.getReferences().getPrefix() + instance.getLocale().getMessage("interface.spawnerstats.nokills"));
             return true;
         }
 
-        p.sendMessage(instance.getReferences().getPrefix());
-        p.sendMessage(instance.getLocale().getMessage("interface.spawnerstats.prefix"));
-        for (Map.Entry<EntityType, Integer> entry : instance.getPlayerActionManager().getPlayerAction(p).getEntityKills().entrySet()) {
+        player.sendMessage(instance.getReferences().getPrefix());
+        player.sendMessage(instance.getLocale().getMessage("interface.spawnerstats.prefix"));
+        for (Map.Entry<EntityType, Integer> entry : instance.getPlayerActionManager().getPlayerAction(player).getEntityKills().entrySet()) {
             int goal = instance.getConfig().getInt("Spawner Drops.Kills Needed for Drop");
 
             SpawnerData spawnerData = instance.getSpawnerManager().getSpawnerData(entry.getKey());
@@ -95,13 +90,13 @@ public class CommandSpawnerStats extends AbstractCommand {
             i.setItem(place, item);
 
             place++;
-            p.sendMessage(TextComponent.formatText("&7- &6" + spawnerData.getDisplayName() + "&7: &e" + entry.getValue() + "&7/&e" + goal));
+            player.sendMessage(TextComponent.formatText("&7- &6" + spawnerData.getDisplayName() + "&7: &e" + entry.getValue() + "&7/&e" + goal));
         }
-        p.sendMessage(instance.getLocale().getMessage("interface.spawnerstats.ongoal"));
+        player.sendMessage(instance.getLocale().getMessage("interface.spawnerstats.ongoal"));
 
-        p.sendMessage("");
+        player.sendMessage("");
 
-        p.openInventory(i);
+        player.openInventory(i);
 
 
         return false;

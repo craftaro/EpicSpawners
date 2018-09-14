@@ -64,9 +64,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.*;
 import java.util.function.Supplier;
 
-/**
- * Created by songoda on 2/25/2017.
- */
 public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
 
     private static EpicSpawnersPlugin INSTANCE;
@@ -93,6 +90,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
 
     private SpawnerParticleTask particleTask;
     private SpawnerSpawnTask spawnerCustomSpawnTask;
+
     private SpawnerEditor spawnerEditor;
     private Heads heads;
     private Shop shop;
@@ -105,20 +103,6 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         return INSTANCE;
     }
 
-    public void onDisable() {
-        this.saveToFile();
-        this.particleTask.cancel();
-        this.protectionHooks.clear();
-        this.spawnerCustomSpawnTask.cancel();
-
-        //this.spawnerRegistry.clearRegistry();
-        ConsoleCommandSender console = Bukkit.getConsoleSender();
-        console.sendMessage(TextComponent.formatText("&a============================="));
-        console.sendMessage(TextComponent.formatText("&7EpicSpawners " + this.getDescription().getVersion() + " by &5Brianna <3!"));
-        console.sendMessage(TextComponent.formatText("&7Action: &cDisabling&7..."));
-        console.sendMessage(TextComponent.formatText("&a============================="));
-    }
-
     private boolean checkVersion() {
         int workingVersion = 13;
         int currentVersion = Integer.parseInt(Bukkit.getServer().getClass()
@@ -127,7 +111,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         if (currentVersion < workingVersion) {
             Bukkit.getScheduler().scheduleSyncDelayedTask(this, () -> {
                 Bukkit.getConsoleSender().sendMessage("");
-                Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "You installed the 1." + workingVersion + "+ only version of " + this.getDescription().getName() + " on a 1." + currentVersion + " server. Since you are on the wrong version we disabled the plugin for you. Please install correct version to continue using " + this.getDescription().getName() + ".");
+                Bukkit.getConsoleSender().sendMessage(String.format("%sYou installed the 1.%s only version of %s on a 1.%s server. Since you are on the wrong version we disabled the plugin for you. Please install correct version to continue using %s.", ChatColor.RED, workingVersion, this.getDescription().getName(), currentVersion, this.getDescription().getName()));
                 Bukkit.getConsoleSender().sendMessage("");
             }, 20L);
             return false;
@@ -137,17 +121,18 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
 
     @Override
     public void onEnable() {
+        INSTANCE = this;
+
         // Check to make sure the Bukkit version is compatible.
         if (!checkVersion()) return;
 
-        INSTANCE = this;
         EpicSpawnersAPI.setImplementation(this);
 
         Arconix.pl().hook(this);
 
         ConsoleCommandSender console = Bukkit.getConsoleSender();
         console.sendMessage(TextComponent.formatText("&a============================="));
-        console.sendMessage(TextComponent.formatText("&7EpicSpawners " + this.getDescription().getVersion() + " by &5Brianna <3&7!"));
+        console.sendMessage(TextComponent.formatText(String.format("&7%s %s by &5Brianna <3&7!", this.getName(), this.getDescription().getVersion())));
         console.sendMessage(TextComponent.formatText("&7Action: &aEnabling&7..."));
 
         this.heads = new Heads(this);
@@ -181,42 +166,45 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         Bukkit.getScheduler().runTaskLater(this, () -> {
             // Adding in spawners.
             if (dataConfig.contains("data.spawners")) {
-                for (String key : dataConfig.getConfigurationSection("data.spawners").getKeys(false)) {
+                ConfigurationSection currentSection = dataConfig.getConfigurationSection("data.spawners");
+
+                for (String key : currentSection.getKeys(false)) {
                     Location location = Serialize.getInstance().unserializeLocation(key);
 
                     if (location.getWorld() == null || location.getBlock().getType() != Material.SPAWNER) {
                         if (location.getWorld() != null && location.getBlock().getType() != Material.SPAWNER) {
                             this.hologramHandler.despawn(location.getBlock());
                         }
-
                         continue;
                     }
 
                     ESpawner spawner = new ESpawner(location);
 
-                    for (String stackKey : dataConfig.getConfigurationSection("data.spawners." + key + ".Stacks").getKeys(false)) {
+                    for (String stackKey : currentSection.getConfigurationSection(key + ".Stacks").getKeys(false)) {
                         if (!spawnerManager.isSpawnerData(stackKey.toLowerCase())) continue;
-                        spawner.addSpawnerStack(new ESpawnerStack(spawnerManager.getSpawnerData(stackKey), dataConfig.getInt("data.spawners." + key + ".Stacks." + stackKey)));
+                        spawner.addSpawnerStack(new ESpawnerStack(spawnerManager.getSpawnerData(stackKey), currentSection.getInt(key + ".Stacks." + stackKey)));
                     }
 
-                    if (dataConfig.contains("data.spawners." + key + ".PlacedBy"))
-                        spawner.setPlacedBy(UUID.fromString(dataConfig.getString("data.spawners." + key + ".PlacedBy")));
+                    if (currentSection.contains(key + ".PlacedBy"))
+                        spawner.setPlacedBy(UUID.fromString(currentSection.getString(key + ".PlacedBy")));
 
-                    spawner.setSpawnCount(dataConfig.getInt("data.spawners." + key + ".Spawns"));
+                    spawner.setSpawnCount(currentSection.getInt(key + ".Spawns"));
                     this.spawnerManager.addSpawnerToWorld(location, spawner);
                 }
             }
 
             // Adding in Boosts
             if (dataConfig.contains("data.boosts")) {
-                for (String key : dataConfig.getConfigurationSection("data.boosts").getKeys(false)) {
-                    if (!dataConfig.contains("data.boosts." + key + ".BoostType")) continue;
+                ConfigurationSection currentSection = dataConfig.getConfigurationSection("data.boosts");
+
+                for (String key : currentSection.getKeys(false)) {
+                    if (!currentSection.contains(key + ".BoostType")) continue;
 
                     BoostData boostData = new BoostData(
-                            BoostType.valueOf(dataConfig.getString("data.boosts." + key + ".BoostType")),
-                            dataConfig.getInt("data.boosts." + key + ".Amount"),
+                            BoostType.valueOf(currentSection.getString(key + ".BoostType")),
+                            currentSection.getInt(key + ".Amount"),
                             Long.parseLong(key),
-                            dataConfig.get("data.boosts." + key + ".Data"));
+                            currentSection.get(key + ".Data"));
 
                     this.boostManager.addBoostToSpawner(boostData);
                 }
@@ -224,14 +212,16 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
 
             // Adding in Player Data
             if (dataConfig.contains("data.players")) {
-                for (String key : dataConfig.getConfigurationSection("data.players").getKeys(false)) {
+                ConfigurationSection currentSection = dataConfig.getConfigurationSection("data.players");
+
+                for (String key : currentSection.getKeys(false)) {
                     PlayerData playerData = playerActionManager.getPlayerAction(UUID.fromString(key));
 
                     Map<EntityType, Integer> entityKills = new HashMap<>();
-                    if (!dataConfig.contains("data.players." + key + ".EntityKills")) continue;
-                    for (String key2 : dataConfig.getConfigurationSection("data.players." + key + ".EntityKills").getKeys(false)) {
+                    if (!currentSection.contains(key + ".EntityKills")) continue;
+                    for (String key2 : currentSection.getConfigurationSection(key + ".EntityKills").getKeys(false)) {
                         EntityType entityType = EntityType.valueOf(key2);
-                        int amt = dataConfig.getInt("data.players." + key + ".EntityKills." + key2);
+                        int amt = currentSection.getInt(key + ".EntityKills." + key2);
                         entityKills.put(entityType, amt);
                     }
 
@@ -284,6 +274,21 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
 
         console.sendMessage(TextComponent.formatText("&a============================="));
 
+    }
+
+    @Override
+    public void onDisable() {
+        this.saveToFile();
+        this.particleTask.cancel();
+        this.protectionHooks.clear();
+        this.spawnerCustomSpawnTask.cancel();
+
+        //this.spawnerRegistry.clearRegistry();
+        ConsoleCommandSender console = Bukkit.getConsoleSender();
+        console.sendMessage(TextComponent.formatText("&a============================="));
+        console.sendMessage(TextComponent.formatText("&7EpicSpawners " + this.getDescription().getVersion() + " by &5Brianna <3!"));
+        console.sendMessage(TextComponent.formatText("&7Action: &cDisabling&7..."));
+        console.sendMessage(TextComponent.formatText("&a============================="));
     }
 
     @SuppressWarnings("unchecked")
@@ -790,7 +795,6 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
 
         String name = item.getItemMeta().getDisplayName();
         if (name == null || !name.contains(":")) return 1;
-
 
         String amount = name.replace(String.valueOf(ChatColor.COLOR_CHAR), "").replace(";", "").split(":")[1];
         return NumberUtils.toInt(amount, 1);
