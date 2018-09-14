@@ -27,6 +27,7 @@ import java.util.*;
 public class SpawnerEditor {
 
     private final EpicSpawnersPlugin instance;
+
     private final Map<UUID, EditingData> userEditingData = new HashMap<>();
 
     public SpawnerEditor(EpicSpawnersPlugin instance) {
@@ -1010,9 +1011,5 @@ public class SpawnerEditor {
 
     public EditingData getEditingData(Player player) {
         return userEditingData.computeIfAbsent(player.getUniqueId(), uuid -> new EditingData());
-    }
-
-    public Map<UUID, EditingData> getUserEditingData() {
-        return Collections.unmodifiableMap(userEditingData);
     }
 }
