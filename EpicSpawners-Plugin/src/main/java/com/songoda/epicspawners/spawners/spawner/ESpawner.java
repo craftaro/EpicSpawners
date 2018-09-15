@@ -550,17 +550,6 @@ public class ESpawner implements Spawner {
         return Integer.MAX_VALUE;
     }
 
-    private String a(int a, String text) {
-        try {
-            if (a != 0) {
-                text = ", " + text;
-            }
-        } catch (Exception e) {
-            Debugger.runReport(e);
-        }
-        return text;
-    }
-
     @Override
     public boolean unstack(Player player) {
         EpicSpawnersPlugin instance = EpicSpawnersPlugin.getInstance();

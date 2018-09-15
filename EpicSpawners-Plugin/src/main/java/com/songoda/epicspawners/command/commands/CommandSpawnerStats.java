@@ -40,11 +40,11 @@ public class CommandSpawnerStats extends AbstractCommand {
         Inventory i = Bukkit.createInventory(null, 54, title);
         if (size <= 9) {
             i = Bukkit.createInventory(null, 18, title);
-        } else if (size <= 9) {
-            i = Bukkit.createInventory(null, 27, title);
         } else if (size <= 18) {
-            i = Bukkit.createInventory(null, 36, title);
+            i = Bukkit.createInventory(null, 27, title);
         } else if (size <= 27) {
+            i = Bukkit.createInventory(null, 36, title);
+        } else if (size <= 36) {
             i = Bukkit.createInventory(null, 45, title);
         }
 
