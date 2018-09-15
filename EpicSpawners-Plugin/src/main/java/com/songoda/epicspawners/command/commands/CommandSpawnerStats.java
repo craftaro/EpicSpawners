@@ -20,11 +20,11 @@ import java.util.Map;
 public class CommandSpawnerStats extends AbstractCommand {
 
     public CommandSpawnerStats() {
-        super("spawnerstats", "epicspawners.stats", null, true);
+        super("spawnerstats", null, true);
     }
 
     @Override
-    protected boolean runCommand(EpicSpawnersPlugin instance, CommandSender sender, String... args) {
+    protected ReturnType runCommand(EpicSpawnersPlugin instance, CommandSender sender, String... args) {
         Player player = (Player) sender;
 
         int size = 0;
@@ -65,7 +65,7 @@ public class CommandSpawnerStats extends AbstractCommand {
 
         if (instance.getPlayerActionManager().getPlayerAction(player).getEntityKills().size() == 0) {
             player.sendMessage(instance.getReferences().getPrefix() + instance.getLocale().getMessage("interface.spawnerstats.nokills"));
-            return true;
+            return ReturnType.SUCCESS;
         }
 
         player.sendMessage(instance.getReferences().getPrefix());
@@ -98,7 +98,21 @@ public class CommandSpawnerStats extends AbstractCommand {
 
         player.openInventory(i);
 
+        return ReturnType.SUCCESS;
+    }
 
-        return false;
+    @Override
+    public String getPermissionNode() {
+        return "epicspawners.stats";
+    }
+
+    @Override
+    public String getSyntax() {
+        return "/SpawnerStats";
+    }
+
+    @Override
+    public String getDescription() {
+        return "This allows you to boost the amount of spawns that are got from placed spawners.";
     }
 }

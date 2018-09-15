@@ -15,26 +15,26 @@ import java.util.Date;
 public class CommandBoost extends AbstractCommand {
 
     public CommandBoost(AbstractCommand parent) {
-        super("boost", "epicspawners.admin", parent, false);
+        super("boost", parent, false);
     }
 
     @Override
-    protected boolean runCommand(EpicSpawnersPlugin instance, CommandSender sender, String... args) {
+    protected ReturnType runCommand(EpicSpawnersPlugin instance, CommandSender sender, String... args) {
         if (args.length < 3) {
             sender.sendMessage(instance.getReferences().getPrefix() + TextComponent.formatText("&7Syntax error..."));
-            return false;
+            return ReturnType.SYNTAX_ERROR;
         }
         if (!args[1].contains("p:") && !args[1].contains("player:") &&
                 !args[1].contains("f:") && !args[1].contains("faction:") &&
                 !args[1].contains("t:") && !args[1].contains("town:") &&
                 !args[1].contains("i:") && !args[1].contains("island:")) {
             sender.sendMessage(TextComponent.formatText(instance.getReferences().getPrefix() + "&6" + args[1] + " &7this is incorrect"));
-            return false;
+            return ReturnType.SYNTAX_ERROR;
         }
         String[] arr = (args[1]).split(":");
         if (!AMath.isInt(args[2])) {
             sender.sendMessage(TextComponent.formatText(instance.getReferences().getPrefix() + "&6" + args[2] + " &7is not a number..."));
-            return false;
+            return ReturnType.SYNTAX_ERROR;
         }
 
         Calendar c = Calendar.getInstance();
@@ -62,7 +62,7 @@ public class CommandBoost extends AbstractCommand {
                 response += " &7for &6" + arr2[1] + " years&7.";
             } else {
                 sender.sendMessage(TextComponent.formatText(instance.getReferences().getPrefix() + "&7" + args[3] + " &7is invalid."));
-                return false;
+                return ReturnType.SYNTAX_ERROR;
             }
         } else {
             c.add(Calendar.YEAR, 10);
@@ -86,7 +86,7 @@ public class CommandBoost extends AbstractCommand {
         } else if (arr[0].equalsIgnoreCase("f") || arr[0].equalsIgnoreCase("faction")) {
             if (instance.getFactionId(arr[1]) == null) {
                 sender.sendMessage(TextComponent.formatText(instance.getReferences().getPrefix() + "&cThat faction does not exist..."));
-                return false;
+                return ReturnType.FAILURE;
             }
 
             start += "The faction";
@@ -95,7 +95,7 @@ public class CommandBoost extends AbstractCommand {
         } else if (arr[0].equalsIgnoreCase("t") || arr[0].equalsIgnoreCase("town")) {
             if (instance.getTownId(arr[1]) == null) {
                 sender.sendMessage(TextComponent.formatText(instance.getReferences().getPrefix() + "&cThat town does not exist..."));
-                return false;
+                return ReturnType.FAILURE;
             }
 
             start += "The town";
@@ -104,7 +104,7 @@ public class CommandBoost extends AbstractCommand {
         } else if (arr[0].equalsIgnoreCase("i") || arr[0].equalsIgnoreCase("island")) {
             if (instance.getIslandId(arr[1]) == null) {
                 sender.sendMessage(TextComponent.formatText(instance.getReferences().getPrefix() + "&cThat island does not exist..."));
-                return false;
+                return ReturnType.FAILURE;
             }
 
             start += "The island";
@@ -113,14 +113,28 @@ public class CommandBoost extends AbstractCommand {
         }
 
         if (boostType == null || boostObject == null) {
-            sender.sendMessage("Syntax error.");
-            return false;
+            return ReturnType.SYNTAX_ERROR;
         }
 
         BoostData boostData = new BoostData(boostType, Integer.parseInt(args[2]), c.getTime().getTime(), boostObject);
         instance.getBoostManager().addBoostToSpawner(boostData);
         sender.sendMessage(TextComponent.formatText(instance.getReferences().getPrefix() + start + response));
 
-        return true;
+        return ReturnType.SUCCESS;
+    }
+
+    @Override
+    public String getPermissionNode() {
+        return "epicspawners.admin";
+    }
+
+    @Override
+    public String getSyntax() {
+        return "/es boost <p:player, f:faction, t:town, i:islandOwner> <amount> [m:minute, h:hour, d:day, y:year]";
+    }
+
+    @Override
+    public String getDescription() {
+        return "This allows you to boost the amount of spawns that are got from placed spawners.";
     }
 }

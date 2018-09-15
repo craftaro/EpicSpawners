@@ -18,18 +18,17 @@ import java.util.Random;
 public class CommandGive extends AbstractCommand {
 
     public CommandGive(AbstractCommand abstractCommand) {
-        super("give", "epicspawners.admin", abstractCommand, false);
+        super("give", abstractCommand, false);
     }
 
     @Override
-    protected boolean runCommand(EpicSpawnersPlugin instance, CommandSender sender, String... args) {
+    protected ReturnType runCommand(EpicSpawnersPlugin instance, CommandSender sender, String... args) {
         if (args.length <= 3 && args.length != 6) {
-            sender.sendMessage(instance.getReferences().getPrefix() + TextComponent.formatText("&7Syntax error..."));
-            return true;
+            return ReturnType.SYNTAX_ERROR;
         }
         if (Bukkit.getPlayerExact(args[1]) == null && !args[1].toLowerCase().equals("all")) {
             sender.sendMessage(TextComponent.formatText(instance.getReferences().getPrefix() + "&cThat username does not exist, or the user is not online!"));
-            return true;
+            return ReturnType.FAILURE;
         }
         int multi = 1;
 
@@ -58,7 +57,7 @@ public class CommandGive extends AbstractCommand {
             if (args.length == 4) {
                 if (!AMath.isInt(args[3])) {
                     sender.sendMessage(TextComponent.formatText(instance.getReferences().getPrefix() + "&6" + args[3] + "&7 is not a number."));
-                    return true;
+                    return ReturnType.SYNTAX_ERROR;
                 }
                 int amt = Integer.parseInt(args[3]);
                 ItemStack spawnerItem = data.toItemStack(Integer.parseInt(args[3]));
@@ -76,11 +75,11 @@ public class CommandGive extends AbstractCommand {
             } else {
                 if (!AMath.isInt(args[3])) {
                     sender.sendMessage(TextComponent.formatText(instance.getReferences().getPrefix() + "&6" + args[3] + "&7 is not a number."));
-                    return true;
+                    return ReturnType.FAILURE;
                 }
                 if (!AMath.isInt(args[4])) {
                     sender.sendMessage(TextComponent.formatText(instance.getReferences().getPrefix() + "&6" + args[4] + "&7 is not a number."));
-                    return true;
+                    return ReturnType.FAILURE;
                 }
                 int amt = Integer.parseInt(args[3]);
                 multi = Integer.parseInt(args[4]);
@@ -98,6 +97,21 @@ public class CommandGive extends AbstractCommand {
                 }
             }
         }
-        return true;
+        return ReturnType.SUCCESS;
+    }
+
+    @Override
+    public String getPermissionNode() {
+        return "epicspawners.admin";
+    }
+
+    @Override
+    public String getSyntax() {
+        return "/es give [player/all] [spawnertype/random] [multiplier] [amount]";
+    }
+
+    @Override
+    public String getDescription() {
+        return "Gives an operator the ability to spawn a spawner of his or her choice.";
     }
 }

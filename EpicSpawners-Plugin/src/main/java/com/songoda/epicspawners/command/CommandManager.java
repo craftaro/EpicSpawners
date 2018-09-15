@@ -1,6 +1,7 @@
 package com.songoda.epicspawners.command;
 
 import com.songoda.arconix.api.methods.formatting.TextComponent;
+import com.songoda.arconix.plugin.Arconix;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.command.commands.*;
 import org.bukkit.command.Command;
@@ -9,6 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class CommandManager implements CommandExecutor {
@@ -20,9 +22,12 @@ public class CommandManager implements CommandExecutor {
     public CommandManager(EpicSpawnersPlugin instance) {
         this.instance = instance;
 
+        instance.getCommand("EpicSpawners").setExecutor(this);
+        instance.getCommand("SpawnerStats").setExecutor(this);
+        instance.getCommand("SpawnerShop").setExecutor(this);
+
         AbstractCommand commandEpicSpawners = addCommand(new CommandEpicSpawners());
 
-        addCommand(new CommandGive(commandEpicSpawners));
         addCommand(new CommandReload(commandEpicSpawners));
         addCommand(new CommandEditor(commandEpicSpawners));
         addCommand(new CommandGive(commandEpicSpawners));
@@ -64,10 +69,17 @@ public class CommandManager implements CommandExecutor {
             return;
         }
         if (command.getPermissionNode() == null || sender.hasPermission(command.getPermissionNode())) {
-            command.runCommand(instance, sender, strings);
+             AbstractCommand.ReturnType returnType = command.runCommand(instance, sender, strings);
+             if (returnType == AbstractCommand.ReturnType.SYNTAX_ERROR) {
+                 sender.sendMessage(instance.getReferences().getPrefix() + TextComponent.formatText("&cInvalid Syntax!"));
+                 sender.sendMessage(instance.getReferences().getPrefix() + TextComponent.formatText("&7The valid syntax is: &6" + command.getSyntax() + "&7."));
+             }
             return;
         }
         sender.sendMessage(instance.getReferences().getPrefix() + instance.getLocale().getMessage("event.general.nopermission"));
+    }
 
+    public List<AbstractCommand> getCommands() {
+        return Collections.unmodifiableList(commands);
     }
 }

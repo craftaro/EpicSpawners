@@ -16,25 +16,25 @@ import org.bukkit.entity.Player;
 public class CommandChange extends AbstractCommand {
 
     public CommandChange(AbstractCommand abstractCommand) {
-        super("change", null, abstractCommand, true);
+        super("change", abstractCommand, true);
     }
 
     @Override
-    protected boolean runCommand(EpicSpawnersPlugin instance, CommandSender sender, String... args) {
+    protected ReturnType runCommand(EpicSpawnersPlugin instance, CommandSender sender, String... args) {
 
         if (!sender.hasPermission("epicspawners.admin") && !sender.hasPermission("epicspawners.change.*") && !sender.hasPermission("epicspawners.change." + args[1].toUpperCase())) {
             sender.sendMessage(instance.getReferences().getPrefix() + instance.getLocale().getMessage("event.general.nopermission"));
-            return false;
+            return ReturnType.FAILURE;
         }
-        Player p = (Player) sender;
-        Block b = p.getTargetBlock(null, 200);
+        Player player = (Player) sender;
+        Block block = player.getTargetBlock(null, 200);
 
-        if (b.getType() != Material.SPAWNER) {
+        if (block.getType() != Material.SPAWNER) {
             sender.sendMessage(TextComponent.formatText(instance.getReferences().getPrefix() + "&cThis is not a spawner."));
-            return false;
+            return ReturnType.FAILURE;
         }
 
-        Spawner spawner = instance.getSpawnerManager().getSpawnerFromWorld(b.getLocation());
+        Spawner spawner = instance.getSpawnerManager().getSpawnerFromWorld(block.getLocation());
 
         SpawnerData data = null;
         for (SpawnerData spawnerData : instance.getSpawnerManager().getAllSpawnerData()) {
@@ -45,8 +45,8 @@ public class CommandChange extends AbstractCommand {
         }
 
         if (data == null) {
-            p.sendMessage("This type does not exist.");
-            return true;
+            player.sendMessage("This type does not exist.");
+            return ReturnType.FAILURE;
         }
 
         try {
@@ -60,11 +60,27 @@ public class CommandChange extends AbstractCommand {
                 spawner.getCreatureSpawner().setSpawnedType(EntityType.valueOf("PIG"));
             }
             spawner.getCreatureSpawner().update();
-            instance.getHologramHandler().processChange(b);
+            instance.getHologramHandler().processChange(block);
             sender.sendMessage(TextComponent.formatText(instance.getReferences().getPrefix() + "&7Successfully changed this spawner to &6" + args[1] + "&7."));
+            return ReturnType.SUCCESS;
         } catch (Exception ee) {
             sender.sendMessage(TextComponent.formatText(instance.getReferences().getPrefix() + "&7That entity does not exist."));
+            return ReturnType.FAILURE;
         }
-        return true;
+    }
+
+    @Override
+    public String getPermissionNode() {
+        return null;
+    }
+
+    @Override
+    public String getSyntax() {
+        return "/es change <Type>";
+    }
+
+    @Override
+    public String getDescription() {
+        return "Changes the entity for the spawner you are looking at.";
     }
 }

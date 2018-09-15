@@ -8,12 +8,27 @@ import org.bukkit.entity.Player;
 public class CommandSettings extends AbstractCommand {
 
     public CommandSettings(AbstractCommand parent) {
-        super("settings", "epicspawners.admin", parent, true);
+        super("settings", parent, true);
     }
 
     @Override
-    protected boolean runCommand(EpicSpawnersPlugin instance, CommandSender sender, String... args) {
+    protected ReturnType runCommand(EpicSpawnersPlugin instance, CommandSender sender, String... args) {
         instance.getSettingsManager().openSettingsManager((Player)sender);
-        return false;
+        return ReturnType.SUCCESS;
+    }
+
+    @Override
+    public String getPermissionNode() {
+        return "epicspawners.admin";
+    }
+
+    @Override
+    public String getSyntax() {
+        return "/es settings";
+    }
+
+    @Override
+    public String getDescription() {
+        return "Edit the EpicSpawners Settings.";
     }
 }

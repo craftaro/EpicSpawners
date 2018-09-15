@@ -8,13 +8,28 @@ import org.bukkit.command.CommandSender;
 public class CommandReload extends AbstractCommand {
 
     public CommandReload(AbstractCommand parent) {
-        super("reload", "epicspawners.admin", parent, false);
+        super("reload", parent, false);
     }
 
     @Override
-    protected boolean runCommand(EpicSpawnersPlugin instance, CommandSender sender, String... args) {
+    protected ReturnType runCommand(EpicSpawnersPlugin instance, CommandSender sender, String... args) {
         instance.reload();
         sender.sendMessage(TextComponent.formatText(instance.getReferences().getPrefix() + "&7Configuration and Language files reloaded."));
-        return false;
+        return ReturnType.SUCCESS;
+    }
+
+    @Override
+    public String getPermissionNode() {
+        return "epicspawners.admin";
+    }
+
+    @Override
+    public String getSyntax() {
+        return "/es reload";
+    }
+
+    @Override
+    public String getDescription() {
+        return "Reload the Configuration and Language files.";
     }
 }

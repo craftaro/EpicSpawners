@@ -83,6 +83,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
     private SpawnerManager spawnerManager;
     private BoostManager boostManager;
     private SettingsManager settingsManager;
+    private CommandManager commandManager;
 
     private BlacklistHandler blacklistHandler;
     private HologramHandler hologramHandler;
@@ -154,6 +155,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         this.boostManager = new BoostManager();
         this.spawnManager = new SpawnManager();
         this.spawnerManager = new ESpawnerManager();
+        this.commandManager = new CommandManager(this);
         this.blacklistHandler = new BlacklistHandler();
         this.hologramHandler = new HologramHandler(this);
         this.playerActionManager = new PlayerActionManager();
@@ -236,11 +238,6 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         this.shop = new Shop(this);
         this.spawnerEditor = new SpawnerEditor(this);
         this.appearanceHandler = new AppearanceHandler();
-
-        // Command registration
-        this.getCommand("EpicSpawners").setExecutor(new CommandManager(this));
-        this.getCommand("SpawnerStats").setExecutor(new CommandManager(this));
-        this.getCommand("SpawnerShop").setExecutor(new CommandManager(this));
 
         PluginManager pluginManager = Bukkit.getPluginManager();
 
@@ -643,6 +640,10 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
 
     public SpawnManager getSpawnManager() {
         return spawnManager;
+    }
+
+    public CommandManager getCommandManager() {
+        return commandManager;
     }
 
     public BoostManager getBoostManager() {

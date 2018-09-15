@@ -8,12 +8,27 @@ import org.bukkit.entity.Player;
 public class CommandSpawnerShop extends AbstractCommand {
 
     public CommandSpawnerShop() {
-        super("spawnershop", "epicspawners.openshop", null, true);
+        super("spawnershop", null, true);
     }
 
     @Override
-    protected boolean runCommand(EpicSpawnersPlugin instance, CommandSender sender, String... args) {
+    protected ReturnType runCommand(EpicSpawnersPlugin instance, CommandSender sender, String... args) {
         instance.getShop().open((Player) sender, 1);
-        return false;
+        return ReturnType.SUCCESS;
+    }
+
+    @Override
+    public String getPermissionNode() {
+        return "epicspawners.openshop";
+    }
+
+    @Override
+    public String getSyntax() {
+        return "/SpawnerShop";
+    }
+
+    @Override
+    public String getDescription() {
+        return "Opens the spawner shop.";
     }
 }
