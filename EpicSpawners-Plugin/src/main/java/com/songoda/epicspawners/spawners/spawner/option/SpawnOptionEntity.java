@@ -2,6 +2,8 @@ package com.songoda.epicspawners.spawners.spawner.option;
 
 import com.songoda.arconix.plugin.Arconix;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
+import com.songoda.epicspawners.api.events.SpawnerChangeEvent;
+import com.songoda.epicspawners.api.events.SpawnerSpawnEvent;
 import com.songoda.epicspawners.api.spawner.Spawner;
 import com.songoda.epicspawners.api.spawner.SpawnerData;
 import com.songoda.epicspawners.api.spawner.SpawnerStack;
@@ -9,6 +11,7 @@ import com.songoda.epicspawners.api.spawner.condition.SpawnCondition;
 import com.songoda.epicspawners.spawners.condition.SpawnConditionNearbyEntities;
 import com.songoda.epicspawners.utils.Debugger;
 import com.songoda.epicspawners.utils.Methods;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -105,13 +108,13 @@ public class SpawnOptionEntity implements SpawnOption {
 
         while (spawnCount-- > 0) {
             EntityType type = types[ThreadLocalRandom.current().nextInt(types.length)];
-            spawnEntity(location, type, data);
+            spawnEntity(location, type, spawner, data);
             spawner.setSpawnCount(spawner.getSpawnCount() + 1);
             // TODO: Talk to the author of StackMob to get his ass in gear. lolk (I dropped support, try and add it in later)
         }
     }
 
-    public void spawnEntity(Location location, EntityType type, SpawnerData data) {
+    private void spawnEntity(Location location, EntityType type, Spawner spawner, SpawnerData data) {
         try {
 
             Location spot = null;
@@ -153,14 +156,14 @@ public class SpawnOptionEntity implements SpawnOption {
                 spot.add(spawnX, .5, spawnZ);
 
 
-                spawnFinal(spot, data, type);
+                spawnFinal(spot, data, spawner, type);
             }
         } catch (Exception ex) {
             Debugger.runReport(ex);
         }
     }
 
-    public boolean canSpawn(SpawnerData data, Location location) {
+    private boolean canSpawn(SpawnerData data, Location location) {
         try {
             List<Material> spawnBlocks = Arrays.asList(data.getSpawnBlocks());
 
@@ -182,7 +185,7 @@ public class SpawnOptionEntity implements SpawnOption {
         return false;
     }
 
-    public boolean isWater(Material type) {
+    private boolean isWater(Material type) {
         try {
             if (type == Material.WATER) {
                 return true;
@@ -194,11 +197,18 @@ public class SpawnOptionEntity implements SpawnOption {
         return false;
     }
 
-    private boolean spawnFinal(Location location, SpawnerData data, EntityType type) {
+    private boolean spawnFinal(Location location, SpawnerData data, Spawner spawner, EntityType type) {
         World world = location.getWorld();
 
         try {
             Entity entity = (Entity) nmsSpawnMethod.invoke(world, location, type.getEntityClass(), null, CreatureSpawnEvent.SpawnReason.SPAWNER); //ToDo: account for all mobs in the spawner.
+
+            SpawnerSpawnEvent event = new SpawnerSpawnEvent(entity, spawner);
+            Bukkit.getPluginManager().callEvent(event);
+            if (event.isCancelled()) {
+                entity.remove();
+                return true;
+            }
 
             if (data.isSpawnOnFire())
                 entity.setFireTicks(160);
