@@ -350,9 +350,10 @@ public class InventoryListeners implements Listener {
                         }
                     } else if (event.getCurrentItem().getItemMeta().getDisplayName().equals(instance.getLocale().getMessage("general.nametag.next"))) {
                         instance.getShop().open(player, page + 1);
-                    } else if (event.getSlot() >= 10 && event.getSlot() <= (event.getInventory().getSize() - 10) && event.getSlot() != 17 && event.getSlot() != (event.getInventory().getSize() - 18))
+                    } else if (event.getSlot() >= 10 && event.getSlot() <= (event.getInventory().getSize() - 10) && event.getSlot() != 17 && event.getSlot() != (event.getInventory().getSize() - 18)) {
                         playerData.setLastData(instance.getSpawnerDataFromItem(clicked));
-                    instance.getShop().show(1, player);
+                        instance.getShop().show(1, player);
+                    }
                 }
             }
             if (event.getSlot() != 64537) {
