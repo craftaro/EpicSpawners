@@ -261,6 +261,13 @@ public class SettingsManager implements Listener {
         GLASS_TYPE_3("Glass-Type-3", "Interfaces.Glass Type 3", 3),
         RAINBOW_GLASS("Rainbow-Glass", "Interfaces.Replace Glass Type 1 With Rainbow Glass", false),
 
+        DATABASE_SUPPORT("-", "Database.Activate Mysql Support", false),
+        DATABASE_IP("-", "Database.IP", "127.0.0.1"),
+        DATABASE_PORT("-", "Database.Port", 3306),
+        DATABASE_NAME("-", "Database.Database Name", "EpicSpawners"),
+        DATABASE_USERNAME("-", "Database.Username", "PUT_USERNAME_HERE"),
+        DATABASE_PASSWORD("-", "Database.Password", "PUT_PASSWORD_HERE"),
+
         DEBUG_MODE("Debug-Mode", "System.Debugger Enabled", false);
 
         private final String setting, oldSetting;
