@@ -80,7 +80,7 @@ public class StorageMysql extends Storage {
             sql.append(" (");
 
             for (StorageItem item : items) {
-                if (item == null) continue;
+                if (item == null || item.asObject() == null) continue;
                 sql.append(String.format("`%s`, ", item.getKey()));
             }
 
@@ -91,7 +91,7 @@ public class StorageMysql extends Storage {
             sql.append(" VALUES (");
 
             for (StorageItem item : items) {
-                if (item == null) continue;
+                if (item == null || item.asObject() == null) continue;
                 sql.append(String.format("'%s', ", item.asObject().toString()));
             }
 
