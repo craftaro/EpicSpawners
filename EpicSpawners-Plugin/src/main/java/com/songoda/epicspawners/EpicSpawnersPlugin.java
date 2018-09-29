@@ -220,6 +220,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
                         if (entityKillsKey == null) continue;
                         String[] entityKills2 = entityKillsKey.split(":");
                         if (entityKills2[0] == null || entityKills2[0] == "") continue;
+                        if (entityKills2[1] == null || entityKills2[1] == "") continue;
                         EntityType entityType = EntityType.valueOf(entityKills2[0]);
                         int amt = Integer.parseInt(entityKills2[1]);
                         entityKills.put(entityType, amt);
