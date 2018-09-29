@@ -168,29 +168,33 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
             // Adding in spawners.
             if (storage.containsGroup("spawners")) {
                 for (StorageRow row : storage.getRowsByGroup("spawners")) {
-                    Location location = Serialize.getInstance().unserializeLocation(row.getKey());
+                    try {
+                        Location location = Serialize.getInstance().unserializeLocation(row.getKey());
 
-                    if (location.getWorld() == null || location.getBlock().getType() != Material.SPAWNER) {
-                        if (location.getWorld() != null && location.getBlock().getType() != Material.SPAWNER) {
-                            this.hologramHandler.despawn(location.getBlock());
+                        if (location.getWorld() == null || location.getBlock().getType() != Material.SPAWNER) {
+                            if (location.getWorld() != null && location.getBlock().getType() != Material.SPAWNER) {
+                                this.hologramHandler.despawn(location.getBlock());
+                            }
+                            continue;
                         }
-                        continue;
+
+                        ESpawner spawner = new ESpawner(location);
+
+                        for (String stackKey : row.get("stacks").asString().split(";")) {
+                            if (stackKey == null) continue;
+                            String[] stack = stackKey.split(":");
+                            if (!spawnerManager.isSpawnerData(stack[0].toLowerCase())) continue;
+                            spawner.addSpawnerStack(new ESpawnerStack(spawnerManager.getSpawnerData(stack[0]), Integer.parseInt(stack[1])));
+                        }
+
+                        if (row.getItems().containsKey("placedby"))
+                            spawner.setPlacedBy(UUID.fromString(row.get("placedby").asString()));
+
+                        spawner.setSpawnCount(row.get("spawns").asInt());
+                        this.spawnerManager.addSpawnerToWorld(location, spawner);
+                    } catch (Exception e) {
+                        console.sendMessage("Failed to load spawner.");
                     }
-
-                    ESpawner spawner = new ESpawner(location);
-
-                    for (String stackKey : row.get("stacks").asString().split(";")) {
-                        if (stackKey == null) continue;
-                        String[] stack = stackKey.split(":");
-                        if (!spawnerManager.isSpawnerData(stack[0].toLowerCase())) continue;
-                        spawner.addSpawnerStack(new ESpawnerStack(spawnerManager.getSpawnerData(stack[0]), Integer.parseInt(stack[1])));
-                    }
-
-                    if (row.getItems().containsKey("placedby"))
-                        spawner.setPlacedBy(UUID.fromString(row.get("placedby").asString()));
-
-                    spawner.setSpawnCount(row.get("spawns").asInt());
-                    this.spawnerManager.addSpawnerToWorld(location, spawner);
                 }
             }
 
