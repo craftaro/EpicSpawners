@@ -220,11 +220,11 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
                     PlayerData playerData = playerActionManager.getPlayerAction(UUID.fromString(row.getKey()));
 
                     Map<EntityType, Integer> entityKills = new HashMap<>();
+                    if (row.get("entitykills").asString() == "") continue;
                     for (String entityKillsKey : row.get("entitykills").asString().split(";")) {
                         if (entityKillsKey == null) continue;
                         String[] entityKills2 = entityKillsKey.split(":");
                         if (entityKills2[0] == null || entityKills2[0] == "") continue;
-                        if (entityKills2[1] == null || entityKills2[1] == "") continue;
                         EntityType entityType = EntityType.valueOf(entityKills2[0]);
                         int amt = Integer.parseInt(entityKills2[1]);
                         entityKills.put(entityType, amt);
