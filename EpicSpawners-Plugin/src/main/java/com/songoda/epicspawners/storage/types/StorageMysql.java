@@ -86,9 +86,7 @@ public class StorageMysql extends Storage {
 
             sql = new StringBuilder(sql.substring(0, sql.length() - 2));
 
-            sql.append(")");
-
-            sql.append(" VALUES (");
+            sql.append(") VALUES (");
 
             for (StorageItem item : items) {
                 if (item == null || item.asObject() == null) continue;

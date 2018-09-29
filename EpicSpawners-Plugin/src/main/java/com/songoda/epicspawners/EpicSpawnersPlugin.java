@@ -480,13 +480,8 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
 
         for (PlayerData playerData : playerActionManager.getRegisteredPlayers()) {
 
-            String entityKillsStr = "";
-            for (Map.Entry<EntityType, Integer> entry : playerData.getEntityKills().entrySet()) {
-                entityKillsStr += entry.getKey().name() + ":" + entry.getValue() + ";";
-            }
-
             storage.saveItem("players", new StorageItem("uuid", playerData.getPlayer().getUniqueId().toString()),
-                    new StorageItem("entitykills", entityKillsStr));
+                    new StorageItem("entitykills", playerData.getEntityKills()));
         }
 
     }

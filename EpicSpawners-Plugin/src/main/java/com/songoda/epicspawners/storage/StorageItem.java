@@ -1,9 +1,11 @@
 package com.songoda.epicspawners.storage;
 
 import org.bukkit.Material;
+import org.bukkit.entity.EntityType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class StorageItem {
 
@@ -24,6 +26,15 @@ public class StorageItem {
         String object = "";
         for (Material m : material) {
             object += m.name() + ";";
+        }
+        this.key = key;
+        this.object = object;
+    }
+
+    public StorageItem(String key, Map<EntityType, Integer> entityKills) {
+        String object = "";
+        for (Map.Entry<EntityType, Integer> entry : entityKills.entrySet()) {
+            object += entry.getKey().name() + ":" + entry.getValue() + ";";
         }
         this.key = key;
         this.object = object;

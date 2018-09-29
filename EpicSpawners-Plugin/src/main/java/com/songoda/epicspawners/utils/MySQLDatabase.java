@@ -2,7 +2,9 @@ package com.songoda.epicspawners.utils;
 
 import com.songoda.epicspawners.EpicSpawnersPlugin;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public class MySQLDatabase {
 
@@ -18,9 +20,16 @@ public class MySQLDatabase {
             String url = "jdbc:mysql://" + instance.getConfig().getString("Database.IP") + ":" + instance.getConfig().getString("Database.Port") + "/" + instance.getConfig().getString("Database.Database Name") + "?autoReconnect=true&useSSL=false";
             this.connection = DriverManager.getConnection(url, instance.getConfig().getString("Database.Username"), instance.getConfig().getString("Database.Password"));
 
-            //ToDo: This is sloppy
-            connection.createStatement().execute(
-                    "CREATE TABLE IF NOT EXISTS `spawners` (\n" +
+            createTables();
+
+        } catch (ClassNotFoundException | SQLException e) {
+            System.out.println("Database connection failed.");
+        }
+    }
+
+    private void createTables() {
+        try {
+            connection.createStatement().execute("CREATE TABLE IF NOT EXISTS `spawners` (\n" +
                     "\t`location` TEXT NULL,\n" +
                     "\t`stacks` TEXT NULL,\n" +
                     "\t`spawns` INT NULL,\n" +
@@ -39,8 +48,8 @@ public class MySQLDatabase {
                     "\t`entitykills` TEXT NULL\n" +
                     ")");
 
-        } catch (ClassNotFoundException | SQLException e) {
-            System.out.println("Database connection failed.");
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
