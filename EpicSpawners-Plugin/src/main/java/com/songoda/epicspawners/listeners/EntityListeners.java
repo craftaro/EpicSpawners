@@ -48,18 +48,18 @@ public class EntityListeners implements Listener {
 
                     Location spawnLocation = b.getLocation();
 
-                    if (EpicSpawnersPlugin.getInstance().getConfig().getBoolean("Main.Prevent Spawners From Exploding"))
+                    if (instance.getConfig().getBoolean("Main.Prevent Spawners From Exploding"))
                         toCancel.add(b);
-                    else if (e.getEntity() instanceof Creeper && EpicSpawnersPlugin.getInstance().getConfig().getBoolean("Spawner Drops.Drop On Creeper Explosion")
-                            || e.getEntity() instanceof TNTPrimed && EpicSpawnersPlugin.getInstance().getConfig().getBoolean("Spawner Drops.Drop On TNT Explosion")) {
+                    else if (e.getEntity() instanceof Creeper && instance.getConfig().getBoolean("Spawner Drops.Drop On Creeper Explosion")
+                            || e.getEntity() instanceof TNTPrimed && instance.getConfig().getBoolean("Spawner Drops.Drop On TNT Explosion")) {
 
                         Spawner spawner = instance.getSpawnerManager().getSpawnerFromWorld(b.getLocation());
 
                         String chance = "";
-                        if (e.getEntity() instanceof Creeper && EpicSpawnersPlugin.getInstance().getConfig().getBoolean("Spawner Drops.Drop On Creeper Explosion"))
-                            chance = EpicSpawnersPlugin.getInstance().getConfig().getString("Spawner Drops.Chance On TNT Explosion");
-                        else if (e.getEntity() instanceof TNTPrimed && EpicSpawnersPlugin.getInstance().getConfig().getBoolean("Spawner Drops.Drop On TNT Explosion"))
-                            chance = EpicSpawnersPlugin.getInstance().getConfig().getString("Spawner Drops.Chance On Creeper Explosion");
+                        if (e.getEntity() instanceof Creeper && instance.getConfig().getBoolean("Spawner Drops.Drop On Creeper Explosion"))
+                            chance = instance.getConfig().getString("Spawner Drops.Chance On TNT Explosion");
+                        else if (e.getEntity() instanceof TNTPrimed && instance.getConfig().getBoolean("Spawner Drops.Drop On TNT Explosion"))
+                            chance = instance.getConfig().getString("Spawner Drops.Chance On Creeper Explosion");
                         int ch = Integer.parseInt(chance.replace("%", ""));
                         double rand = Math.random() * 100;
                         if (rand - ch < 0 || ch == 100) {
@@ -72,7 +72,7 @@ public class EntityListeners implements Listener {
                             instance.getAppearanceHandler().removeDisplayItem(spawner);
                         }
                     }
-                    EpicSpawnersPlugin.getInstance().getHologramHandler().processChange(b);
+                    instance.getHologramHandler().processChange(b);
                     Location nloc = spawnLocation.clone();
                     nloc.add(.5, -.4, .5);
                     List<Entity> near = (List<Entity>) nloc.getWorld().getNearbyEntities(nloc, 8, 8, 8);
@@ -97,7 +97,6 @@ public class EntityListeners implements Listener {
     @EventHandler
     public void onDeath(EntityDeathEvent event) {
         try {
-            EpicSpawnersPlugin instance = EpicSpawnersPlugin.getInstance();
             if (event.getEntity().hasMetadata("ES")) {
                 SpawnerData spawnerData = instance.getSpawnerManager().getSpawnerData(event.getEntity().getMetadata("ES").get(0).asString());
                 if (!spawnerData.getEntityDroppedItems().isEmpty()) {
