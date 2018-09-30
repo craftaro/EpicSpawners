@@ -149,6 +149,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         Locale.saveDefaultLocale("fr_FR");
         Locale.saveDefaultLocale("pt_BR");
         Locale.saveDefaultLocale("es_ES");
+        Locale.saveDefaultLocale("nl_NL");
         this.locale = Locale.getLocale(getConfig().getString("System.Language Mode", langMode));
 
         this.hooksFile.createNewFile("Loading Hooks File", "EpicSpawners Hooks File");
