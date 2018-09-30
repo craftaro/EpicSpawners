@@ -143,10 +143,10 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         this.setupConfig();
         this.setupSpawners();
 
-        // Locales
+        String langMode = getConfig().getString("System.Language Mode");
         Locale.init(this);
-        Locale.saveDefaultLocale("en_US");
-        this.locale = Locale.getLocale(getConfig().getString("Locale", "en_US"));
+        Locale.saveDefaultLocale(langMode);
+        this.locale = Locale.getLocale(getConfig().getString("System.Language Mode", langMode));
 
         this.hooksFile.createNewFile("Loading Hooks File", "EpicSpawners Hooks File");
 
@@ -628,6 +628,8 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
     }
 
     public void reload() {
+        String langMode = getConfig().getString("System.Language Mode");
+        this.locale = Locale.getLocale(getConfig().getString("System.Language Mode", langMode));
         this.locale.reloadMessages();
         this.spawnerFile.createNewFile("Loading Spawners File", "EpicSpawners Spawners File");
         this.hooksFile.createNewFile("Loading hookHandler File", "EpicSpawners Spawners File");
