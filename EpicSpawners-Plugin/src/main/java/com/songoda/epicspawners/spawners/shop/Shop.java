@@ -43,8 +43,8 @@ public class Shop {
             int start = (page - 1) * 33;
 
             for (SpawnerData spawnerData : instance.getSpawnerManager().getAllSpawnerData()) {
+                if (!spawnerData.isInShop() || !spawnerData.isActive())  continue;
                 if (!spawnerData.getIdentifyingName().toLowerCase().equals("omni")
-                        && spawnerData.isInShop() && spawnerData.isActive()
                         && player.hasPermission("epicspawners.shop." + Methods.getTypeFromString(spawnerData.getIdentifyingName()).replaceAll(" ", "_"))) {
                     if (num >= start && show <= 33) {
                         entities.add(spawnerData);
