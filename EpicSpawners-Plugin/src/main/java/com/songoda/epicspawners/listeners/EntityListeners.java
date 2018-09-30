@@ -119,6 +119,8 @@ public class EntityListeners implements Listener {
 
             SpawnerData spawnerData = instance.getSpawnerManager().getSpawnerData(event.getEntityType());
 
+            if (!spawnerData.isActive()) return;
+
             int customGoal = spawnerData.getKillGoal();
             if (customGoal != 0) goal = customGoal;
 
