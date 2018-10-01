@@ -150,11 +150,11 @@ public class Locale {
     /**
      * Save a default locale file from the project source directory, to the locale folder
      *
-     * @param path     the path to the file to save
-     * @param fileName the name of the file to save
+     * @param in file to save
+     * @param fileName   the name of the file to save
      * @return true if the operation was successful, false otherwise
      */
-    public static boolean saveDefaultLocale(String path, String fileName) {
+    public static boolean saveDefaultLocale(InputStream in, String fileName) {
         if (!localeFolder.exists()) localeFolder.mkdirs();
 
         if (!fileName.endsWith(FILE_EXTENSION))
@@ -166,7 +166,7 @@ public class Locale {
         }
 
         try (OutputStream outputStream = new FileOutputStream(destinationFile)) {
-            copy(plugin.getResource(fileName), outputStream);
+            copy(in == null ? plugin.getResource(fileName) : in, outputStream);
 
             fileName = fileName.substring(0, fileName.lastIndexOf('.'));
             String[] localeValues = fileName.split("_");
@@ -189,7 +189,7 @@ public class Locale {
      * @return true if the operation was successful, false otherwise
      */
     public static boolean saveDefaultLocale(String fileName) {
-        return saveDefaultLocale("", fileName);
+        return saveDefaultLocale(null, fileName);
     }
 
     /**

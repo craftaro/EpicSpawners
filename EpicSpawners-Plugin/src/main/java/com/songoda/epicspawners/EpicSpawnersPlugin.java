@@ -62,7 +62,17 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.function.Supplier;
 
@@ -146,12 +156,9 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         String langMode = getConfig().getString("System.Language Mode");
         Locale.init(this);
         Locale.saveDefaultLocale("en_US");
-        Locale.saveDefaultLocale("fr_FR");
-        Locale.saveDefaultLocale("pt_BR");
-        Locale.saveDefaultLocale("es_ES");
-        Locale.saveDefaultLocale("nl_NL");
-        Locale.saveDefaultLocale("pr_FA");
         this.locale = Locale.getLocale(getConfig().getString("System.Language Mode", langMode));
+
+        this.update();
 
         this.hooksFile.createNewFile("Loading Hooks File", "EpicSpawners Hooks File");
 
@@ -376,6 +383,39 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
             }
 
             this.spawnerManager.addSpawnerData(key, data);
+        }
+    }
+
+    private void update() {
+        try {
+        URL url = new URL("http://update.songoda.com/index.php?plugin=" + getDescription().getName() + "&version=" + getDescription().getVersion());
+        URLConnection urlConnection = url.openConnection();
+        InputStream is = urlConnection.getInputStream();
+        InputStreamReader isr = new InputStreamReader(is);
+
+        int numCharsRead;
+        char[] charArray = new char[1024];
+        StringBuffer sb = new StringBuffer();
+        while ((numCharsRead = isr.read(charArray)) > 0) {
+            sb.append(charArray, 0, numCharsRead);
+        }
+        String jsonString = sb.toString();
+        JSONObject json = (JSONObject) new JSONParser().parse(jsonString);
+
+            JSONArray files = (JSONArray) json.get("neededFiles");
+            for (Object o : files) {
+                JSONObject file = (JSONObject) o;
+
+                switch ((String)file.get("type")) {
+                    case "locale":
+                    InputStream in = new URL((String) file.get("link")).openStream();
+                    Locale.saveDefaultLocale(in, (String) file.get("name"));
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Failed to update.");
+            //e.printStackTrace();
         }
     }
 
