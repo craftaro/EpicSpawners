@@ -29,21 +29,21 @@ public class MySQLDatabase {
 
     private void createTables() {
         try {
-            connection.createStatement().execute("CREATE TABLE IF NOT EXISTS `spawners` (\n" +
+            connection.createStatement().execute("CREATE TABLE IF NOT EXISTS `" + instance.getConfig().getString("Database.Prefix") + "spawners` (\n" +
                     "\t`location` TEXT NULL,\n" +
                     "\t`stacks` TEXT NULL,\n" +
                     "\t`spawns` INT NULL,\n" +
                     "\t`placedby` TEXT NULL\n" +
                     ")");
 
-            connection.createStatement().execute("CREATE TABLE IF NOT EXISTS `boosts` (\n" +
+            connection.createStatement().execute("CREATE TABLE IF NOT EXISTS `" + instance.getConfig().getString("Database.Prefix") + "boosts` (\n" +
                     "\t`endtime` TEXT NULL,\n" +
                     "\t`boosttype` TEXT NULL,\n" +
                     "\t`data` TEXT NULL,\n" +
                     "\t`amount` INT NULL\n" +
                     ")");
 
-            connection.createStatement().execute("CREATE TABLE IF NOT EXISTS `players` (\n" +
+            connection.createStatement().execute("CREATE TABLE IF NOT EXISTS `" + instance.getConfig().getString("Database.Prefix") + "players` (\n" +
                     "\t`uuid` TEXT NULL,\n" +
                     "\t`entitykills` TEXT NULL\n" +
                     ")");

@@ -42,7 +42,7 @@ public class StorageMysql extends Storage {
     public List<StorageRow> getRowsByGroup(String group) {
         List<StorageRow> rows = new ArrayList<>();
         try {
-            ResultSet set = database.getConnection().createStatement().executeQuery(String.format("SELECT * FROM `%s`", group));
+            ResultSet set = database.getConnection().createStatement().executeQuery(String.format("SELECT * FROM `" + instance.getConfig().getString("Database.Prefix") + "%s`", group));
             while (set.next()) {
                 Map<String, StorageItem> items = new HashMap<>();
 
@@ -64,9 +64,9 @@ public class StorageMysql extends Storage {
     @Override
     public void clearFile() {
         try {
-            database.getConnection().createStatement().execute("TRUNCATE `spawners`");
-            database.getConnection().createStatement().execute("TRUNCATE `boosts`");
-            database.getConnection().createStatement().execute("TRUNCATE `players`");
+            database.getConnection().createStatement().execute("TRUNCATE `" + instance.getConfig().getString("Database.Prefix") + "spawners`");
+            database.getConnection().createStatement().execute("TRUNCATE `" + instance.getConfig().getString("Database.Prefix") + "boosts`");
+            database.getConnection().createStatement().execute("TRUNCATE `" + instance.getConfig().getString("Database.Prefix") + "players`");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -75,7 +75,7 @@ public class StorageMysql extends Storage {
     @Override
     public void saveItem(String group, StorageItem... items) {
         try {
-            StringBuilder sql = new StringBuilder(String.format("INSERT INTO `%s`", group));
+            StringBuilder sql = new StringBuilder(String.format("INSERT INTO `" + instance.getConfig().getString("Database.Prefix") + "%s`", group));
 
             sql.append(" (");
 
