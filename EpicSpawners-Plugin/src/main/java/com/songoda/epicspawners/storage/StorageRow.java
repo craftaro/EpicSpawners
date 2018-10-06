@@ -23,7 +23,7 @@ public class StorageRow {
     }
 
     public StorageItem get(String key) {
-        if (!items.containsKey(key)) return new StorageItem(null);
+        if (!items.containsKey(key) || items.get(key).asObject().toString().equals("")) return new StorageItem(null);
         return items.get(key);
     }
 }

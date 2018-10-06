@@ -208,6 +208,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
                         this.spawnerManager.addSpawnerToWorld(location, spawner);
                     } catch (Exception e) {
                         console.sendMessage("Failed to load spawner.");
+                        e.printStackTrace();
                     }
                 }
             }
@@ -215,7 +216,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
             // Adding in Boosts
             if (storage.containsGroup("boosts")) {
                 for (StorageRow row : storage.getRowsByGroup("boosts")) {
-                    if (!row.getItems().containsKey("boosttype") || row.get("boosttype").asString().equals(""))
+                    if (row.get("boosttype").asObject() != null)
                         continue;
 
                     BoostData boostData = new BoostData(
@@ -234,7 +235,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
                     PlayerData playerData = playerActionManager.getPlayerAction(UUID.fromString(row.getKey()));
 
                     Map<EntityType, Integer> entityKills = new HashMap<>();
-                    if (row.get("entitykills") == null || row.get("entitykills").asString().equals("")) continue;
+                    if (row.get("entitykills").asObject() == null) continue;
                     for (String entityKillsKey : row.get("entitykills").asString().split(";")) {
                         if (entityKillsKey == null) continue;
                         String[] entityKills2 = entityKillsKey.split(":");
