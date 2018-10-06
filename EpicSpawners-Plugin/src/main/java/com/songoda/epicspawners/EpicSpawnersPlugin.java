@@ -52,6 +52,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
+import org.bukkit.block.CreatureSpawner;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -59,6 +60,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -827,15 +829,10 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
             return spawnerManager.getSpawnerData(value.toLowerCase().replace("_", " "));
         }
 
-        String typeName = name.replace("_", " ");
-        for (EntityType type : EntityType.values()) {
-            if (!type.isSpawnable() || !type.isAlive()) continue;
 
-            if (typeName.contains(type.name().toLowerCase())) {
-                return spawnerManager.getSpawnerData(type.name().toLowerCase().replace("_", " "));
-            }
-        }
-        return null;
+        BlockStateMeta bsm = (BlockStateMeta) item.getItemMeta();
+        CreatureSpawner cs = (CreatureSpawner) bsm.getBlockState();
+        return spawnerManager.getSpawnerData(cs.getSpawnedType());
     }
 
     @Override

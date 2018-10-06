@@ -63,6 +63,7 @@ public class SpawnerEditor {
 
             int max = (int) Math.ceil((double) num / (double) 32);
             int amt = entities.size();
+            if (amt == 24 || amt == 25) amt = 26;
             Inventory inventory = Bukkit.createInventory(null, 54, TextComponent.formatTitle("Spawner Editor"));
             int max2 = 54;
             if (amt <= 7) {
