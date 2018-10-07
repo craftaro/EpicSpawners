@@ -104,6 +104,7 @@ public class AppearanceHandler {
                 location.setPitch(-360);
                 ArmorStand as = (ArmorStand) location.getWorld().spawnEntity(location, EntityType.ARMOR_STAND);
                 as.setSmall(true);
+                as.setCustomName("EpicSpawners-Display");
                 as.setVisible(false);
                 as.setCustomNameVisible(false);
                 as.setGravity(false);
@@ -127,8 +128,12 @@ public class AppearanceHandler {
         location.add(.5, -.4, .5);
 
         List<Entity> near = (List<Entity>) location.getWorld().getNearbyEntities(location, 8, 8, 8);
-        near.removeIf(e -> e.getLocation().getX() != location.getX() || e.getLocation().getY() != location.getY() || e.getLocation().getZ() != location.getZ());
+        //near.removeIf(e -> e.getLocation().getX() != location.getX() || e.getLocation().getY() != location.getY() || e.getLocation().getZ() != location.getZ());
+        near.removeIf(e -> (!(e.getCustomName().equalsIgnoreCase("EpicSpawners-Display"))));
         if (near.size() != 0) {
+            if(Debugger.isDebug()){
+                Bukkit.getLogger().info("Songoda-Debug: ArmorStand present");
+            }
             return near.get(0);
         }
         return null;
