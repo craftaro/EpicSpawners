@@ -13,12 +13,9 @@ import java.util.Map;
  */
 public class Heads {
 
-    private final EpicSpawnersPlugin instance;
     private final Map<HeadType, String> textureURL = new EnumMap<>(HeadType.class);
 
-    public Heads(EpicSpawnersPlugin instance) {
-        this.instance = instance;
-
+    public Heads() {
         try {
             for (HeadType type : HeadType.values()) {
                 this.textureURL.put(type, type.getUrl());
@@ -30,7 +27,7 @@ public class Heads {
 
     public ItemStack addTexture(ItemStack item, SpawnerData spawnerData) {
         try {
-            String headURL = textureURL.get(getHeadTypeOrDefault(spawnerData.getIdentifyingName().toUpperCase().replace(" ", "_"), HeadType.DROPPED_ITEM));
+            String headURL = textureURL.get(getHeadTypeOrDefault(spawnerData.getIdentifyingName().toUpperCase().replace(" ", "_")));
 
             return Arconix.pl().getApi().getGUI().addTexture(item, headURL);
         } catch (Exception e) {
@@ -40,11 +37,11 @@ public class Heads {
         return item;
     }
 
-    private HeadType getHeadTypeOrDefault(String name, HeadType defaultValue) {
+    private HeadType getHeadTypeOrDefault(String name) {
         try {
             return HeadType.valueOf(name);
         } catch (IllegalArgumentException e) {
-            return defaultValue;
+            return HeadType.DROPPED_ITEM;
         }
     }
 }

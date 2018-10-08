@@ -149,7 +149,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         console.sendMessage(TextComponent.formatText(String.format("&7%s %s by &5Brianna <3&7!", this.getName(), this.getDescription().getVersion())));
         console.sendMessage(TextComponent.formatText("&7Action: &aEnabling&7..."));
 
-        this.heads = new Heads(this);
+        this.heads = new Heads();
         this.settingsManager = new SettingsManager(this);
 
         this.setupConfig();
@@ -514,11 +514,11 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
 
             StorageItem location = new StorageItem("location", Serialize.getInstance().serializeLocation(spawner.getLocation()));
 
-            String stacksStr = "";
+            StringBuilder stacksStr = new StringBuilder();
             for (SpawnerStack stack : spawner.getSpawnerStacks()) {
-                stacksStr += stack.getSpawnerData().getIdentifyingName() + ":" + stack.getStackSize() + ";";
+                stacksStr.append(stack.getSpawnerData().getIdentifyingName()).append(":").append(stack.getStackSize()).append(";");
             }
-            StorageItem stacks = new StorageItem("stacks", stacksStr);
+            StorageItem stacks = new StorageItem("stacks", stacksStr.toString());
 
             StorageItem placedBy = spawner.getPlacedBy() != null ? new StorageItem("placedby", spawner.getPlacedBy().getUniqueId().toString()) : null;
 
@@ -687,7 +687,6 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         this.blacklistHandler.reload();
         this.loadSpawnersFromFile();
         this.reloadConfig();
-        //this.saveConfig();
     }
 
     public Locale getLocale() {
@@ -817,7 +816,6 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
     public SpawnerData getSpawnerDataFromItem(ItemStack item) {
         if (item == null || !item.hasItemMeta()) return null;
 
-
         String name = item.getItemMeta().getDisplayName();
         if (name == null) return null;
 
@@ -828,7 +826,6 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
             }
             return spawnerManager.getSpawnerData(value.toLowerCase().replace("_", " "));
         }
-
 
         BlockStateMeta bsm = (BlockStateMeta) item.getItemMeta();
         CreatureSpawner cs = (CreatureSpawner) bsm.getBlockState();

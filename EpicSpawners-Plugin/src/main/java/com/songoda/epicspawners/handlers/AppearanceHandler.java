@@ -129,7 +129,6 @@ public class AppearanceHandler {
 
         List<Entity> near = (List<Entity>) location.getWorld().getNearbyEntities(location, 2, 4, 2);
         if (near == null)return null;
-        //near.removeIf(e -> e.getLocation().getX() != location.getX() || e.getLocation().getY() != location.getY() || e.getLocation().getZ() != location.getZ());
         near.removeIf(e -> (!(e.getCustomName().equalsIgnoreCase("EpicSpawners-Display"))));
         if (near.size() != 0) {
             if(Debugger.isDebug()){
