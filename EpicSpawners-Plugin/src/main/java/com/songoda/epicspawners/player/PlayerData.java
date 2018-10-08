@@ -58,6 +58,10 @@ public class PlayerData {
         return entityKills.merge(type, 1, Integer::sum);
     }
 
+    public void removeEntity(EntityType entity) {
+        entityKills.remove(entity);
+    }
+
     public Map<EntityType, Integer> getEntityKills() {
         return Collections.unmodifiableMap(entityKills);
     }

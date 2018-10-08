@@ -130,9 +130,10 @@ public class EntityListeners implements Listener {
                 Arconix.pl().getApi().packetLibrary.getActionBarManager().sendActionBar(player, instance.getLocale().getMessage("event.goal.alert", goal - amt, spawnerData.getIdentifyingName()));
             }
 
-            if (amt % goal == 0) {
+            if (amt >= goal) {
                 ItemStack item = spawnerData.toItemStack();
                 event.getEntity().getLocation().getWorld().dropItemNaturally(event.getEntity().getLocation(), item);
+                instance.getPlayerActionManager().getPlayerAction(player).removeEntity(event.getEntityType());
                 Arconix.pl().getApi().packetLibrary.getActionBarManager().sendActionBar(player, instance.getLocale().getMessage("event.goal.reached", spawnerData.getIdentifyingName()));
             }
 
