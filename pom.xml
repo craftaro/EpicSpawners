@@ -1,75 +1,174 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0">
     <groupId>com.songoda</groupId>
     <artifactId>EpicSpawners</artifactId>
-    <version>5.2</version>
-    <packaging>pom</packaging>
-
-    <modules>
-        <module>EpicSpawners-API</module>
-        <module>EpicSpawners-Plugin</module>
-    </modules>
-
-    <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-    </properties>
-
-    <distributionManagement>
-        <repository>
-            <id>songoda-releases-pub</id>
-            <name>Releases</name>
-            <url>http://repo.songoda.com/repository/songoda-releases-pub/</url>
-        </repository>
-        <snapshotRepository>
-            <id>songoda-snapshots-pub</id>
-            <name>Snapshots</name>
-            <url>http://repo.songoda.com/repository/songoda-snapshots-pub/</url>
-        </snapshotRepository>
-    </distributionManagement>
-
+    <modelVersion>4.0.0</modelVersion>
+    <version>5.4</version>
     <build>
-        <finalName>EpicSpawners</finalName>
+        <defaultGoal>clean package</defaultGoal>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.7</version>
+                <executions>
+                    <execution>
+                        <id>add-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>EpicSpawners-API/src/main/java</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <version>3.6.1</version>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+        <resources>
+            <resource>
+                <directory>EpicSpawners-Plugin/src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+        <sourceDirectory>EpicSpawners-Plugin/src/main/java</sourceDirectory>
     </build>
-
     <repositories>
-        <!-- Songoda Repo -->
         <repository>
-            <id>songoda-public</id>
-            <url>http://repo.songoda.com/repository/songoda-public/</url>
-        </repository>
-        <repository>
-            <id>songoda-private</id>
-            <url>http://repo.songoda.com/repository/songoda-private/</url>
-        </repository>
-        <!--Spigot/Bukkit Repo-->
-        <repository>
-            <id>spigot-repo</id>
-            <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
+            <id>private</id>
+            <url>http://repo.songoda.com/repository/private</url>
         </repository>
     </repositories>
-
     <dependencies>
-        <!-- Spigot API -->
         <dependency>
             <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
-            <version>1.12.2-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
+            <artifactId>spigot</artifactId>
+            <version>1.13.1</version>
         </dependency>
         <dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>bukkit</artifactId>
-            <version>1.12.2-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
+            <groupId>com.songoda</groupId>
+            <artifactId>arconix</artifactId>
+            <version>LATEST</version>
         </dependency>
-        <!-- CraftBukkit 1.7 R4. Must be locally installed -->
         <dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>craftbukkit</artifactId>
-            <version>1.7.10</version>
-            <scope>provided</scope>
+            <groupId>org</groupId>
+            <artifactId>kingdoms</artifactId>
+            <version>LATEST</version>
+        </dependency>
+        <dependency>
+            <groupId>net.milkbowl</groupId>
+            <artifactId>vault</artifactId>
+            <version>LATEST</version>
+        </dependency>
+        <dependency>
+            <groupId>me.ryanhamshire</groupId>
+            <artifactId>GriefPrevention</artifactId>
+            <version>LATEST</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sk89q</groupId>
+            <artifactId>worldedit</artifactId>
+            <version>LATEST</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sk89q</groupId>
+            <artifactId>worldguard</artifactId>
+            <version>7.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com</groupId>
+            <artifactId>plotsquared</artifactId>
+            <version>RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>com.palmergames.bukkit</groupId>
+            <artifactId>towny</artifactId>
+            <version>LATEST</version>
+        </dependency>
+        <dependency>
+            <groupId>com.wasteofplastic</groupId>
+            <artifactId>askyblock</artifactId>
+            <version>3.0.6.8</version>
+        </dependency>
+        <dependency>
+            <groupId>us.talabrek</groupId>
+            <artifactId>ultimateskyblock</artifactId>
+            <version>LATEST</version>
+        </dependency>
+        <dependency>
+            <groupId>me.markeh</groupId>
+            <artifactId>factionsframework</artifactId>
+            <version>1.2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>br.net.fabiozumbi12</groupId>
+            <artifactId>RedProtect</artifactId>
+            <version>7.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.songoda</groupId>
+            <artifactId>epicspawners</artifactId>
+            <version>LATEST</version>
+        </dependency>
+        <dependency>
+            <groupId>com.gmail.nossr50</groupId>
+            <artifactId>mcmmo</artifactId>
+            <version>LATEST</version>
+        </dependency>
+        <dependency>
+            <groupId>com.gamingmesh</groupId>
+            <artifactId>jobs</artifactId>
+            <version>LATEST</version>
+        </dependency>
+        <dependency>
+            <groupId>me.botsko</groupId>
+            <artifactId>prism</artifactId>
+            <version>LATEST</version>
+        </dependency>
+        <dependency>
+            <groupId>de.diddiz</groupId>
+            <artifactId>logblock</artifactId>
+            <version>LATEST</version>
+        </dependency>
+        <dependency>
+            <groupId>net</groupId>
+            <artifactId>coreprotect</artifactId>
+            <version>LATEST</version>
+        </dependency>
+        <dependency>
+            <groupId>uk.antiperson</groupId>
+            <artifactId>stackmob</artifactId>
+            <version>LATEST</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sothatsit</groupId>
+            <artifactId>blockstore</artifactId>
+            <version>LATEST</version>
+        </dependency>
+        <dependency>
+            <groupId>org.black_ixx</groupId>
+            <artifactId>playerpoints</artifactId>
+            <version>2.1.4</version>
+        </dependency>
+        <dependency>
+            <groupId>xyz.wildseries</groupId>
+            <artifactId>wildstacker</artifactId>
+            <version>b6</version>
+        </dependency>
+        <dependency>
+            <groupId>me.clip</groupId>
+            <artifactId>placeholderapi</artifactId>
+            <version>2.5.1</version>
         </dependency>
     </dependencies>
 </project>
