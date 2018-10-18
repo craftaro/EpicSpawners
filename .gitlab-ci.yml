@@ -9,4 +9,4 @@ build:
     name: "EpicSpawners"
     paths:
     - "/builds/Songoda/EpicSpawners/target/*.jar"
-    - "/builds/Songoda/EpicAnchors/Read_this_before_your_first_use.txt"
+    - "/builds/Songoda/EpicSpawners/Read_this_before_your_first_use.txt"
