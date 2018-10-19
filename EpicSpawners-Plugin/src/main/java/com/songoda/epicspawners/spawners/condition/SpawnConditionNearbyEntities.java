@@ -3,6 +3,7 @@ package com.songoda.epicspawners.spawners.condition;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.api.spawner.Spawner;
 import com.songoda.epicspawners.api.spawner.condition.SpawnCondition;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.*;
 
@@ -28,6 +29,7 @@ public class SpawnConditionNearbyEntities implements SpawnCondition {
 
     @Override
     public boolean isMet(Spawner spawner) {
+
         Location location = spawner.getLocation().add(0.5, 0.5, 0.5);
 
         String[] arr = EpicSpawnersPlugin.getInstance().getConfig().getString("Main.Radius To Search Around Spawners").split("x");

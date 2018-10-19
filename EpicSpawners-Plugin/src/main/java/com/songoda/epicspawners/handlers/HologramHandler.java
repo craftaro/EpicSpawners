@@ -1,5 +1,6 @@
 package com.songoda.epicspawners.handlers;
 
+import com.songoda.arconix.api.hologram.HologramObject;
 import com.songoda.arconix.plugin.Arconix;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.api.spawner.Spawner;
@@ -40,8 +41,6 @@ public class HologramHandler {
 
             Location location = spawner.getLocation().add(0.5, 1, 0.5);
 
-            despawn(spawner.getLocation().getBlock());
-
             if (!instance.getConfig().getBoolean("Main.Spawners Have Holograms")) return;
 
             addHologram(location, spawner);
@@ -53,16 +52,18 @@ public class HologramHandler {
 
     public void despawn(Block b) {
         Location location = b.getLocation().add(0.5, 1, 0.5);
-        Arconix.pl().getApi().packetLibrary.getHologramManager().despawnHologram(location);
+        Arconix.pl().getApi().packetLibrary.getHologramManager().removeHologram(location, 1);
     }
 
     private void addHologram(Location location, Spawner spawner) {
         try {
             int multi = spawner.getSpawnerDataCount();
             if (spawner.getSpawnerStacks().size() == 0) return;
-            String name = Methods.compileName(instance.getSpawnerManager().getSpawnerData(spawner.getIdentifyingName()), multi, false);
+            String name = Methods.compileName(instance.getSpawnerManager().getSpawnerData(spawner.getIdentifyingName()), multi, false).trim();
 
-            Arconix.pl().getApi().packetLibrary.getHologramManager().spawnHologram(location, name.trim());
+            HologramObject hologram = new HologramObject(null, location, name);
+
+            Arconix.pl().getApi().packetLibrary.getHologramManager().addHologram(hologram);
 
         } catch (Exception e) {
             Debugger.runReport(e);

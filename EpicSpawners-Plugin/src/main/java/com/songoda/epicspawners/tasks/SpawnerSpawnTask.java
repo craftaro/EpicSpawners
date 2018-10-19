@@ -3,6 +3,7 @@ package com.songoda.epicspawners.tasks;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.api.spawner.Spawner;
 import com.songoda.epicspawners.api.spawner.SpawnerManager;
+import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
@@ -13,7 +14,6 @@ public class SpawnerSpawnTask extends BukkitRunnable {
     private static SpawnerSpawnTask instance;
 
     private final SpawnerManager manager;
-    private final Map<Spawner, Integer> timer = new HashMap<>();
 
     private SpawnerSpawnTask(EpicSpawnersPlugin plugin) {
         this.manager = plugin.getSpawnerManager();
@@ -37,15 +37,15 @@ public class SpawnerSpawnTask extends BukkitRunnable {
             int x = spawner.getX() >> 4;
             int z = spawner.getZ() >> 4;
 
-            if (!spawner.getWorld().isChunkLoaded(x, z) || !spawner.checkConditions())
-                continue;
-
-            // If not present in map, init to 0 and put in map. Otherwise, add 30 to existing value
-            int amount = timer.merge(spawner, 30, (oldValue, value) -> (oldValue == null) ? 0 : oldValue + value);
             int delay = spawner.getCreatureSpawner().getDelay();
-            if (amount < delay) continue;
+            delay = delay - 30;
+            spawner.getCreatureSpawner().setDelay(delay);
+            if (delay >= 0) continue;
 
-            this.timer.remove(spawner);
+            if (!spawner.getWorld().isChunkLoaded(x, z) || !spawner.checkConditions()) {
+                spawner.getCreatureSpawner().setDelay(300);
+                continue;
+            }
             spawner.spawn();
         }
     }

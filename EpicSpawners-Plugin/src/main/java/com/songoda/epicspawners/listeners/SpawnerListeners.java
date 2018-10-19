@@ -10,6 +10,8 @@ import com.songoda.epicspawners.utils.Methods;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Firework;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -31,6 +33,7 @@ public class SpawnerListeners implements Listener {
     public void onSpawn(SpawnerSpawnEvent event) {
         try {
             Entity entity = event.getEntity();
+            if (entity.getType() == EntityType.FIREWORK) return;
             if (entity.getVehicle() != null) {
                 entity.getVehicle().remove();
                 entity.remove();

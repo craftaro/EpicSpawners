@@ -253,6 +253,7 @@ public class ESpawner implements Spawner {
     @Override
     public boolean checkConditions() {
         for (SpawnerStack stack : spawnerStacks) {
+            if (stack.getSpawnerData() == null) continue;
             for (SpawnCondition spawnCondition : stack.getSpawnerData().getConditions()) {
                 if (!spawnCondition.isMet(this)) return false;
             }

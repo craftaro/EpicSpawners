@@ -15,7 +15,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.CreatureSpawner;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -100,7 +102,8 @@ public class BlockListeners implements Listener {
     public void onSpawnerPlace(BlockPlaceEvent event) {
         //We are ignoring canceled inside the event so that it will still remove holograms when the event is canceled.
         if (!event.isCancelled()) {
-            if (event.getBlock().getType() != Material.SPAWNER) return;
+            if (event.getBlock().getType() != Material.SPAWNER
+                    || ((CreatureSpawner)event.getBlock().getState()).getSpawnedType() == EntityType.FIREWORK) return;
 
             Location location = event.getBlock().getLocation();
             ESpawner spawner = new ESpawner(event.getBlock().getLocation());
@@ -170,7 +173,8 @@ public class BlockListeners implements Listener {
 
             Player player = event.getPlayer();
 
-            if (event.getBlock().getType() != Material.SPAWNER) return;
+            if (event.getBlock().getType() != Material.SPAWNER
+                    || ((CreatureSpawner)event.getBlock().getState()).getSpawnedType() == EntityType.FIREWORK) return;
 
             if (instance.getBlacklistHandler().isBlacklisted(event.getPlayer(), true)) {
                 event.setCancelled(true);

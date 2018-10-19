@@ -48,11 +48,11 @@ public class SpawnerEditor {
             List<SpawnerData> entities = new ArrayList<>();
 
             int num = 0, show = 0;
-            int start = (page - 1) * 33;
+            int start = (page - 1) * 32;
 
             for (SpawnerData spawnerData : instance.getSpawnerManager().getAllSpawnerData()) {
                 if (num >= start && !spawnerData.getIdentifyingName().equalsIgnoreCase("omni")) {
-                    if (show <= 33) {
+                    if (show <= 32) {
                         entities.add(spawnerData);
                         show++;
                     }
@@ -375,7 +375,7 @@ public class SpawnerEditor {
     public SpawnerData getType(int id) {
         SpawnerData type = EpicSpawnersPlugin.getInstance().getSpawnerManager().getSpawnerData("pig");
         try {
-            if (id >= 33) id++;
+            if (id >= 32 && id <= 61) id++;
             int num = 1;
             for (SpawnerData spawnerData : EpicSpawnersPlugin.getInstance().getSpawnerManager().getRegisteredSpawnerData().values()) {
                 if (spawnerData.getIdentifyingName().toLowerCase().equals("omni")) continue;
