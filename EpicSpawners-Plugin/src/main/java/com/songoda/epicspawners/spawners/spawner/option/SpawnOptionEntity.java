@@ -13,6 +13,7 @@ import com.songoda.epicspawners.utils.Methods;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.entity.CreatureSpawnEvent;
@@ -151,7 +152,8 @@ public class SpawnOptionEntity implements SpawnOption {
             Object objMobSpawnerData = clazzMobSpawnerData.newInstance();
             Object objNTBTagCompound = methodB.invoke(objMobSpawnerData);
 
-            methodSetString.invoke(objNTBTagCompound, "id", "minecraft:" + type.name().toLowerCase().replace("pig_zombie", "zombie_pigman"));
+            String name = type.name().toLowerCase().replace("pig_zombie", "zombie_pigman").replace("mushroom_cow", "mooshroom");
+            methodSetString.invoke(objNTBTagCompound, "id", "minecraft:" + name);
 
             int spawnRange = 4;
             for (int i = 0; i < 25; i++) {
@@ -239,11 +241,11 @@ public class SpawnOptionEntity implements SpawnOption {
             }
 
             for (Material material : spawnBlocks) {
-                Location loc = location.clone().subtract(0, 1, 0);
-                if (location.getBlock().getType() == Material.AIR && material == Material.AIR) return true;
-                if (loc.getBlock().getType().toString().equalsIgnoreCase(material.name())
-                        || (material.toString().equals("GRASS") && loc.getBlock().getType() == Material.GRASS_BLOCK)
-                        || isWater(loc.getBlock().getType()) && spawnBlocks.contains("WATER")) {
+                Material down = location.getBlock().getRelative(BlockFace.DOWN).getType();
+                if ((location.getBlock().getType() == Material.AIR || location.getBlock().getType().name().toLowerCase().contains("pressure")) && material == Material.AIR) return true;
+                if (down.toString().equalsIgnoreCase(material.name())
+                        || (material.toString().equals("GRASS") && down == Material.GRASS)
+                        || isWater(down) && spawnBlocks.contains("WATER")) {
                     return true;
                 }
             }
@@ -252,6 +254,7 @@ public class SpawnOptionEntity implements SpawnOption {
         }
         return false;
     }
+
 
     private boolean isWater(Material type) {
         try {

@@ -851,6 +851,7 @@ public class ESpawner implements Spawner {
             }
             int extraTicks = EpicSpawnersPlugin.getInstance().getConfig().getInt("Main.Extra Ticks Added To Each Spawn");
 
+            if (getSpawnerDataCount() == 0) return 0;
             int delay = (rand.nextInt(min, max + 1) / getSpawnerDataCount()) + extraTicks;
 
                 getCreatureSpawner().setDelay(delay);
