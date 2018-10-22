@@ -24,7 +24,7 @@ public class HookGriefPrevention implements ProtectionPluginHook {
     @Override
     public boolean canBuild(Player player, Location location) {
         Claim claim = griefPrevention.dataStore.getClaimAt(location, false, null);
-        return claim != null && claim.allowBuild(player, Material.STONE) == null;
+        return claim != null && claim.allowBuild(player, Material.SPAWNER) == null;
     }
 
 }
