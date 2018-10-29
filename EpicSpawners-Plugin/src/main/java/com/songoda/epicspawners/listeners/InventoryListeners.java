@@ -130,10 +130,10 @@ public class InventoryListeners implements Listener {
                         instance.getSpawnerEditor().openSpawnerSelector(player, playerData.getCurrentPage());
                     else if (event.getSlot() == 11) {
                         if (!event.getClick().isLeftClick() && !event.getClick().isRightClick()) {
-                            SpawnerData spawnerData = instance.getSpawnerEditor().getType(editingData.getSpawnerSlot());
-                            spawnerData.setDisplayItem(Material.valueOf(player.getInventory().getItemInMainHand().getType().toString()));
-                            player.sendMessage(TextComponent.formatText(instance.getReferences().getPrefix() + "&7Display Item for &6" + spawnerData.getIdentifyingName() + " &7set to &6" + player.getInventory().getItemInMainHand().getType().toString() + "&7."));
-                            instance.getSpawnerEditor().overview(player, editingData.getSpawnerSlot());
+                            SpawnerData spawnerData = editingData.getSpawnerEditing();
+                            spawnerData.setDisplayItem(Material.valueOf(player.getInventory().getItemInHand().getType().toString()));
+                            player.sendMessage(TextComponent.formatText(instance.getReferences().getPrefix() + "&7Display Item for &6" + spawnerData.getIdentifyingName() + " &7set to &6" + player.getInventory().getItemInHand().getType().toString() + "&7."));
+                            instance.getSpawnerEditor().overview(player, editingData.getSpawnerEditing());
                         } else if (event.getClick().isLeftClick()) {
                             instance.getSpawnerEditor().editSpawnerName(player);
                         }
@@ -149,18 +149,18 @@ public class InventoryListeners implements Listener {
                         boolean right = event.isRightClick();
                         for (final EntityType val : EntityType.values()) {
                             if (val.isSpawnable() && val.isAlive()) {
-                                if (val.name().equals(Methods.restoreType(instance.getSpawnerEditor().getType(editingData.getSpawnerSlot()).getIdentifyingName()))) {
+                                if (val.name().equals(Methods.restoreType(editingData.getSpawnerEditing().getIdentifyingName()))) {
                                     right = false;
                                 }
                             }
                         }
                         if (!right) {
-                            SpawnerData spawnerData = instance.getSpawnerEditor().getType(editingData.getSpawnerSlot());
+                            SpawnerData spawnerData = editingData.getSpawnerEditing();
                             if (spawnerData.isActive())
                                 spawnerData.setActive(false);
                             else
                                 spawnerData.setActive(true);
-                            instance.getSpawnerEditor().overview(player, editingData.getSpawnerSlot());
+                            instance.getSpawnerEditor().overview(player, editingData.getSpawnerEditing());
                         } else {
                             instance.getSpawnerEditor().destroy(player);
                         }
@@ -171,11 +171,11 @@ public class InventoryListeners implements Listener {
                     else if (event.getSlot() == 43)
                         instance.getSpawnerEditor().editor(player, EditingMenu.COMMAND);
                 } else if (editingMenu == EditingMenu.PARTICLE) {
-                    SpawnerData spawnerData = instance.getSpawnerEditor().getType(editingData.getSpawnerSlot());
+                    SpawnerData spawnerData = editingData.getSpawnerEditing();
                     event.setCancelled(true);
 
                     if (event.getCurrentItem().getItemMeta().getDisplayName().equals(instance.getLocale().getMessage("general.nametag.back")))
-                        instance.getSpawnerEditor().overview(player, editingData.getSpawnerSlot());
+                        instance.getSpawnerEditor().overview(player, editingData.getSpawnerEditing());
                     else if (event.getSlot() == 20) {
                         ParticleType currentParticleType;
                         if (event.isLeftClick()) {
@@ -256,9 +256,9 @@ public class InventoryListeners implements Listener {
 
                 } else if (editingMenu == EditingMenu.GENERAL) {
                     if (event.getInventory().equals(player.getOpenInventory().getTopInventory())) {
-                        SpawnerData spawnerData = instance.getSpawnerEditor().getType(editingData.getSpawnerSlot());
+                        SpawnerData spawnerData = editingData.getSpawnerEditing();
                         if (event.getCurrentItem().getItemMeta().getDisplayName().equals(instance.getLocale().getMessage("general.nametag.back")))
-                            instance.getSpawnerEditor().overview(player, editingData.getSpawnerSlot());
+                            instance.getSpawnerEditor().overview(player, editingData.getSpawnerEditing());
                         else if (event.getSlot() == 13) {
                             if (spawnerData.isUpgradeable())
                                 spawnerData.setUpgradeable(false);
@@ -297,7 +297,7 @@ public class InventoryListeners implements Listener {
                         if ((event.getSlot() < 10 || event.getSlot() > 25) || event.getSlot() == 17 || event.getSlot() == 18) {
                             event.setCancelled(true);
                             if (event.getCurrentItem().getItemMeta().getDisplayName().equals(instance.getLocale().getMessage("general.nametag.back")))
-                                instance.getSpawnerEditor().overview(player, editingData.getSpawnerSlot());
+                                instance.getSpawnerEditor().overview(player, editingData.getSpawnerEditing());
                             else if (event.getCurrentItem().getItemMeta().getDisplayName().equals(TextComponent.formatText("&6Add Command")))
                                 instance.getSpawnerEditor().createCommand(player);
                             else if (event.getCurrentItem().getItemMeta().getDisplayName().equals(TextComponent.formatText("&6Add entity")))
@@ -316,7 +316,7 @@ public class InventoryListeners implements Listener {
                     player.closeInventory();
                 } else if (event.getCurrentItem().getItemMeta().getDisplayName().equals(TextComponent.formatText("&9&lNew Spawner"))) {
                     instance.getSpawnerEditor().getEditingData(player).setNewId(instance.getSpawnerManager().getAllSpawnerData().size() - 1);
-                    instance.getSpawnerEditor().overview(player, 0);
+                    instance.getSpawnerEditor().overview(player, null);
                 } else if (event.getCurrentItem().getItemMeta().getDisplayName().equals(instance.getLocale().getMessage("general.nametag.back"))) {
                     if (page != 1) {
                         instance.getSpawnerEditor().openSpawnerSelector(player, page - 1);
@@ -324,11 +324,8 @@ public class InventoryListeners implements Listener {
                 } else if (event.getCurrentItem().getItemMeta().getDisplayName().equals(instance.getLocale().getMessage("general.nametag.next"))) {
                     instance.getSpawnerEditor().openSpawnerSelector(player, page + 1);
                 } else if (!event.getCurrentItem().getType().name().contains("GLASS_PANE")) {
-                    String idd = event.getCurrentItem().getItemMeta().getLore().get(1);
-                    idd = idd.replace("§", "").replace(";", "");
-                    int id = Integer.parseInt(idd);
                     //if (e.getClick().isLeftClick())
-                    instance.getSpawnerEditor().overview(player, id);
+                    instance.getSpawnerEditor().overview(player, instance.getSpawnerEditor().getType(event.getCurrentItem().getItemMeta().getDisplayName()));
                 }
             } else if (event.getInventory().getTitle().equals(instance.getLocale().getMessage("interface.spawnerstats.title"))) {
                 event.setCancelled(true);

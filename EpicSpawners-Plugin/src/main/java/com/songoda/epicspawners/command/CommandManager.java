@@ -1,7 +1,6 @@
 package com.songoda.epicspawners.command;
 
 import com.songoda.arconix.api.methods.formatting.TextComponent;
-import com.songoda.arconix.plugin.Arconix;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.command.commands.*;
 import org.bukkit.command.Command;
@@ -69,11 +68,11 @@ public class CommandManager implements CommandExecutor {
             return;
         }
         if (command.getPermissionNode() == null || sender.hasPermission(command.getPermissionNode())) {
-             AbstractCommand.ReturnType returnType = command.runCommand(instance, sender, strings);
-             if (returnType == AbstractCommand.ReturnType.SYNTAX_ERROR) {
-                 sender.sendMessage(instance.getReferences().getPrefix() + TextComponent.formatText("&cInvalid Syntax!"));
-                 sender.sendMessage(instance.getReferences().getPrefix() + TextComponent.formatText("&7The valid syntax is: &6" + command.getSyntax() + "&7."));
-             }
+            AbstractCommand.ReturnType returnType = command.runCommand(instance, sender, strings);
+            if (returnType == AbstractCommand.ReturnType.SYNTAX_ERROR) {
+                sender.sendMessage(instance.getReferences().getPrefix() + TextComponent.formatText("&cInvalid Syntax!"));
+                sender.sendMessage(instance.getReferences().getPrefix() + TextComponent.formatText("&7The valid syntax is: &6" + command.getSyntax() + "&7."));
+            }
             return;
         }
         sender.sendMessage(instance.getReferences().getPrefix() + instance.getLocale().getMessage("event.general.nopermission"));

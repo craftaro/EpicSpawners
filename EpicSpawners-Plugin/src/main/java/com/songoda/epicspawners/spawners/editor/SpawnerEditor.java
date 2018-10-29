@@ -99,38 +99,28 @@ public class SpawnerEditor {
 
             int max22 = max2;
             int place = 10;
-            int dis = start + 1;
-            if (start != 0) dis--;
 
             for (SpawnerData spawnerData : entities) {
                 if (place == 17 || place == (max22 - 18)) place++;
 
                 ItemStack it = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
-                ItemStack item = EpicSpawnersPlugin.getInstance().getHeads().addTexture(it, spawnerData);
+                ItemStack item = instance.getHeads().addTexture(it, spawnerData);
                 if (spawnerData.getDisplayItem() != null) {
                     item.setType(spawnerData.getDisplayItem());
                 }
 
                 ItemMeta meta = item.getItemMeta();
 
-
-                StringBuilder hidden = new StringBuilder();
-                for (char c : String.valueOf(dis).toCharArray()) hidden.append(";").append(c);
-                String disStr = hidden.toString();
-
-
                 String name = Methods.compileName(spawnerData, 1, false);
                 List<String> lore = new ArrayList<>();
                 lore.add(TextComponent.formatText("&7Click to &a&lEdit&7."));
-                lore.add(TextComponent.convertToInvisibleString(disStr));
                 meta.setLore(lore);
-                meta.setDisplayName(name);
+                meta.setDisplayName(TextComponent.convertToInvisibleString(spawnerData.getDisplayName() + ":") + name);
                 item.setItemMeta(meta);
 
                 inventory.setItem(place, item);
 
                 place++;
-                dis++;
             }
 
             ItemStack glass = Methods.getGlass();
@@ -183,26 +173,24 @@ public class SpawnerEditor {
         }
     }
 
-    public void overview(Player player, int id) {
+    public void overview(Player player, SpawnerData spawnerData) {
         try {
-            EpicSpawnersPlugin instance = EpicSpawnersPlugin.getInstance();
             EditingData editingData = getEditingData(player);
 
             int csp = 1;
-            for (SpawnerData spawnerData : instance.getSpawnerManager().getAllSpawnerData()) {
-                if (spawnerData.getIdentifyingName().toLowerCase().contains("custom"))
+            for (SpawnerData spawnerData2 : instance.getSpawnerManager().getAllSpawnerData()) {
+                if (spawnerData2.getIdentifyingName().toLowerCase().contains("custom"))
                     csp++;
             }
             String type = "Custom " + (editingData.getNewSpawnerName() != null ? editingData.getNewSpawnerName() : csp);
 
-            if (id != 0)
-                type = getType(id).getIdentifyingName();
+            if (spawnerData != null)
+                type = spawnerData.getIdentifyingName();
             else
                 editingData.setNewSpawnerName(type);
 
             String name;
 
-            SpawnerData spawnerData;
             if (!instance.getSpawnerManager().isSpawnerData(type.toLowerCase())) {
                 spawnerData = new ESpawnerData(0, type, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
                 ((ESpawnerData) spawnerData).addDefaultConditions();
@@ -274,7 +262,7 @@ public class SpawnerEditor {
             ArrayList<String> lore = new ArrayList<>();
             lore.add(TextComponent.formatText("&7Left-Click to &9Change Spawner Name&7."));
             lore.add(TextComponent.formatText("&7Middle-Click to &bChange Spawner Display Item&7."));
-            if (EpicSpawnersPlugin.getInstance().getConfig().getBoolean("settings.beta-features"))
+            if (instance.getConfig().getBoolean("settings.beta-features"))
                 lore.add(TextComponent.formatText("&7Right-Click to &9Change Spawner Head&7."));
             lore.add(TextComponent.formatText("&6-----------------------------"));
 
@@ -331,7 +319,7 @@ public class SpawnerEditor {
 
             ItemStack it2 = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
 
-            ItemStack entity = EpicSpawnersPlugin.getInstance().getHeads().addTexture(it2, instance.getSpawnerManager().getSpawnerData("omni"));
+            ItemStack entity = instance.getHeads().addTexture(it2, instance.getSpawnerManager().getSpawnerData("omni"));
             ItemMeta entitymeta = entity.getItemMeta();
             entitymeta.setDisplayName(TextComponent.formatText("&a&lEntity Settings"));
             entity.setItemMeta(entitymeta);
@@ -363,27 +351,18 @@ public class SpawnerEditor {
 
             player.openInventory(i);
             editingData.setMenu(EditingMenu.OVERVIEW);
-            if (editingData.getNewId() != -1)
-                id = editingData.getNewId();
-            editingData.setSpawnerSlot(id);
+            editingData.setSpawnerEditing(spawnerData);
             editingData.setNewId(-1);
         } catch (Exception e) {
             Debugger.runReport(e);
         }
     }
 
-    public SpawnerData getType(int id) {
-        SpawnerData type = EpicSpawnersPlugin.getInstance().getSpawnerManager().getSpawnerData("pig");
+    public SpawnerData getType(String name) {
+        SpawnerData type = instance.getSpawnerManager().getSpawnerData("pig");
         try {
-            if (id >= 32 && id <= 61) id++;
-            int num = 1;
-            for (SpawnerData spawnerData : EpicSpawnersPlugin.getInstance().getSpawnerManager().getRegisteredSpawnerData().values()) {
-                if (spawnerData.getIdentifyingName().toLowerCase().equals("omni")) continue;
-                if (num == id) {
-                    return spawnerData;
-                }
-                num++;
-            }
+            name = name.replace(String.valueOf(ChatColor.COLOR_CHAR), "").split(":")[0];
+            return instance.getSpawnerManager().getSpawnerData(name);
         } catch (Exception e) {
             Debugger.runReport(e);
         }
@@ -392,7 +371,7 @@ public class SpawnerEditor {
 
     public void particleEditor(Player player) {
         EditingData editingData = userEditingData.get(player.getUniqueId());
-        SpawnerData spawnerData = getType(editingData.getSpawnerSlot());
+        SpawnerData spawnerData = editingData.getSpawnerEditing();
 
         String name = Methods.compileName(spawnerData, 1, false);
         Inventory i = Bukkit.createInventory(null, 45, TextComponent.formatTitle(TextComponent.formatText(name + " &8Particle &8Settings.")));
@@ -475,7 +454,7 @@ public class SpawnerEditor {
     public void editor(Player player, EditingMenu editingMenu) {
         try {
             EditingData editingData = userEditingData.get(player.getUniqueId());
-            SpawnerData spawnerData = getType(editingData.getSpawnerSlot());
+            SpawnerData spawnerData = editingData.getSpawnerEditing();
 
             String name = Methods.compileName(spawnerData, 1, false);
             Inventory i = Bukkit.createInventory(null, 54, TextComponent.formatTitle(TextComponent.formatText(name + "&8 " + editingMenu + " &8Settings.")));
@@ -500,7 +479,7 @@ public class SpawnerEditor {
                     i.setItem(num, new ItemStack(spawnerData.getBlocks().get(spot)));
                 } else if (spawnerData.getEntities().size() >= spot + 1 && editingMenu == EditingMenu.ENTITY && spawnerData.getEntities().get(spot) != EntityType.GIANT) {
                     ItemStack it = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
-                    ItemStack item = EpicSpawnersPlugin.getInstance().getHeads().addTexture(it,
+                    ItemStack item = instance.getHeads().addTexture(it,
                             instance.getSpawnerManager().getSpawnerData(spawnerData.getEntities().get(spot)));
                     ItemMeta meta = item.getItemMeta();
                     meta.setDisplayName(TextComponent.formatText("&e" + Methods.getTypeFromString(spawnerData.getEntities().get(spot).name())));
@@ -600,10 +579,10 @@ public class SpawnerEditor {
         }
     }
 
-    public void basicSettings(Player p) {
+    public void basicSettings(Player player) {
         try {
-            EditingData editingData = userEditingData.get(p.getUniqueId());
-            SpawnerData spawnerData = getType(editingData.getSpawnerSlot());
+            EditingData editingData = userEditingData.get(player.getUniqueId());
+            SpawnerData spawnerData = editingData.getSpawnerEditing();
             String name = Methods.compileName(spawnerData, 1, false);
             Inventory i = Bukkit.createInventory(null, 45, TextComponent.formatTitle(TextComponent.formatText(name + " &8Settings.")));
             int num = 0;
@@ -756,52 +735,52 @@ public class SpawnerEditor {
             item2.setItemMeta(item2meta);
             i.setItem(40, item2);
 
-            p.openInventory(i);
+            player.openInventory(i);
             editingData.setMenu(EditingMenu.GENERAL);
         } catch (Exception e) {
             Debugger.runReport(e);
         }
     }
 
-    public void alterSetting(Player p, ChatListeners.EditingType type) {
+    public void alterSetting(Player player, ChatListeners.EditingType type) {
         try {
-            EditingData editingData = userEditingData.get(p.getUniqueId());
-            SpawnerData entity = getType(editingData.getSpawnerSlot());
-            p.sendMessage("");
+            EditingData editingData = userEditingData.get(player.getUniqueId());
+            SpawnerData entity = editingData.getSpawnerEditing();
+            player.sendMessage("");
             switch (type) {
                 case SHOP_PRICE:
-                    p.sendMessage(TextComponent.formatText("&7Enter a sale price for &6" + Methods.getTypeFromString(entity.getIdentifyingName()) + "&7."));
-                    p.sendMessage(TextComponent.formatText("&7Example: &619.99&7."));
+                    player.sendMessage(TextComponent.formatText("&7Enter a sale price for &6" + Methods.getTypeFromString(entity.getIdentifyingName()) + "&7."));
+                    player.sendMessage(TextComponent.formatText("&7Example: &619.99&7."));
                     break;
                 case CUSTOM_ECO_COST:
-                    p.sendMessage(TextComponent.formatText("&7Enter a custom eco cost for " + Methods.getTypeFromString(entity.getIdentifyingName()) + "&7."));
-                    p.sendMessage(TextComponent.formatText("&7Use &60 &7to use the default cost."));
-                    p.sendMessage(TextComponent.formatText("&7Example: &619.99&7."));
+                    player.sendMessage(TextComponent.formatText("&7Enter a custom eco cost for " + Methods.getTypeFromString(entity.getIdentifyingName()) + "&7."));
+                    player.sendMessage(TextComponent.formatText("&7Use &60 &7to use the default cost."));
+                    player.sendMessage(TextComponent.formatText("&7Example: &619.99&7."));
                     break;
                 case CUSTOM_XP_COST:
-                    p.sendMessage(TextComponent.formatText("&7Enter a custom xp cost for " + Methods.getTypeFromString(entity.getIdentifyingName()) + "&7."));
-                    p.sendMessage(TextComponent.formatText("&7Use &60 &7to use the default cost."));
-                    p.sendMessage(TextComponent.formatText("&7Example: &625&7."));
+                    player.sendMessage(TextComponent.formatText("&7Enter a custom xp cost for " + Methods.getTypeFromString(entity.getIdentifyingName()) + "&7."));
+                    player.sendMessage(TextComponent.formatText("&7Use &60 &7to use the default cost."));
+                    player.sendMessage(TextComponent.formatText("&7Example: &625&7."));
                     break;
                 case PICKUP_COST:
-                    p.sendMessage(TextComponent.formatText("&7Enter a pickup cost for " + Methods.getTypeFromString(entity.getIdentifyingName()) + "&7."));
-                    p.sendMessage(TextComponent.formatText("&7Use &60 &7to disable."));
-                    p.sendMessage(TextComponent.formatText("&7Example: &719.99&6."));
-                    p.sendMessage(TextComponent.formatText("&7Example: &625&7."));
+                    player.sendMessage(TextComponent.formatText("&7Enter a pickup cost for " + Methods.getTypeFromString(entity.getIdentifyingName()) + "&7."));
+                    player.sendMessage(TextComponent.formatText("&7Use &60 &7to disable."));
+                    player.sendMessage(TextComponent.formatText("&7Example: &719.99&6."));
+                    player.sendMessage(TextComponent.formatText("&7Example: &625&7."));
                     break;
                 case CUSTOM_GOAL:
-                    p.sendMessage(TextComponent.formatText("&7Enter a custom goal for " + Methods.getTypeFromString(entity.getIdentifyingName()) + "&7."));
-                    p.sendMessage(TextComponent.formatText("&7Use &60 &7to use the default price."));
-                    p.sendMessage(TextComponent.formatText("&7Example: &35&6."));
+                    player.sendMessage(TextComponent.formatText("&7Enter a custom goal for " + Methods.getTypeFromString(entity.getIdentifyingName()) + "&7."));
+                    player.sendMessage(TextComponent.formatText("&7Use &60 &7to use the default price."));
+                    player.sendMessage(TextComponent.formatText("&7Example: &35&6."));
                     break;
                 case TICK_RATE:
-                    p.sendMessage(TextComponent.formatText("&7Enter a tick rate min and max for " + Methods.getTypeFromString(entity.getIdentifyingName()) + "&7."));
-                    p.sendMessage(TextComponent.formatText("&7Example: &3800:200&6."));
+                    player.sendMessage(TextComponent.formatText("&7Enter a tick rate min and max for " + Methods.getTypeFromString(entity.getIdentifyingName()) + "&7."));
+                    player.sendMessage(TextComponent.formatText("&7Example: &3800:200&6."));
                     break;
             }
-            p.sendMessage("");
-            EpicSpawnersPlugin.getInstance().getChatListeners().addToEditor(p, type);
-            p.closeInventory();
+            player.sendMessage("");
+            instance.getChatListeners().addToEditor(player, type);
+            player.closeInventory();
         } catch (Exception e) {
             Debugger.runReport(e);
         }
@@ -831,7 +810,7 @@ public class SpawnerEditor {
     public void save(Player p, List<ItemStack> items) {
         try {
             EditingData editingData = userEditingData.get(p.getUniqueId());
-            SpawnerData spawnerData = getType(editingData.getSpawnerSlot());
+            SpawnerData spawnerData = editingData.getSpawnerEditing();
             if (editingData.getMenu() == EditingMenu.ITEM) {
                 spawnerData.setItems(items);
             } else if (editingData.getMenu() == EditingMenu.DROPS) {
@@ -859,7 +838,7 @@ public class SpawnerEditor {
                 }
                 spawnerData.setCommands(list);
             }
-            p.sendMessage(TextComponent.formatText(EpicSpawnersPlugin.getInstance().getReferences().getPrefix() + "&7Spawner Saved."));
+            p.sendMessage(TextComponent.formatText(instance.getReferences().getPrefix() + "&7Spawner Saved."));
             spawnerData.reloadSpawnMethods();
         } catch (Exception e) {
             Debugger.runReport(e);
@@ -879,7 +858,7 @@ public class SpawnerEditor {
             p.sendMessage(TextComponent.formatText("&6" + list));
             p.sendMessage("Enter an entity Type.");
             p.sendMessage("");
-            EpicSpawnersPlugin.getInstance().getChatListeners().addToEditor(p, ChatListeners.EditingType.ADD_ENTITY);
+            instance.getChatListeners().addToEditor(p, ChatListeners.EditingType.ADD_ENTITY);
             p.closeInventory();
         } catch (Exception e) {
             Debugger.runReport(e);
@@ -890,10 +869,10 @@ public class SpawnerEditor {
         try {
             EditingData editingData = userEditingData.get(p.getUniqueId());
             p.sendMessage("");
-            p.sendMessage(TextComponent.formatText("&cAre you sure you want to destroy &6" + getType(editingData.getSpawnerSlot()).getIdentifyingName() + "&7."));
+            p.sendMessage(TextComponent.formatText("&cAre you sure you want to destroy &6" + editingData.getSpawnerEditing().getIdentifyingName() + "&7."));
             p.sendMessage(TextComponent.formatText("&7Type &l&6CONFIRM &7to continue. Otherwise Type anything else to cancel."));
             p.sendMessage("");
-            EpicSpawnersPlugin.getInstance().getChatListeners().addToEditor(p, ChatListeners.EditingType.DESTROY);
+            instance.getChatListeners().addToEditor(p, ChatListeners.EditingType.DESTROY);
             p.closeInventory();
         } catch (Exception e) {
             Debugger.runReport(e);
@@ -902,15 +881,15 @@ public class SpawnerEditor {
 
     public void destroyFinal(Player p, String msg) {
         try {
-            int type = userEditingData.get(p.getUniqueId()).getSpawnerSlot();
+            EditingData editingData = userEditingData.get(p.getUniqueId());
 
             if (msg.toLowerCase().equals("confirm")) {
-                p.sendMessage(TextComponent.formatText("&6" + getType(type).getIdentifyingName() + " Spawner &7 has been destroyed successfully"));
-                EpicSpawnersPlugin.getInstance().getSpawnerManager().removeSpawnerData(getType(type).getIdentifyingName());
+                p.sendMessage(TextComponent.formatText("&6" + editingData.getSpawnerEditing().getIdentifyingName() + " Spawner &7 has been destroyed successfully"));
+                instance.getSpawnerManager().removeSpawnerData(editingData.getSpawnerEditing().getIdentifyingName());
                 openSpawnerSelector(p, 1);
             } else {
                 p.sendMessage(TextComponent.formatText("&7Action canceled..."));
-                overview(p, type);
+                overview(p, editingData.getSpawnerEditing());
             }
         } catch (Exception e) {
             Debugger.runReport(e);
@@ -921,13 +900,12 @@ public class SpawnerEditor {
         try {
             EditingData editingData = userEditingData.get(p.getUniqueId());
             if (editingData.getMenu() == EditingMenu.COMMAND) {
-                int type = editingData.getSpawnerSlot();
-                SpawnerData spawnerData = getType(type);
+                SpawnerData spawnerData = editingData.getSpawnerEditing();
 
                 p.sendMessage("");
                 p.sendMessage(TextComponent.formatText("&7Enter a spawn limit for &6" + Methods.getTypeFromString(spawnerData.getIdentifyingName()) + "&7."));
                 p.sendMessage("");
-                EpicSpawnersPlugin.getInstance().getChatListeners().addToEditor(p, ChatListeners.EditingType.SPAWN_LIMIT);
+                instance.getChatListeners().addToEditor(p, ChatListeners.EditingType.SPAWN_LIMIT);
                 p.closeInventory();
             }
         } catch (Exception e) {
@@ -945,7 +923,7 @@ public class SpawnerEditor {
             p.sendMessage(TextComponent.formatText("&7do not include a &a/"));
             p.sendMessage("");
 
-            EpicSpawnersPlugin.getInstance().getChatListeners().addToEditor(p, ChatListeners.EditingType.COMMAND);
+            instance.getChatListeners().addToEditor(p, ChatListeners.EditingType.COMMAND);
             p.closeInventory();
         } catch (Exception e) {
             Debugger.runReport(e);
@@ -955,8 +933,7 @@ public class SpawnerEditor {
     public void addCommand(Player p, String cmd) {
         try {
             EditingData editingData = userEditingData.get(p.getUniqueId());
-            int type = editingData.getSpawnerSlot();
-            SpawnerData spawnerData = getType(type);
+            SpawnerData spawnerData = editingData.getSpawnerEditing();
             List<String> commands = new ArrayList<>(spawnerData.getCommands());
             commands.add(cmd);
             spawnerData.setCommands(commands);
@@ -970,13 +947,12 @@ public class SpawnerEditor {
     public void editSpawnerName(Player p) {
         try {
             EditingData editingData = userEditingData.get(p.getUniqueId());
-            int type = editingData.getSpawnerSlot();
-            SpawnerData spawnerData = getType(type);
+            SpawnerData spawnerData = editingData.getSpawnerEditing();
 
             p.sendMessage("");
             p.sendMessage(TextComponent.formatText("&7Enter a display name for &6" + Methods.getTypeFromString(spawnerData.getIdentifyingName()) + "&7."));
             p.sendMessage("");
-            EpicSpawnersPlugin.getInstance().getChatListeners().addToEditor(p, ChatListeners.EditingType.NAME);
+            instance.getChatListeners().addToEditor(p, ChatListeners.EditingType.NAME);
             p.closeInventory();
         } catch (Exception e) {
             Debugger.runReport(e);
@@ -986,10 +962,9 @@ public class SpawnerEditor {
     public void saveSpawnerName(Player p, String name) {
         try {
             EditingData editingData = userEditingData.get(p.getUniqueId());
-            int type = editingData.getSpawnerSlot();
-            SpawnerData spawnerData = getType(type);
+            SpawnerData spawnerData = editingData.getSpawnerEditing();
             spawnerData.setDisplayName(name);
-            overview(p, editingData.getSpawnerSlot());
+            overview(p, spawnerData);
         } catch (Exception e) {
             Debugger.runReport(e);
         }
@@ -998,8 +973,7 @@ public class SpawnerEditor {
     public void addEntity(Player p, String ent) {
         try {
             EditingData editingData = userEditingData.get(p.getUniqueId());
-            int type = editingData.getSpawnerSlot();
-            SpawnerData spawnerData = getType(type);
+            SpawnerData spawnerData = editingData.getSpawnerEditing();
             List<EntityType> entities = new ArrayList<>(spawnerData.getEntities());
             entities.add(EntityType.valueOf(ent));
             spawnerData.setEntities(entities);

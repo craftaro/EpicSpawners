@@ -49,6 +49,7 @@ public class ESpawner implements Spawner {
     //ToDo: Use this for all spawner things (Like items, commands and what not) instead of the old shit
     //ToDO: There is a weird error that is triggered when a spawner is not found in the config.
     private Map<Location, Date> lastSpawns = new HashMap<>();
+    private Map<UUID, Integer> boostAmt = new HashMap<>();
 
     public ESpawner(Location location) {
         this.location = location;
@@ -138,8 +139,6 @@ public class ESpawner implements Spawner {
         }
         return multi;
     }
-
-    private Map<UUID, Integer> boostAmt = new HashMap<>();
 
     public void playerBoost(Player player) {
         try {
@@ -329,7 +328,7 @@ public class ESpawner implements Spawner {
         try {
             EpicSpawnersPlugin instance = EpicSpawnersPlugin.getInstance();
             if (!player.hasPermission("epicspawners.overview")) return;
-            new GUISpawnerOverview(instance,this, player).openFor(player);
+            new GUISpawnerOverview(instance, this, player).openFor(player);
         } catch (Exception e) {
             Debugger.runReport(e);
         }
@@ -577,7 +576,7 @@ public class ESpawner implements Spawner {
                     && player.getItemInHand() != null
                     && player.getItemInHand().hasItemMeta()
                     && player.getItemInHand().getItemMeta().hasEnchant(Enchantment.SILK_TOUCH)
-                    && player.hasPermission("epicspawners.silkdrop." + stack.getSpawnerData().getIdentifyingName().replace(' ','_'))
+                    && player.hasPermission("epicspawners.silkdrop." + stack.getSpawnerData().getIdentifyingName().replace(' ', '_'))
                     || player.hasPermission("epicspawners.no-silk-drop")) {
 
                 int ch = Integer.parseInt(instance.getConfig().getString((placedBy != null
@@ -854,7 +853,7 @@ public class ESpawner implements Spawner {
             if (getSpawnerDataCount() == 0) return 0;
             int delay = (rand.nextInt(min, max + 1) / getSpawnerDataCount()) + extraTicks;
 
-                getCreatureSpawner().setDelay(delay);
+            getCreatureSpawner().setDelay(delay);
             getCreatureSpawner().update();
 
             return delay;

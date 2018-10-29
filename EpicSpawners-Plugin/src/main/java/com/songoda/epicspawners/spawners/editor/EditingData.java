@@ -1,9 +1,12 @@
 package com.songoda.epicspawners.spawners.editor;
 
+import com.songoda.epicspawners.api.spawner.SpawnerData;
+
 public class EditingData {
 
     private EditingMenu menu = EditingMenu.NOT_IN;
-    private int spawnerSlot = 0, newId = -1;
+    private int newId = -1;
+    private SpawnerData spawnerEditing = null;
 
     private String newSpawnerName = null;
 
@@ -15,12 +18,12 @@ public class EditingData {
         this.menu = menu;
     }
 
-    public int getSpawnerSlot() {
-        return spawnerSlot;
+    public SpawnerData getSpawnerEditing() {
+        return spawnerEditing;
     }
 
-    public void setSpawnerSlot(int spawnerSlot) {
-        this.spawnerSlot = spawnerSlot;
+    public void setSpawnerEditing(SpawnerData spawnerEditing) {
+        this.spawnerEditing = spawnerEditing;
     }
 
     public int getNewId() {

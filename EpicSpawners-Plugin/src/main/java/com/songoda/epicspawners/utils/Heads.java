@@ -1,7 +1,6 @@
 package com.songoda.epicspawners.utils;
 
 import com.songoda.arconix.plugin.Arconix;
-import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.api.spawner.SpawnerData;
 import org.bukkit.inventory.ItemStack;
 

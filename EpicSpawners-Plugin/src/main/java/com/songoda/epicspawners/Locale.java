@@ -150,8 +150,8 @@ public class Locale {
     /**
      * Save a default locale file from the project source directory, to the locale folder
      *
-     * @param in file to save
-     * @param fileName   the name of the file to save
+     * @param in       file to save
+     * @param fileName the name of the file to save
      * @return true if the operation was successful, false otherwise
      */
     public static boolean saveDefaultLocale(InputStream in, String fileName) {

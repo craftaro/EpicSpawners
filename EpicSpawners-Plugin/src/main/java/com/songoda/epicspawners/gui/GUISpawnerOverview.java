@@ -1,11 +1,5 @@
 package com.songoda.epicspawners.gui;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import com.songoda.arconix.api.methods.formatting.TextComponent;
 import com.songoda.arconix.api.methods.formatting.TimeComponent;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
@@ -17,7 +11,6 @@ import com.songoda.epicspawners.player.MenuType;
 import com.songoda.epicspawners.spawners.spawner.ESpawner;
 import com.songoda.epicspawners.utils.Debugger;
 import com.songoda.epicspawners.utils.Methods;
-
 import com.songoda.epicspawners.utils.gui.AbstractGUI;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -26,6 +19,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class GUISpawnerOverview extends AbstractGUI {
 
@@ -165,8 +164,8 @@ public class GUISpawnerOverview extends AbstractGUI {
         itemmetaECO.setLore(loreECO);
         itemECO.setItemMeta(itemmetaECO);
 
-        for (int i = 0; i < 27; inventory.setItem(i++, GLASS));
-        
+        for (int i = 0; i < 27; inventory.setItem(i++, GLASS)) ;
+
         inventory.setItem(13, item);
         inventory.setItem(0, BACKGROUND_GLASS_TYPE_2);
         inventory.setItem(1, BACKGROUND_GLASS_TYPE_2);

@@ -72,9 +72,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.function.Supplier;
 
@@ -393,29 +390,29 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
 
     private void update() {
         try {
-        URL url = new URL("http://update.songoda.com/index.php?plugin=" + getDescription().getName() + "&version=" + getDescription().getVersion());
-        URLConnection urlConnection = url.openConnection();
-        InputStream is = urlConnection.getInputStream();
-        InputStreamReader isr = new InputStreamReader(is);
+            URL url = new URL("http://update.songoda.com/index.php?plugin=" + getDescription().getName() + "&version=" + getDescription().getVersion());
+            URLConnection urlConnection = url.openConnection();
+            InputStream is = urlConnection.getInputStream();
+            InputStreamReader isr = new InputStreamReader(is);
 
-        int numCharsRead;
-        char[] charArray = new char[1024];
-        StringBuffer sb = new StringBuffer();
-        while ((numCharsRead = isr.read(charArray)) > 0) {
-            sb.append(charArray, 0, numCharsRead);
-        }
-        String jsonString = sb.toString();
-        JSONObject json = (JSONObject) new JSONParser().parse(jsonString);
+            int numCharsRead;
+            char[] charArray = new char[1024];
+            StringBuffer sb = new StringBuffer();
+            while ((numCharsRead = isr.read(charArray)) > 0) {
+                sb.append(charArray, 0, numCharsRead);
+            }
+            String jsonString = sb.toString();
+            JSONObject json = (JSONObject) new JSONParser().parse(jsonString);
 
             JSONArray files = (JSONArray) json.get("neededFiles");
             for (Object o : files) {
                 JSONObject file = (JSONObject) o;
 
-                switch ((String)file.get("type")) {
+                switch ((String) file.get("type")) {
                     case "locale":
-                    InputStream in = new URL((String) file.get("link")).openStream();
-                    Locale.saveDefaultLocale(in, (String) file.get("name"));
-                    break;
+                        InputStream in = new URL((String) file.get("link")).openStream();
+                        Locale.saveDefaultLocale(in, (String) file.get("name"));
+                        break;
                 }
             }
         } catch (Exception e) {
@@ -636,11 +633,8 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         }
 
         spawnerConfig.addDefault("Entities." + type + ".Spawn-Block", spawnBlock);
-
         spawnerConfig.addDefault("Entities." + type + ".Allowed", true);
-
         spawnerConfig.addDefault("Entities." + type + ".Spawn-On-Fire", false);
-
         spawnerConfig.addDefault("Entities." + type + ".Upgradable", true);
         spawnerConfig.addDefault("Entities." + type + ".Convertible", true);
         spawnerConfig.addDefault("Entities." + type + ".Convert-Ratio", "45%");
@@ -650,15 +644,12 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         spawnerConfig.addDefault("Entities." + type + ".Custom-ECO-Cost", 0);
         spawnerConfig.addDefault("Entities." + type + ".Custom-XP-Cost", 0);
         spawnerConfig.addDefault("Entities." + type + ".Tick-Rate", "800:200");
-
         spawnerConfig.addDefault("Entities." + type + ".Spawn-Effect", "NONE");
         spawnerConfig.addDefault("Entities." + type + ".Spawn-Effect-Particle", "REDSTONE");
         spawnerConfig.addDefault("Entities." + type + ".Entity-Spawn-Particle", "SMOKE");
         spawnerConfig.addDefault("Entities." + type + ".Spawner-Spawn-Particle", "FIRE");
         spawnerConfig.addDefault("Entities." + type + ".Particle-Amount", "NORMAL");
-
         spawnerConfig.addDefault("Entities." + type + ".Particle-Effect-Boosted-Only", true);
-
 
         if (entityType == EntityType.SLIME) {
             spawnerConfig.addDefault("Entities." + type + ".Conditions.Biomes", Biome.SWAMP);

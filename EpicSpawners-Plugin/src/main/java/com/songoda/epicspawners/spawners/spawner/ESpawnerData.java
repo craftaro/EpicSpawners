@@ -85,14 +85,10 @@ public class ESpawnerData implements SpawnerData {
 
     public void reloadSpawnMethods() {
         spawnOptions.clear();
-        if (!entities.isEmpty())
-            spawnOptions.add(new SpawnOptionEntity(entities));
-        if (!blocks.isEmpty())
-            spawnOptions.add(new SpawnOptionBlock(blocks));
-        if (!items.isEmpty())
-            spawnOptions.add(new SpawnOptionItem(items));
-        if (!commands.isEmpty())
-            spawnOptions.add(new SpawnOptionCommand(commands));
+        if (!entities.isEmpty()) spawnOptions.add(new SpawnOptionEntity(entities));
+        if (!blocks.isEmpty()) spawnOptions.add(new SpawnOptionBlock(blocks));
+        if (!items.isEmpty()) spawnOptions.add(new SpawnOptionItem(items));
+        if (!commands.isEmpty()) spawnOptions.add(new SpawnOptionCommand(commands));
     }
 
     public void spawn(Spawner spawner, SpawnerStack stack) {

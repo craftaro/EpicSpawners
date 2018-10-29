@@ -21,7 +21,7 @@ public class PlayerData {
 
     private int currentPage = 0;
 
-    public PlayerData(UUID playerUUID) {
+    PlayerData(UUID playerUUID) {
         this.playerUUID = playerUUID;
     }
 

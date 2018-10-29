@@ -10,7 +10,6 @@ import com.songoda.epicspawners.utils.Methods;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Nameable;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -77,7 +76,6 @@ public class AppearanceHandler {
 
     public void updateDisplayItem(Spawner spawner, SpawnerData spawnerData) {
         try {
-
             Location location = spawner.getLocation();
             location.add(.5, -.4, .5);
 
@@ -85,7 +83,7 @@ public class AppearanceHandler {
             if (spawner.getFirstStack().getSpawnerData().getDisplayItem() != null)
                 itemStack.setType(spawnerData.getDisplayItem());
 
-            ArmorStand entity = (ArmorStand)getDisplayItem(spawner);
+            ArmorStand entity = (ArmorStand) getDisplayItem(spawner);
 
             if (entity != null) {
                 if (entity.getHelmet().getType() != itemStack.getType()) {
@@ -129,12 +127,12 @@ public class AppearanceHandler {
         location.add(.5, -.4, .5);
 
         List<Entity> near = (List<Entity>) location.getWorld().getNearbyEntities(location, 2, 4, 2);
-        if (near == null)return null;
+        if (near == null) return null;
         near.removeIf(entity -> (entity == null));
-        near.removeIf(entity -> entity.getCustomName()==null);
+        near.removeIf(entity -> entity.getCustomName() == null);
         near.removeIf(e -> (!(e.getCustomName().equalsIgnoreCase("EpicSpawners-Display"))));
         if (near.size() != 0) {
-            if(Debugger.isDebug()){
+            if (Debugger.isDebug()) {
                 Bukkit.getLogger().info("Songoda-Debug: ArmorStand present");
             }
             return near.get(0);

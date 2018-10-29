@@ -13,7 +13,7 @@ public class CommandSettings extends AbstractCommand {
 
     @Override
     protected ReturnType runCommand(EpicSpawnersPlugin instance, CommandSender sender, String... args) {
-        instance.getSettingsManager().openSettingsManager((Player)sender);
+        instance.getSettingsManager().openSettingsManager((Player) sender);
         return ReturnType.SUCCESS;
     }
 

@@ -9,9 +9,8 @@ import java.util.Map;
 
 public class StorageItem {
 
-    private String key = null;
-
     private final Object object;
+    private String key = null;
 
     public StorageItem(Object object) {
         this.object = object;
@@ -46,17 +45,17 @@ public class StorageItem {
 
     public String asString() {
         if (object == null) return null;
-        return (String)object;
+        return (String) object;
     }
 
     public boolean asBoolean() {
         if (object == null) return false;
-        return (boolean)object;
+        return (boolean) object;
     }
 
     public int asInt() {
         if (object == null) return 0;
-        return (int)object;
+        return (int) object;
     }
 
     public Object asObject() {
@@ -66,7 +65,7 @@ public class StorageItem {
     public List<Material> asMaterialList() {
         List<Material> list = new ArrayList<>();
         if (object == null) return list;
-        String[] stack = ((String)object).split(";");
+        String[] stack = ((String) object).split(";");
         for (String item : stack) {
             if (item.equals("")) continue;
             list.add(Material.valueOf(item));

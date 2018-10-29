@@ -50,7 +50,7 @@ public class ChatListeners implements Listener {
                     }
                     break;
                 case SHOP_PRICE:
-                    SpawnerData spawnerData = instance.getSpawnerEditor().getType(instance.getSpawnerEditor().getEditingData(player).getSpawnerSlot());
+                    SpawnerData spawnerData = instance.getSpawnerEditor().getEditingData(player).getSpawnerEditing();
                     if (AMath.isInt(e.getMessage())) {
                         spawnerData.setShopPrice(Double.parseDouble(e.getMessage()));
                     } else {
@@ -59,12 +59,12 @@ public class ChatListeners implements Listener {
                     instance.getSpawnerEditor().basicSettings(player);
                     break;
                 case TICK_RATE:
-                    instance.getSpawnerEditor().getType(instance.getSpawnerEditor().getEditingData(player).getSpawnerSlot()).setTickRate(e.getMessage().trim());
+                    instance.getSpawnerEditor().getEditingData(player).getSpawnerEditing().setTickRate(e.getMessage().trim());
                     instance.getSpawnerEditor().basicSettings(player);
                     break;
                 case CUSTOM_ECO_COST:
                     if (AMath.isInt(e.getMessage())) {
-                        instance.getSpawnerEditor().getType(instance.getSpawnerEditor().getEditingData(player).getSpawnerSlot()).setUpgradeCostEconomy(Double.parseDouble(e.getMessage()));
+                        instance.getSpawnerEditor().getEditingData(player).getSpawnerEditing().setUpgradeCostEconomy(Double.parseDouble(e.getMessage()));
                     } else {
                         player.sendMessage(TextComponent.formatText("&CYou must enter a number."));
                     }
@@ -72,7 +72,7 @@ public class ChatListeners implements Listener {
                     break;
                 case CUSTOM_XP_COST:
                     if (AMath.isInt(e.getMessage())) {
-                        instance.getSpawnerEditor().getType(instance.getSpawnerEditor().getEditingData(player).getSpawnerSlot()).setUpgradeCostExperience(Integer.parseInt(e.getMessage()));
+                        instance.getSpawnerEditor().getEditingData(player).getSpawnerEditing().setUpgradeCostExperience(Integer.parseInt(e.getMessage()));
                     } else {
                         player.sendMessage(TextComponent.formatText("&CYou must enter a number."));
                     }
@@ -85,7 +85,7 @@ public class ChatListeners implements Listener {
                     break;
                 case CUSTOM_GOAL:
                     if (AMath.isInt(e.getMessage())) {
-                        instance.getSpawnerEditor().getType(instance.getSpawnerEditor().getEditingData(player).getSpawnerSlot()).setKillGoal(Integer.parseInt(e.getMessage()));
+                        instance.getSpawnerEditor().getEditingData(player).getSpawnerEditing().setKillGoal(Integer.parseInt(e.getMessage()));
                     } else {
                         player.sendMessage(TextComponent.formatText("&CYou must enter a number."));
                     }
@@ -93,7 +93,7 @@ public class ChatListeners implements Listener {
                     break;
                 case PICKUP_COST:
                     if (AMath.isInt(e.getMessage())) {
-                        instance.getSpawnerEditor().getType(instance.getSpawnerEditor().getEditingData(player).getSpawnerSlot()).setPickupCost(Double.parseDouble(e.getMessage()));
+                        instance.getSpawnerEditor().getEditingData(player).getSpawnerEditing().setPickupCost(Double.parseDouble(e.getMessage()));
                     } else {
                         player.sendMessage(TextComponent.formatText("&CYou must enter a number."));
                     }
