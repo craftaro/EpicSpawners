@@ -4,10 +4,7 @@ import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.api.spawner.Spawner;
 import com.songoda.epicspawners.api.spawner.condition.SpawnCondition;
 import org.bukkit.Location;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 
 import java.util.Collection;
 
@@ -37,7 +34,7 @@ public class SpawnConditionNearbyEntities implements SpawnCondition {
         String[] arr = EpicSpawnersPlugin.getInstance().getConfig().getString("Main.Radius To Search Around Spawners").split("x");
 
         Collection<Entity> amt = location.getWorld().getNearbyEntities(location, Integer.parseInt(arr[0]), Integer.parseInt(arr[1]), Integer.parseInt(arr[2]));
-        amt.removeIf(e -> e instanceof Player || !(e instanceof LivingEntity) || e instanceof ArmorStand);
+        amt.removeIf(e -> !(e instanceof LivingEntity) || e.getType() == EntityType.PLAYER || e.getType() == EntityType.ARMOR_STAND);
 
         return amt.size() < max;
     }

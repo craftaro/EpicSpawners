@@ -25,13 +25,13 @@ public class AppearanceHandler {
 
     public AppearanceHandler() {
         try {
-            Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(EpicSpawnersPlugin.getInstance(), this::displayItems, 30L, 30L);
+            Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(EpicSpawnersPlugin.getInstance(), this::displayItems, 100L, 60L);
         } catch (Exception e) {
             Debugger.runReport(e);
         }
     }
 
-    public void displayItems() {
+    private void displayItems() {
         try {
             EpicSpawnersPlugin instance = EpicSpawnersPlugin.getInstance();
 
@@ -128,9 +128,7 @@ public class AppearanceHandler {
 
         List<Entity> near = (List<Entity>) location.getWorld().getNearbyEntities(location, 2, 4, 2);
         if (near == null) return null;
-        near.removeIf(entity -> (entity == null));
-        near.removeIf(entity -> entity.getCustomName() == null);
-        near.removeIf(e -> (!(e.getCustomName().equalsIgnoreCase("EpicSpawners-Display"))));
+        near.removeIf(entity -> entity == null || entity.getType() != EntityType.ARMOR_STAND || entity.getCustomName() == null || !entity.getCustomName().equalsIgnoreCase("EpicSpawners-Display"));
         if (near.size() != 0) {
             if (Debugger.isDebug()) {
                 Bukkit.getLogger().info("Songoda-Debug: ArmorStand present");
