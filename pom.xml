@@ -2,7 +2,7 @@
     <groupId>com.songoda</groupId>
     <artifactId>EpicSpawners</artifactId>
     <modelVersion>4.0.0</modelVersion>
-    <version>5.5.8</version>
+    <version>5.5.10</version>
     <build>
         <defaultGoal>clean package</defaultGoal>
         <plugins>
