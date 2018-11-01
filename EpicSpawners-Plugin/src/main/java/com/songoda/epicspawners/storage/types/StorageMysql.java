@@ -9,6 +9,7 @@ import com.songoda.epicspawners.utils.MySQLDatabase;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.Map;
 public class StorageMysql extends Storage {
 
     private MySQLDatabase database;
+    private static List<String> toSave = new ArrayList<>();
 
     public StorageMysql(EpicSpawnersPlugin instance) {
         super(instance);
@@ -62,19 +64,7 @@ public class StorageMysql extends Storage {
     }
 
     @Override
-    public void clearFile() {
-        try {
-            database.getConnection().createStatement().execute("TRUNCATE `" + instance.getConfig().getString("Database.Prefix") + "spawners`");
-            database.getConnection().createStatement().execute("TRUNCATE `" + instance.getConfig().getString("Database.Prefix") + "boosts`");
-            database.getConnection().createStatement().execute("TRUNCATE `" + instance.getConfig().getString("Database.Prefix") + "players`");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void saveItem(String group, StorageItem... items) {
-        try {
+    public void prepareSaveItem(String group, StorageItem... items) {
             StringBuilder sql = new StringBuilder(String.format("INSERT INTO `" + instance.getConfig().getString("Database.Prefix") + "%s`", group));
 
             sql.append(" (");
@@ -97,7 +87,27 @@ public class StorageMysql extends Storage {
 
             sql.append(");");
 
-            database.getConnection().createStatement().execute(sql.toString());
+            toSave.add(sql.toString());
+    }
+
+    @Override
+    public void doSave() {
+        try {
+            // Clear database
+            database.getConnection().createStatement().execute("TRUNCATE `" + instance.getConfig().getString("Database.Prefix") + "spawners`");
+            database.getConnection().createStatement().execute("TRUNCATE `" + instance.getConfig().getString("Database.Prefix") + "boosts`");
+            database.getConnection().createStatement().execute("TRUNCATE `" + instance.getConfig().getString("Database.Prefix") + "players`");
+
+            Statement stmt = database.getConnection().createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+
+            for (String line : toSave) {
+                stmt.addBatch(line);
+            }
+
+            stmt.executeBatch();
+
+            toSave.clear();
+
         } catch (SQLException e) {
             e.printStackTrace();
         }

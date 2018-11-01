@@ -433,11 +433,12 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
     }
 
     private void saveToFile() {
-
         this.storage.closeConnection();
         checkStorage();
 
         //ToDO: If the defaults are set correctly this could do the initial config save.
+
+        // Save spawner settings
 
         FileConfiguration spawnerConfig = spawnerFile.getConfig();
         spawnerConfig.set("Entities", null);
@@ -504,7 +505,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
 
         this.spawnerFile.saveConfig();
 
-        storage.clearFile();
+        // Save game data
 
         for (Spawner spawner : spawnerManager.getSpawners()) {
             if (spawner.getFirstStack() == null
@@ -522,21 +523,22 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
 
             StorageItem placedBy = spawner.getPlacedBy() != null ? new StorageItem("placedby", spawner.getPlacedBy().getUniqueId().toString()) : null;
 
-            storage.saveItem("spawners", location, stacks, new StorageItem("spawns", spawner.getSpawnCount()), placedBy);
+            storage.prepareSaveItem("spawners", location, stacks, new StorageItem("spawns", spawner.getSpawnCount()), placedBy);
         }
 
         for (BoostData boostData : boostManager.getBoosts()) {
-            storage.saveItem("boosts", new StorageItem("endtime", String.valueOf(boostData.getEndTime())),
+            storage.prepareSaveItem("boosts", new StorageItem("endtime", String.valueOf(boostData.getEndTime())),
                     new StorageItem("boosttype", boostData.getBoostType().name()),
                     new StorageItem("data", boostData.getData()),
                     new StorageItem("amount", boostData.getAmtBoosted()));
         }
 
         for (PlayerData playerData : playerActionManager.getRegisteredPlayers()) {
-
-            storage.saveItem("players", new StorageItem("uuid", playerData.getPlayer().getUniqueId().toString()),
+            storage.prepareSaveItem("players", new StorageItem("uuid", playerData.getPlayer().getUniqueId().toString()),
                     new StorageItem("entitykills", playerData.getEntityKills()));
         }
+
+        storage.doSave();
 
     }
 

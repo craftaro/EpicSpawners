@@ -22,9 +22,9 @@ public abstract class Storage {
 
     public abstract List<StorageRow> getRowsByGroup(String group);
 
-    public abstract void clearFile();
+    public abstract void prepareSaveItem(String group, StorageItem... items);
 
-    public abstract void saveItem(String group, StorageItem... items);
+    public abstract void doSave();
 
     public abstract void closeConnection();
 
