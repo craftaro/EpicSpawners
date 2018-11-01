@@ -88,6 +88,8 @@ public class StorageYaml extends Storage {
                 dataFile.getConfig().set(entry.getKey(), entry.getValue());
             }
 
+            dataFile.saveConfig();
+
             toSave.clear();
         } catch (NullPointerException e) {
             Debugger.runReport(e);
