@@ -142,17 +142,17 @@ public class ESpawnerData implements SpawnerData {
         return spawnBlocks.toArray(new Material[spawnBlocks.size()]);
     }
 
-    @Override
-    public void setSpawnBlocks(List<Material> spawnBlock) {
-        this.spawnBlocks = spawnBlock;
-    }
-
     public void setSpawnBlocks(String[] spawnBlock) {
         this.spawnBlocks = new ArrayList<>();
         for (String block : spawnBlock) {
             if (block.toUpperCase().trim().equals("")) continue;
             this.spawnBlocks.add(Material.valueOf(block.toUpperCase().trim()));
         }
+    }
+
+    @Override
+    public void setSpawnBlocks(List<Material> spawnBlock) {
+        this.spawnBlocks = spawnBlock;
     }
 
     @Override

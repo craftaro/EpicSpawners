@@ -16,7 +16,7 @@ public class CommandManager implements CommandExecutor {
 
     private EpicSpawnersPlugin instance;
 
-    private List<AbstractCommand> commands = new ArrayList<>();
+    private static final List<AbstractCommand> commands = new ArrayList<>();
 
     public CommandManager(EpicSpawnersPlugin instance) {
         this.instance = instance;

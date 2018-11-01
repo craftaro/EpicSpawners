@@ -27,8 +27,7 @@ public class SpawnerSpawnTask extends BukkitRunnable {
     @Override
     public void run() {
         for (Spawner spawner : manager.getSpawners()) {
-            if (spawner == null || spawner.getSpawnerDataCount() == 0)
-                continue;
+            if (spawner == null || spawner.getSpawnerDataCount() == 0) continue;
 
             int x = spawner.getX() >> 4;
             int z = spawner.getZ() >> 4;

@@ -11,13 +11,13 @@ import java.util.*;
 public class ESpawnerManager implements SpawnerManager {
 
     // These are the spawner types loaded into memory.
-    private final Map<String, SpawnerData> spawners = new LinkedHashMap<>();
+    private static final Map<String, SpawnerData> spawners = new LinkedHashMap<>();
 
     // These are spawners that exist in the game world.
-    private final Map<Location, Spawner> spawnersInWorld = new HashMap<>();
+    private static final Map<Location, Spawner> spawnersInWorld = new HashMap<>();
 
     // This is the map that holds the cooldowns for picking up stuffs
-    private final List<Spawner> pickingUp = new ArrayList<>();
+    private static final List<Spawner> pickingUp = new ArrayList<>();
 
     @Override
     public SpawnerData getSpawnerData(String name) {

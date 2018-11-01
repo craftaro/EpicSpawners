@@ -6,7 +6,7 @@ import java.util.Set;
 
 public class BoostManager {
 
-    private final Set<BoostData> boostedSpawners = new HashSet<>();
+    private static final Set<BoostData> boostedSpawners = new HashSet<>();
 
     public void addBoostToSpawner(BoostData data) {
         this.boostedSpawners.add(data);

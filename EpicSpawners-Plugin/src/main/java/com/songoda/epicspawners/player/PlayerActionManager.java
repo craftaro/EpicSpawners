@@ -6,7 +6,7 @@ import java.util.*;
 
 public class PlayerActionManager {
 
-    private final Map<UUID, PlayerData> registeredPlayers = new HashMap<>();
+    private static final Map<UUID, PlayerData> registeredPlayers = new HashMap<>();
 
     public PlayerData getPlayerAction(UUID uuid) {
         return (uuid != null) ? registeredPlayers.computeIfAbsent(uuid, PlayerData::new) : null;

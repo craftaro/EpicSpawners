@@ -5,7 +5,6 @@ import com.songoda.epicspawners.api.spawner.condition.SpawnCondition;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
 
 import java.util.Collection;
 

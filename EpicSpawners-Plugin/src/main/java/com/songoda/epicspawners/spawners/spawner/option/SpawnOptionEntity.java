@@ -14,8 +14,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
-import org.bukkit.entity.*;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 
@@ -38,21 +39,18 @@ public class SpawnOptionEntity implements SpawnOption {
     private EpicSpawnersPlugin instance = EpicSpawnersPlugin.getInstance();
 
     private Map<String, Integer> cache = new HashMap<>();
-
+    private Class<?> clazzMobSpawnerData, clazzNBTTagCompound, clazzNBTTagList, clazzCraftWorld, clazzWorld, clazzChunkRegionLoader, clazzEntity, clazzCraftEntity, clazzEntityInsentient, clazzGroupDataEntity, clazzDifficultyDamageScaler, clazzBlockPosition, clazzIWorldReader, clazzAxisAlignedBB;
+    private Method methodB, methodSetString, methodGetHandle, methodChunkRegionLoaderA, methodEntityGetBukkitEntity, methodCraftEntityTeleport, methodEntityInsentientCanSpawn, methodEntityInsentientPrepare, methodChunkRegionLoaderA2, methodGetDamageScaler, methodGetCubes, methodGetBoundingBox;
+    private Field fieldWorldRandom;
     public SpawnOptionEntity(EntityType... types) {
         this.types = types;
         this.mgr = new ScriptEngineManager();
         this.engine = mgr.getEngineByName("JavaScript");
         init();
     }
-
     public SpawnOptionEntity(Collection<EntityType> entities) {
         this(entities.toArray(new EntityType[entities.size()]));
     }
-
-    private Class<?> clazzMobSpawnerData, clazzNBTTagCompound, clazzNBTTagList, clazzCraftWorld, clazzWorld, clazzChunkRegionLoader, clazzEntity, clazzCraftEntity, clazzEntityInsentient, clazzGroupDataEntity, clazzDifficultyDamageScaler, clazzBlockPosition, clazzIWorldReader, clazzAxisAlignedBB;
-    private Method methodB, methodSetString, methodGetHandle, methodChunkRegionLoaderA, methodEntityGetBukkitEntity, methodCraftEntityTeleport, methodEntityInsentientCanSpawn, methodEntityInsentientPrepare, methodChunkRegionLoaderA2, methodGetDamageScaler, methodGetCubes, methodGetBoundingBox;
-    private Field fieldWorldRandom;
 
     private void init() {
         try {
@@ -72,7 +70,7 @@ public class SpawnOptionEntity implements SpawnOption {
             clazzIWorldReader = Class.forName("net.minecraft.server." + ver + ".IWorldReader");
             clazzAxisAlignedBB = Class.forName("net.minecraft.server." + ver + ".AxisAlignedBB");
 
-                    methodB = clazzMobSpawnerData.getDeclaredMethod("b");
+            methodB = clazzMobSpawnerData.getDeclaredMethod("b");
             methodSetString = clazzNBTTagCompound.getDeclaredMethod("setString", String.class, String.class);
 
             methodGetBoundingBox = clazzEntity.getDeclaredMethod("getBoundingBox");
@@ -89,8 +87,7 @@ public class SpawnOptionEntity implements SpawnOption {
             fieldWorldRandom = clazzWorld.getDeclaredField("random");
             fieldWorldRandom.setAccessible(true);
 
-        }
-        catch (Exception t) {
+        } catch (Exception t) {
             Debugger.runReport(t);
         }
 
@@ -133,7 +130,7 @@ public class SpawnOptionEntity implements SpawnOption {
 
         String[] arr = EpicSpawnersPlugin.getInstance().getConfig().getString("Main.Radius To Search Around Spawners").split("x");
         Collection<Entity> amt = location.getWorld().getNearbyEntities(location, Integer.parseInt(arr[0]), Integer.parseInt(arr[1]), Integer.parseInt(arr[2]));
-        amt.removeIf(e -> e instanceof Player || !(e instanceof LivingEntity) || e instanceof ArmorStand);
+        amt.removeIf(entity -> !(entity instanceof LivingEntity) || entity.getType() == EntityType.PLAYER || entity.getType() == EntityType.ARMOR_STAND);
 
         if (amt.size() == limit && spawnerBoost == 0) return;
         spawnCount = Math.min(limit - amt.size(), spawnCount) + spawner.getBoost();
@@ -148,18 +145,15 @@ public class SpawnOptionEntity implements SpawnOption {
 
     private void spawnEntity(EntityType type, Spawner spawner, SpawnerData data) {
         try {
-
             Object objMobSpawnerData = clazzMobSpawnerData.newInstance();
             Object objNTBTagCompound = methodB.invoke(objMobSpawnerData);
 
             String name = type.name().toLowerCase().replace("pig_zombie", "zombie_pigman").replace("mushroom_cow", "mooshroom");
             methodSetString.invoke(objNTBTagCompound, "id", "minecraft:" + name);
 
-            int spawnRange = 4;
+            short spawnRange = 4;
             for (int i = 0; i < 25; i++) {
-
                 Object objNBTTagCompound = methodB.invoke(objMobSpawnerData);
-
                 Object objCraftWorld = clazzCraftWorld.cast(spawner.getWorld());
                 objCraftWorld = methodGetHandle.invoke(objCraftWorld);
                 Object objWorld = clazzWorld.cast(objCraftWorld);
@@ -169,26 +163,15 @@ public class SpawnOptionEntity implements SpawnOption {
                 double y = (double) (spawner.getY() + random.nextInt(3) - 1);
                 double z = (double) spawner.getZ() + (random.nextDouble() - random.nextDouble()) * (double) spawnRange + 0.5D;
 
-
-
                 Object objEntity = methodChunkRegionLoaderA.invoke(null, objNBTTagCompound, objWorld, x, y, z, false);
-
                 Object objBlockPosition = clazzBlockPosition.getConstructor(clazzEntity).newInstance(objEntity);
-
                 Object objDamageScaler = methodGetDamageScaler.invoke(objWorld, objBlockPosition);
 
-                methodEntityInsentientPrepare.invoke(objEntity,   objDamageScaler, null, null);
+                methodEntityInsentientPrepare.invoke(objEntity, objDamageScaler, null, null);
 
-                Object objEntityInsentient = null;
-                if (clazzEntityInsentient.isInstance(objEntity))
-                    objEntityInsentient = clazzEntityInsentient.cast(objEntity);
+                Object objEntityInsentient = clazzEntityInsentient.isInstance(objEntity) ? clazzEntityInsentient.cast(objEntity) : null;
 
-                /* if (!(boolean)methodEntityInsentientCanSpawn.invoke(objEntityInsentient)) {
-                    continue;
-                } */
-
-
-                Location spot = new Location(spawner.getWorld(), x,y ,z);
+                Location spot = new Location(spawner.getWorld(), x, y, z);
                 if (!canSpawn(objWorld, objEntityInsentient, data, spot))
                     continue;
 
@@ -196,21 +179,17 @@ public class SpawnOptionEntity implements SpawnOption {
                 float py = (float) (0 + (Math.random() * 2));
                 float pz = (float) (0 + (Math.random() * 1));
 
-                //ToDo: Make this work for all spawn types
                 Arconix.pl().getApi().packetLibrary.getParticleManager().broadcastParticle(spot, px, py, pz, 0, data.getEntitySpawnParticle().getEffect(), data.getParticleDensity().getEntitySpawn());
 
-                Entity craftEntity = (Entity)methodEntityGetBukkitEntity.invoke(objEntity);
+                Entity craftEntity = (Entity) methodEntityGetBukkitEntity.invoke(objEntity);
 
                 SpawnerSpawnEvent event = new SpawnerSpawnEvent(craftEntity, spawner);
                 Bukkit.getPluginManager().callEvent(event);
-                if (event.isCancelled()) {
-                    return;
-                }
+                if (event.isCancelled()) return;
 
                 methodChunkRegionLoaderA2.invoke(null, objEntity, objWorld, CreatureSpawnEvent.SpawnReason.SPAWNER);
 
-                if (data.isSpawnOnFire())
-                    craftEntity.setFireTicks(160);
+                if (data.isSpawnOnFire()) craftEntity.setFireTicks(160);
 
                 craftEntity.setMetadata("ES", new FixedMetadataValue(instance, data.getIdentifyingName()));
 
@@ -228,11 +207,11 @@ public class SpawnOptionEntity implements SpawnOption {
 
     private boolean canSpawn(Object objWorld, Object objEntityInsentient, SpawnerData data, Location location) {
         try {
-
             Object objIWR = clazzIWorldReader.cast(objWorld);
 
-            if (!(Boolean)methodGetCubes.invoke(objIWR, objEntityInsentient, methodGetBoundingBox.invoke(objEntityInsentient))) return false;
-            
+            if (!(Boolean) methodGetCubes.invoke(objIWR, objEntityInsentient, methodGetBoundingBox.invoke(objEntityInsentient)))
+                return false;
+
 
             List<Material> spawnBlocks = Arrays.asList(data.getSpawnBlocks());
 

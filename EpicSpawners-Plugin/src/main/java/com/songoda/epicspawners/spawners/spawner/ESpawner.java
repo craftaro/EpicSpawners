@@ -61,17 +61,14 @@ public class ESpawner implements Spawner {
     @Override
     public void spawn() {
         EpicSpawnersPlugin instance = EpicSpawnersPlugin.getInstance();
-        long lastSpawn = 1001;
-        if (lastSpawns.containsKey(location)) {
-            lastSpawn = (new Date()).getTime() - lastSpawns.get(location).getTime();
-        }
+        long lastSpawn = lastSpawns.containsKey(location) ? new Date().getTime() - lastSpawns.get(location).getTime() : 1001;
+
         if (lastSpawn >= 1000) {
             lastSpawns.put(location, new Date());
         } else return;
 
         if (location.getBlock().isBlockPowered() && instance.getConfig().getBoolean("Main.Redstone Power Deactivates Spawners"))
             return;
-
 
         if (getFirstStack().getSpawnerData() == null) return;
 
@@ -81,7 +78,7 @@ public class ESpawner implements Spawner {
 
         Location particleLocation = location.clone();
         particleLocation.add(.5, .5, .5);
-        //ToDo: Only currently works for the first spawner Type in the stack. this is not how it should work.
+
         SpawnerData spawnerData = getFirstStack().getSpawnerData();
         Arconix.pl().getApi().packetLibrary.getParticleManager().broadcastParticle(particleLocation, x, y, z, 0, spawnerData.getSpawnerSpawnParticle().getEffect(), spawnerData.getParticleDensity().getSpawnerSpawn());
 
@@ -910,12 +907,12 @@ public class ESpawner implements Spawner {
         return Bukkit.getOfflinePlayer(placedBy);
     }
 
-    public void setPlacedBy(UUID placedBy) {
-        this.placedBy = placedBy;
-    }
-
     public void setPlacedBy(Player placedBy) {
         this.placedBy = placedBy.getUniqueId();
+    }
+
+    public void setPlacedBy(UUID placedBy) {
+        this.placedBy = placedBy;
     }
 
     @Override

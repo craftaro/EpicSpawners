@@ -102,7 +102,7 @@ public class BlockListeners implements Listener {
         //We are ignoring canceled inside the event so that it will still remove holograms when the event is canceled.
         if (!event.isCancelled()) {
             if (event.getBlock().getType() != Material.SPAWNER
-                    || ((CreatureSpawner)event.getBlock().getState()).getSpawnedType() == EntityType.FIREWORK) return;
+                    || ((CreatureSpawner) event.getBlock().getState()).getSpawnedType() == EntityType.FIREWORK) return;
 
             Location location = event.getBlock().getLocation();
             ESpawner spawner = new ESpawner(event.getBlock().getLocation());
@@ -173,7 +173,7 @@ public class BlockListeners implements Listener {
             Player player = event.getPlayer();
 
             if (event.getBlock().getType() != Material.SPAWNER
-                    || ((CreatureSpawner)event.getBlock().getState()).getSpawnedType() == EntityType.FIREWORK) return;
+                    || ((CreatureSpawner) event.getBlock().getState()).getSpawnedType() == EntityType.FIREWORK) return;
 
             if (instance.getBlacklistHandler().isBlacklisted(event.getPlayer(), true)) {
                 event.setCancelled(true);
