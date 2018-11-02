@@ -12,6 +12,11 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by songoda on 2/24/2017.
@@ -29,6 +34,26 @@ public class Methods {
         item.setAmount(result);
 
         player.setItemInHand(result > 0 ? item : null);
+    }
+
+    public static ItemStack createButton(ItemStack item, String name, String... lore) {
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName(TextComponent.formatText(name));
+        if (lore != null && lore.length != 0) {
+            List<String> newLore = new ArrayList<>();
+            for (String line : lore) newLore.add(TextComponent.formatText(line));
+            meta.setLore(newLore);
+        }
+        item.setItemMeta(meta);
+        return item;
+    }
+
+    public static ItemStack createButton(Material material, String name, String... lore) {
+        return createButton(new ItemStack(material), name, lore);
+    }
+
+    public static ItemStack createButton(Material material, String name, ArrayList<String> lore) {
+        return createButton(material, name, lore.toArray(new String[0]));
     }
 
     public static String getBoostCost(int time, int amount) {

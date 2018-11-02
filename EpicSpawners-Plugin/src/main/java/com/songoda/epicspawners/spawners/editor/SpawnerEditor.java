@@ -17,13 +17,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.*;
 
-/**
- * Created by songo on 9/3/2017.
- */
 public class SpawnerEditor {
 
     private final EpicSpawnersPlugin instance;
@@ -57,7 +53,6 @@ public class SpawnerEditor {
                         show++;
                     }
                 }
-
                 num++;
             }
 
@@ -77,25 +72,12 @@ public class SpawnerEditor {
                 max2 = 45;
             }
 
-            ItemStack exit = new ItemStack(Material.OAK_DOOR, 1);
-            ItemMeta exitMeta = exit.getItemMeta();
-            exitMeta.setDisplayName(instance.getLocale().getMessage("general.nametag.exit"));
-            exit.setItemMeta(exitMeta);
-            inventory.setItem(8, exit);
+            inventory.setItem(8, Methods.createButton(Material.OAK_DOOR, instance.getLocale().getMessage("general.nametag.exit")));
 
-            ItemStack head = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
-            ItemStack skull = Arconix.pl().getApi().getGUI().addTexture(head, "http://textures.minecraft.net/texture/1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b");
-            SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
-            skull.setDurability((short) 3);
-            skullMeta.setDisplayName(instance.getLocale().getMessage("general.nametag.next"));
-            skull.setItemMeta(skullMeta);
+            ItemStack next = Methods.createButton(Arconix.pl().getApi().getGUI().addTexture(new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3), "http://textures.minecraft.net/texture/1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b"), instance.getLocale().getMessage("general.nametag.next"));
 
-            ItemStack head2 = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
-            ItemStack skull2 = Arconix.pl().getApi().getGUI().addTexture(head2, "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23");
-            SkullMeta skull2Meta = (SkullMeta) skull2.getItemMeta();
-            skull2.setDurability((short) 3);
-            skull2Meta.setDisplayName(instance.getLocale().getMessage("general.nametag.back"));
-            skull2.setItemMeta(skull2Meta);
+            ItemStack back = Methods.createButton(Arconix.pl().getApi().getGUI().addTexture(new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3), "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23"), instance.getLocale().getMessage("general.nametag.back"));
+
 
             int max22 = max2;
             int place = 10;
@@ -103,22 +85,15 @@ public class SpawnerEditor {
             for (SpawnerData spawnerData : entities) {
                 if (place == 17 || place == (max22 - 18)) place++;
 
-                ItemStack it = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
-                ItemStack item = instance.getHeads().addTexture(it, spawnerData);
+                ItemStack icon = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
+                ItemStack item = instance.getHeads().addTexture(icon, spawnerData);
                 if (spawnerData.getDisplayItem() != null) {
                     item.setType(spawnerData.getDisplayItem());
                 }
 
-                ItemMeta meta = item.getItemMeta();
-
                 String name = Methods.compileName(spawnerData, 1, false);
-                List<String> lore = new ArrayList<>();
-                lore.add(TextComponent.formatText("&7Click to &a&lEdit&7."));
-                meta.setLore(lore);
-                meta.setDisplayName(TextComponent.convertToInvisibleString(spawnerData.getDisplayName() + ":") + name);
-                item.setItemMeta(meta);
-
-                inventory.setItem(place, item);
+                inventory.setItem(place, Methods.createButton(icon, TextComponent.convertToInvisibleString(spawnerData.getDisplayName() + ":") + name,
+                        "&7Click to &a&lEdit&7."));
 
                 place++;
             }
@@ -154,18 +129,15 @@ public class SpawnerEditor {
             inventory.setItem(max22 - 3, glassType3);
 
             if (page != 1) {
-                inventory.setItem(max22 - 8, skull2);
+                inventory.setItem(max22 - 8, back);
             }
 
             if (page != max) {
-                inventory.setItem(max22 - 2, skull);
+                inventory.setItem(max22 - 2, next);
             }
 
-            ItemStack newSpawner = new ItemStack(Material.PAPER, 1);
-            ItemMeta newSpawnerMeta = newSpawner.getItemMeta();
-            newSpawnerMeta.setDisplayName(TextComponent.formatText("&9&lNew Spawner"));
-            newSpawner.setItemMeta(newSpawnerMeta);
-            inventory.setItem(max22 - 4, newSpawner);
+
+            inventory.setItem(max22 - 4, Methods.createButton(Material.PAPER, "&9&lNew Spawner"));
 
             player.openInventory(inventory);
         } catch (Exception e) {
@@ -241,15 +213,7 @@ public class SpawnerEditor {
             i.setItem(52, Methods.getBackgroundGlass(false));
             i.setItem(53, Methods.getBackgroundGlass(false));
 
-
-            ItemStack head2 = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
-            ItemStack skull2 = Arconix.pl().getApi().getGUI().addTexture(head2, "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23");
-            SkullMeta skull2Meta = (SkullMeta) skull2.getItemMeta();
-            skull2.setDurability((short) 3);
-            skull2Meta.setDisplayName(instance.getLocale().getMessage("general.nametag.back"));
-            skull2.setItemMeta(skull2Meta);
-
-            i.setItem(8, skull2);
+            i.setItem(8, Methods.createButton(Arconix.pl().getApi().getGUI().addTexture(new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3), "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23"), instance.getLocale().getMessage("general.nametag.back")));
 
             ItemStack it = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
 
@@ -282,8 +246,6 @@ public class SpawnerEditor {
             item.setItemMeta(itemmeta);
             i.setItem(11, item);
 
-            ItemStack destroy = new ItemStack(Material.TNT);
-            ItemMeta destroymeta = destroy.getItemMeta();
             boolean dont = false;
             for (final EntityType val : EntityType.values()) {
                 if (val.isSpawnable() && val.isAlive()) {
@@ -292,62 +254,23 @@ public class SpawnerEditor {
                     }
                 }
             }
+
             lore = new ArrayList<>();
-            destroymeta.setDisplayName(TextComponent.formatText("&7Left-Click to: &cDisable Spawner"));
             if (!dont) lore.add(TextComponent.formatText("&7Right-Click to: &cDestroy Spawner"));
             lore.add(TextComponent.formatText("&6---------------------------"));
-            if (!spawnerData.isActive())
-                lore.add(TextComponent.formatText("&6Currently:&c Disabled."));
-            else
-                lore.add(TextComponent.formatText("&6Currently:&a Enabled."));
-            destroymeta.setLore(lore);
+            lore.add(TextComponent.formatText(spawnerData.isActive() ? "&6Currently:&a Enabled." : "&6Currently:&c Disabled."));
 
-            destroy.setItemMeta(destroymeta);
-            i.setItem(29, destroy);
+            i.setItem(29, Methods.createButton(Material.TNT, "&7Left-Click to: &cDisable Spawner", lore));
 
-            ItemStack settings = new ItemStack(Material.LEVER);
-            ItemMeta settingsmeta = settings.getItemMeta();
-            settingsmeta.setDisplayName(TextComponent.formatText("&9&lGeneral Settings"));
-            settings.setItemMeta(settingsmeta);
-            i.setItem(23, settings);
+            i.setItem(23, Methods.createButton(Material.LEVER, "&9&lGeneral Settings"));
+            i.setItem(24, Methods.createButton(Material.BONE, "&e&lDrop Settings"));
 
-            settings = new ItemStack(Material.BONE);
-            settingsmeta = settings.getItemMeta();
-            settingsmeta.setDisplayName(TextComponent.formatText("&e&lDrop Settings"));
-            settings.setItemMeta(settingsmeta);
-            i.setItem(24, settings);
+            i.setItem(25, Methods.createButton(instance.getHeads().addTexture(new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3), instance.getSpawnerManager().getSpawnerData("omni")), "&a&lEntity Settings"));
 
-            ItemStack it2 = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
-
-            ItemStack entity = instance.getHeads().addTexture(it2, instance.getSpawnerManager().getSpawnerData("omni"));
-            ItemMeta entitymeta = entity.getItemMeta();
-            entitymeta.setDisplayName(TextComponent.formatText("&a&lEntity Settings"));
-            entity.setItemMeta(entitymeta);
-            i.setItem(25, entity);
-
-            ItemStack item2 = new ItemStack(Material.CHEST);
-            ItemMeta item2meta = item2.getItemMeta();
-            item2meta.setDisplayName(TextComponent.formatText("&5&lItem Settings"));
-            item2.setItemMeta(item2meta);
-            i.setItem(41, item2);
-
-            ItemStack item3 = new ItemStack(Material.GOLD_BLOCK);
-            ItemMeta item3meta = item3.getItemMeta();
-            item3meta.setDisplayName(TextComponent.formatText("&c&lBlock Settings"));
-            item3.setItemMeta(item3meta);
-            i.setItem(32, item3);
-
-            ItemStack item4 = new ItemStack(Material.FIREWORK_ROCKET);
-            ItemMeta item4meta = item4.getItemMeta();
-            item4meta.setDisplayName(TextComponent.formatText("&b&lParticle Settings"));
-            item4.setItemMeta(item4meta);
-            i.setItem(34, item4);
-
-            ItemStack command = new ItemStack(Material.PAPER);
-            ItemMeta commandmeta = command.getItemMeta();
-            commandmeta.setDisplayName(TextComponent.formatText("&6&lCommand Settings"));
-            command.setItemMeta(commandmeta);
-            i.setItem(43, command);
+            i.setItem(41, Methods.createButton(Material.CHEST, "&5&lItem Settings"));
+            i.setItem(32, Methods.createButton(Material.GOLD_BLOCK, "&c&lBlock Settings"));
+            i.setItem(34, Methods.createButton(Material.FIREWORK_ROCKET, "&b&lParticle Settings"));
+            i.setItem(43, Methods.createButton(Material.PAPER, "&6&lCommand Settings"));
 
             player.openInventory(i);
             editingData.setMenu(EditingMenu.OVERVIEW);
@@ -382,14 +305,7 @@ public class SpawnerEditor {
             num++;
         }
 
-        ItemStack head2 = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
-        ItemStack skull2 = Arconix.pl().getApi().getGUI().addTexture(head2, "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23");
-        SkullMeta skull2Meta = (SkullMeta) skull2.getItemMeta();
-        skull2.setDurability((short) 3);
-        skull2Meta.setDisplayName(instance.getLocale().getMessage("general.nametag.back"));
-        skull2.setItemMeta(skull2Meta);
-
-        i.setItem(0, skull2);
+        i.setItem(0, Methods.createButton(Arconix.pl().getApi().getGUI().addTexture(new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3), "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23"), instance.getLocale().getMessage("general.nametag.back")));
 
         i.setItem(1, Methods.getBackgroundGlass(true));
         i.setItem(2, Methods.getBackgroundGlass(false));
@@ -411,41 +327,22 @@ public class SpawnerEditor {
         i.setItem(43, Methods.getBackgroundGlass(true));
         i.setItem(44, Methods.getBackgroundGlass(true));
 
+        i.setItem(20, Methods.createButton(Material.ENDER_PEARL, "&5&lParticle Types",
+                "&7Entity Spawn Particle: &a" + spawnerData.getEntitySpawnParticle().name(),
+                "&cLeft-Click to change.",
+                "&7Spawner Spawn Particle: &a" + spawnerData.getSpawnerSpawnParticle().name(),
+                "&cMiddle-Click to change.",
+                "&7Effect Particle: &a" + spawnerData.getSpawnEffectParticle().name(),
+                "&cRight-Click to change."));
 
-        ItemStack item2 = new ItemStack(Material.ENDER_PEARL);
-        ItemMeta item2meta = item2.getItemMeta();
-        item2meta.setDisplayName(TextComponent.formatText("&5&lParticle Types"));
-        ArrayList<String> lore = new ArrayList<>();
-        lore.add(TextComponent.formatText("&7Entity Spawn Particle: &a" + spawnerData.getEntitySpawnParticle().name()));
-        lore.add(TextComponent.formatText("&cLeft-Click to change."));
-        lore.add(TextComponent.formatText("&7Spawner Spawn Particle: &a" + spawnerData.getSpawnerSpawnParticle().name()));
-        lore.add(TextComponent.formatText("&cMiddle-Click to change."));
-        lore.add(TextComponent.formatText("&7Effect Particle: &a" + spawnerData.getSpawnEffectParticle().name()));
-        lore.add(TextComponent.formatText("&cRight-Click to change."));
-        item2meta.setLore(lore);
-        item2.setItemMeta(item2meta);
-        i.setItem(20, item2);
+        i.setItem(22, Methods.createButton(Material.FIREWORK_ROCKET, "&6&lSpawner Effect",
+                "&7Particle Effect: &a" + spawnerData.getParticleEffect().name(),
+                "&cLeft-Click to change.",
+                "&7Particle Effect For Boosted Only: &a" + spawnerData.isParticleEffectBoostedOnly(),
+                "&cRight-Click to change."));
 
-        item2 = new ItemStack(Material.FIREWORK_ROCKET);
-        item2meta = item2.getItemMeta();
-        item2meta.setDisplayName(TextComponent.formatText("&6&lSpawner Effect"));
-        lore = new ArrayList<>();
-        lore.add(TextComponent.formatText("&7Particle Effect: &a" + spawnerData.getParticleEffect().name()));
-        lore.add(TextComponent.formatText("&cLeft-Click to change."));
-        lore.add(TextComponent.formatText("&7Particle Effect For Boosted Only: &a" + spawnerData.isParticleEffectBoostedOnly()));
-        lore.add(TextComponent.formatText("&cRight-Click to change."));
-        item2meta.setLore(lore);
-        item2.setItemMeta(item2meta);
-        i.setItem(22, item2);
-
-        item2 = new ItemStack(Material.COMPARATOR);
-        item2meta = item2.getItemMeta();
-        item2meta.setDisplayName(TextComponent.formatText("&6&lPerformance"));
-        lore = new ArrayList<>();
-        lore.add(TextComponent.formatText("&7Currently: &a" + spawnerData.getParticleDensity().name() + " &cClick to change."));
-        item2meta.setLore(lore);
-        item2.setItemMeta(item2meta);
-        i.setItem(24, item2);
+        i.setItem(24, Methods.createButton(Material.COMPARATOR, "&6&lPerformance",
+                "&7Currently: &a" + spawnerData.getParticleDensity().name() + " &cClick to change."));
 
         player.openInventory(i);
         editingData.setMenu(EditingMenu.PARTICLE);
@@ -520,31 +417,14 @@ public class SpawnerEditor {
             i.setItem(52, Methods.getBackgroundGlass(true));
             i.setItem(53, Methods.getBackgroundGlass(true));
 
-            ItemStack head2 = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
-            ItemStack skull2 = Arconix.pl().getApi().getGUI().addTexture(head2, "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23");
-            SkullMeta skull2Meta = (SkullMeta) skull2.getItemMeta();
-            skull2.setDurability((short) 3);
-            skull2Meta.setDisplayName(instance.getLocale().getMessage("general.nametag.back"));
-            skull2.setItemMeta(skull2Meta);
+            i.setItem(0, Methods.createButton(Arconix.pl().getApi().getGUI().addTexture(new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3), "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23"), instance.getLocale().getMessage("general.nametag.back")));
 
-            i.setItem(0, skull2);
-
-            if (editingMenu == EditingMenu.DROPS || editingMenu == EditingMenu.ITEM || editingMenu == EditingMenu.COMMAND || editingMenu == EditingMenu.BLOCK) {
-                if (editingMenu == EditingMenu.COMMAND) {
-                    ItemStack item = new ItemStack(Material.CLOCK);
-                    ItemMeta meta = item.getItemMeta();
-                    meta.setDisplayName(TextComponent.formatText("&bSpawn Limit"));
-                    ArrayList<String> lore = new ArrayList<>();
-                    // ToDo: This bit should be some sort of boolean to enable the built in spawn check.
-                    //lore.add(Arconix.pl().format().formatText("&7Currently: &c" + EpicSpawners.getInstance().spawnerFile.getConfig().asInt("Entities." + Methods.getTypeFromString(spawnerData) + ".commandSpawnLimit")));
-                    lore.add("");
-                    lore.add(TextComponent.formatText("&7This is the spawn limit for entities you spawn"));
-                    lore.add(TextComponent.formatText("&7from this spawner. Set to &60 &7to disable this."));
-                    meta.setLore(lore);
-                    item.setItemMeta(meta);
-                    i.setItem(49, item);
+            if (editingMenu == EditingMenu.COMMAND) {
+                i.setItem(49, Methods.createButton(Material.CLOCK, "&bSpawn Limit",
+                        "",
+                        "&7This is the spawn limit for entities you spawn",
+                        "&7from this spawner. Set to &60 &7to disable this."));
                 }
-            }
 
             if (editingMenu != EditingMenu.ITEM && editingMenu != EditingMenu.BLOCK && editingMenu != EditingMenu.DROPS) {
                 ItemStack add;
@@ -556,21 +436,11 @@ public class SpawnerEditor {
                     add = new ItemStack(Material.SHEEP_SPAWN_EGG);
                     addName = "&6Add entity";
                 }
-                ItemMeta addmeta = add.getItemMeta();
-                addmeta.setDisplayName(TextComponent.formatText(addName));
 
-                add.setItemMeta(addmeta);
-                i.setItem(39, add);
+                i.setItem(39, Methods.createButton(add, addName));
             }
 
-            ItemStack save = new ItemStack(Material.REDSTONE);
-            ItemMeta savemeta = save.getItemMeta();
-            savemeta.setDisplayName(TextComponent.formatText("&aSave"));
-            save.setItemMeta(savemeta);
-            if (editingMenu != EditingMenu.ITEM)
-                i.setItem(41, save);
-            else
-                i.setItem(49, save);
+            i.setItem(editingMenu != EditingMenu.ITEM ? 41 : 49, Methods.createButton(Material.REDSTONE, "&aSave"));
 
             player.openInventory(i);
             editingData.setMenu(editingMenu);
@@ -591,14 +461,7 @@ public class SpawnerEditor {
                 num++;
             }
 
-            ItemStack head2 = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
-            ItemStack skull2 = Arconix.pl().getApi().getGUI().addTexture(head2, "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23");
-            SkullMeta skull2Meta = (SkullMeta) skull2.getItemMeta();
-            skull2.setDurability((short) 3);
-            skull2Meta.setDisplayName(instance.getLocale().getMessage("general.nametag.back"));
-            skull2.setItemMeta(skull2Meta);
-
-            i.setItem(0, skull2);
+            i.setItem(0, Methods.createButton(Arconix.pl().getApi().getGUI().addTexture(new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3), "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23"), instance.getLocale().getMessage("general.nametag.back")));
 
             i.setItem(1, Methods.getBackgroundGlass(true));
             i.setItem(2, Methods.getBackgroundGlass(false));
@@ -620,120 +483,53 @@ public class SpawnerEditor {
             i.setItem(43, Methods.getBackgroundGlass(true));
             i.setItem(44, Methods.getBackgroundGlass(true));
 
+            i.setItem(19, Methods.createButton(Material.SUNFLOWER, "&6&lShop Price",
+                    "&7Currently: &a" + spawnerData.getShopPrice(),
+                    "&7This is the price of the",
+                    "&7spawner in the shop."));
 
-            ItemStack item2 = new ItemStack(Material.SUNFLOWER);
-            ItemMeta item2meta = item2.getItemMeta();
-            item2meta.setDisplayName(TextComponent.formatText("&6&lShop Price"));
+            i.setItem(20, Methods.createButton(Material.DIAMOND, "&6&lIn Shop",
+                    "&7Currently: &a" + spawnerData.isInShop(),
+                    "&7If this is true this spawner",
+                    "&7will show up in the shop GUI."));
 
-            ArrayList<String> lore = new ArrayList<>();
-            lore.add(TextComponent.formatText("&7Currently: &a" + spawnerData.getShopPrice()));
+            i.setItem(22, Methods.createButton(Material.FIRE_CHARGE, "&c&lSpawn On Fire",
+                    "&7Currently: &a" + spawnerData.isSpawnOnFire(),
+                    "&7If this is true this spawner",
+                    "&7will spawn entities on fire."));
 
-            lore.add(TextComponent.formatText("&7This is the price of the"));
-            lore.add(TextComponent.formatText("&7spawner in the shop."));
-            item2meta.setLore(lore);
+            i.setItem(13, Methods.createButton(Material.HOPPER, "&5&lUpgradable",
+                    "&7Currently: &a" + spawnerData.isUpgradeable(),
+                    "&7Setting this to true will define",
+                    "&7upgradable."));
 
-            item2.setItemMeta(item2meta);
-            i.setItem(19, item2);
+            i.setItem(24, Methods.createButton(Material.SUNFLOWER, "&6&lCustom Economy cost",
+                    "&7Currently: &a" + spawnerData.getUpgradeCostEconomy(),
+                    "&7This is the custom economy cost",
+                    "&7to upgrade this spawner."));
 
-            item2 = new ItemStack(Material.DIAMOND);
-            item2meta = item2.getItemMeta();
-            item2meta.setDisplayName(TextComponent.formatText("&6&lIn Shop"));
-            lore = new ArrayList<>();
-            lore.add(TextComponent.formatText("&7Currently: &a" + spawnerData.isInShop()));
+            i.setItem(25, Methods.createButton(Material.EXPERIENCE_BOTTLE, "&5&lCustom Experience cost",
+                    "&7Currently: &a" + spawnerData.getUpgradeCostExperience(),
+                    "&7This is the custom XP cost",
+                    "&7to upgrade this spawner."));
 
-            lore.add(TextComponent.formatText("&7If this is true this spawner"));
-            lore.add(TextComponent.formatText("&7will show up in the shop GUI."));
-            item2meta.setLore(lore);
-            item2.setItemMeta(item2meta);
-            i.setItem(20, item2);
+            i.setItem(30, Methods.createButton(Material.EXPERIENCE_BOTTLE, "&5&lCustom Goal",
+                    "&7Currently: &a" + spawnerData.getKillGoal(),
+                    "&7If this is set to anything",
+                    "&7but 0 the default kill goal",
+                    "&7will be adjusted for this spawner."));
 
-            item2 = new ItemStack(Material.FIRE_CHARGE);
-            item2meta = item2.getItemMeta();
-            item2meta.setDisplayName(TextComponent.formatText("&c&lSpawn On Fire"));
-            lore = new ArrayList<>();
-            lore.add(TextComponent.formatText("&7Currently: &a" + spawnerData.isSpawnOnFire()));
+            i.setItem(32, Methods.createButton(Material.DIAMOND, "&b&lPickup Cost",
+                    "&7Currently: &a" + spawnerData.getPickupCost(),
+                    "&7Setting this to anything but 0",
+                    "&7will allow you to charge players",
+                    "&7for breaking this type of spawner."));
 
-            lore.add(TextComponent.formatText("&7If this is true this spawner"));
-            lore.add(TextComponent.formatText("&7will spawn entities on fire."));
-            item2meta.setLore(lore);
-            item2.setItemMeta(item2meta);
-            i.setItem(22, item2);
-
-            item2 = new ItemStack(Material.HOPPER);
-            item2meta = item2.getItemMeta();
-            item2meta.setDisplayName(TextComponent.formatText("&5&lUpgradable"));
-            lore = new ArrayList<>();
-            lore.add(TextComponent.formatText("&7Currently: &a" + spawnerData.isUpgradeable()));
-
-            lore.add(TextComponent.formatText("&7Setting this to true will define"));
-            lore.add(TextComponent.formatText("&7whether or not this spawner is"));
-            lore.add(TextComponent.formatText("&7upgradable."));
-            item2meta.setLore(lore);
-            item2.setItemMeta(item2meta);
-            i.setItem(13, item2);
-
-            item2 = new ItemStack(Material.SUNFLOWER);
-            item2meta = item2.getItemMeta();
-            item2meta.setDisplayName(TextComponent.formatText("&6&lCustom ECO cost"));
-            lore = new ArrayList<>();
-            lore.add(TextComponent.formatText("&7Currently: &a" + spawnerData.getUpgradeCostEconomy()));
-
-            lore.add(TextComponent.formatText("&7This is the custom Economy cost"));
-            lore.add(TextComponent.formatText("&7to upgrade this spawner."));
-            item2meta.setLore(lore);
-            item2.setItemMeta(item2meta);
-            i.setItem(24, item2);
-
-            item2 = new ItemStack(Material.EXPERIENCE_BOTTLE);
-            item2meta = item2.getItemMeta();
-            item2meta.setDisplayName(TextComponent.formatText("&5&lCustom XP cost"));
-            lore = new ArrayList<>();
-            lore.add(TextComponent.formatText("&7Currently: &a" + spawnerData.getUpgradeCostExperience()));
-
-            lore.add(TextComponent.formatText("&7This is the custom XP cost"));
-            lore.add(TextComponent.formatText("&7to upgrade this spawner."));
-            item2meta.setLore(lore);
-            item2.setItemMeta(item2meta);
-            i.setItem(25, item2);
-
-            item2 = new ItemStack(Material.SUNFLOWER);
-            item2meta = item2.getItemMeta();
-            item2meta.setDisplayName(TextComponent.formatText("&5&lCustom Goal"));
-            lore = new ArrayList<>();
-            lore.add(TextComponent.formatText("&7Currently: &a" + spawnerData.getKillGoal()));
-
-            lore.add(TextComponent.formatText("&7If this is set to anything "));
-            lore.add(TextComponent.formatText("&7but 0 the default kill goal "));
-            lore.add(TextComponent.formatText("&7will be adjusted for this spawner."));
-            item2meta.setLore(lore);
-            item2.setItemMeta(item2meta);
-            i.setItem(30, item2);
-
-            item2 = new ItemStack(Material.DIAMOND);
-            item2meta = item2.getItemMeta();
-            item2meta.setDisplayName(TextComponent.formatText("&b&lPickup Cost"));
-            lore = new ArrayList<>();
-            lore.add(TextComponent.formatText("&7Currently: &a" + spawnerData.getPickupCost()));
-
-            lore.add(TextComponent.formatText("&7Setting this to anything but 0"));
-            lore.add(TextComponent.formatText("&7will allow you to charge players"));
-            lore.add(TextComponent.formatText("&7for breaking this spawner."));
-            item2meta.setLore(lore);
-            item2.setItemMeta(item2meta);
-            i.setItem(32, item2);
-
-            item2 = new ItemStack(Material.CLOCK);
-            item2meta = item2.getItemMeta();
-            item2meta.setDisplayName(TextComponent.formatText("&6&lTick Rate"));
-            lore = new ArrayList<>();
-            lore.add(TextComponent.formatText("&7Currently: &a" + spawnerData.getTickRate()));
-
-            lore.add(TextComponent.formatText("&7This is the default tick rate"));
-            lore.add(TextComponent.formatText("&7that your spawner will use"));
-            lore.add(TextComponent.formatText("&7to create its delay with."));
-            item2meta.setLore(lore);
-            item2.setItemMeta(item2meta);
-            i.setItem(40, item2);
+            i.setItem(40, Methods.createButton(Material.CLOCK, "&6&lTick Rate",
+                    "&7Currently: &a" + spawnerData.getTickRate(),
+                    "&7This is the default tick rate",
+                    "&7that your spawner will use",
+                    "&7to create its delay with."));
 
             player.openInventory(i);
             editingData.setMenu(EditingMenu.GENERAL);
