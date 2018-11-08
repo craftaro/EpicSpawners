@@ -104,6 +104,7 @@ public class BlockListeners implements Listener {
             if (event.getBlock().getType() != Material.SPAWNER
                     || ((CreatureSpawner) event.getBlock().getState()).getSpawnedType() == EntityType.FIREWORK) return;
 
+
             Location location = event.getBlock().getLocation();
             ESpawner spawner = new ESpawner(event.getBlock().getLocation());
 
@@ -112,6 +113,11 @@ public class BlockListeners implements Listener {
             spawner.addSpawnerStack(new ESpawnerStack(spawnerData, spawnerStackSize));
 
             Player player = event.getPlayer();
+
+            if (!instance.canBuild(player, location)) {
+                event.setCancelled(true);
+                return;
+            }
 
             doLiquidRepel(event.getBlock(), true);
 
