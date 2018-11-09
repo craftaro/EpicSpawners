@@ -678,11 +678,11 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         this.locale = Locale.getLocale(getConfig().getString("System.Language Mode", langMode));
         this.locale.reloadMessages();
         this.spawnerFile.createNewFile("Loading Spawners File", "EpicSpawners Spawners File");
-        this.hooksFile.createNewFile("Loading hookHandler File", "EpicSpawners Spawners File");
+        this.hooksFile.createNewFile("Loading hookHandler File", "EpicSpawners Hooks File");
         this.references = new References();
         this.blacklistHandler.reload();
         this.loadSpawnersFromFile();
-        this.reloadConfig();
+        this.setupConfig();
     }
 
     public Locale getLocale() {
