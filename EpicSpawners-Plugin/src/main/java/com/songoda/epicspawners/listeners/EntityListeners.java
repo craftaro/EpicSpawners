@@ -114,6 +114,9 @@ public class EntityListeners implements Listener {
             if (!instance.getSpawnManager().isNaturalSpawn(event.getEntity().getUniqueId()) && !instance.getConfig().getBoolean("Spawner Drops.Count Unnatural Kills Towards Spawner Drop"))
                 return;
 
+
+            if (!instance.getSpawnerManager().getSpawnerData(event.getEntityType()).isActive()) return;
+
             int amt = instance.getPlayerActionManager().getPlayerAction(player).addKilledEntity(event.getEntityType());
             int goal = instance.getConfig().getInt("Spawner Drops.Kills Needed for Drop");
 

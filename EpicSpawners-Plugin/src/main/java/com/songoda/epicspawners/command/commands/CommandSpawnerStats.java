@@ -30,7 +30,8 @@ public class CommandSpawnerStats extends AbstractCommand {
         int size = 0;
 
         for (Map.Entry<EntityType, Integer> entry : instance.getPlayerActionManager().getPlayerAction(player).getEntityKills().entrySet()) {
-            size++;
+            if (instance.getSpawnerManager().getSpawnerData(entry.getKey()).isActive())
+                size++;
         }
 
         String title = instance.getLocale().getMessage("interface.spawnerstats.title");
