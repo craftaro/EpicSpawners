@@ -25,7 +25,9 @@ public enum ParticleType {
     /**
      * A little flame effect
      */
-    FIRE("FLAME");
+    FIRE("FLAME"),
+
+    NONE("NONE");
 
     private final String effect;
 

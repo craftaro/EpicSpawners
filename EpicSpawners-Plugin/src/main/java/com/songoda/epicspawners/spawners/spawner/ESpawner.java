@@ -6,6 +6,7 @@ import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.api.CostType;
 import com.songoda.epicspawners.api.EpicSpawnersAPI;
 import com.songoda.epicspawners.api.events.SpawnerChangeEvent;
+import com.songoda.epicspawners.api.particles.ParticleType;
 import com.songoda.epicspawners.api.spawner.Spawner;
 import com.songoda.epicspawners.api.spawner.SpawnerData;
 import com.songoda.epicspawners.api.spawner.SpawnerStack;
@@ -80,7 +81,10 @@ public class ESpawner implements Spawner {
         particleLocation.add(.5, .5, .5);
 
         SpawnerData spawnerData = getFirstStack().getSpawnerData();
-        Arconix.pl().getApi().packetLibrary.getParticleManager().broadcastParticle(particleLocation, x, y, z, 0, spawnerData.getSpawnerSpawnParticle().getEffect(), spawnerData.getParticleDensity().getSpawnerSpawn());
+
+        ParticleType particleType = spawnerData.getSpawnerSpawnParticle();
+        if (particleType != ParticleType.NONE)
+            Arconix.pl().getApi().packetLibrary.getParticleManager().broadcastParticle(particleLocation, x, y, z, 0, particleType.getEffect(), spawnerData.getParticleDensity().getSpawnerSpawn());
 
         for (SpawnerStack stack : getSpawnerStacks()) {
             ((ESpawnerData) stack.getSpawnerData()).spawn(this, stack);

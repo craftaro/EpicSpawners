@@ -3,6 +3,7 @@ package com.songoda.epicspawners.spawners.spawner.option;
 import com.songoda.arconix.plugin.Arconix;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.api.events.SpawnerSpawnEvent;
+import com.songoda.epicspawners.api.particles.ParticleType;
 import com.songoda.epicspawners.api.spawner.Spawner;
 import com.songoda.epicspawners.api.spawner.SpawnerData;
 import com.songoda.epicspawners.api.spawner.SpawnerStack;
@@ -179,7 +180,10 @@ public class SpawnOptionEntity implements SpawnOption {
                 float py = (float) (0 + (Math.random() * 2));
                 float pz = (float) (0 + (Math.random() * 1));
 
-                Arconix.pl().getApi().packetLibrary.getParticleManager().broadcastParticle(spot, px, py, pz, 0, data.getEntitySpawnParticle().getEffect(), data.getParticleDensity().getEntitySpawn());
+                ParticleType particleType = data.getEntitySpawnParticle();
+
+                if (particleType != ParticleType.NONE)
+                    Arconix.pl().getApi().packetLibrary.getParticleManager().broadcastParticle(spot, px, py, pz, 0, particleType.getEffect(), data.getParticleDensity().getEntitySpawn());
 
                 Entity craftEntity = (Entity) methodEntityGetBukkitEntity.invoke(objEntity);
 
