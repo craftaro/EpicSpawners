@@ -23,7 +23,6 @@
     
     <build>
         <defaultGoal>clean install</defaultGoal>
-        <finalName>EpicSpawners-Plugin</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
