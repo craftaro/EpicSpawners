@@ -6,7 +6,7 @@ build:
   image: maven:3.3.9-jdk-8
   script: 
     - mvn clean package
-    - rm /builds/Songoda/EpicSpawners/EpicSpawners-Plugin/*original*
+    - find /builds/Songoda/EpicSpawners/EpicSpawners-Plugin/ -depth -path '*original*' -delete
     - mv -v /builds/Songoda/EpicSpawners/EpicSpawners-Plugin/target/* /builds/Songoda/EpicSpawners/
   artifacts:
     name: "EpicSpawners"
