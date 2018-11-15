@@ -10,8 +10,7 @@ build:
   stage: build
   image: maven:3.5.3-jdk-8
   script: 
-    - ls
-    - find $path/ -type f -name "*.xml" -print0 | xargs -0 sed -i '' -e 's/maven-version-number/$version/g'
+    - find $path/ -type f -name "*.xml" -print0 | xargs -0 sed -i -e 's/maven-version-number/$version/g' $path/
     - mvn clean package
     - find $path/$name-Plugin/ -depth -path '*original*' -delete
     - mv -v $path/$name-Plugin/target/*.jar $path
