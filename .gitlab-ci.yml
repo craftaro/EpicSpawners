@@ -1,5 +1,6 @@
 stages:
 - build
+- pack
 
 variables:
     name: "EpicSpawners"
@@ -12,6 +13,9 @@ build:
     - mvn clean package
     - find $path/$name-Plugin/ -depth -path '*original*' -delete
     - mv -v $path/$name-Plugin/target/*.jar $path
+    
+pack:
+  stage: pack
   artifacts:
     name: $name
     paths:
