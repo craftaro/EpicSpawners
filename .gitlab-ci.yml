@@ -4,7 +4,7 @@ stages:
 variables:
     name: "EpicSpawners"
     path: "/builds/Songoda/$name"
-    nameversion: "5.5.16"
+    version: "5.5.16"
 
 build:
   stage: build
@@ -14,7 +14,7 @@ build:
     - find $path/$name-Plugin/ -depth -path '*original*' -delete
     - mv -v $path/$name-Plugin/target/*.jar $path
   artifacts:
-    name: $name-$nameversion
+    name: $name-$version
     paths:
     - "$path/*.jar"
     - "$path/Read_this_before_your_first_use.txt"
