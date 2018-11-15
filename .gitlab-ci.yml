@@ -9,10 +9,6 @@ build:
   stage: build
   image: maven:3.3.9-jdk-8
   script: 
-  
-    - apt install libxml2-utils
-    - docker build -t dockerimage:$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="version"]/text()' pom.xml) .
-
     - mvn clean package
     - find $path/$name-Plugin/ -depth -path '*original*' -delete
     - mv -v $path/$name-Plugin/target/*.jar $path
