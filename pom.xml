@@ -5,7 +5,7 @@
     <groupId>com.songoda</groupId>
     <artifactId>EpicSpawners-Parent</artifactId>
     <packaging>pom</packaging>
-    <version>5.5.15</version>
+    <version>5.5.16</version>
     
     <modules>
         <module>EpicSpawners-API</module>

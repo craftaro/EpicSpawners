@@ -172,7 +172,6 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         this.spawnerManager = new ESpawnerManager();
         this.commandManager = new CommandManager(this);
         this.blacklistHandler = new BlacklistHandler();
-        this.hologramHandler = new HologramHandler(this);
         this.playerActionManager = new PlayerActionManager();
         this.chatListeners = new ChatListeners(this);
 
@@ -252,6 +251,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
             }
             // Save data initially so that if the person reloads again fast they don't lose all their data.
             this.saveToFile();
+            this.hologramHandler = new HologramHandler(this);
         }, 10);
 
         this.shop = new Shop(this);

@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.songoda</groupId>
         <artifactId>EpicSpawners-Parent</artifactId>
-        <version>5.5.15</version>
+        <version>5.5.16</version>
     </parent>
     <groupId>com.songoda</groupId>
     <artifactId>EpicSpawners-Plugin</artifactId>
@@ -22,6 +22,11 @@
             <artifactId>EpicSpawners-API</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.arcaniax</groupId>
+            <artifactId>liquidtanks</artifactId>
+            <version>LATEST</version>
         </dependency>
         <dependency>
             <groupId>com.songoda</groupId>
