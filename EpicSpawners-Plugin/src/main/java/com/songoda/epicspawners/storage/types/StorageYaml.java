@@ -67,8 +67,8 @@ public class StorageYaml extends Storage {
         try {
             dataFile.getConfig().set("data", null); // Clear file
 
-            File data = new File(instance.getDataFolder() + "/data.yml");
-            File dataClone = new File(instance.getDataFolder() + "/data-backup-" + System.currentTimeMillis() + ".yml");
+            File data = new File(instance.getDataFolder(), "data.yml");
+            File dataClone = new File(instance.getDataFolder(), "data-backup-" + System.currentTimeMillis() + ".yml");
             try {
                 FileUtils.copyFile(data, dataClone);
             } catch (IOException e) {
