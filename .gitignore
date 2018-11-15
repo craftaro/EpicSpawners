@@ -104,3 +104,4 @@ nbactions.xml
 /.idea/
 *.iml
 EpicSpawners-Plugin/src/main/resources/EpicSpawners - Shortcut\.lnk
+/EpicSpawners-API/target/
