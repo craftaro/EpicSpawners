@@ -3,7 +3,7 @@ stages:
 
 variables:
     name: "EpicSpawners"
-    path: "/builds/Songoda/$name/"
+    path: "/builds/Songoda/$name"
 
 build:
   stage: build
