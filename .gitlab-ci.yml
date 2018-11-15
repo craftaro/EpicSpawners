@@ -2,17 +2,18 @@ stages:
 - build
 
 variables:
-    path: "/builds/Songoda/EpicSpawners/"
+    name: "EpicSpawners"
+    path: "/builds/Songoda/$name/"
 
 build:
   stage: build
   image: maven:3.3.9-jdk-8
   script: 
     - mvn clean package
-    - find $path/EpicSpawners-Plugin/ -depth -path '*original*' -delete
-    - mv -v $path/EpicSpawners-Plugin/target/*.jar $path
+    - find $path/$name-Plugin/ -depth -path '*original*' -delete
+    - mv -v $path/$name-Plugin/target/*.jar $path
   artifacts:
-    name: "EpicSpawners"
+    name: $name
     paths:
     - "$path/*.jar"
     - "$path/Read_this_before_your_first_use.txt"
