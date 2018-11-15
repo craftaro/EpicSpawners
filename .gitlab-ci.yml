@@ -4,9 +4,11 @@ stages:
 build:
   stage: build
   image: maven:3.3.9-jdk-8
-  script: "mvn clean package"
+  script: 
+    - mvn clean package
+    - mv -v /builds/Songoda/EpicSpawners/EpicSpawners-Plugin/target/* ~/builds/Songoda/EpicSpawners/
   artifacts:
     name: "EpicSpawners"
     paths:
-    - "/builds/Songoda/EpicSpawners/target/*.jar"
+    - "/builds/Songoda/EpicSpawners/*.jar"
     - "/builds/Songoda/EpicSpawners/Read_this_before_your_first_use.txt"
