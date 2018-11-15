@@ -180,6 +180,7 @@
                 </executions>
                 <configuration>
                     <file>${project.build.directory}/classes/plugin.yml</file>
+                    <file>${project.basedir}/../.gitlab-ci.yml</file>
                     <replacements>
                         <replacement>
                             <token>maven-version-number</token>
