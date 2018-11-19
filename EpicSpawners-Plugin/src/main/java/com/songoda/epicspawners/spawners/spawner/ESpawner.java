@@ -350,7 +350,7 @@ public class ESpawner implements Spawner {
             for (SpawnerData spawnerData : instance.getSpawnerManager().getAllSpawnerData()) {
                 if (spawnerData.getIdentifyingName().equalsIgnoreCase("omni")
                         || !spawnerData.isConvertible()
-                        || !player.hasPermission("epicspawners.convert." + spawnerData.getIdentifyingName())) continue;
+                        || !player.hasPermission("epicspawners.convert." + spawnerData.getIdentifyingName().replace(" ", "_"))) continue;
                 if (num >= start) {
                     if (show <= 32) {
                         entities.add(spawnerData);
