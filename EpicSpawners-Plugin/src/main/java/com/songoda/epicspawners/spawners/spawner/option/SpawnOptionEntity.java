@@ -18,7 +18,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Snowman;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 
@@ -147,8 +146,6 @@ public class SpawnOptionEntity implements SpawnOption {
 
     private void spawnEntity(EntityType type, Spawner spawner, SpawnerData data) {
         try {
-            Snowman;
-            type.getEntityClass()
             Object objMobSpawnerData = clazzMobSpawnerData.newInstance();
             Object objNTBTagCompound = methodB.invoke(objMobSpawnerData);
 
