@@ -258,6 +258,7 @@ public class BlockListeners implements Listener {
 
             return;
         }
+        if (event.getBlock() == null) return;
         Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(instance, () -> instance.getHologramHandler().processChange(event.getBlock()), 10L);
     }
 }
