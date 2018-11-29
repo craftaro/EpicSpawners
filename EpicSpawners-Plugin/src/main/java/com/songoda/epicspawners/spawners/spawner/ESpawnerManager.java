@@ -57,7 +57,7 @@ public class ESpawnerManager implements SpawnerManager {
 
     @Override
     public boolean isSpawner(Location location) {
-        return spawnersInWorld.containsKey(location);
+        return spawnersInWorld.containsKey(roundLocation(location));
     }
 
     @Override
