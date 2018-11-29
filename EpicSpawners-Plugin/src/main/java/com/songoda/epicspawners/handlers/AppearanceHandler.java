@@ -117,12 +117,14 @@ public class AppearanceHandler {
     }
 
     public void removeDisplayItem(Spawner spawner) {
-        Entity entity = getDisplayItem(spawner);
-        if (entity == null) return;
-        entity.remove();
+        List<Entity> entites = getDisplayItem(spawner);
+        if (entites == null) return;
+        for (Entity entity : entites) {
+            entity.remove();
+        }
     }
 
-    private Entity getDisplayItem(Spawner spawner) {
+    private List<Entity> getDisplayItem(Spawner spawner) {
         Location location = spawner.getLocation();
         location.add(.5, -.4, .5);
 
@@ -133,7 +135,7 @@ public class AppearanceHandler {
             if (Debugger.isDebug()) {
                 Bukkit.getLogger().info("Songoda-Debug: ArmorStand present");
             }
-            return near.get(0);
+            return near;
         }
         return null;
     }

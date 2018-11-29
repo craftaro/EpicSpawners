@@ -1,4 +1,4 @@
-package com.songoda.epicspawners.utils;
+package com.songoda.epicspawners.utils.gui;
 
 public final class Range {
 

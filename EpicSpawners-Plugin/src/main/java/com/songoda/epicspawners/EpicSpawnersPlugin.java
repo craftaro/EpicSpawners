@@ -188,6 +188,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
 
                         if (location.getWorld() == null || location.getBlock().getType() != Material.SPAWNER) {
                             if (location.getWorld() != null && location.getBlock().getType() != Material.SPAWNER) {
+                                if (location.getBlock() == null) continue;
                                 this.hologramHandler.despawn(location.getBlock());
                             }
                             continue;
