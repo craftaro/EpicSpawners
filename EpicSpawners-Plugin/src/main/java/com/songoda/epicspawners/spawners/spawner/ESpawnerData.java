@@ -272,7 +272,7 @@ public class ESpawnerData implements SpawnerData {
 
     @Override
     public Material getDisplayItem() {
-        return (displayItem == Material.AIR) ? Material.DIRT : displayItem;
+        return displayItem == null ? Material.AIR : displayItem;
     }
 
     @Override

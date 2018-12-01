@@ -10,6 +10,7 @@ import com.songoda.epicspawners.utils.Methods;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -83,14 +84,16 @@ public class AppearanceHandler {
             if (spawner.getFirstStack().getSpawnerData().getDisplayItem() != null)
                 itemStack.setType(spawnerData.getDisplayItem());
 
-            ArmorStand entity = (ArmorStand) getDisplayItem(spawner);
+            List<Entity> entities = getDisplayItem(spawner);
 
-            if (entity != null) {
-                if (entity.getHelmet().getType() != itemStack.getType()) {
+            if (entities != null && !entities.isEmpty()) {
+                for (Entity entity : new ArrayList<>(entities)) {
+                    if (entity == null) {
+                        entities.remove(entity);
+                        continue;
+                    }
+                    if (((ArmorStand) entity).getHelmet().getType() == itemStack.getType()) return;
                     entity.remove();
-                    return;
-                } else {
-                    return;
                 }
             }
 
@@ -100,6 +103,7 @@ public class AppearanceHandler {
             } catch (Exception ex) {
                 spawner.getCreatureSpawner().setSpawnedType(EntityType.DROPPED_ITEM);
 
+                if (itemStack.getType() == Material.AIR) return;
                 location.setPitch(-360);
                 ArmorStand as = (ArmorStand) location.getWorld().spawnEntity(location, EntityType.ARMOR_STAND);
                 as.setSmall(true);
@@ -128,7 +132,7 @@ public class AppearanceHandler {
         Location location = spawner.getLocation();
         location.add(.5, -.4, .5);
 
-        List<Entity> near = (List<Entity>) location.getWorld().getNearbyEntities(location, 2, 4, 2);
+        List<Entity> near = (List<Entity>) location.getWorld().getNearbyEntities(location, .1, .1, .1);
         if (near == null) return null;
         near.removeIf(entity -> entity == null || entity.getType() != EntityType.ARMOR_STAND || entity.getCustomName() == null || !entity.getCustomName().equalsIgnoreCase("EpicSpawners-Display"));
         if (near.size() != 0) {
