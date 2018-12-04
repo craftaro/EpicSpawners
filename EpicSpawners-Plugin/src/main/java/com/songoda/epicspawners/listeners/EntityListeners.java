@@ -48,12 +48,12 @@ public class EntityListeners implements Listener {
 
                     Location spawnLocation = b.getLocation();
 
+                    Spawner spawner = instance.getSpawnerManager().getSpawnerFromWorld(b.getLocation());
+
                     if (instance.getConfig().getBoolean("Main.Prevent Spawners From Exploding"))
                         toCancel.add(b);
                     else if (e.getEntity() instanceof Creeper && instance.getConfig().getBoolean("Spawner Drops.Drop On Creeper Explosion")
                             || e.getEntity() instanceof TNTPrimed && instance.getConfig().getBoolean("Spawner Drops.Drop On TNT Explosion")) {
-
-                        Spawner spawner = instance.getSpawnerManager().getSpawnerFromWorld(b.getLocation());
 
                         String chance = "";
                         if (e.getEntity() instanceof Creeper && instance.getConfig().getBoolean("Spawner Drops.Drop On Creeper Explosion"))
@@ -67,12 +67,12 @@ public class EntityListeners implements Listener {
                                 ItemStack item = stack.getSpawnerData().toItemStack(1, stack.getStackSize());
                                 spawnLocation.getWorld().dropItemNaturally(spawnLocation.clone().add(.5, 0, .5), item);
                             }
-                            instance.getSpawnerManager().removeSpawnerFromWorld(spawnLocation);
-                            instance.getHologramHandler().despawn(spawnLocation.getBlock());
-                            instance.getAppearanceHandler().removeDisplayItem(spawner);
                         }
                     }
-                    instance.getHologramHandler().processChange(b);
+                    instance.getSpawnerManager().removeSpawnerFromWorld(spawnLocation);
+                    instance.getHologramHandler().despawn(spawnLocation.getBlock());
+                    if (spawner != null) instance.getAppearanceHandler().removeDisplayItem(spawner);
+
                     Location nloc = spawnLocation.clone();
                     nloc.add(.5, -.4, .5);
                     List<Entity> near = (List<Entity>) nloc.getWorld().getNearbyEntities(nloc, 8, 8, 8);
