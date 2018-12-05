@@ -87,7 +87,7 @@ public class SpawnerEditor {
 
                 ItemStack icon = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
                 ItemStack item = instance.getHeads().addTexture(icon, spawnerData);
-                if (spawnerData.getDisplayItem() != null) {
+                if (spawnerData.getDisplayItem() != null && spawnerData.getDisplayItem() != Material.AIR) {
                     item.setType(spawnerData.getDisplayItem());
                 }
 
@@ -218,7 +218,7 @@ public class SpawnerEditor {
             ItemStack it = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
 
             ItemStack item = instance.getHeads().addTexture(it, spawnerData);
-            if (spawnerData.getDisplayItem() != null) {
+            if (spawnerData.getDisplayItem() != null && spawnerData.getDisplayItem() != Material.AIR) {
                 item.setType(spawnerData.getDisplayItem());
             }
 
