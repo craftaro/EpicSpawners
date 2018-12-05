@@ -12,6 +12,7 @@ import com.songoda.epicspawners.spawners.spawner.ESpawner;
 import com.songoda.epicspawners.utils.Debugger;
 import com.songoda.epicspawners.utils.Methods;
 import com.songoda.epicspawners.utils.gui.AbstractGUI;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -76,7 +77,9 @@ public class GUISpawnerOverview extends AbstractGUI {
             }
         }
 
-        if (spawner.getSpawnerStacks().size() == 1 && spawner.getFirstStack().getSpawnerData().getDisplayItem() != null) {
+        if (spawner.getSpawnerStacks().size() == 1
+                && spawner.getFirstStack().getSpawnerData().getDisplayItem() != null
+                && spawner.getFirstStack().getSpawnerData().getDisplayItem() != Material.AIR) {
             item.setType(spawner.getFirstStack().getSpawnerData().getDisplayItem());
         }
 
