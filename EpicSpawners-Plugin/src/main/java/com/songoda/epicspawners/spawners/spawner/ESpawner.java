@@ -632,15 +632,15 @@ public class ESpawner implements Spawner {
             return false;
         }
 
-        if ((getSpawnerDataCount() + amount) > max) {
-            ItemStack item = data.toItemStack(1, (getSpawnerDataCount() + amount) - max);
-            if (player.getInventory().firstEmpty() == -1)
-                location.getWorld().dropItemNaturally(location.clone().add(.5, 0, .5), item);
-            else
-                player.getInventory().addItem(item);
-
-            amount = max - currentStackSize;
-        }
+//        if ((getSpawnerDataCount() + amount) > max) {
+//            ItemStack item = data.toItemStack(1, (getSpawnerDataCount() + amount) - max);
+//            if (player.getInventory().firstEmpty() == -1)
+//                location.getWorld().dropItemNaturally(location.clone().add(.5, 0, .5), item);
+//            else
+//                player.getInventory().addItem(item);
+//
+//            amount = max - currentStackSize;
+//        }
 
 
         for (SpawnerStack stack : spawnerStacks) {
