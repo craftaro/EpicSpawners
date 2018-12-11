@@ -180,6 +180,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         checkStorage();
 
         Bukkit.getScheduler().runTaskLater(this, () -> {
+            this.hologramHandler = new HologramHandler(this);
             // Adding in spawners.
             if (storage.containsGroup("spawners")) {
                 for (StorageRow row : storage.getRowsByGroup("spawners")) {
@@ -252,7 +253,6 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
             }
             // Save data initially so that if the person reloads again fast they don't lose all their data.
             this.saveToFile();
-            this.hologramHandler = new HologramHandler(this);
         }, 10);
 
         this.shop = new Shop(this);
