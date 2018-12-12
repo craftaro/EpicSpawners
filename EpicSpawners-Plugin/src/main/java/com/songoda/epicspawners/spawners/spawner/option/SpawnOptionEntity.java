@@ -225,7 +225,8 @@ public class SpawnOptionEntity implements SpawnOption {
 
             for (Material material : spawnBlocks) {
                 Material down = location.getBlock().getRelative(BlockFace.DOWN).getType();
-                if ((location.getBlock().getType() == Material.AIR || location.getBlock().getType().name().toLowerCase().contains("pressure")) && material == Material.AIR)
+                String str = location.getBlock().getType().name().toLowerCase();
+                if ((location.getBlock().getType() == Material.AIR || str.contains("pressure") || str.contains("slab")) && material == Material.AIR)
                     return true;
                 if (material == null) continue;
                 if (down.toString().equalsIgnoreCase(material.name())
