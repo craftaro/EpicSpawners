@@ -146,23 +146,8 @@ public class SpawnOptionEntity implements SpawnOption {
 
     private void spawnEntity(EntityType type, Spawner spawner, SpawnerData data) {
         try {
-<<<<<<< HEAD
             Object objMobSpawnerData = clazzMobSpawnerData.newInstance();
             Object objNTBTagCompound = methodB.invoke(objMobSpawnerData);
-=======
-            Object objMobSpawnerData = null;
-            Object objNBTTagCompound;
-
-
-            TypeTranslations typeTranslation = TypeTranslations.valueOf(type.name());
-            String name = typeTranslation.getType();
-            if (instance.isServerVersionAtLeast(ServerVersion.V1_9)) {
-                objMobSpawnerData = clazzMobSpawnerData.newInstance();
-                objNBTTagCompound = methodB.invoke(objMobSpawnerData);
-
-                methodSetString.invoke(objNBTTagCompound, "id", instance.isServerVersionAtLeast(ServerVersion.V1_11) ? "minecraft:" + name : name);
-            }
->>>>>>> c7b71fe... better entity type translations
 
             String name = type.name().toLowerCase().replace("pig_zombie", "zombie_pigman").replace("snowman", "snow_golem").replace("mushroom_cow", "mooshroom");
             methodSetString.invoke(objNTBTagCompound, "id", "minecraft:" + name);
@@ -179,32 +164,7 @@ public class SpawnOptionEntity implements SpawnOption {
                 double y = (double) (spawner.getY() + random.nextInt(3) - 1);
                 double z = (double) spawner.getZ() + (random.nextDouble() - random.nextDouble()) * (double) spawnRange + 0.5D;
 
-<<<<<<< HEAD
                 Object objEntity = methodChunkRegionLoaderA.invoke(null, objNBTTagCompound, objWorld, x, y, z, false);
-=======
-                Object objEntity;
-                if (instance.isServerVersionAtLeast(ServerVersion.V1_9)) {
-                    objNBTTagCompound = methodB.invoke(objMobSpawnerData);
-                    objEntity = methodChunkRegionLoaderA.invoke(null, objNBTTagCompound, objWorld, x, y, z, false);
-                } else {
-                    objEntity = methodCreateEntityByName.invoke(null, typeTranslation.getCap(), objWorld);
-                    methodSetPositionRotation.invoke(
-                            objEntity, x, y, z, 360.0F, 0.0F);
-                }
-                Object objEntityInsentient = null;
-                if (clazzEntityInsentient.isInstance(objEntity))
-                    objEntityInsentient = clazzEntityInsentient.cast(objEntity);
-
-                Location spot = new Location(spawner.getWorld(), x, y, z);
-                if (!canSpawn(objEntityInsentient, data, spot))
-                    continue;
-
-                /*
-                if (!(boolean)methodEntityInsentientCanSpawn.invoke(objEntityInsentient)) {
-                    continue;
-                } */
-
->>>>>>> c7b71fe... better entity type translations
                 Object objBlockPosition = clazzBlockPosition.getConstructor(clazzEntity).newInstance(objEntity);
                 Object objDamageScaler = methodGetDamageScaler.invoke(objWorld, objBlockPosition);
 
@@ -293,30 +253,6 @@ public class SpawnOptionEntity implements SpawnOption {
         return false;
     }
 
-    public enum TypeTranslations {
-        VINDICATOR("vindication illager", "VindicationIllager"),
-        SNOWMAN("snowman", "SnowMan"),
-        PIG_ZOMBIE("zombie_pigman", "PigZombie"),
-        EVOKER("evocation_illager", "EvocationIllager"),
-        IRON_GOLEM("villager_golem", "VillagerGolem"),
-        MUSHROOM_COW("mooshroom", "MushroomCow");
-
-        private String v1_12;
-        private String v1_8;
-
-        TypeTranslations(String v1_12, String v1_8) {
-            this.v1_12 = v1_12;
-            this.v1_8 = v1_8;
-        }
-
-        public String getType() {
-            return EpicSpawnersPlugin.getInstance().isServerVersionAtLeast(ServerVersion.V1_9) ? v1_12 : v1_8;
-        }
-
-        public String getCap() {
-            return v1_8;
-        }
-    }
 
     @Override
     public SpawnOptionType getType() {
