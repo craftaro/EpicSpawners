@@ -612,7 +612,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         }
 
         if (value.equalsIgnoreCase("MUSHROOM_COW")) {
-            spawnBlock = "MYCEL";
+            spawnBlock = "MYCELIUM";
         }
 
         if (value.equalsIgnoreCase("SQUID") || value.equalsIgnoreCase("ELDER_GUARDIAN") || value.equalsIgnoreCase("COD") ||
