@@ -129,6 +129,7 @@ public class ESpawner implements Spawner {
 
     @Override
     public SpawnerStack getFirstStack() {
+        if (spawnerStacks.size() == 0) return null;
         return spawnerStacks.getFirst();
     }
 
