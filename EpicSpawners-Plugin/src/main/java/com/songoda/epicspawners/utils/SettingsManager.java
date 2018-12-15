@@ -225,6 +225,7 @@ public class SettingsManager implements Listener {
         SPAWNERS_TO_INVENTORY("Add-spawners-To-Inventory-On-Drop", "Main.Add Spawners To Inventory On Drop", false),
         UPGRADE_PARTICLE_TYPE("Upgrade-particle-Type", "Main.Upgrade Particle Type", "SPELL_WITCH"),
         EXTRA_SPAWN_TICKS("Upgrade-particle-Type", "Main.Extra Ticks Added To Each Spawn", 0),
+        MAX_SPAWNERS("-", "Main.Max Spawners Per Player", -1),
 
         COST_EQUATION_XP("XP-cost-equation", "Main.Equations.Calculate XP Upgrade Cost", "{XPCost} * {Level}"),
         COST_EQUATION_ECO("ECO-cost-equation", "Main.Equations.Calculate Economy Upgrade Cost", "{ECOCost} * {Level}"),

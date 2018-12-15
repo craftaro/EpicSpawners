@@ -24,6 +24,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
 /**
@@ -97,6 +98,16 @@ public class BlockListeners implements Listener {
         return false;
     }
 
+    private int maxSpawners(Player player) {
+        int limit = -1;
+        for (PermissionAttachmentInfo permissionAttachmentInfo : player.getEffectivePermissions()) {
+            if (!permissionAttachmentInfo.getPermission().toLowerCase().startsWith("epicspawners.limit")) continue;
+            limit = Integer.parseInt(permissionAttachmentInfo.getPermission().split("\\.")[2]);
+        }
+        if (limit == -1) limit = instance.getConfig().getInt("Main.Max Spawners Per Player");
+        return limit;
+    }
+
     @EventHandler
     public void onSpawnerPlace(BlockPlaceEvent event) {
         //We are ignoring canceled inside the event so that it will still remove holograms when the event is canceled.
@@ -127,6 +138,15 @@ public class BlockListeners implements Listener {
             }
 
             if (doForceCombine(player, spawner)) {
+                event.setCancelled(true);
+                return;
+            }
+
+            int amountPlaced = instance.getSpawnerManager().getAmountPlaced(player);
+            int maxSpawners = maxSpawners(player);
+
+            if (maxSpawners != -1 && amountPlaced > maxSpawners) {
+                player.sendMessage(instance.getLocale().getMessage("event.spawner.toomany", maxSpawners));
                 event.setCancelled(true);
                 return;
             }

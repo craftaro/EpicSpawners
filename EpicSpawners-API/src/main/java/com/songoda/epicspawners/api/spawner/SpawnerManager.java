@@ -2,6 +2,7 @@ package com.songoda.epicspawners.api.spawner;
 
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 
 import java.util.Collection;
 import java.util.Map;
@@ -141,4 +142,5 @@ public interface SpawnerManager {
      */
     Collection<Spawner> getSpawners();
 
+    int getAmountPlaced(Player player);
 }
