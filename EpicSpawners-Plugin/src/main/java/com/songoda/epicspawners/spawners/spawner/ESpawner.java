@@ -18,6 +18,7 @@ import com.songoda.epicspawners.player.MenuType;
 import com.songoda.epicspawners.player.PlayerData;
 import com.songoda.epicspawners.utils.Debugger;
 import com.songoda.epicspawners.utils.Methods;
+import com.songoda.epicspawners.utils.SettingsManager;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.*;
 import org.bukkit.block.CreatureSpawner;
@@ -574,10 +575,11 @@ public class ESpawner implements Spawner {
             player.getInventory().addItem(item);
         else if (!instance.getConfig().getBoolean("Main.Only Drop Placed Spawner") || placedBy != null) { //ToDo: Clean this up.
 
-            if (instance.getConfig().getBoolean("Spawner Drops.Drop On SilkTouch")
+            if (SettingsManager.Setting.SILKTOUCH_SPAWNERS.getBoolean()
                     && player.getItemInHand() != null
                     && player.getItemInHand().hasItemMeta()
                     && player.getItemInHand().getItemMeta().hasEnchant(Enchantment.SILK_TOUCH)
+                    && player.getItemInHand().getEnchantmentLevel(Enchantment.SILK_TOUCH) >= SettingsManager.Setting.SILKTOUCH_MIN_LEVEL.getInt()
                     && player.hasPermission("epicspawners.silkdrop." + stack.getSpawnerData().getIdentifyingName().replace(' ', '_'))
                     || player.hasPermission("epicspawners.no-silk-drop")) {
 
@@ -587,7 +589,7 @@ public class ESpawner implements Spawner {
                 double rand = Math.random() * 100;
 
                 if (rand - ch < 0 || ch == 100) {
-                    if (instance.getConfig().getBoolean("Main.Add Spawners To Inventory On Drop") && player.getInventory().firstEmpty() != -1)
+                    if (SettingsManager.Setting.SPAWNERS_TO_INVENTORY.getBoolean() && player.getInventory().firstEmpty() != -1)
                         player.getInventory().addItem(item);
                     else
                         location.getWorld().dropItemNaturally(location.clone().add(.5, 0, .5), item);
@@ -625,7 +627,7 @@ public class ESpawner implements Spawner {
     public boolean stack(Player player, SpawnerData data, int amount) {
         EpicSpawnersPlugin instance = EpicSpawnersPlugin.getInstance();
 
-        int max = instance.getConfig().getInt("Main.Spawner Max Upgrade");
+        int max = SettingsManager.Setting.SPAWNERS_MAX.getInt();
         int currentStackSize = getSpawnerDataCount();
 
         if (getSpawnerDataCount() == max) {
@@ -655,7 +657,7 @@ public class ESpawner implements Spawner {
             return true;
         }
 
-        if (!instance.getConfig().getBoolean("Main.OmniSpawners Enabled") || !player.hasPermission("epicspawners.omni"))
+        if (!SettingsManager.Setting.OMNI_SPAWNERS.getBoolean() || !player.hasPermission("epicspawners.omni"))
             return false;
 
         ESpawnerStack stack = new ESpawnerStack(data, amount);
@@ -671,7 +673,7 @@ public class ESpawner implements Spawner {
         try {
             int currentStackSize = getSpawnerDataCount();
 
-            if (getSpawnerDataCount() != EpicSpawnersPlugin.getInstance().getConfig().getInt("Main.Spawner Max Upgrade"))
+            if (getSpawnerDataCount() != SettingsManager.Setting.SPAWNERS_MAX.getInt())
                 player.sendMessage(EpicSpawnersPlugin.getInstance().getLocale().getMessage("event.upgrade.success", currentStackSize));
             else
                 player.sendMessage(EpicSpawnersPlugin.getInstance().getLocale().getMessage("event.upgrade.successmaxed", currentStackSize));
@@ -687,8 +689,8 @@ public class ESpawner implements Spawner {
             player.getWorld().spawnParticle(org.bukkit.Particle.valueOf(EpicSpawnersPlugin.getInstance().getConfig().getString("Main.Upgrade Particle Type")), loc, 100, .5, .5, .5);
 
 
-            if (!EpicSpawnersPlugin.getInstance().getConfig().getBoolean("Main.Sounds Enabled")) {
-                return;
+                if (!SettingsManager.Setting.SOUNDS_ENABLED.getBoolean()) {
+                    return;
             }
             if (currentStackSize != EpicSpawnersPlugin.getInstance().getConfig().getInt("Main.Spawner Max Upgrade")) {
                 player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 0.6F, 15.0F);

@@ -77,7 +77,7 @@ public class BlockListeners implements Listener {
         return false;
     }
 
-    public boolean doForceCombine(Player player, ESpawner placedSpawner) {
+    private boolean doForceCombine(Player player, ESpawner placedSpawner) {
         if (instance.getConfig().getInt("Main.Force Combine Radius") == 0) return false;
 
         for (Spawner spawner : instance.getSpawnerManager().getSpawners()) {

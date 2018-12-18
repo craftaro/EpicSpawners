@@ -250,6 +250,7 @@ public class SettingsManager implements Listener {
         EXPLOSION_DROP_CHANCE_TNT("Tnt-explosion-drop-chance", "Spawner Drops.Chance On TNT Explosion", "100%"),
         EXPLOSION_DROP_CHANCE_CREEPER("Creeper-explosion-drop-chance", "Spawner Drops.Chance On Creeper Explosion", "100%"),
         SILKTOUCH_SPAWNERS("Silktouch-spawners", "Spawner Drops.Drop On SilkTouch", true),
+        SILKTOUCH_MIN_LEVEL("-", "Spawner Drops.Minimum Required Silktouch Level", 1),
         SILKTOUCH_NATURAL_SPAWNER_DROP_CHANCE("Silktouch-natural-drop-chance", "Spawner Drops.Chance On Natural Silktouch", "100%"),
         SILKTOUCH_PLACED_SPAWNER_DROP_CHANCE("Silktouch-placed-drop-chance", "Spawner Drops.Chance On Placed Silktouch", "100%"),
 
@@ -283,6 +284,13 @@ public class SettingsManager implements Listener {
             this.option = option;
         }
 
+        public boolean getBoolean() {
+            return EpicSpawnersPlugin.getInstance().getConfig().getBoolean(setting);
+        }
+
+        public int getInt() {
+            return EpicSpawnersPlugin.getInstance().getConfig().getInt(setting);
+        }
     }
 
 }
