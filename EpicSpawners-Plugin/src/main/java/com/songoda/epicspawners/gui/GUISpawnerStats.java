@@ -67,7 +67,7 @@ public class GUISpawnerStats extends AbstractGUI {
             int customGoal = spawnerData.getKillGoal();
             if (customGoal != 0) goal = customGoal;
 
-            ItemStack it = new ItemStack(Material.SKULL_ITEM, 1, (byte) 3);
+            ItemStack it = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
 
             ItemStack item = plugin.getHeads().addTexture(it, spawnerData);
 

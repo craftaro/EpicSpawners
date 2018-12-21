@@ -112,7 +112,7 @@ public abstract class AbstractGUI implements Listener {
     }
 
     public void init(String title, int slots) {
-        if (inventory == null) {
+        if (inventory == null || inventory.getSize() != slots) {
             this.inventory = Bukkit.getServer().createInventory(new GUIHolder(), slots, ChatColor.translateAlternateColorCodes('&', title));
             registerClickables();
             registerOnCloses();

@@ -58,8 +58,6 @@ public class GUISpawnerOverview extends AbstractGUI {
 
     @Override
     protected void constructGUI() {
-        SpawnerData spawnerData = spawner.getFirstStack().getSpawnerData();
-
         int showAmt = spawner.getSpawnerDataCount();
         if (showAmt > 64)
             showAmt = 1;
@@ -76,7 +74,7 @@ public class GUISpawnerOverview extends AbstractGUI {
                 item.setType(spawner.getFirstStack().getSpawnerData().getDisplayItem());
             } else {
                 try {
-                    item = plugin.getHeads().addTexture(item, spawnerData);
+                    item = plugin.getHeads().addTexture(item, spawner.getIdentifyingData());
                 } catch (Exception e) {
                     item = new ItemStack(Material.SPAWNER, showAmt);
                 }
@@ -129,7 +127,7 @@ public class GUISpawnerOverview extends AbstractGUI {
         if (spawner.getBoost() != 0) {
 
             // ToDo: Make it display all boosts.
-            String[] parts = plugin.getLocale().getMessage("interface.spawner.boostedstats", Integer.toString(spawner.getBoost()), spawnerData.getIdentifyingName(), TimeComponent.makeReadable(spawner.getBoostEnd().toEpochMilli() - System.currentTimeMillis())).split("\\|");
+            String[] parts = plugin.getLocale().getMessage("interface.spawner.boostedstats", Integer.toString(spawner.getBoost()), spawner.getIdentifyingData().getIdentifyingName(), TimeComponent.makeReadable(spawner.getBoostEnd().toEpochMilli() - System.currentTimeMillis())).split("\\|");
             lore.add("");
             for (String line : parts)
                 lore.add(TextComponent.formatText(line));
@@ -242,8 +240,6 @@ public class GUISpawnerOverview extends AbstractGUI {
                     inventory.setItem(15, itemECO);
             }
         }
-        plugin.getPlayerActionManager().getPlayerAction(player).setInMenu(MenuType.OVERVIEW);
-        plugin.getPlayerActionManager().getPlayerAction(player).setLastSpawner(spawner);
     }
 
     @Override
@@ -257,7 +253,7 @@ public class GUISpawnerOverview extends AbstractGUI {
             if (type.isRightClick() && spawner.getBoost() == 0) {
                 this.spawner.playerBoost(player);
             } else if (type.isLeftClick() && spawner.getSpawnerStacks().size() == 1) {
-                this.spawner.convertOverview(player, 1);
+                new GUISpawnerConvert(plugin, spawner, player);
             }
         });
 

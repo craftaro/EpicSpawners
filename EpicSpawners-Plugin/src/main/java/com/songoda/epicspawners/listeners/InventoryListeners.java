@@ -98,7 +98,7 @@ public class InventoryListeners implements Listener {
                 } else if (event.getSlot() == 16) {
                     spawner.purchaseBoost(player, 60);
                 }
-            } else if (instance.getPlayerActionManager().getPlayerAction(player).getInMenu() == MenuType.CONVERT) {
+            } else if (instance.getPlayerActionManager().getPlayerAction(player).getInMenu() == MenuType.CONVERT) {/*
                 event.setCancelled(true);
                 ItemStack clicked = event.getCurrentItem();
                 ESpawner spawner = instance.getPlayerActionManager().getPlayerAction(player).getLastSpawner();
@@ -117,7 +117,7 @@ public class InventoryListeners implements Listener {
                     } else if (clicked.getType() == Material.PLAYER_HEAD) {
                         spawner.convert(instance.getSpawnerDataFromItem(clicked), player);
                     }
-                }
+                } */
             } else if (instance.getSpawnerEditor().getEditingData(player).getMenu() != EditingMenu.NOT_IN) {
 
                 if (event.getRawSlot() >= event.getView().getTopInventory().getSize()) return;
