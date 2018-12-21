@@ -182,12 +182,7 @@ public class SettingsManager implements Listener {
         FileConfiguration config = instance.getConfig();
 
         for (Setting setting : Setting.values()) {
-            if (config.contains("settings." + setting.oldSetting)) {
-                config.addDefault(setting.setting, instance.getConfig().get("settings." + setting.oldSetting));
-                config.set("settings." + setting.oldSetting, null);
-            } else {
-                config.addDefault(setting.setting, setting.option);
-            }
+            config.addDefault(setting.setting, setting.option);
         }
 
         config.set("settings", null);
@@ -195,91 +190,90 @@ public class SettingsManager implements Listener {
 
     public enum Setting {
 
-        SPAWNERS_MAX("spawners-max", "Main.Spawner Max Upgrade", 5),
-        NAME_FORMAT("Name-format", "Main.Spawner Name Format", "&e{TYPE} &fSpawner [&c{AMT}x]"),
-        FORCE_COMBINE_RADIUS("Force-Combine-Radius", "Main.Force Combine Radius", 0),
-        FORCE_COMBINE_DENY("Force-Combine-Deny", "Main.Deny Place On Force Combine", false),
-        SEARCH_RADIUS("Search-Radius", "Main.Radius To Search Around Spawners", "8x4x8"),
-        ALTER_DELAY("Alter-Delay", "Main.Default Minecraft Spawner Cooldowns", true),
-        ALERT_PLACE_BREAK("Alert-place-break", "Main.Alerts On Place And Break", true),
-        SNEAK_FOR_STACK("Sneak-for-stack", "Main.Sneak To Receive A Stacked Spawner", true),
-        SPAWNER_HOLOGRAMS("spawners-holograms", "Main.Spawners Have Holograms", true),
-        ONLY_DROP_PLACED("Only-drop-placed", "Main.Only Drop Placed Spawner", false),
-        ONLY_CHARGE_NATURAL("Only-charge-natural", "Main.Only Charge Natural Spawners", false),
-        CUSTOM_SPAWNER_TICK_RATE("123", "Main.Custom Spawner Tick Rate", 10),
-        RANDOM_LOW_HIGH("Random-Low & Random-High", "Main.Random Amount Added To Each Spawn", "1:3"),
-        SOUNDS_ENABLED("Sounds", "Main.Sounds Enabled", true),
-        DISPLAY_LEVEL_ONE("Display-Level-One", "Main.Display Level In Spawner Title If Level 1", false),
-        OMNI_SPAWNERS("OmniSpawners", "Main.OmniSpawners Enabled", true),
-        EGGS_CONVERT_SPAWNERS("Eggs-convert-spawners", "Main.Convert Spawners With Eggs", true),
-        HELPFUL_TIPS_ENABLED("Helpful-Tips", "Main.Display Helpful Tips For Operators", true),
-        UPGRADE_WITH_ECO_ENABLED("Upgrade-with-eco", "Main.Upgrade With Economy", true),
-        UPGRADE_WITH_XP_ENABLED("Upgrade-with-xp", "Main.Upgrade With XP", true),
-        UPGRADE_COST_ECO("Upgrade-eco-cost", "Main.Cost To Upgrade With Economy", 10000),
-        UPGRADE_COST_XP("Upgrade-xp-cost", "Main.Cost To Upgrade With XP", 50),
-        USE_CUSTOM_UPGRADE_EQUATION("Use-equations", "Main.Use Custom Equations for Upgrade Costs", false),
-        LIQUID_REPEL_RADIUS("spawners-repel-radius", "Main.Spawner Repel Liquid Radius", 1),
-        REDSTONE_ACTIVATE("redstone-activate", "Main.Redstone Power Deactivates Spawners", true),
-        DISPLAY_HELP_BUTTON("How-to", "Main.Display Help Button In Spawner Overview", true),
-        SPAWNERS_DONT_EXPLODE("spawners-dont-explode", "Main.Prevent Spawners From Exploding", false),
-        SPAWNERS_TO_INVENTORY("Add-spawners-To-Inventory-On-Drop", "Main.Add Spawners To Inventory On Drop", false),
-        UPGRADE_PARTICLE_TYPE("Upgrade-particle-Type", "Main.Upgrade Particle Type", "SPELL_WITCH"),
-        EXTRA_SPAWN_TICKS("Upgrade-particle-Type", "Main.Extra Ticks Added To Each Spawn", 0),
-        MAX_SPAWNERS("-", "Main.Max Spawners Per Player", -1),
+        SPAWNERS_MAX("Main.Spawner Max Upgrade", 5),
+        NAME_FORMAT("Main.Spawner Name Format", "&e{TYPE} &fSpawner [&c{AMT}x]"),
+        FORCE_COMBINE_RADIUS("Main.Force Combine Radius", 0),
+        FORCE_COMBINE_DENY("Main.Deny Place On Force Combine", false),
+        SEARCH_RADIUS("Main.Radius To Search Around Spawners", "8x4x8"),
+        ALTER_DELAY("Main.Default Minecraft Spawner Cooldowns", true),
+        ALERT_PLACE_BREAK("Main.Alerts On Place And Break", true),
+        SNEAK_FOR_STACK("Main.Sneak To Receive A Stacked Spawner", true),
+        SPAWNER_HOLOGRAMS("Main.Spawners Have Holograms", true),
+        ONLY_DROP_PLACED("Main.Only Drop Placed Spawner", false),
+        ONLY_CHARGE_NATURAL("Main.Only Charge Natural Spawners", false),
+        CUSTOM_SPAWNER_TICK_RATE("Main.Custom Spawner Tick Rate", 10),
+        RANDOM_LOW_HIGH("Main.Random Amount Added To Each Spawn", "1:3"),
+        SOUNDS_ENABLED("Main.Sounds Enabled", true),
+        DISPLAY_LEVEL_ONE("Main.Display Level In Spawner Title If Level 1", false),
+        OMNI_SPAWNERS("Main.OmniSpawners Enabled", true),
+        EGGS_CONVERT_SPAWNERS("Main.Convert Spawners With Eggs", true),
+        HELPFUL_TIPS_ENABLED("Main.Display Helpful Tips For Operators", true),
+        UPGRADE_WITH_ECO_ENABLED("Main.Upgrade With Economy", true),
+        UPGRADE_WITH_XP_ENABLED("Main.Upgrade With XP", true),
+        UPGRADE_COST_ECO("Main.Cost To Upgrade With Economy", 10000),
+        UPGRADE_COST_XP("Main.Cost To Upgrade With XP", 50),
+        USE_CUSTOM_UPGRADE_EQUATION("Main.Use Custom Equations for Upgrade Costs", false),
+        LIQUID_REPEL_RADIUS("Main.Spawner Repel Liquid Radius", 1),
+        REDSTONE_ACTIVATE("Main.Redstone Power Deactivates Spawners", true),
+        DISPLAY_HELP_BUTTON("Main.Display Help Button In Spawner Overview", true),
+        SPAWNERS_DONT_EXPLODE("Main.Prevent Spawners From Exploding", false),
+        SPAWNERS_TO_INVENTORY("Main.Add Spawners To Inventory On Drop", false),
+        UPGRADE_PARTICLE_TYPE("Main.Upgrade Particle Type", "SPELL_WITCH"),
+        EXTRA_SPAWN_TICKS("Main.Extra Ticks Added To Each Spawn", 0),
+        MAX_SPAWNERS("Main.Max Spawners Per Player", -1),
 
-        COST_EQUATION_XP("XP-cost-equation", "Main.Equations.Calculate XP Upgrade Cost", "{XPCost} * {Level}"),
-        COST_EQUATION_ECO("ECO-cost-equation", "Main.Equations.Calculate Economy Upgrade Cost", "{ECOCost} * {Level}"),
-        SPAWNER_EQUATION_SPAWNS("spawners-Spawn-Equation", "Main.Equations.Mobs Spawned Per Spawn", "{MULTI} + {RAND}"),
+        COST_EQUATION_XP("Main.Equations.Calculate XP Upgrade Cost", "{XPCost} * {Level}"),
+        COST_EQUATION_ECO("Main.Equations.Calculate Economy Upgrade Cost", "{ECOCost} * {Level}"),
+        SPAWNER_EQUATION_SPAWNS("Main.Equations.Mobs Spawned Per Spawn", "{MULTI} + {RAND}"),
 
-        NAMED_SPAWNER_TIERS("-", "Main.Named Spawners Tiers", false),
-        TIER_NAMES("-", "Main.Tier Names", Arrays.asList("&7Common", "&6Uncommon", "&4Rare", "&5Mythic")),
+        NAMED_SPAWNER_TIERS("Main.Named Spawners Tiers", false),
+        TIER_NAMES("Main.Tier Names", Arrays.asList("&7Common", "&6Uncommon", "&4Rare", "&5Mythic")),
 
-        BOOST_MULTIPLIER("Boost-Multiplier", "Spawner Boosting.Boost Multiplier", "0.5"),
-        MAX_PLAYER_BOOST("Max-Player-Boost", "Spawner Boosting.Max Multiplier For A Spawner Boost", 5),
-        BOOST_COST("Boost-cost", "Spawner Boosting.Item Charged For A Boost", "DIAMOND:2"),
+        BOOST_MULTIPLIER("Spawner Boosting.Boost Multiplier", "0.5"),
+        MAX_PLAYER_BOOST("Spawner Boosting.Max Multiplier For A Spawner Boost", 5),
+        BOOST_COST("Spawner Boosting.Item Charged For A Boost", "DIAMOND:2"),
 
-        HOSTILE_MOBS_ATTACK_SECOND("Hostile-mobs-attack-second", "entity.Hostile Mobs Attack Second", false),
+        HOSTILE_MOBS_ATTACK_SECOND("entity.Hostile Mobs Attack Second", false),
 
-        ONLY_DROP_STACKED("Only-drop-stacked", "Spawner Drops.Only Drop Stacked Spawners", false),
-        MOB_KILLING_COUNT("Mob-kill-counting", "Spawner Drops.Allow Killing Mobs To Drop Spawners", true),
-        COUNT_UNNATURAL_KILLS("Count-unnatural-kills", "Spawner Drops.Count Unnatural Kills Towards Spawner Drop", false),
-        KILL_GOAL("Goal", "Spawner Drops.Kills Needed for Drop", 100),
-        ALERT_INTERVAL("Alert-every", "Spawner Drops.Alert Every X Before Drop", 10),
-        DROP_ON_CREEPER_EXPLOSION("Drop-on-creeper-explosion", "Spawner Drops.Drop On Creeper Explosion", true),
-        DROP_ON_TNT_EXPLOSION("Drop-on-tnt-explosion", "Spawner Drops.Drop On TNT Explosion", true),
-        EXPLOSION_DROP_CHANCE_TNT("Tnt-explosion-drop-chance", "Spawner Drops.Chance On TNT Explosion", "100%"),
-        EXPLOSION_DROP_CHANCE_CREEPER("Creeper-explosion-drop-chance", "Spawner Drops.Chance On Creeper Explosion", "100%"),
-        SILKTOUCH_SPAWNERS("Silktouch-spawners", "Spawner Drops.Drop On SilkTouch", true),
-        SILKTOUCH_MIN_LEVEL("-", "Spawner Drops.Minimum Required Silktouch Level", 1),
-        SILKTOUCH_NATURAL_SPAWNER_DROP_CHANCE("Silktouch-natural-drop-chance", "Spawner Drops.Chance On Natural Silktouch", "100%"),
-        SILKTOUCH_PLACED_SPAWNER_DROP_CHANCE("Silktouch-placed-drop-chance", "Spawner Drops.Chance On Placed Silktouch", "100%"),
+        ONLY_DROP_STACKED("Spawner Drops.Only Drop Stacked Spawners", false),
+        MOB_KILLING_COUNT("Spawner Drops.Allow Killing Mobs To Drop Spawners", true),
+        COUNT_UNNATURAL_KILLS("Spawner Drops.Count Unnatural Kills Towards Spawner Drop", false),
+        KILL_GOAL("Spawner Drops.Kills Needed for Drop", 100),
+        ALERT_INTERVAL("Spawner Drops.Alert Every X Before Drop", 10),
+        DROP_ON_CREEPER_EXPLOSION("Spawner Drops.Drop On Creeper Explosion", true),
+        DROP_ON_TNT_EXPLOSION("Spawner Drops.Drop On TNT Explosion", true),
+        EXPLOSION_DROP_CHANCE_TNT("Spawner Drops.Chance On TNT Explosion", "100%"),
+        EXPLOSION_DROP_CHANCE_CREEPER("Spawner Drops.Chance On Creeper Explosion", "100%"),
+        SILKTOUCH_SPAWNERS("Spawner Drops.Drop On SilkTouch", true),
+        SILKTOUCH_MIN_LEVEL("Spawner Drops.Minimum Required Silktouch Level", 1),
+        SILKTOUCH_NATURAL_SPAWNER_DROP_CHANCE("Spawner Drops.Chance On Natural Silktouch", "100%"),
+        SILKTOUCH_PLACED_SPAWNER_DROP_CHANCE("Spawner Drops.Chance On Placed Silktouch", "100%"),
 
-        EXIT_ICON("Exit-Icon", "Interfaces.Exit Icon", "OAK_DOOR"),
-        BUY_ICON("Buy-Icon", "Interfaces.Buy Icon", "EMERALD"),
-        ECO_ICON("ECO-Icon", "Interfaces.Economy Icon", "SUNFLOWER"),
-        XP_ICON("XP-Icon", "Interfaces.XP Icon", "EXPERIENCE_BOTTLE"),
-        GLASS_TYPE_1("Glass-Type-1", "Interfaces.Glass Type 1", 7),
-        GLASS_TYPE_2("Glass-Type-2", "Interfaces.Glass Type 2", 11),
-        GLASS_TYPE_3("Glass-Type-3", "Interfaces.Glass Type 3", 3),
-        RAINBOW_GLASS("Rainbow-Glass", "Interfaces.Replace Glass Type 1 With Rainbow Glass", false),
+        EXIT_ICON("Interfaces.Exit Icon", "OAK_DOOR"),
+        BUY_ICON("Interfaces.Buy Icon", "EMERALD"),
+        ECO_ICON("Interfaces.Economy Icon", "SUNFLOWER"),
+        XP_ICON("Interfaces.XP Icon", "EXPERIENCE_BOTTLE"),
+        GLASS_TYPE_1("Interfaces.Glass Type 1", 7),
+        GLASS_TYPE_2("Interfaces.Glass Type 2", 11),
+        GLASS_TYPE_3("Interfaces.Glass Type 3", 3),
+        RAINBOW_GLASS("Interfaces.Replace Glass Type 1 With Rainbow Glass", false),
 
-        DATABASE_SUPPORT("-", "Database.Activate Mysql Support", false),
-        DATABASE_IP("-", "Database.IP", "127.0.0.1"),
-        DATABASE_PORT("-", "Database.Port", 3306),
-        DATABASE_NAME("-", "Database.Database Name", "EpicSpawners"),
-        DATABASE_PREFIX("-", "Database.Prefix", "ES-"),
-        DATABASE_USERNAME("-", "Database.Username", "PUT_USERNAME_HERE"),
-        DATABASE_PASSWORD("-", "Database.Password", "PUT_PASSWORD_HERE"),
+        DATABASE_SUPPORT("Database.Activate Mysql Support", false),
+        DATABASE_IP("Database.IP", "127.0.0.1"),
+        DATABASE_PORT("Database.Port", 3306),
+        DATABASE_NAME("Database.Database Name", "EpicSpawners"),
+        DATABASE_PREFIX("Database.Prefix", "ES-"),
+        DATABASE_USERNAME("Database.Username", "PUT_USERNAME_HERE"),
+        DATABASE_PASSWORD("Database.Password", "PUT_PASSWORD_HERE"),
 
-        DOWNLOAD_FILES("-", "System.Download Needed Data Files", true),
-        LANGUGE_MODE("-", "System.Language Mode", "en_US"),
-        DEBUG_MODE("Debug-Mode", "System.Debugger Enabled", false);
+        DOWNLOAD_FILES("System.Download Needed Data Files", true),
+        LANGUGE_MODE("System.Language Mode", "en_US"),
+        DEBUG_MODE("System.Debugger Enabled", false);
 
-        private final String setting, oldSetting;
+        private final String setting;
         private final Object option;
 
-        private Setting(String oldSetting, String setting, Object option) {
-            this.oldSetting = oldSetting;
+        Setting(String setting, Object option) {
             this.setting = setting;
             this.option = option;
         }

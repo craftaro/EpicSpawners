@@ -331,7 +331,7 @@ public class ESpawner implements Spawner {
         try {
             EpicSpawnersPlugin instance = EpicSpawnersPlugin.getInstance();
             if (!player.hasPermission("epicspawners.overview")) return;
-            new GUISpawnerOverview(instance, this, player).openFor(player);
+            new GUISpawnerOverview(instance, this, player);
         } catch (Exception e) {
             Debugger.runReport(e);
         }
@@ -561,7 +561,7 @@ public class ESpawner implements Spawner {
         int stackSize = 1;
 
         if (player.isSneaking() && EpicSpawnersPlugin.getInstance().getConfig().getBoolean("Main.Sneak To Receive A Stacked Spawner")
-                || instance.getConfig().getBoolean("Spawner Drops.Only Drop Stacked Spawners")) {
+                || SettingsManager.Setting.ONLY_DROP_STACKED.getBoolean()) {
             stackSize = stack.getStackSize();
         }
 

@@ -1,81 +1,41 @@
 package com.songoda.epicspawners.utils.gui;
 
-import com.google.common.base.Preconditions;
+import com.songoda.epicspawners.EpicSpawnersPlugin;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.HumanEntity;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.*;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
-public abstract class AbstractGUI implements GUI {
+public abstract class AbstractGUI implements Listener {
 
     private static boolean listenersInitialized = false;
-    private final Inventory inventory;
-    private final Clickable[] clickActions;
-    private final Map<Range, Clickable> rangedClickActions = new HashMap<>();
-    private boolean initialized = false;
+    protected Player player;
+    protected Inventory inventory = null;
+    protected boolean cancelBottom = false;
+    private Map<Range, Clickable> clickables = new HashMap<>();
+    private List<OnClose> onCloses = new ArrayList<>();
+    private Map<Range, Boolean> draggableRanges = new HashMap<>();
 
-    /**
-     * Construct a new GUI based on an {@link InventoryType}'s default size, as well
-     * as a provided name
-     *
-     * @param type          the type of inventory to create
-     * @param inventoryName the name of the GUI
-     */
-    protected AbstractGUI(InventoryType type, String inventoryName) {
-        this.inventory = Bukkit.createInventory(new GUIHolder(), type, inventoryName);
-        this.clickActions = new Clickable[inventory.getSize()];
+    public AbstractGUI(Player player) {
+        this.player = player;
     }
 
-    /**
-     * Construct a new Chest GUI with a particular size and a provided name
-     *
-     * @param size          the size of the GUI to create (must be a multiple of 9)
-     * @param inventoryName the name of the inventory
-     */
-    protected AbstractGUI(int size, String inventoryName) {
-        this.inventory = Bukkit.createInventory(new GUIHolder(), size, inventoryName);
-        this.clickActions = new Clickable[inventory.getSize()];
-    }
-
-    /**
-     * Construct a new GUI based on an {@link InventoryType}'s default size
-     *
-     * @param type the type of inventory to create
-     */
-    protected AbstractGUI(InventoryType type) {
-        this.inventory = Bukkit.createInventory(new GUIHolder(), type);
-        this.clickActions = new Clickable[inventory.getSize()];
-    }
-
-    /**
-     * Construct a new Chest GUI with a particular size
-     *
-     * @param size the size of the GUI to create (must be a multiple of 9)
-     */
-    protected AbstractGUI(int size) {
-        this.inventory = Bukkit.createInventory(new GUIHolder(), size);
-        this.clickActions = new Clickable[inventory.getSize()];
-    }
-
-    /**
-     * Initialize the GUI class and register its internal event listeners. This MUST be called before any
-     * GUI functionality / implementations may be used. If this method has already been called and the
-     * GUI API has been initialized, the call will fail silently
-     *
-     * @param plugin the plugin initializing the GUI listeners
-     */
     public static void initializeListeners(JavaPlugin plugin) {
         if (listenersInitialized) return;
 
@@ -83,231 +43,173 @@ public abstract class AbstractGUI implements GUI {
             @EventHandler
             public void onClickGUI(InventoryClickEvent event) {
                 Inventory inventory = event.getClickedInventory();
-                AbstractGUI gui = (AbstractGUI) getGUIFromInventory(inventory);
+                if (inventory == null) return;
+                AbstractGUI gui = getGUIFromInventory(inventory);
+                Player player = (Player) event.getWhoClicked();
+
+                boolean bottom = false;
+
+                InventoryType type = event.getClickedInventory().getType();
+                if (type != InventoryType.CHEST && type != InventoryType.PLAYER) return;
+
+                if (gui == null && event.getWhoClicked().getOpenInventory().getTopInventory() != null) {
+                    Inventory top = event.getWhoClicked().getOpenInventory().getTopInventory();
+                    gui = getGUIFromInventory(top);
+
+                    if (gui != null && gui.cancelBottom) event.setCancelled(true);
+                    bottom = true;
+                }
+
                 if (gui == null) return;
 
-                event.setCancelled(true);
-                gui.invokeClickAction((Player) event.getWhoClicked(), inventory, event.getCursor(), event.getRawSlot(), event.getClick());
-            }
+                if (!bottom) event.setCancelled(true);
 
-            @EventHandler
-            public void onOpenGUI(InventoryOpenEvent event) {
-                Inventory inventory = event.getInventory();
-                AbstractGUI gui = (AbstractGUI) getGUIFromInventory(inventory);
-                if (gui == null) return;
+                if (!gui.draggableRanges.isEmpty() && !bottom) {
+                    for (Map.Entry<Range, Boolean> entry : gui.draggableRanges.entrySet()) {
+                        Range range = entry.getKey();
+                        if (range.getMax() == range.getMin() && event.getSlot() == range.getMin()
+                                || event.getSlot() >= range.getMin() && event.getSlot() <= range.getMax()) {
+                            event.setCancelled(!entry.getValue());
+                            if (!entry.getValue()) break;
+                        }
+                    }
+                }
+                
+                Map<Range, Clickable> entries = new HashMap<>(gui.clickables);
 
-                gui.onGUIOpen((Player) event.getPlayer());
+                for (Map.Entry<Range, Clickable> entry : entries.entrySet()) {
+                    Range range = entry.getKey();
+                    if (range.isBottom() && !bottom || !range.isBottom() && bottom || range.getClickType() != null && range.getClickType() != event.getClick())
+                        continue;
+                    if (event.getSlot() >= range.getMin() && event.getSlot() <= range.getMax()) {
+                        entry.getValue().Clickable(player, inventory, event.getCursor(), event.getSlot(), event.getClick());
+                        player.playSound(player.getLocation(), entry.getKey().getOnClickSound(), 1F, 1F);
+                    }
+                }
             }
 
             @EventHandler
             public void onCloseGUI(InventoryCloseEvent event) {
                 Inventory inventory = event.getInventory();
-                AbstractGUI gui = (AbstractGUI) getGUIFromInventory(inventory);
-                if (gui == null) return;
+                AbstractGUI gui = getGUIFromInventory(inventory);
 
-                gui.onGUIClose((Player) event.getPlayer());
+                if (gui == null || gui.inventory == null) return;
+
+                for (OnClose onClose : gui.onCloses) {
+                    onClose.OnClose((Player) event.getPlayer(), inventory);
+                }
             }
 
-            private GUI getGUIFromInventory(Inventory inventory) {
-                if (inventory == null) return null;
-
+            private AbstractGUI getGUIFromInventory(Inventory inventory) {
+                if (inventory.getHolder() == null) return null;
                 InventoryHolder holder = inventory.getHolder();
                 if (!(holder instanceof GUIHolder)) return null;
 
-                return ((GUIHolder) holder).getGUI();
+                return ((AbstractGUI.GUIHolder) holder).getGUI();
             }
         }, plugin);
-
         listenersInitialized = true;
     }
 
-    @Override
-    public final Inventory getInventory() {
-        if (!initialized) {
-            this.init();
+    public void init(String title, int slots) {
+        if (inventory == null) {
+            this.inventory = Bukkit.getServer().createInventory(new GUIHolder(), slots, ChatColor.translateAlternateColorCodes('&', title));
+            registerClickables();
+            registerOnCloses();
         }
-
-        return inventory;
-    }
-
-    @Override
-    public final void openFor(Player player) {
-        Preconditions.checkNotNull(player, "Cannot open inventory for null player");
-
-        if (!initialized) {
-            this.init();
-        }
-
+        constructGUI();
+        initializeListeners(EpicSpawnersPlugin.getInstance());
         player.openInventory(inventory);
     }
 
-    @Override
-    public final boolean hasClickAction(int slot) {
-        if (!initialized) {
-            this.init();
+    protected abstract void constructGUI();
+
+    protected void addDraggable(Range range, boolean option) {
+        this.draggableRanges.put(range, option);
+    }
+
+    protected void removeDraggable() {
+        this.draggableRanges.clear();
+    }
+
+    protected abstract void registerClickables();
+
+    protected abstract void registerOnCloses();
+
+    protected ItemStack createButton(int slot, Inventory inventory, ItemStack item, String name, String... lore) {
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
+        if (lore != null && lore.length != 0) {
+            List<String> newLore = new ArrayList<>();
+            for (String line : lore) newLore.add(ChatColor.translateAlternateColorCodes('&', line));
+            meta.setLore(newLore);
         }
-
-        return slot >= 0 && slot < inventory.getSize() && clickActions[slot] != null;
+        item.setItemMeta(meta);
+        inventory.setItem(slot, item);
+        return item;
     }
 
-    @Override
-    public void dispose() {
-        Arrays.setAll(clickActions, null);
-        this.rangedClickActions.clear();
-        this.inventory.getViewers().forEach(HumanEntity::closeInventory);
+    protected ItemStack createButton(int slot, ItemStack item, String name, String... lore) {
+        return createButton(slot, inventory, item, name, lore);
     }
 
-    /**
-     * Register a new {@link Clickable} action for the provided slot
-     *
-     * @param slot   the slot at which a clickable action should be registered
-     * @param action the action to register
-     */
-    protected final void registerClickableObject(int slot, Clickable action) {
-        Preconditions.checkArgument(slot >= 0 || slot < inventory.getSize(), "Action slots must be between 0 and %s", inventory.getSize());
-        Preconditions.checkNotNull(action, "Cannot reigster a null action");
-
-        this.clickActions[slot] = action;
+    protected ItemStack createButton(int slot, Inventory inventory, Material material, String name, String... lore) {
+        return createButton(slot, inventory, new ItemStack(material), name, lore);
     }
 
-    /**
-     * Register a new {@link Clickable} action for the provided range. If the
-     * range overlaps that of an existing range or either bounds of the range exceed
-     * the size of the inventory, an exception will be thrown. Additionally, for any
-     * actions registered for an individual slot within the registered range, they
-     * will be removed and replaced with the action registered in this range.
-     *
-     * @param from   the beginning of the range (inclusive). Must be less than "to"
-     * @param to     the end of the range (inclusive). Must be greater than "from"
-     * @param action the action to register
-     */
-    protected final void registerClickableRange(int from, int to, Clickable action) {
-        Preconditions.checkArgument(from >= 0 && from < inventory.getSize(), "Action slots must be between 0 and %s", inventory.getSize());
-        Preconditions.checkArgument(to >= 0 && to < inventory.getSize(), "Action slots must be between 0 and %s", inventory.getSize());
-        Preconditions.checkArgument(from < to, "From must be less than to");
-        Preconditions.checkNotNull(action, "Cannot register a null action");
-
-        for (Range range : rangedClickActions.keySet()) {
-            if (range.isWithin(from) || range.isWithin(to)) {
-                throw new IllegalStateException("Range overlaps that of another range (Existing range: " + range.getLow() + " - " + range.getHigh() + ")");
-            }
-        }
-
-        for (int i = from; i < to; i++) {
-            this.clickActions[i] = null;
-        }
-
-        this.rangedClickActions.put(Range.from(from, to), action);
+    protected ItemStack createButton(int slot, Material material, String name, String... lore) {
+        return createButton(slot, inventory, new ItemStack(material), name, lore);
     }
 
-    /**
-     * Remove an action from the specified slot. This does not affect ranged actions
-     *
-     * @param slot the slot to remove the action from
-     */
-    protected final void removeActionFrom(int slot) {
-        Preconditions.checkArgument(slot >= 0 || slot < inventory.getSize(), "Cannot remove action from invalid slot. Must be between 0 and %s", inventory.getSize());
-        this.clickActions[slot] = null;
+    protected ItemStack createButton(int slot, Material material, String name, ArrayList<String> lore) {
+        return createButton(slot, material, name, lore.toArray(new String[0]));
     }
 
-    /**
-     * Remove a ranged action such that it includes the specified slot
-     *
-     * @param slot the slot within the range for which to remove the action from
-     * @return true if successful, false if no changes were made
-     */
-    protected final boolean removeRangedActionForSlot(int slot) {
-        Preconditions.checkArgument(slot >= 0 || slot < inventory.getSize(), "Cannot remove action from invalid slot. Must be between 0 and %s", inventory.getSize());
-
-        Iterator<Range> ranges = rangedClickActions.keySet().iterator();
-        while (ranges.hasNext()) {
-            Range range = ranges.next();
-            if (range.isWithin(slot)) {
-                ranges.remove();
-                return true;
-            }
-        }
-
-        return false;
+    protected void registerClickable(int min, int max, ClickType clickType, boolean bottom, Clickable clickable) {
+        clickables.put(new Range(min, max, clickType, bottom), clickable);
     }
 
-    /**
-     * Initialize the inventory's items. It is from here that the GUI's inventory should have ItemStacks added
-     *
-     * @param inventory the GUI's underlying inventory
-     */
-    protected abstract void initInventoryItems(Inventory inventory);
-
-    /**
-     * Initialize the inventory's clickable objects. It is from here that {@link #registerClickableObject(int, Clickable)}
-     * should be called in GUI implementations
-     */
-    protected abstract void initClickableObjects();
-
-    /**
-     * Called the moment before the GUI has been opened by a player
-     *
-     * @param player the player opening the GUI
-     */
-    protected void onGUIOpen(Player player) {
+    protected void registerClickable(int min, int max, ClickType clickType, Clickable clickable) {
+        registerClickable(min, max, clickType, false, clickable);
     }
 
-    /**
-     * Called the moment before the GUI has been closed by the player
-     *
-     * @param player the player closing the GUI
-     */
-    protected void onGUIClose(Player player) {
+    protected void registerClickable(int slot, ClickType clickType, Clickable clickable) {
+        registerClickable(slot, slot, clickType, false, clickable);
     }
 
-    private void init() {
-        Preconditions.checkArgument(listenersInitialized, "The GUI class has not yet been initialized. Invoke GUI#initializeListeners(JavaPlugin)");
-        Preconditions.checkArgument(!initialized, "This GUI has already been initialized");
-
-        this.initInventoryItems(inventory);
-        this.initClickableObjects();
-        this.initialized = true;
+    protected void registerClickable(int min, int max, Clickable clickable) {
+        registerClickable(min, max, null, false, clickable);
     }
 
-    private boolean invokeClickAction(Player player, Inventory inventory, ItemStack cursor, int slot, ClickType type) {
-        Preconditions.checkNotNull(player, "A null player cannot click the inventory");
-        Preconditions.checkNotNull(inventory, "A null inventory cannot be clicked");
-        Preconditions.checkArgument(slot >= 0 && slot < inventory.getSize(), "The slot exceeds the size limitations of the inventory (0 - %s)", inventory.getSize());
-        Preconditions.checkNotNull(type, "A null click type cannot be performed");
-
-        Clickable action = clickActions[slot];
-        if (action == null) {
-            for (Entry<Range, Clickable> rangedAction : rangedClickActions.entrySet()) {
-                if (!rangedAction.getKey().isWithin(slot)) continue;
-                action = rangedAction.getValue();
-            }
-        }
-
-        if (action == null) return false; // If still no action, just give up
-
-        action.click(player, inventory, cursor, slot, type);
-        return true;
+    protected void registerClickable(int slot, boolean bottom, Clickable clickable) {
+        registerClickable(slot, slot, null, bottom, clickable);
     }
 
-    /**
-     * Represents an InventoryHolder implementation for GUIs
-     */
-    private class GUIHolder implements InventoryHolder {
+    protected void registerClickable(int slot, Clickable clickable) {
+        registerClickable(slot, slot, null, false, clickable);
+    }
+
+    protected void resetClickables() {
+        clickables.clear();
+    }
+
+    protected void registerOnClose(OnClose onClose) {
+        onCloses.add(onClose);
+    }
+
+    public Inventory getInventory() {
+        return inventory;
+    }
+
+    public class GUIHolder implements InventoryHolder {
 
         @Override
         public Inventory getInventory() {
             return inventory;
         }
 
-        /**
-         * Get the GUI instance associated with this holder
-         *
-         * @return the associated GUI
-         */
-        public GUI getGUI() {
+        public AbstractGUI getGUI() {
             return AbstractGUI.this;
         }
-
     }
-
 }

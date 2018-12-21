@@ -11,6 +11,7 @@ import com.songoda.epicspawners.player.MenuType;
 import com.songoda.epicspawners.spawners.spawner.ESpawner;
 import com.songoda.epicspawners.utils.Debugger;
 import com.songoda.epicspawners.utils.Methods;
+import com.songoda.epicspawners.utils.SettingsManager;
 import com.songoda.epicspawners.utils.gui.AbstractGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -45,19 +46,18 @@ public class GUISpawnerOverview extends AbstractGUI {
     private int infoPage = 1;
 
     public GUISpawnerOverview(EpicSpawnersPlugin plugin, ESpawner spawner, Player player) {
-        super(27, TextComponent.formatTitle(Objects.requireNonNull(Methods.compileName(spawner.getIdentifyingData(), spawner.getSpawnerDataCount(), false))));
+        super(player);
         this.spawner = spawner;
         this.player = player;
         this.plugin = plugin;
 
         this.config = plugin.getConfig();
         this.locale = plugin.getLocale();
+        init(TextComponent.formatTitle(Objects.requireNonNull(Methods.compileName(spawner.getIdentifyingData(), spawner.getSpawnerDataCount(), false))), 27);
     }
 
     @Override
-    protected void initInventoryItems(Inventory inventory) {
-
-
+    protected void constructGUI() {
         SpawnerData spawnerData = spawner.getFirstStack().getSpawnerData();
 
         int showAmt = spawner.getSpawnerDataCount();
@@ -67,20 +67,20 @@ public class GUISpawnerOverview extends AbstractGUI {
             showAmt = 1;
 
         ItemStack item = new ItemStack(Material.PLAYER_HEAD, showAmt, (byte) 3);
+
         if (spawner.getSpawnerStacks().size() != 1) {
             item = plugin.getHeads().addTexture(item, plugin.getSpawnerManager().getSpawnerData("omni"));
         } else {
-            try {
-                item = plugin.getHeads().addTexture(item, spawnerData);
-            } catch (Exception e) {
-                item = new ItemStack(Material.SPAWNER, showAmt);
+            Material displayItem = spawner.getFirstStack().getSpawnerData().getDisplayItem();
+            if (displayItem != null && displayItem != Material.AIR) {
+                item.setType(spawner.getFirstStack().getSpawnerData().getDisplayItem());
+            } else {
+                try {
+                    item = plugin.getHeads().addTexture(item, spawnerData);
+                } catch (Exception e) {
+                    item = new ItemStack(Material.SPAWNER, showAmt);
+                }
             }
-        }
-
-        if (spawner.getSpawnerStacks().size() == 1
-                && spawner.getFirstStack().getSpawnerData().getDisplayItem() != null
-                && spawner.getFirstStack().getSpawnerData().getDisplayItem() != Material.AIR) {
-            item.setType(spawner.getFirstStack().getSpawnerData().getDisplayItem());
         }
 
         ItemMeta itemmeta = item.getItemMeta();
@@ -187,7 +187,7 @@ public class GUISpawnerOverview extends AbstractGUI {
         inventory.setItem(25, BACKGROUND_GLASS_TYPE_2);
         inventory.setItem(26, BACKGROUND_GLASS_TYPE_2);
 
-        if (plugin.getConfig().getBoolean("Main.Display Help Button In Spawner Overview")) {
+        if (SettingsManager.Setting.DISPLAY_HELP_BUTTON.getBoolean()) {
             ItemStack itemO = new ItemStack(Material.PAPER, 1);
             ItemMeta itemmetaO = itemO.getItemMeta();
             itemmetaO.setDisplayName(plugin.getLocale().getMessage("interface.spawner.howtotitle"));
@@ -247,13 +247,13 @@ public class GUISpawnerOverview extends AbstractGUI {
     }
 
     @Override
-    protected void initClickableObjects() {
-        this.registerClickableObject(8, (player, inventory, cursor, slot, type) -> {
+    protected void registerClickables() {
+        registerClickable(8, (player, inventory, cursor, slot, type) -> {
             this.infoPage++;
             addInfo(inventory);
         });
 
-        this.registerClickableObject(13, (player, inventory, cursor, slot, type) -> {
+        registerClickable(13, (player, inventory, cursor, slot, type) -> {
             if (type.isRightClick() && spawner.getBoost() == 0) {
                 this.spawner.playerBoost(player);
             } else if (type.isLeftClick() && spawner.getSpawnerStacks().size() == 1) {
@@ -261,7 +261,7 @@ public class GUISpawnerOverview extends AbstractGUI {
             }
         });
 
-        this.registerClickableObject(11, (player, inventory, cursor, slot, type) -> {
+        registerClickable(11, (player, inventory, cursor, slot, type) -> {
             if (config.getBoolean("Main.Upgrade With XP")
                     && !inventory.getItem(slot).getItemMeta().getDisplayName().equals(ChatColor.COLOR_CHAR + "l")) {
                 this.spawner.upgrade(player, CostType.EXPERIENCE);
@@ -269,7 +269,7 @@ public class GUISpawnerOverview extends AbstractGUI {
             this.spawner.overview(player);
         });
 
-        this.registerClickableObject(15, (player, inventory, cursor, slot, type) -> {
+        registerClickable(15, (player, inventory, cursor, slot, type) -> {
             if (config.getBoolean("Main.Upgrade With Economy")
                     && !inventory.getItem(slot).getItemMeta().getDisplayName().equals(ChatColor.COLOR_CHAR + "l")) {
                 this.spawner.upgrade(player, CostType.ECONOMY);
@@ -442,5 +442,11 @@ public class GUISpawnerOverview extends AbstractGUI {
             Debugger.runReport(e);
         }
         return text;
+    }
+
+
+    @Override
+    protected void registerOnCloses() {
+
     }
 }
