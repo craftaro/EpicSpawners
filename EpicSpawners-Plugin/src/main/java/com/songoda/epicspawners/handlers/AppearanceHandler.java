@@ -7,6 +7,7 @@ import com.songoda.epicspawners.api.spawner.SpawnerStack;
 import com.songoda.epicspawners.spawners.spawner.ESpawner;
 import com.songoda.epicspawners.utils.Debugger;
 import com.songoda.epicspawners.utils.Methods;
+import com.songoda.epicspawners.utils.SettingsManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -36,14 +37,8 @@ public class AppearanceHandler {
         try {
             EpicSpawnersPlugin instance = EpicSpawnersPlugin.getInstance();
 
-            if (!EpicSpawnersPlugin.getInstance().getConfig().getBoolean("Main.OmniSpawners Enabled")) return;
 
             for (Spawner spawner : instance.getSpawnerManager().getSpawners()) {
-                if (spawner.getSpawnerStacks().size() <= 1) {
-                    updateDisplayItem(spawner, spawner.getFirstStack().getSpawnerData());
-                    continue;
-                }
-
                 Location location = spawner.getLocation();
                 if (location == null || location.getWorld() == null) continue;
                 int destx = location.getBlockX() >> 4;
@@ -52,6 +47,14 @@ public class AppearanceHandler {
                     continue;
                 }
                 if (location.getBlock().getType() != Material.SPAWNER) continue;
+
+                if (spawner.getSpawnerStacks().size() <= 1) {
+                    updateDisplayItem(spawner, spawner.getFirstStack().getSpawnerData());
+                    continue;
+                }
+
+                if (!SettingsManager.Setting.OMNI_SPAWNERS.getBoolean()) continue;
+
                 String last = null;
                 SpawnerData next = null;
                 List<SpawnerStack> list = new ArrayList<>(spawner.getSpawnerStacks());
@@ -67,6 +70,7 @@ public class AppearanceHandler {
                 }
                 updateDisplayItem(spawner, next);
                 ((ESpawner) spawner).setOmniState(next.getIdentifyingName());
+                spawner.getCreatureSpawner().update();
 
             }
         } catch (Exception e) {

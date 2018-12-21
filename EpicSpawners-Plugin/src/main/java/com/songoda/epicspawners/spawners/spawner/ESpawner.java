@@ -153,69 +153,6 @@ public class ESpawner implements Spawner {
         return true;
     }
 
-    public void purchaseBoost(Player player, int time, int amt) {
-        try {
-            EpicSpawnersPlugin instance = EpicSpawnersPlugin.getInstance();
-
-            boolean yes = false;
-
-            String un = EpicSpawnersPlugin.getInstance().getConfig().getString("Spawner Boosting.Item Charged For A Boost");
-
-            String[] parts = un.split(":");
-
-            String type = parts[0];
-            String multi = parts[1];
-            int cost = Methods.boostCost(multi, time, amt);
-            if (!type.equals("ECO") && !type.equals("XP")) {
-                ItemStack stack = new ItemStack(Material.valueOf(type));
-                int invAmt = Arconix.pl().getApi().getGUI().getAmount(player.getInventory(), stack);
-                if (invAmt >= cost) {
-                    stack.setAmount(cost);
-                    Arconix.pl().getApi().getGUI().removeFromInventory(player.getInventory(), stack);
-                    yes = true;
-                } else {
-                    player.sendMessage(EpicSpawnersPlugin.getInstance().getLocale().getMessage("event.upgrade.cannotafford"));
-                }
-            } else if (type.equals("ECO")) {
-                if (EpicSpawnersPlugin.getInstance().getServer().getPluginManager().getPlugin("Vault") != null) {
-                    RegisteredServiceProvider<net.milkbowl.vault.economy.Economy> rsp = EpicSpawnersPlugin.getInstance().getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
-                    net.milkbowl.vault.economy.Economy econ = rsp.getProvider();
-                    if (econ.has(player, cost)) {
-                        econ.withdrawPlayer(player, cost);
-                        yes = true;
-                    } else {
-                        player.sendMessage(EpicSpawnersPlugin.getInstance().getLocale().getMessage("event.upgrade.cannotafford"));
-                    }
-                } else {
-                    player.sendMessage("Vault is not installed.");
-                }
-            } else if (type.equals("XP")) {
-                if (player.getLevel() >= cost || player.getGameMode() == GameMode.CREATIVE) {
-                    if (player.getGameMode() != GameMode.CREATIVE) {
-                        player.setLevel(player.getLevel() - cost);
-                    }
-                    yes = true;
-                } else {
-                    player.sendMessage(EpicSpawnersPlugin.getInstance().getLocale().getMessage("event.upgrade.cannotafford"));
-                }
-            }
-            if (yes) {
-                Calendar c = Calendar.getInstance();
-                Date currentDate = new Date();
-                c.setTime(currentDate);
-                c.add(Calendar.MINUTE, time);
-
-
-                BoostData boostData = new BoostData(BoostType.LOCATION, amt, c.getTime().getTime(), location);
-                instance.getBoostManager().addBoostToSpawner(boostData);
-                player.sendMessage(EpicSpawnersPlugin.getInstance().getLocale().getMessage("event.boost.applied"));
-            }
-            player.closeInventory();
-        } catch (Exception e) {
-            Debugger.runReport(e);
-        }
-    }
-
     public void overview(Player player) {
         try {
             EpicSpawnersPlugin instance = EpicSpawnersPlugin.getInstance();

@@ -4,20 +4,26 @@ import com.songoda.arconix.api.methods.formatting.TextComponent;
 import com.songoda.arconix.plugin.Arconix;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.api.spawner.Spawner;
+import com.songoda.epicspawners.boost.BoostData;
+import com.songoda.epicspawners.boost.BoostType;
 import com.songoda.epicspawners.spawners.spawner.ESpawner;
+import com.songoda.epicspawners.utils.Debugger;
 import com.songoda.epicspawners.utils.Methods;
 import com.songoda.epicspawners.utils.SettingsManager;
 import com.songoda.epicspawners.utils.gui.AbstractGUI;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
+import net.milkbowl.vault.economy.Economy;
+import org.bukkit.*;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.plugin.RegisteredServiceProvider;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Map;
 
 public class GUISpawnerBoost extends AbstractGUI {
@@ -143,16 +149,78 @@ public class GUISpawnerBoost extends AbstractGUI {
         });
 
         registerClickable(10, (player, inventory, cursor, slot, type) ->
-                ((ESpawner)spawner).purchaseBoost(player, 5, amount));
+                purchaseBoost(player, 5, amount));
 
         registerClickable(12, (player, inventory, cursor, slot, type) ->
-                ((ESpawner)spawner).purchaseBoost(player, 15, amount));
+                purchaseBoost(player, 15, amount));
 
         registerClickable(14, (player, inventory, cursor, slot, type) ->
-                ((ESpawner)spawner).purchaseBoost(player, 30, amount));
+                purchaseBoost(player, 30, amount));
 
         registerClickable(16, (player, inventory, cursor, slot, type) ->
-                ((ESpawner)spawner).purchaseBoost(player, 60, amount));
+                purchaseBoost(player, 60, amount));
+    }
+
+    public void purchaseBoost(Player player, int time, int amt) {
+        try {
+            Location location = spawner.getLocation();
+            player.closeInventory();
+            EpicSpawnersPlugin instance = EpicSpawnersPlugin.getInstance();
+
+            String un = EpicSpawnersPlugin.getInstance().getConfig().getString("Spawner Boosting.Item Charged For A Boost");
+
+            String[] parts = un.split(":");
+
+            String type = parts[0];
+            String multi = parts[1];
+            int cost = Methods.boostCost(multi, time, amt);
+            if (!type.equals("ECO") && !type.equals("XP")) {
+                ItemStack stack = new ItemStack(Material.valueOf(type));
+                int invAmt = Arconix.pl().getApi().getGUI().getAmount(player.getInventory(), stack);
+                if (invAmt >= cost) {
+                    stack.setAmount(cost);
+                    Arconix.pl().getApi().getGUI().removeFromInventory(player.getInventory(), stack);
+                } else {
+                    player.sendMessage(plugin.getReferences().getPrefix() + EpicSpawnersPlugin.getInstance().getLocale().getMessage("event.upgrade.cannotafford"));
+                    return;
+                }
+            } else if (type.equals("ECO")) {
+                if (EpicSpawnersPlugin.getInstance().getServer().getPluginManager().getPlugin("Vault") != null) {
+                    RegisteredServiceProvider<Economy> rsp = EpicSpawnersPlugin.getInstance().getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
+                    net.milkbowl.vault.economy.Economy econ = rsp.getProvider();
+                    if (econ.has(player, cost)) {
+                        econ.withdrawPlayer(player, cost);
+                    } else {
+                        player.sendMessage(plugin.getReferences().getPrefix() + EpicSpawnersPlugin.getInstance().getLocale().getMessage("event.upgrade.cannotafford"));
+                        return;
+                    }
+                } else {
+                    player.sendMessage("Vault is not installed.");
+                    return;
+                }
+            } else if (type.equals("XP")) {
+                if (player.getLevel() >= cost || player.getGameMode() == GameMode.CREATIVE) {
+                    if (player.getGameMode() != GameMode.CREATIVE) {
+                        player.setLevel(player.getLevel() - cost);
+                    }
+                } else {
+                    player.sendMessage(plugin.getReferences().getPrefix() + EpicSpawnersPlugin.getInstance().getLocale().getMessage("event.upgrade.cannotafford"));
+                    return;
+                }
+            }
+            Calendar c = Calendar.getInstance();
+            Date currentDate = new Date();
+            c.setTime(currentDate);
+            c.add(Calendar.MINUTE, time);
+
+
+            BoostData boostData = new BoostData(BoostType.LOCATION, amt, c.getTime().getTime(), location);
+            instance.getBoostManager().addBoostToSpawner(boostData);
+            player.sendMessage(plugin.getReferences().getPrefix() + plugin.getLocale().getMessage("event.boost.applied"));
+            player.playSound(location, Sound.ENTITY_VILLAGER_YES, 1,1);
+        } catch (Exception e) {
+            Debugger.runReport(e);
+        }
     }
 
     @Override
