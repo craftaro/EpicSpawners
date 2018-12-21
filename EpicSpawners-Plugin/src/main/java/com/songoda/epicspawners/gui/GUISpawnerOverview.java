@@ -53,7 +53,7 @@ public class GUISpawnerOverview extends AbstractGUI {
 
         this.config = plugin.getConfig();
         this.locale = plugin.getLocale();
-        init(TextComponent.formatTitle(Objects.requireNonNull(Methods.compileName(spawner.getIdentifyingData(), spawner.getSpawnerDataCount(), false))), 27);
+        init(Methods.compileName(spawner.getIdentifyingData(), spawner.getSpawnerDataCount(), false), 27);
     }
 
     @Override
@@ -251,7 +251,7 @@ public class GUISpawnerOverview extends AbstractGUI {
 
         registerClickable(13, (player, inventory, cursor, slot, type) -> {
             if (type.isRightClick() && spawner.getBoost() == 0) {
-                this.spawner.playerBoost(player);
+                new GUISpawnerBoost(plugin, spawner, player);
             } else if (type.isLeftClick() && spawner.getSpawnerStacks().size() == 1) {
                 new GUISpawnerConvert(plugin, spawner, player);
             }

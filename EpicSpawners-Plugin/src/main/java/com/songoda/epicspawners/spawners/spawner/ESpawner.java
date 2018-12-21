@@ -51,7 +51,6 @@ public class ESpawner implements Spawner {
     //ToDo: Use this for all spawner things (Like items, commands and what not) instead of the old shit
     //ToDO: There is a weird error that is triggered when a spawner is not found in the config.
     private Map<Location, Date> lastSpawns = new HashMap<>();
-    private Map<UUID, Integer> boostAmt = new HashMap<>();
 
     public ESpawner(Location location) {
         this.location = location;
@@ -143,115 +142,6 @@ public class ESpawner implements Spawner {
         return multi;
     }
 
-    public void playerBoost(Player player) {
-        try {
-            if (!player.hasPermission("epicspawners.canboost")) return;
-
-            if (boostAmt.containsKey(player.getUniqueId())) {
-                if (boostAmt.get(player.getUniqueId()) > EpicSpawnersPlugin.getInstance().getConfig().getInt("Spawner Boosting.Max Multiplier For A Spawner Boost")) {
-                    boostAmt.put(player.getUniqueId(), EpicSpawnersPlugin.getInstance().getConfig().getInt("Spawner Boosting.Max Multiplier For A Spawner Boost"));
-                    return;
-                } else if (boostAmt.get(player.getUniqueId()) < 1) {
-                    boostAmt.put(player.getUniqueId(), 1);
-                }
-            }
-
-            int amt = 1;
-
-            if (boostAmt.containsKey(player.getUniqueId()))
-                amt = boostAmt.get(player.getUniqueId());
-            else
-                boostAmt.put(player.getUniqueId(), amt);
-
-            Inventory i = Bukkit.createInventory(null, 27, EpicSpawnersPlugin.getInstance().getLocale().getMessage("interface.boost.title", Integer.toString(amt), Methods.compileName(getIdentifyingData(), getSpawnerDataCount(), false)));
-
-            int num = 0;
-            while (num != 27) {
-                i.setItem(num, Methods.getGlass());
-                num++;
-            }
-
-            ItemStack coal = new ItemStack(Material.COAL);
-            ItemMeta coalMeta = coal.getItemMeta();
-            coalMeta.setDisplayName(EpicSpawnersPlugin.getInstance().getLocale().getMessage("interface.boost.boostfor", "5"));
-            ArrayList<String> coalLore = new ArrayList<>();
-            coalLore.add(TextComponent.formatText("&7Costs &6&l" + Methods.getBoostCost(5, amt) + "."));
-            coalMeta.setLore(coalLore);
-            coal.setItemMeta(coalMeta);
-
-            ItemStack iron = new ItemStack(Material.IRON_INGOT);
-            ItemMeta ironMeta = iron.getItemMeta();
-            ironMeta.setDisplayName(EpicSpawnersPlugin.getInstance().getLocale().getMessage("interface.boost.boostfor", "15"));
-            ArrayList<String> ironLore = new ArrayList<>();
-            ironLore.add(TextComponent.formatText("&7Costs &6&l" + Methods.getBoostCost(15, amt) + "."));
-            ironMeta.setLore(ironLore);
-            iron.setItemMeta(ironMeta);
-
-            ItemStack diamond = new ItemStack(Material.DIAMOND);
-            ItemMeta diamondMeta = diamond.getItemMeta();
-            diamondMeta.setDisplayName(EpicSpawnersPlugin.getInstance().getLocale().getMessage("interface.boost.boostfor", "30"));
-            ArrayList<String> diamondLore = new ArrayList<>();
-            diamondLore.add(TextComponent.formatText("&7Costs &6&l" + Methods.getBoostCost(30, amt) + "."));
-            diamondMeta.setLore(diamondLore);
-            diamond.setItemMeta(diamondMeta);
-
-            ItemStack emerald = new ItemStack(Material.EMERALD);
-            ItemMeta emeraldMeta = emerald.getItemMeta();
-            emeraldMeta.setDisplayName(EpicSpawnersPlugin.getInstance().getLocale().getMessage("interface.boost.boostfor", "60"));
-            ArrayList<String> emeraldLore = new ArrayList<>();
-            emeraldLore.add(TextComponent.formatText("&7Costs &6&l" + Methods.getBoostCost(60, amt) + "."));
-            emeraldMeta.setLore(emeraldLore);
-            emerald.setItemMeta(emeraldMeta);
-
-            i.setItem(10, coal);
-            i.setItem(12, iron);
-            i.setItem(14, diamond);
-            i.setItem(16, emerald);
-
-            i.setItem(0, Methods.getBackgroundGlass(true));
-            i.setItem(1, Methods.getBackgroundGlass(true));
-            i.setItem(2, Methods.getBackgroundGlass(false));
-            i.setItem(6, Methods.getBackgroundGlass(false));
-            i.setItem(7, Methods.getBackgroundGlass(true));
-            i.setItem(8, Methods.getBackgroundGlass(true));
-            i.setItem(9, Methods.getBackgroundGlass(true));
-            i.setItem(17, Methods.getBackgroundGlass(true));
-            i.setItem(18, Methods.getBackgroundGlass(true));
-            i.setItem(19, Methods.getBackgroundGlass(true));
-            i.setItem(20, Methods.getBackgroundGlass(false));
-            i.setItem(24, Methods.getBackgroundGlass(false));
-            i.setItem(25, Methods.getBackgroundGlass(true));
-            i.setItem(26, Methods.getBackgroundGlass(true));
-
-            ItemStack head = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
-            ItemStack skull = Arconix.pl().getApi().getGUI().addTexture(head, "http://textures.minecraft.net/texture/1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b");
-            SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
-            skull.setDurability((short) 3);
-            skullMeta.setDisplayName(TextComponent.formatText("&6&l+1"));
-            skull.setItemMeta(skullMeta);
-
-            ItemStack head2 = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
-            ItemStack skull2 = Arconix.pl().getApi().getGUI().addTexture(head2, "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23");
-            SkullMeta skull2Meta = (SkullMeta) skull2.getItemMeta();
-            skull2.setDurability((short) 3);
-            skull2Meta.setDisplayName(TextComponent.formatText("&6&l-1"));
-            skull2.setItemMeta(skull2Meta);
-
-            if (amt != 1) {
-                i.setItem(0, skull2);
-            }
-            if (amt < EpicSpawnersPlugin.getInstance().getConfig().getInt("Spawner Boosting.Max Multiplier For A Spawner Boost")) {
-                i.setItem(8, skull);
-            }
-
-            player.openInventory(i);
-            EpicSpawnersPlugin.getInstance().getPlayerActionManager().getPlayerAction(player).setInMenu(MenuType.PLAYERBOOST);
-            EpicSpawnersPlugin.getInstance().getPlayerActionManager().getPlayerAction(player).setLastSpawner(this);
-        } catch (Exception e) {
-            Debugger.runReport(e);
-        }
-    }
-
     @Override
     public boolean checkConditions() {
         for (SpawnerStack stack : spawnerStacks) {
@@ -263,11 +153,10 @@ public class ESpawner implements Spawner {
         return true;
     }
 
-    public void purchaseBoost(Player player, int time) {
+    public void purchaseBoost(Player player, int time, int amt) {
         try {
             EpicSpawnersPlugin instance = EpicSpawnersPlugin.getInstance();
 
-            int amt = boostAmt.get(player.getUniqueId());
             boolean yes = false;
 
             String un = EpicSpawnersPlugin.getInstance().getConfig().getString("Spawner Boosting.Item Charged For A Boost");
@@ -794,14 +683,6 @@ public class ESpawner implements Spawner {
 
     public void setOmniState(String omniState) {
         this.omniState = omniState;
-    }
-
-    public void addBoostAmt(Player player, int amt) {
-        boostAmt.put(player.getUniqueId(), amt);
-    }
-
-    public int getBoostAmt(Player player) {
-        return boostAmt.getOrDefault(player.getUniqueId(), 0);
     }
 
     @Override

@@ -80,44 +80,6 @@ public class InventoryListeners implements Listener {
                     instance.getShop().confirm(player, amt);
                     player.closeInventory();
                 }
-            } else if (instance.getPlayerActionManager().getPlayerAction(player).getInMenu() == MenuType.PLAYERBOOST) {
-                event.setCancelled(true);
-                ESpawner spawner = instance.getPlayerActionManager().getPlayerAction(player).getLastSpawner();
-                if (event.getSlot() == 8) {
-                    spawner.addBoostAmt(player, spawner.getBoostAmt(player) + 1);
-                    spawner.playerBoost(player);
-                } else if (event.getSlot() == 0) {
-                    spawner.addBoostAmt(player, spawner.getBoostAmt(player) - 1);
-                    spawner.playerBoost(player);
-                } else if (event.getSlot() == 10) {
-                    spawner.purchaseBoost(player, 5);
-                } else if (event.getSlot() == 12) {
-                    spawner.purchaseBoost(player, 15);
-                } else if (event.getSlot() == 14) {
-                    spawner.purchaseBoost(player, 30);
-                } else if (event.getSlot() == 16) {
-                    spawner.purchaseBoost(player, 60);
-                }
-            } else if (instance.getPlayerActionManager().getPlayerAction(player).getInMenu() == MenuType.CONVERT) {/*
-                event.setCancelled(true);
-                ItemStack clicked = event.getCurrentItem();
-                ESpawner spawner = instance.getPlayerActionManager().getPlayerAction(player).getLastSpawner();
-
-                int page = playerData.getCurrentPage();
-
-                if (event.getInventory().getType() == InventoryType.CHEST) {
-                    if (event.getSlot() == 8) {
-                        player.closeInventory();
-                    } else if (event.getCurrentItem().getItemMeta().getDisplayName().equals(instance.getLocale().getMessage("general.nametag.back"))) {
-                        if (page != 1) {
-                            spawner.convertOverview(player, page - 1);
-                        }
-                    } else if (event.getCurrentItem().getItemMeta().getDisplayName().equals(instance.getLocale().getMessage("general.nametag.next"))) {
-                        spawner.convertOverview(player, page + 1);
-                    } else if (clicked.getType() == Material.PLAYER_HEAD) {
-                        spawner.convert(instance.getSpawnerDataFromItem(clicked), player);
-                    }
-                } */
             } else if (instance.getSpawnerEditor().getEditingData(player).getMenu() != EditingMenu.NOT_IN) {
 
                 if (event.getRawSlot() >= event.getView().getTopInventory().getSize()) return;

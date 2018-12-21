@@ -124,27 +124,6 @@ public class GUISpawnerConvert extends AbstractGUI {
             num2++;
         }
 
-        ItemStack exit = new ItemStack(Material.valueOf(plugin.getConfig().getString("Interfaces.Exit Icon")), 1);
-        ItemMeta exitmeta = exit.getItemMeta();
-        exitmeta.setDisplayName(plugin.getLocale().getMessage("general.nametag.exit"));
-        exit.setItemMeta(exitmeta);
-
-        ItemStack head = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
-        ItemStack skull = Arconix.pl().getApi().getGUI().addTexture(head, "http://textures.minecraft.net/texture/1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b");
-        SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
-        skull.setDurability((short) 3);
-        skullMeta.setDisplayName(plugin.getLocale().getMessage("general.nametag.next"));
-        skull.setItemMeta(skullMeta);
-
-        ItemStack head2 = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
-        ItemStack skull2 = Arconix.pl().getApi().getGUI().addTexture(head2, "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23");
-        SkullMeta skull2Meta = (SkullMeta) skull2.getItemMeta();
-        skull2.setDurability((short) 3);
-        skull2Meta.setDisplayName(plugin.getLocale().getMessage("general.nametag.back"));
-        skull2.setItemMeta(skull2Meta);
-
-        inventory.setItem(8, exit);
-
         inventory.setItem(0, Methods.getBackgroundGlass(true));
         inventory.setItem(1, Methods.getBackgroundGlass(true));
         inventory.setItem(9, Methods.getBackgroundGlass(true));
@@ -165,9 +144,27 @@ public class GUISpawnerConvert extends AbstractGUI {
         inventory.setItem(slots - 7, Methods.getBackgroundGlass(false));
         inventory.setItem(slots - 3, Methods.getBackgroundGlass(false));
 
+        createButton(8, Material.valueOf(plugin.getConfig().getString("Interfaces.Exit Icon")),
+                plugin.getLocale().getMessage("general.nametag.exit"));
+
+        ItemStack head = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
+        ItemStack skull = Arconix.pl().getApi().getGUI().addTexture(head, "http://textures.minecraft.net/texture/1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b");
+        SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
+        skull.setDurability((short) 3);
+        skullMeta.setDisplayName(plugin.getLocale().getMessage("general.nametag.next"));
+        skull.setItemMeta(skullMeta);
+
+        ItemStack head2 = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
+        ItemStack skull2 = Arconix.pl().getApi().getGUI().addTexture(head2, "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23");
+        SkullMeta skull2Meta = (SkullMeta) skull2.getItemMeta();
+        skull2.setDurability((short) 3);
+        skull2Meta.setDisplayName(plugin.getLocale().getMessage("general.nametag.back"));
+        skull2.setItemMeta(skull2Meta);
+
         if (page != 1) {
             inventory.setItem(slots - 8, skull2);
         }
+
         if (page != max) {
             inventory.setItem(slots - 2, skull);
         }
