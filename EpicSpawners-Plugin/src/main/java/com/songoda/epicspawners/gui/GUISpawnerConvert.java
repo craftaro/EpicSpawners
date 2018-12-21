@@ -77,6 +77,7 @@ public class GUISpawnerConvert extends AbstractGUI {
     @Override
     protected void constructGUI() {
         inventory.clear();
+        max = (int) Math.ceil((double) totalAmount / (double) 32);
 
         int place = 10;
         for (SpawnerData spawnerData : entities) {
@@ -112,16 +113,11 @@ public class GUISpawnerConvert extends AbstractGUI {
             place++;
         }
 
-        int num = 0;
-        max = (int) Math.ceil((double) totalAmount / (double) 32);
-        while (num != 9) {
-            inventory.setItem(num, Methods.getGlass());
-            num++;
+        for (int i = 0; i < 9; i ++) {
+            inventory.setItem(i, Methods.getGlass());
         }
-        int num2 = slots - 9;
-        while (num2 != slots) {
-            inventory.setItem(num2, Methods.getGlass());
-            num2++;
+        for (int i = slots - 9; i < slots; i ++) {
+            inventory.setItem(i, Methods.getGlass());
         }
 
         inventory.setItem(0, Methods.getBackgroundGlass(true));
@@ -161,13 +157,8 @@ public class GUISpawnerConvert extends AbstractGUI {
         skull2Meta.setDisplayName(plugin.getLocale().getMessage("general.nametag.back"));
         skull2.setItemMeta(skull2Meta);
 
-        if (page != 1) {
-            inventory.setItem(slots - 8, skull2);
-        }
-
-        if (page != max) {
-            inventory.setItem(slots - 2, skull);
-        }
+        if (page != 1) inventory.setItem(slots - 8, skull2);
+        if (page != max) inventory.setItem(slots - 2, skull);
     }
 
     @Override
