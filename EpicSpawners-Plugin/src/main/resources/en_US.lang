@@ -37,7 +37,6 @@ interface.shop.remove10 = "&c&lRemove 10"
 interface.spawnerstats.title = "&5&lSpawnerStats"
 interface.spawnerstats.prefix = "&7Your current spawner stats:"
 interface.spawnerstats.nokills = "&7You currently have no mob kills. Go kill something!"
-interface.spawnerstats.ongoal = "&7Once you obtain enough &7kills, a Monster Spawner will drop."
 interface.boost.title = "&cBoosting %spawner% &cby %amount%"
 interface.boost.boostfor = "&7&lBoost for &6&l%amount% &7&lMinutes"
 

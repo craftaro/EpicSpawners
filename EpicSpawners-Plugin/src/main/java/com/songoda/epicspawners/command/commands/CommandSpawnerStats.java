@@ -4,6 +4,7 @@ import com.songoda.arconix.api.methods.formatting.TextComponent;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.api.spawner.SpawnerData;
 import com.songoda.epicspawners.command.AbstractCommand;
+import com.songoda.epicspawners.gui.GUISpawnerStats;
 import com.songoda.epicspawners.utils.Methods;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -27,76 +28,14 @@ public class CommandSpawnerStats extends AbstractCommand {
     protected ReturnType runCommand(EpicSpawnersPlugin instance, CommandSender sender, String... args) {
         Player player = (Player) sender;
 
-        int size = 0;
-
-        for (Map.Entry<EntityType, Integer> entry : instance.getPlayerActionManager().getPlayerAction(player).getEntityKills().entrySet()) {
-            if (instance.getSpawnerManager().getSpawnerData(entry.getKey()).isActive())
-                size++;
-        }
-
-        String title = instance.getLocale().getMessage("interface.spawnerstats.title");
-
-        Inventory i = Bukkit.createInventory(null, 54, title);
-        if (size <= 9) {
-            i = Bukkit.createInventory(null, 18, title);
-        } else if (size <= 18) {
-            i = Bukkit.createInventory(null, 27, title);
-        } else if (size <= 27) {
-            i = Bukkit.createInventory(null, 36, title);
-        } else if (size <= 36) {
-            i = Bukkit.createInventory(null, 45, title);
-        }
-
-        int num = 0;
-        while (num != 9) {
-            i.setItem(num, Methods.getGlass());
-            num++;
-        }
-        ItemStack exit = new ItemStack(Material.valueOf(instance.getConfig().getString("Interfaces.Exit Icon")), 1);
-        ItemMeta exitmeta = exit.getItemMeta();
-        exitmeta.setDisplayName(instance.getLocale().getMessage("general.nametag.exit"));
-        exit.setItemMeta(exitmeta);
-        i.setItem(8, exit);
-
-        short place = 9;
-        player.sendMessage("");
-
-
         if (instance.getPlayerActionManager().getPlayerAction(player).getEntityKills().size() == 0) {
             player.sendMessage(instance.getReferences().getPrefix() + instance.getLocale().getMessage("interface.spawnerstats.nokills"));
-            return ReturnType.SUCCESS;
+            return AbstractCommand.ReturnType.SUCCESS;
         }
 
-        player.sendMessage(instance.getReferences().getPrefix());
-        player.sendMessage(instance.getLocale().getMessage("interface.spawnerstats.prefix"));
-        for (Map.Entry<EntityType, Integer> entry : instance.getPlayerActionManager().getPlayerAction(player).getEntityKills().entrySet()) {
-            int goal = instance.getConfig().getInt("Spawner Drops.Kills Needed for Drop");
 
-            SpawnerData spawnerData = instance.getSpawnerManager().getSpawnerData(entry.getKey());
-
-            int customGoal = spawnerData.getKillGoal();
-            if (customGoal != 0) goal = customGoal;
-
-            ItemStack it = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
-
-            ItemStack item = instance.getHeads().addTexture(it, spawnerData);
-
-            ItemMeta itemmeta = item.getItemMeta();
-            ArrayList<String> lore = new ArrayList<>();
-            itemmeta.setLore(lore);
-            itemmeta.setDisplayName(TextComponent.formatText("&6" + spawnerData.getDisplayName() + "&7: &e" + entry.getValue() + "&7/&e" + goal));
-            item.setItemMeta(itemmeta);
-            i.setItem(place, item);
-
-            place++;
-            player.sendMessage(TextComponent.formatText("&7- &6" + spawnerData.getDisplayName() + "&7: &e" + entry.getValue() + "&7/&e" + goal));
-        }
-        player.sendMessage(instance.getLocale().getMessage("interface.spawnerstats.ongoal"));
-
-        player.sendMessage("");
-
-        player.openInventory(i);
-
+        new GUISpawnerStats(instance, player);
+        
         return ReturnType.SUCCESS;
     }
 

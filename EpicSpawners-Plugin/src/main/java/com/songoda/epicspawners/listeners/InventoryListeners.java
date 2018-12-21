@@ -327,11 +327,6 @@ public class InventoryListeners implements Listener {
                     //if (e.getClick().isLeftClick())
                     instance.getSpawnerEditor().overview(player, instance.getSpawnerEditor().getType(event.getCurrentItem().getItemMeta().getDisplayName()));
                 }
-            } else if (event.getInventory().getTitle().equals(instance.getLocale().getMessage("interface.spawnerstats.title"))) {
-                event.setCancelled(true);
-                if (event.getSlot() == 8) {
-                    player.closeInventory();
-                }
             } else if (event.getInventory().getTitle().equals(instance.getLocale().getMessage("interface.shop.title"))) {
                 event.setCancelled(true);
                 ItemStack clicked = event.getCurrentItem();
