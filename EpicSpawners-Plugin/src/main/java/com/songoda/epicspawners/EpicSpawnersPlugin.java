@@ -82,7 +82,6 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
 
     private static final Set<Biome> BIOMES = EnumSet.allOf(Biome.class);
     private static EpicSpawnersPlugin INSTANCE;
-    private References references;
 
     private ChatListeners chatListeners;
 
@@ -166,7 +165,6 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
 
         this.hooksFile.createNewFile("Loading Hooks File", "EpicSpawners Hooks File");
 
-        this.references = new References();
         this.boostManager = new BoostManager();
         this.spawnManager = new SpawnManager();
         this.spawnerManager = new ESpawnerManager();
@@ -680,7 +678,6 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         this.locale.reloadMessages();
         this.spawnerFile.createNewFile("Loading Spawners File", "EpicSpawners Spawners File");
         this.hooksFile.createNewFile("Loading hookHandler File", "EpicSpawners Hooks File");
-        this.references = new References();
         this.blacklistHandler.reload();
         this.loadSpawnersFromFile();
         this.setupConfig();
@@ -732,10 +729,6 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
 
     public Heads getHeads() {
         return heads;
-    }
-
-    public References getReferences() {
-        return references;
     }
 
     public ChatListeners getChatListeners() {

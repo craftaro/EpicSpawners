@@ -2,6 +2,7 @@ package com.songoda.epicspawners.command.commands;
 
 import com.songoda.arconix.api.methods.formatting.TextComponent;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
+import com.songoda.epicspawners.References;
 import com.songoda.epicspawners.command.AbstractCommand;
 import org.bukkit.command.CommandSender;
 
@@ -14,7 +15,7 @@ public class CommandEpicSpawners extends AbstractCommand {
     @Override
     protected ReturnType runCommand(EpicSpawnersPlugin instance, CommandSender sender, String... args) {
         sender.sendMessage("");
-        sender.sendMessage(TextComponent.formatText(instance.getReferences().getPrefix() + "&7Version " + instance.getDescription().getVersion() + " Created with <3 by &5&l&oBrianna"));
+        sender.sendMessage(TextComponent.formatText(References.getPrefix() + "&7Version " + instance.getDescription().getVersion() + " Created with <3 by &5&l&oBrianna"));
 
         for (AbstractCommand command : instance.getCommandManager().getCommands()) {
             if (command.getPermissionNode() == null || sender.hasPermission(command.getPermissionNode())) {

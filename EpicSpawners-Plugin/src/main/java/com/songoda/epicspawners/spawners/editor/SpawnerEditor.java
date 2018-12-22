@@ -3,6 +3,7 @@ package com.songoda.epicspawners.spawners.editor;
 import com.songoda.arconix.api.methods.formatting.TextComponent;
 import com.songoda.arconix.plugin.Arconix;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
+import com.songoda.epicspawners.References;
 import com.songoda.epicspawners.api.spawner.SpawnerData;
 import com.songoda.epicspawners.listeners.ChatListeners;
 import com.songoda.epicspawners.player.PlayerData;
@@ -634,7 +635,7 @@ public class SpawnerEditor {
                 }
                 spawnerData.setCommands(list);
             }
-            p.sendMessage(TextComponent.formatText(instance.getReferences().getPrefix() + "&7Spawner Saved."));
+            p.sendMessage(TextComponent.formatText(References.getPrefix() + "&7Spawner Saved."));
             spawnerData.reloadSpawnMethods();
         } catch (Exception e) {
             Debugger.runReport(e);

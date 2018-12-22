@@ -3,6 +3,7 @@ package com.songoda.epicspawners.spawners.shop;
 import com.songoda.arconix.api.methods.formatting.TextComponent;
 import com.songoda.arconix.plugin.Arconix;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
+import com.songoda.epicspawners.References;
 import com.songoda.epicspawners.api.spawner.SpawnerData;
 import com.songoda.epicspawners.player.MenuType;
 import com.songoda.epicspawners.player.PlayerData;
@@ -314,7 +315,7 @@ public class Shop {
             net.milkbowl.vault.economy.Economy econ = rsp.getProvider();
             double price = spawnerData.getShopPrice() * amount;
             if (!player.isOp() && !econ.has(player, price)) {
-                player.sendMessage(EpicSpawnersPlugin.getInstance().getReferences().getPrefix() + instance.getLocale().getMessage("event.shop.cannotafford"));
+                player.sendMessage(References.getPrefix() + instance.getLocale().getMessage("event.shop.cannotafford"));
                 return;
             }
             ItemStack item = spawnerData.toItemStack(amount);
@@ -322,7 +323,7 @@ public class Shop {
 
             player.getInventory().addItem(item);
 
-            player.sendMessage(EpicSpawnersPlugin.getInstance().getReferences().getPrefix() + instance.getLocale().getMessage("event.shop.purchasesuccess"));
+            player.sendMessage(References.getPrefix() + instance.getLocale().getMessage("event.shop.purchasesuccess"));
 
 
             if (!player.isOp()) {

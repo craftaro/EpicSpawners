@@ -3,6 +3,7 @@ package com.songoda.epicspawners.gui;
 import com.songoda.arconix.api.methods.formatting.TextComponent;
 import com.songoda.arconix.plugin.Arconix;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
+import com.songoda.epicspawners.References;
 import com.songoda.epicspawners.api.spawner.Spawner;
 import com.songoda.epicspawners.boost.BoostData;
 import com.songoda.epicspawners.boost.BoostType;
@@ -181,7 +182,7 @@ public class GUISpawnerBoost extends AbstractGUI {
                     stack.setAmount(cost);
                     Arconix.pl().getApi().getGUI().removeFromInventory(player.getInventory(), stack);
                 } else {
-                    player.sendMessage(plugin.getReferences().getPrefix() + EpicSpawnersPlugin.getInstance().getLocale().getMessage("event.upgrade.cannotafford"));
+                    player.sendMessage(References.getPrefix() + EpicSpawnersPlugin.getInstance().getLocale().getMessage("event.upgrade.cannotafford"));
                     return;
                 }
             } else if (type.equals("ECO")) {
@@ -191,7 +192,7 @@ public class GUISpawnerBoost extends AbstractGUI {
                     if (econ.has(player, cost)) {
                         econ.withdrawPlayer(player, cost);
                     } else {
-                        player.sendMessage(plugin.getReferences().getPrefix() + EpicSpawnersPlugin.getInstance().getLocale().getMessage("event.upgrade.cannotafford"));
+                        player.sendMessage(References.getPrefix() + EpicSpawnersPlugin.getInstance().getLocale().getMessage("event.upgrade.cannotafford"));
                         return;
                     }
                 } else {
@@ -204,7 +205,7 @@ public class GUISpawnerBoost extends AbstractGUI {
                         player.setLevel(player.getLevel() - cost);
                     }
                 } else {
-                    player.sendMessage(plugin.getReferences().getPrefix() + EpicSpawnersPlugin.getInstance().getLocale().getMessage("event.upgrade.cannotafford"));
+                    player.sendMessage(References.getPrefix() + EpicSpawnersPlugin.getInstance().getLocale().getMessage("event.upgrade.cannotafford"));
                     return;
                 }
             }
@@ -216,7 +217,7 @@ public class GUISpawnerBoost extends AbstractGUI {
 
             BoostData boostData = new BoostData(BoostType.LOCATION, amt, c.getTime().getTime(), location);
             instance.getBoostManager().addBoostToSpawner(boostData);
-            player.sendMessage(plugin.getReferences().getPrefix() + plugin.getLocale().getMessage("event.boost.applied"));
+            player.sendMessage(References.getPrefix() + plugin.getLocale().getMessage("event.boost.applied"));
             player.playSound(location, Sound.ENTITY_VILLAGER_YES, 1,1);
         } catch (Exception e) {
             Debugger.runReport(e);

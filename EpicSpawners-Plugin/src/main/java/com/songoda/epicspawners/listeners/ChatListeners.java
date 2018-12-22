@@ -3,6 +3,7 @@ package com.songoda.epicspawners.listeners;
 import com.songoda.arconix.api.methods.formatting.TextComponent;
 import com.songoda.arconix.api.methods.math.AMath;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
+import com.songoda.epicspawners.References;
 import com.songoda.epicspawners.api.spawner.SpawnerData;
 import com.songoda.epicspawners.spawners.editor.EditingMenu;
 import com.songoda.epicspawners.utils.Debugger;
@@ -80,7 +81,7 @@ public class ChatListeners implements Listener {
                     break;
                 case COMMAND:
                     String msg = e.getMessage();
-                    player.sendMessage(TextComponent.formatText(instance.getReferences().getPrefix() + "&8Command &5" + msg + "&8 saved to your inventory."));
+                    player.sendMessage(TextComponent.formatText(References.getPrefix() + "&8Command &5" + msg + "&8 saved to your inventory."));
                     instance.getSpawnerEditor().addCommand(player, e.getMessage());
                     break;
                 case CUSTOM_GOAL:
