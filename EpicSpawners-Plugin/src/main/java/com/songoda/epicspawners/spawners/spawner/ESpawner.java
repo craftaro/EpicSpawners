@@ -313,7 +313,7 @@ public class ESpawner implements Spawner {
         int currentStackSize = getSpawnerDataCount();
 
         if (getSpawnerDataCount() == max) {
-            player.sendMessage(instance.getLocale().getMessage("event.upgrade.maxed", max));
+            player.sendMessage(instance.getReferences().getPrefix() + instance.getLocale().getMessage("event.upgrade.maxed", max));
             return false;
         }
 
