@@ -71,7 +71,7 @@ public class GUISpawnerOverview extends AbstractGUI {
         } else {
             Material displayItem = spawner.getFirstStack().getSpawnerData().getDisplayItem();
             if (displayItem != null && displayItem != Material.AIR) {
-                item.setType(spawner.getFirstStack().getSpawnerData().getDisplayItem());
+                item = new ItemStack(spawner.getFirstStack().getSpawnerData().getDisplayItem());
             } else {
                 try {
                     item = plugin.getHeads().addTexture(item, spawner.getIdentifyingData());
