@@ -67,7 +67,13 @@
         <dependency>
             <groupId>com</groupId>
             <artifactId>plotsquared</artifactId>
-            <version>RELEASE</version>
+            <version>LATEST</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.songoda</groupId>
+            <artifactId>skyblockearth</artifactId>
+            <version>LATEST</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

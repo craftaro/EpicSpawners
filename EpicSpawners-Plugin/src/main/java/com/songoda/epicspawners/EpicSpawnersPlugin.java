@@ -108,7 +108,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
     private Locale locale;
 
     private List<ProtectionPluginHook> protectionHooks = new ArrayList<>();
-    private ClaimableProtectionPluginHook factionsHook, townyHook, aSkyblockHook, uSkyblockHook;
+    private ClaimableProtectionPluginHook factionsHook, townyHook, aSkyblockHook, uSkyblockHook, skyBlockEarhHook;
 
     private Storage storage;
 
@@ -279,6 +279,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         if (pluginManager.isPluginEnabled("RedProtect")) this.register(HookRedProtect::new);
         if (pluginManager.isPluginEnabled("Towny")) this.register(HookTowny::new);
         if (pluginManager.isPluginEnabled("USkyBlock")) this.register(HookUSkyBlock::new);
+        if (pluginManager.isPluginEnabled("SkyBlock")) this.register(HookSkyBlockEarth::new);
         if (pluginManager.isPluginEnabled("WorldGuard")) this.register(HookWorldGuard::new);
 
 
@@ -764,7 +765,9 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
     }
 
     public boolean isInIsland(String name, Location l) {
-        return (aSkyblockHook != null && aSkyblockHook.isInClaim(l, name)) || (uSkyblockHook != null && uSkyblockHook.isInClaim(l, name));
+        return (aSkyblockHook != null && aSkyblockHook.isInClaim(l, name))
+                || (uSkyblockHook != null && uSkyblockHook.isInClaim(l, name)
+                || (skyBlockEarhHook != null && skyBlockEarhHook.isInClaim(l, name)));
     }
 
     @SuppressWarnings("deprecation")
