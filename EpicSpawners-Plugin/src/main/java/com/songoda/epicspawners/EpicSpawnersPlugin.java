@@ -281,7 +281,9 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         if (pluginManager.isPluginEnabled("USkyBlock")) this.register(HookUSkyBlock::new);
         if (pluginManager.isPluginEnabled("WorldGuard")) this.register(HookWorldGuard::new);
 
-        Bukkit.getScheduler().runTaskTimerAsynchronously(this, this::saveToFile, 6000, 6000);
+
+        int timeout = SettingsManager.Setting.AUTOSAVE.getInt() * 60 * 20;
+        Bukkit.getScheduler().runTaskTimerAsynchronously(this, this::saveToFile, timeout, timeout);
 
         // Start tasks
         this.particleTask = SpawnerParticleTask.startTask(this);

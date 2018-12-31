@@ -221,6 +221,7 @@ public class SettingsManager implements Listener {
         UPGRADE_PARTICLE_TYPE("Main.Upgrade Particle Type", "SPELL_WITCH"),
         EXTRA_SPAWN_TICKS("Main.Extra Ticks Added To Each Spawn", 0),
         MAX_SPAWNERS("Main.Max Spawners Per Player", -1),
+        AUTOSAVE("Main.Auto Save Interval In Seconds", 15),
 
         COST_EQUATION_XP("Main.Equations.Calculate XP Upgrade Cost", "{XPCost} * {Level}"),
         COST_EQUATION_ECO("Main.Equations.Calculate Economy Upgrade Cost", "{ECOCost} * {Level}"),
