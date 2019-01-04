@@ -35,15 +35,14 @@ public class SpawnerSpawnTask extends BukkitRunnable {
         for (Spawner spawner : manager.getSpawners()) {
             if (spawner == null || spawner.getSpawnerDataCount() == 0) continue;
 
-            int x = spawner.getX() >> 4;
-            int z = spawner.getZ() >> 4;
-
             int delay = spawner.getCreatureSpawner().getDelay();
             delay = delay - 30;
             spawner.getCreatureSpawner().setDelay(delay);
             if (delay >= 0) continue;
 
-            if (!spawner.getWorld().isChunkLoaded(x, z) || !spawner.checkConditions()) {
+            if (!spawner.isRedstonePowered()) continue;
+
+            if (!spawner.getWorld().isChunkLoaded(spawner.getX() >> 4, spawner.getZ() >> 4) || !spawner.checkConditions()) {
                 spawner.getCreatureSpawner().setDelay(300);
                 continue;
             }

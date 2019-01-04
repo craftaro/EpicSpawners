@@ -157,6 +157,8 @@ public interface Spawner {
      */
     boolean checkConditions();
 
+    boolean isRedstonePowered();
+
     /**
      * Get the cost needed to upgrade this spawner with
      * either Experience or Economy.
@@ -239,5 +241,5 @@ public interface Spawner {
     /**
      * You can use this method to force a spawn of this spawner.
      */
-    void spawn();
+    boolean spawn();
 }

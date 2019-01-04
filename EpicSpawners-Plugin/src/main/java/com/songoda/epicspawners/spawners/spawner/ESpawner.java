@@ -62,18 +62,15 @@ public class ESpawner implements Spawner {
     }
 
     @Override
-    public void spawn() {
+    public boolean spawn() {
         EpicSpawnersPlugin instance = EpicSpawnersPlugin.getInstance();
         long lastSpawn = lastSpawns.containsKey(location) ? new Date().getTime() - lastSpawns.get(location).getTime() : 1001;
 
         if (lastSpawn >= 1000) {
             lastSpawns.put(location, new Date());
-        } else return;
+        } else return false;
 
-        if (location.getBlock().isBlockPowered() && instance.getConfig().getBoolean("Main.Redstone Power Deactivates Spawners"))
-            return;
-
-        if (getFirstStack().getSpawnerData() == null) return;
+        if (getFirstStack().getSpawnerData() == null) return false;
 
         float x = (float) (0 + (Math.random() * .8));
         float y = (float) (0 + (Math.random() * .8));
@@ -84,6 +81,7 @@ public class ESpawner implements Spawner {
 
         SpawnerData spawnerData = getFirstStack().getSpawnerData();
 
+
         ParticleType particleType = spawnerData.getSpawnerSpawnParticle();
         if (particleType != ParticleType.NONE)
             Arconix.pl().getApi().packetLibrary.getParticleManager().broadcastParticle(particleLocation, x, y, z, 0, particleType.getEffect(), spawnerData.getParticleDensity().getSpawnerSpawn());
@@ -92,6 +90,7 @@ public class ESpawner implements Spawner {
             ((ESpawnerData) stack.getSpawnerData()).spawn(this, stack);
         }
         Bukkit.getScheduler().runTaskLater(instance, this::updateDelay, 10);
+        return true;
     }
 
     @Override
@@ -153,6 +152,13 @@ public class ESpawner implements Spawner {
             }
         }
         return true;
+    }
+
+    @Override
+    public boolean isRedstonePowered() {
+        return (!location.getBlock().isBlockPowered()
+                && !location.getBlock().isBlockIndirectlyPowered())
+                || !SettingsManager.Setting.REDSTONE_ACTIVATE.getBoolean();
     }
 
     public void overview(Player player) {
