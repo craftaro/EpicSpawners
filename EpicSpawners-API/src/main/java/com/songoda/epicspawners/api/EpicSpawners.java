@@ -97,6 +97,6 @@ public interface EpicSpawners {
      * 
      * @param hook the hook to register
      */
-    void registerProtectionHook(ProtectionPluginHook hook);
+    ProtectionPluginHook registerProtectionHook(ProtectionPluginHook hook);
 
 }

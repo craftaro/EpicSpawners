@@ -3,6 +3,7 @@ package com.songoda.epicspawners.hooks;
 import com.songoda.epicspawners.api.utils.ClaimableProtectionPluginHook;
 import me.goodandevil.skyblock.SkyBlock;
 import me.goodandevil.skyblock.island.Island;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
