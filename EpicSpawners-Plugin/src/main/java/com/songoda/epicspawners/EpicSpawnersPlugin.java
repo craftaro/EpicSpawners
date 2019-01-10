@@ -82,6 +82,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
 
     private static final Set<Biome> BIOMES = EnumSet.allOf(Biome.class);
     private static EpicSpawnersPlugin INSTANCE;
+    private References references;
 
     private ChatListeners chatListeners;
 
@@ -165,6 +166,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
 
         this.hooksFile.createNewFile("Loading Hooks File", "EpicSpawners Hooks File");
 
+        this.references = new References();
         this.boostManager = new BoostManager();
         this.spawnManager = new SpawnManager();
         this.spawnerManager = new ESpawnerManager();
@@ -271,8 +273,8 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         AbstractGUI.initializeListeners(this);
 
         // Register default hooks
-        if (pluginManager.isPluginEnabled("ASkyBlock")) aSkyblockHook = (ClaimableProtectionPluginHook)this.register(HookASkyBlock::new);
-        if (pluginManager.isPluginEnabled("FactionsFramework")) factionsHook = (ClaimableProtectionPluginHook)this.register(HookFactions::new);
+        if (pluginManager.isPluginEnabled("ASkyBlock")) this.register(HookASkyBlock::new);
+        if (pluginManager.isPluginEnabled("FactionsFramework")) this.register(HookFactions::new);
         if (pluginManager.isPluginEnabled("GriefPrevention")) this.register(HookGriefPrevention::new);
         if (pluginManager.isPluginEnabled("Kingdoms")) this.register(HookKingdoms::new);
         if (pluginManager.isPluginEnabled("PlotSquared")) this.register(HookPlotSquared::new);
@@ -470,7 +472,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
             currentSection.set("Custom-ECO-Cost", spawnerData.getUpgradeCostEconomy());
             currentSection.set("Custom-XP-Cost", spawnerData.getUpgradeCostExperience());
             currentSection.set("Tick-Rate", spawnerData.getTickRate());
-            currentSection.set("Pickup-Cost", spawnerData.getPickupCost());
+            currentSection.set("Pickup-cost", spawnerData.getPickupCost());
 
             currentSection.set("Spawn-Effect", spawnerData.getParticleEffect().name());
             currentSection.set("Spawn-Effect-Particle", spawnerData.getSpawnEffectParticle().name());
@@ -681,6 +683,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         this.locale.reloadMessages();
         this.spawnerFile.createNewFile("Loading Spawners File", "EpicSpawners Spawners File");
         this.hooksFile.createNewFile("Loading hookHandler File", "EpicSpawners Hooks File");
+        this.references = new References();
         this.blacklistHandler.reload();
         this.loadSpawnersFromFile();
         this.setupConfig();
@@ -732,6 +735,10 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
 
     public Heads getHeads() {
         return heads;
+    }
+
+    public References getReferences() {
+        return references;
     }
 
     public ChatListeners getChatListeners() {
