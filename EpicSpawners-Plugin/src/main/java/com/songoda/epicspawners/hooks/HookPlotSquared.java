@@ -1,7 +1,8 @@
 package com.songoda.epicspawners.hooks;
 
-import com.intellectualcrafters.plot.api.PlotAPI;
-import com.plotsquared.bukkit.BukkitMain;
+import com.github.intellectualsites.plotsquared.api.PlotAPI;
+import com.github.intellectualsites.plotsquared.bukkit.BukkitMain;
+import com.github.intellectualsites.plotsquared.plot.object.Plot;
 import com.songoda.epicspawners.api.utils.ProtectionPluginHook;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -22,8 +23,15 @@ public class HookPlotSquared implements ProtectionPluginHook {
 
     @Override
     public boolean canBuild(Player player, Location location) {
-        return plotSquared.getPlot(location) != null && plotSquared.isInPlot(player)
-                && plotSquared.getPlot(location) == plotSquared.getPlot(player);
+        com.github.intellectualsites.plotsquared.plot.object.Location plotLocation =
+                new com.github.intellectualsites.plotsquared.plot.object.Location(location.getWorld().getName(),
+                        location.getBlockX(), location.getBlockY(), location.getBlockZ());
+
+        Plot plot = plotLocation.getPlot();
+
+        return plot != null
+                && plot.getOwners().contains(player.getUniqueId())
+                && plot.getMembers().contains(player.getUniqueId());
     }
 
 }

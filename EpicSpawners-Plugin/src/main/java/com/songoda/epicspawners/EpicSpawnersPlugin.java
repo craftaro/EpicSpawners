@@ -109,7 +109,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
     private Locale locale;
 
     private List<ProtectionPluginHook> protectionHooks = new ArrayList<>();
-    private ClaimableProtectionPluginHook factionsHook, townyHook, aSkyblockHook, uSkyblockHook;
+    private ClaimableProtectionPluginHook factionsHook, townyHook, aSkyblockHook, uSkyblockHook, skyBlockEarhHook;
 
     private Storage storage;
 
@@ -279,11 +279,14 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         if (pluginManager.isPluginEnabled("Kingdoms")) this.register(HookKingdoms::new);
         if (pluginManager.isPluginEnabled("PlotSquared")) this.register(HookPlotSquared::new);
         if (pluginManager.isPluginEnabled("RedProtect")) this.register(HookRedProtect::new);
-        if (pluginManager.isPluginEnabled("Towny")) this.register(HookTowny::new);
-        if (pluginManager.isPluginEnabled("USkyBlock")) this.register(HookUSkyBlock::new);
+        if (pluginManager.isPluginEnabled("Towny")) townyHook = (ClaimableProtectionPluginHook)this.register(HookTowny::new);
+        if (pluginManager.isPluginEnabled("USkyBlock")) uSkyblockHook = (ClaimableProtectionPluginHook)this.register(HookUSkyBlock::new);
+        if (pluginManager.isPluginEnabled("SkyBlock")) skyBlockEarhHook = (ClaimableProtectionPluginHook)this.register(HookSkyBlockEarth::new);
         if (pluginManager.isPluginEnabled("WorldGuard")) this.register(HookWorldGuard::new);
 
-        Bukkit.getScheduler().runTaskTimerAsynchronously(this, this::saveToFile, 6000, 6000);
+
+        int timeout = SettingsManager.Setting.AUTOSAVE.getInt() * 60 * 20;
+        Bukkit.getScheduler().runTaskTimerAsynchronously(this, this::saveToFile, timeout, timeout);
 
         // Start tasks
         this.particleTask = SpawnerParticleTask.startTask(this);
@@ -585,8 +588,8 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         this.spawnerFile.saveConfig();
     }
 
-    private void register(Supplier<ProtectionPluginHook> hookSupplier) {
-        this.registerProtectionHook(hookSupplier.get());
+    private ProtectionPluginHook register(Supplier<ProtectionPluginHook> hookSupplier) {
+        return this.registerProtectionHook(hookSupplier.get());
     }
 
     private void processDefault(String value) {
@@ -612,7 +615,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         }
 
         if (value.equalsIgnoreCase("MUSHROOM_COW")) {
-            spawnBlock = "MYCEL";
+            spawnBlock = "MYCELIUM";
         }
 
         if (value.equalsIgnoreCase("SQUID") || value.equalsIgnoreCase("ELDER_GUARDIAN") || value.equalsIgnoreCase("COD") ||
@@ -769,7 +772,9 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
     }
 
     public boolean isInIsland(String name, Location l) {
-        return (aSkyblockHook != null && aSkyblockHook.isInClaim(l, name)) || (uSkyblockHook != null && uSkyblockHook.isInClaim(l, name));
+        return aSkyblockHook != null && aSkyblockHook.isInClaim(l, name)
+                || uSkyblockHook != null && uSkyblockHook.isInClaim(l, name)
+                || skyBlockEarhHook != null && skyBlockEarhHook.isInClaim(l, name);
     }
 
     @SuppressWarnings("deprecation")
@@ -847,7 +852,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
     }
 
     @Override
-    public void registerProtectionHook(ProtectionPluginHook hook) {
+    public ProtectionPluginHook registerProtectionHook(ProtectionPluginHook hook) {
         Preconditions.checkNotNull(hook, "Cannot register null hook");
         Preconditions.checkNotNull(hook.getPlugin(), "Protection plugin hook returns null plugin instance (#getPlugin())");
 
@@ -859,11 +864,12 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         }
 
         this.hooksFile.getConfig().addDefault("hooks." + hookPlugin.getName(), true);
-        if (!hooksFile.getConfig().getBoolean("hooks." + hookPlugin.getName(), true)) return;
+        if (!hooksFile.getConfig().getBoolean("hooks." + hookPlugin.getName(), true)) return null;
         this.hooksFile.getConfig().options().copyDefaults(true);
         this.hooksFile.saveConfig();
 
         this.protectionHooks.add(hook);
         this.getLogger().info("Registered protection hook for plugin: " + hook.getPlugin().getName());
+        return hook;
     }
 }

@@ -1,52 +1,48 @@
 package com.songoda.epicspawners.utils.gui;
 
-public final class Range {
+import org.bukkit.Sound;
+import org.bukkit.event.inventory.ClickType;
 
-    private final int low, high;
+public class Range {
 
-    private Range(int low, int high) {
-        this.low = low;
-        this.high = high;
+    private int min;
+    private int max;
+    private ClickType clickType;
+    private boolean bottom;
+    private Sound onClickSound = Sound.UI_BUTTON_CLICK;
+
+    public Range(int min, int max, ClickType clickType, boolean bottom) {
+        this.min = min;
+        this.max = max;
+        this.clickType = clickType;
+        this.bottom = bottom;
     }
 
-    public static Range from(int from, int to) {
-        return new Range(from, to);
+    public Range(int min, int max, Sound onClickSound, ClickType clickType, boolean bottom) {
+        this.min = min;
+        this.max = max;
+        this.onClickSound = onClickSound;
+        this.clickType = clickType;
+        this.bottom = bottom;
     }
 
-    public int getLow() {
-        return low;
+    public int getMin() {
+        return min;
     }
 
-    public int getHigh() {
-        return high;
+    public int getMax() {
+        return max;
     }
 
-    public boolean isWithin(int value) {
-        return value >= low && value <= high;
+    public ClickType getClickType() {
+        return clickType;
     }
 
-    public boolean isWithin(double value) {
-        return value >= low && value <= high;
+    public boolean isBottom() {
+        return bottom;
     }
 
-    public boolean isWithin(float value) {
-        return value >= low && value <= high;
+    public Sound getOnClickSound() {
+        return onClickSound;
     }
-
-    @Override
-    public int hashCode() {
-        int result = 31 * Integer.hashCode(low);
-        result += 31 * result + Integer.hashCode(high);
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        if (object == this) return true;
-        if (!(object instanceof Range)) return false;
-
-        Range other = (Range) object;
-        return low == other.low && high == other.high;
-    }
-
 }

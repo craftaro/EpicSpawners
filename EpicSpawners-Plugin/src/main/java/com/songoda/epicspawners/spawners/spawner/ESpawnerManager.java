@@ -5,6 +5,7 @@ import com.songoda.epicspawners.api.spawner.SpawnerData;
 import com.songoda.epicspawners.api.spawner.SpawnerManager;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 
 import java.util.*;
 
@@ -101,6 +102,16 @@ public class ESpawnerManager implements SpawnerManager {
 
     public boolean hasCooldown(Spawner spawner) {
         return pickingUp.contains(spawner);
+    }
+
+    @Override
+    public int getAmountPlaced(Player player) {
+        int amount = 0;
+        for (Spawner spawner : spawnersInWorld.values()) {
+            if (spawner.getPlacedBy() == null || player.getUniqueId() != spawner.getPlacedBy().getUniqueId()) continue;
+            amount ++;
+        }
+        return amount;
     }
 
     private Location roundLocation(Location location) {

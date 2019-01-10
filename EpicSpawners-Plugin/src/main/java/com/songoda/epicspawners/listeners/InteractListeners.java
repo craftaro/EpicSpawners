@@ -172,7 +172,7 @@ public class InteractListeners implements Listener {
                     }
                 }
             } else if (event.getClickedBlock().getType() == Material.SPAWNER && !EpicSpawnersPlugin.getInstance().getBlacklistHandler().isBlacklisted(player, false)) {
-                if (!player.isSneaking()) {
+                if (!player.isSneaking() || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
                     Spawner spawner = EpicSpawnersPlugin.getInstance().getSpawnerManager().getSpawnerFromWorld(location);
 
                     ((ESpawner) spawner).overview(player);

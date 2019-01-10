@@ -3,7 +3,9 @@ package com.songoda.epicspawners.spawners.spawner;
 import com.songoda.arconix.api.methods.formatting.TextComponent;
 import com.songoda.arconix.plugin.Arconix;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
+import com.songoda.epicspawners.References;
 import com.songoda.epicspawners.api.CostType;
+import com.songoda.epicspawners.api.EpicSpawners;
 import com.songoda.epicspawners.api.EpicSpawnersAPI;
 import com.songoda.epicspawners.api.events.SpawnerChangeEvent;
 import com.songoda.epicspawners.api.particles.ParticleType;
@@ -18,6 +20,7 @@ import com.songoda.epicspawners.player.MenuType;
 import com.songoda.epicspawners.player.PlayerData;
 import com.songoda.epicspawners.utils.Debugger;
 import com.songoda.epicspawners.utils.Methods;
+import com.songoda.epicspawners.utils.SettingsManager;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.*;
 import org.bukkit.block.CreatureSpawner;
@@ -50,7 +53,6 @@ public class ESpawner implements Spawner {
     //ToDo: Use this for all spawner things (Like items, commands and what not) instead of the old shit
     //ToDO: There is a weird error that is triggered when a spawner is not found in the config.
     private Map<Location, Date> lastSpawns = new HashMap<>();
-    private Map<UUID, Integer> boostAmt = new HashMap<>();
 
     public ESpawner(Location location) {
         this.location = location;
@@ -60,18 +62,15 @@ public class ESpawner implements Spawner {
     }
 
     @Override
-    public void spawn() {
+    public boolean spawn() {
         EpicSpawnersPlugin instance = EpicSpawnersPlugin.getInstance();
         long lastSpawn = lastSpawns.containsKey(location) ? new Date().getTime() - lastSpawns.get(location).getTime() : 1001;
 
         if (lastSpawn >= 1000) {
             lastSpawns.put(location, new Date());
-        } else return;
+        } else return false;
 
-        if (location.getBlock().isBlockPowered() && instance.getConfig().getBoolean("Main.Redstone Power Deactivates Spawners"))
-            return;
-
-        if (getFirstStack().getSpawnerData() == null) return;
+        if (getFirstStack().getSpawnerData() == null) return false;
 
         float x = (float) (0 + (Math.random() * .8));
         float y = (float) (0 + (Math.random() * .8));
@@ -82,6 +81,7 @@ public class ESpawner implements Spawner {
 
         SpawnerData spawnerData = getFirstStack().getSpawnerData();
 
+
         ParticleType particleType = spawnerData.getSpawnerSpawnParticle();
         if (particleType != ParticleType.NONE)
             Arconix.pl().getApi().packetLibrary.getParticleManager().broadcastParticle(particleLocation, x, y, z, 0, particleType.getEffect(), spawnerData.getParticleDensity().getSpawnerSpawn());
@@ -90,6 +90,7 @@ public class ESpawner implements Spawner {
             ((ESpawnerData) stack.getSpawnerData()).spawn(this, stack);
         }
         Bukkit.getScheduler().runTaskLater(instance, this::updateDelay, 10);
+        return true;
     }
 
     @Override
@@ -129,6 +130,7 @@ public class ESpawner implements Spawner {
 
     @Override
     public SpawnerStack getFirstStack() {
+        if (spawnerStacks.size() == 0) return null;
         return spawnerStacks.getFirst();
     }
 
@@ -139,115 +141,6 @@ public class ESpawner implements Spawner {
             multi += stack.getStackSize();
         }
         return multi;
-    }
-
-    public void playerBoost(Player player) {
-        try {
-            if (!player.hasPermission("epicspawners.canboost")) return;
-
-            if (boostAmt.containsKey(player.getUniqueId())) {
-                if (boostAmt.get(player.getUniqueId()) > EpicSpawnersPlugin.getInstance().getConfig().getInt("Spawner Boosting.Max Multiplier For A Spawner Boost")) {
-                    boostAmt.put(player.getUniqueId(), EpicSpawnersPlugin.getInstance().getConfig().getInt("Spawner Boosting.Max Multiplier For A Spawner Boost"));
-                    return;
-                } else if (boostAmt.get(player.getUniqueId()) < 1) {
-                    boostAmt.put(player.getUniqueId(), 1);
-                }
-            }
-
-            int amt = 1;
-
-            if (boostAmt.containsKey(player.getUniqueId()))
-                amt = boostAmt.get(player.getUniqueId());
-            else
-                boostAmt.put(player.getUniqueId(), amt);
-
-            Inventory i = Bukkit.createInventory(null, 27, EpicSpawnersPlugin.getInstance().getLocale().getMessage("interface.boost.title", Integer.toString(amt), Methods.compileName(getIdentifyingData(), getSpawnerDataCount(), false)));
-
-            int num = 0;
-            while (num != 27) {
-                i.setItem(num, Methods.getGlass());
-                num++;
-            }
-
-            ItemStack coal = new ItemStack(Material.COAL);
-            ItemMeta coalMeta = coal.getItemMeta();
-            coalMeta.setDisplayName(EpicSpawnersPlugin.getInstance().getLocale().getMessage("interface.boost.boostfor", "5"));
-            ArrayList<String> coalLore = new ArrayList<>();
-            coalLore.add(TextComponent.formatText("&7Costs &6&l" + Methods.getBoostCost(5, amt) + "."));
-            coalMeta.setLore(coalLore);
-            coal.setItemMeta(coalMeta);
-
-            ItemStack iron = new ItemStack(Material.IRON_INGOT);
-            ItemMeta ironMeta = iron.getItemMeta();
-            ironMeta.setDisplayName(EpicSpawnersPlugin.getInstance().getLocale().getMessage("interface.boost.boostfor", "15"));
-            ArrayList<String> ironLore = new ArrayList<>();
-            ironLore.add(TextComponent.formatText("&7Costs &6&l" + Methods.getBoostCost(15, amt) + "."));
-            ironMeta.setLore(ironLore);
-            iron.setItemMeta(ironMeta);
-
-            ItemStack diamond = new ItemStack(Material.DIAMOND);
-            ItemMeta diamondMeta = diamond.getItemMeta();
-            diamondMeta.setDisplayName(EpicSpawnersPlugin.getInstance().getLocale().getMessage("interface.boost.boostfor", "30"));
-            ArrayList<String> diamondLore = new ArrayList<>();
-            diamondLore.add(TextComponent.formatText("&7Costs &6&l" + Methods.getBoostCost(30, amt) + "."));
-            diamondMeta.setLore(diamondLore);
-            diamond.setItemMeta(diamondMeta);
-
-            ItemStack emerald = new ItemStack(Material.EMERALD);
-            ItemMeta emeraldMeta = emerald.getItemMeta();
-            emeraldMeta.setDisplayName(EpicSpawnersPlugin.getInstance().getLocale().getMessage("interface.boost.boostfor", "60"));
-            ArrayList<String> emeraldLore = new ArrayList<>();
-            emeraldLore.add(TextComponent.formatText("&7Costs &6&l" + Methods.getBoostCost(60, amt) + "."));
-            emeraldMeta.setLore(emeraldLore);
-            emerald.setItemMeta(emeraldMeta);
-
-            i.setItem(10, coal);
-            i.setItem(12, iron);
-            i.setItem(14, diamond);
-            i.setItem(16, emerald);
-
-            i.setItem(0, Methods.getBackgroundGlass(true));
-            i.setItem(1, Methods.getBackgroundGlass(true));
-            i.setItem(2, Methods.getBackgroundGlass(false));
-            i.setItem(6, Methods.getBackgroundGlass(false));
-            i.setItem(7, Methods.getBackgroundGlass(true));
-            i.setItem(8, Methods.getBackgroundGlass(true));
-            i.setItem(9, Methods.getBackgroundGlass(true));
-            i.setItem(17, Methods.getBackgroundGlass(true));
-            i.setItem(18, Methods.getBackgroundGlass(true));
-            i.setItem(19, Methods.getBackgroundGlass(true));
-            i.setItem(20, Methods.getBackgroundGlass(false));
-            i.setItem(24, Methods.getBackgroundGlass(false));
-            i.setItem(25, Methods.getBackgroundGlass(true));
-            i.setItem(26, Methods.getBackgroundGlass(true));
-
-            ItemStack head = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
-            ItemStack skull = Arconix.pl().getApi().getGUI().addTexture(head, "http://textures.minecraft.net/texture/1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b");
-            SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
-            skull.setDurability((short) 3);
-            skullMeta.setDisplayName(TextComponent.formatText("&6&l+1"));
-            skull.setItemMeta(skullMeta);
-
-            ItemStack head2 = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
-            ItemStack skull2 = Arconix.pl().getApi().getGUI().addTexture(head2, "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23");
-            SkullMeta skull2Meta = (SkullMeta) skull2.getItemMeta();
-            skull2.setDurability((short) 3);
-            skull2Meta.setDisplayName(TextComponent.formatText("&6&l-1"));
-            skull2.setItemMeta(skull2Meta);
-
-            if (amt != 1) {
-                i.setItem(0, skull2);
-            }
-            if (amt < EpicSpawnersPlugin.getInstance().getConfig().getInt("Spawner Boosting.Max Multiplier For A Spawner Boost")) {
-                i.setItem(8, skull);
-            }
-
-            player.openInventory(i);
-            EpicSpawnersPlugin.getInstance().getPlayerActionManager().getPlayerAction(player).setInMenu(MenuType.PLAYERBOOST);
-            EpicSpawnersPlugin.getInstance().getPlayerActionManager().getPlayerAction(player).setLastSpawner(this);
-        } catch (Exception e) {
-            Debugger.runReport(e);
-        }
     }
 
     @Override
@@ -261,219 +154,18 @@ public class ESpawner implements Spawner {
         return true;
     }
 
-    public void purchaseBoost(Player player, int time) {
-        try {
-            EpicSpawnersPlugin instance = EpicSpawnersPlugin.getInstance();
-
-            int amt = boostAmt.get(player.getUniqueId());
-            boolean yes = false;
-
-            String un = EpicSpawnersPlugin.getInstance().getConfig().getString("Spawner Boosting.Item Charged For A Boost");
-
-            String[] parts = un.split(":");
-
-            String type = parts[0];
-            String multi = parts[1];
-            int cost = Methods.boostCost(multi, time, amt);
-            if (!type.equals("ECO") && !type.equals("XP")) {
-                ItemStack stack = new ItemStack(Material.valueOf(type));
-                int invAmt = Arconix.pl().getApi().getGUI().getAmount(player.getInventory(), stack);
-                if (invAmt >= cost) {
-                    stack.setAmount(cost);
-                    Arconix.pl().getApi().getGUI().removeFromInventory(player.getInventory(), stack);
-                    yes = true;
-                } else {
-                    player.sendMessage(EpicSpawnersPlugin.getInstance().getLocale().getMessage("event.upgrade.cannotafford"));
-                }
-            } else if (type.equals("ECO")) {
-                if (EpicSpawnersPlugin.getInstance().getServer().getPluginManager().getPlugin("Vault") != null) {
-                    RegisteredServiceProvider<net.milkbowl.vault.economy.Economy> rsp = EpicSpawnersPlugin.getInstance().getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
-                    net.milkbowl.vault.economy.Economy econ = rsp.getProvider();
-                    if (econ.has(player, cost)) {
-                        econ.withdrawPlayer(player, cost);
-                        yes = true;
-                    } else {
-                        player.sendMessage(EpicSpawnersPlugin.getInstance().getLocale().getMessage("event.upgrade.cannotafford"));
-                    }
-                } else {
-                    player.sendMessage("Vault is not installed.");
-                }
-            } else if (type.equals("XP")) {
-                if (player.getLevel() >= cost || player.getGameMode() == GameMode.CREATIVE) {
-                    if (player.getGameMode() != GameMode.CREATIVE) {
-                        player.setLevel(player.getLevel() - cost);
-                    }
-                    yes = true;
-                } else {
-                    player.sendMessage(EpicSpawnersPlugin.getInstance().getLocale().getMessage("event.upgrade.cannotafford"));
-                }
-            }
-            if (yes) {
-                Calendar c = Calendar.getInstance();
-                Date currentDate = new Date();
-                c.setTime(currentDate);
-                c.add(Calendar.MINUTE, time);
-
-
-                BoostData boostData = new BoostData(BoostType.LOCATION, amt, c.getTime().getTime(), location);
-                instance.getBoostManager().addBoostToSpawner(boostData);
-                player.sendMessage(EpicSpawnersPlugin.getInstance().getLocale().getMessage("event.boost.applied"));
-            }
-            player.closeInventory();
-        } catch (Exception e) {
-            Debugger.runReport(e);
-        }
+    @Override
+    public boolean isRedstonePowered() {
+        return (!location.getBlock().isBlockPowered()
+                && !location.getBlock().isBlockIndirectlyPowered())
+                || !SettingsManager.Setting.REDSTONE_ACTIVATE.getBoolean();
     }
 
     public void overview(Player player) {
         try {
             EpicSpawnersPlugin instance = EpicSpawnersPlugin.getInstance();
             if (!player.hasPermission("epicspawners.overview")) return;
-            new GUISpawnerOverview(instance, this, player).openFor(player);
-        } catch (Exception e) {
-            Debugger.runReport(e);
-        }
-    }
-
-    public void convertOverview(Player player, int page) {
-        try {
-            EpicSpawnersPlugin instance = EpicSpawnersPlugin.getInstance();
-            PlayerData playerData = instance.getPlayerActionManager().getPlayerAction(player);
-
-            playerData.setCurrentPage(page);
-
-            List<SpawnerData> entities = new ArrayList<>();
-
-            int num = 0;
-            int show = 0;
-            int start = (page - 1) * 32;
-            for (SpawnerData spawnerData : instance.getSpawnerManager().getAllSpawnerData()) {
-                if (spawnerData.getIdentifyingName().equalsIgnoreCase("omni")
-                        || !spawnerData.isConvertible()
-                        || !player.hasPermission("epicspawners.convert." + spawnerData.getIdentifyingName().replace(" ", "_"))) continue;
-                if (num >= start) {
-                    if (show <= 32) {
-                        entities.add(spawnerData);
-                        show++;
-                    }
-                }
-                num++;
-            }
-
-            int amt = entities.size();
-            String title = instance.getLocale().getMessage("interface.convert.title");
-            Inventory i = Bukkit.createInventory(null, 54, TextComponent.formatTitle(title));
-            int max2 = 54;
-            if (amt <= 7) {
-                i = Bukkit.createInventory(null, 27, TextComponent.formatTitle(title));
-                max2 = 27;
-            } else if (amt <= 15) {
-                i = Bukkit.createInventory(null, 36, TextComponent.formatTitle(title));
-                max2 = 36;
-            } else if (amt <= 25) {
-                i = Bukkit.createInventory(null, 45, TextComponent.formatTitle(title));
-                max2 = 45;
-            }
-
-            final int max22 = max2;
-            int place = 10;
-            for (SpawnerData spawnerData : entities) {
-                if (place == 17)
-                    place++;
-                if (place == (max22 - 18))
-                    place++;
-                ItemStack it = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
-
-                ItemStack item = instance.getHeads().addTexture(it, spawnerData);
-
-                if (spawnerData.getDisplayItem() != null) {
-                    Material mat = spawnerData.getDisplayItem();
-                    if (!mat.equals(Material.AIR))
-                        item = new ItemStack(mat, 1);
-                }
-
-                ItemMeta itemmeta = item.getItemMeta();
-                String name = Methods.compileName(spawnerData, 1, true);
-                ArrayList<String> lore = new ArrayList<>();
-                double price = spawnerData.getConvertPrice() * getSpawnerDataCount();
-
-                lore.add(instance.getLocale().getMessage("interface.shop.buyprice", TextComponent.formatEconomy(price)));
-                String loreString = instance.getLocale().getMessage("interface.convert.lore", Methods.getTypeFromString(spawnerData.getIdentifyingName()));
-                if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-                    loreString = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, loreString.replace(" ", "_")).replace("_", " ");
-                }
-                lore.add(loreString);
-                itemmeta.setLore(lore);
-                itemmeta.setDisplayName(name);
-                item.setItemMeta(itemmeta);
-                i.setItem(place, item);
-                place++;
-            }
-
-            int max = (int) Math.ceil((double) num / (double) 36);
-            num = 0;
-            while (num != 9) {
-                i.setItem(num, Methods.getGlass());
-                num++;
-            }
-            int num2 = max2 - 9;
-            while (num2 != max2) {
-                i.setItem(num2, Methods.getGlass());
-                num2++;
-            }
-
-            ItemStack exit = new ItemStack(Material.valueOf(instance.getConfig().getString("Interfaces.Exit Icon")), 1);
-            ItemMeta exitmeta = exit.getItemMeta();
-            exitmeta.setDisplayName(instance.getLocale().getMessage("general.nametag.exit"));
-            exit.setItemMeta(exitmeta);
-
-            ItemStack head = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
-            ItemStack skull = Arconix.pl().getApi().getGUI().addTexture(head, "http://textures.minecraft.net/texture/1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b");
-            SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
-            skull.setDurability((short) 3);
-            skullMeta.setDisplayName(instance.getLocale().getMessage("general.nametag.next"));
-            skull.setItemMeta(skullMeta);
-
-            ItemStack head2 = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
-            ItemStack skull2 = Arconix.pl().getApi().getGUI().addTexture(head2, "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23");
-            SkullMeta skull2Meta = (SkullMeta) skull2.getItemMeta();
-            skull2.setDurability((short) 3);
-            skull2Meta.setDisplayName(instance.getLocale().getMessage("general.nametag.back"));
-            skull2.setItemMeta(skull2Meta);
-
-            i.setItem(8, exit);
-
-            i.setItem(0, Methods.getBackgroundGlass(true));
-            i.setItem(1, Methods.getBackgroundGlass(true));
-            i.setItem(9, Methods.getBackgroundGlass(true));
-
-            i.setItem(7, Methods.getBackgroundGlass(true));
-            i.setItem(17, Methods.getBackgroundGlass(true));
-
-            i.setItem(max22 - 18, Methods.getBackgroundGlass(true));
-            i.setItem(max22 - 9, Methods.getBackgroundGlass(true));
-            i.setItem(max22 - 8, Methods.getBackgroundGlass(true));
-
-            i.setItem(max22 - 10, Methods.getBackgroundGlass(true));
-            i.setItem(max22 - 2, Methods.getBackgroundGlass(true));
-            i.setItem(max22 - 1, Methods.getBackgroundGlass(true));
-
-            i.setItem(2, Methods.getBackgroundGlass(false));
-            i.setItem(6, Methods.getBackgroundGlass(false));
-            i.setItem(max22 - 7, Methods.getBackgroundGlass(false));
-            i.setItem(max22 - 3, Methods.getBackgroundGlass(false));
-
-            if (page != 1) {
-                i.setItem(max22 - 8, skull2);
-            }
-            if (page != max) {
-                i.setItem(max22 - 2, skull);
-            }
-
-            player.openInventory(i);
-
-            playerData.setInMenu(MenuType.CONVERT);
-            playerData.setLastSpawner(this);
+            new GUISpawnerOverview(instance, this, player);
         } catch (Exception e) {
             Debugger.runReport(e);
         }
@@ -493,7 +185,7 @@ public class ESpawner implements Spawner {
             double price = type.getConvertPrice() * getSpawnerDataCount();
 
             if (!(econ.has(p, price) || p.isOp())) {
-                p.sendMessage(EpicSpawnersPlugin.getInstance().getReferences().getPrefix() + EpicSpawnersPlugin.getInstance().getLocale().getMessage("event.upgrade.cannotafford"));
+                p.sendMessage(References.getPrefix() + EpicSpawnersPlugin.getInstance().getLocale().getMessage("event.upgrade.cannotafford"));
                 return;
             }
             SpawnerChangeEvent event = new SpawnerChangeEvent(p, this, getFirstStack().getSpawnerData(), type);
@@ -510,7 +202,7 @@ public class ESpawner implements Spawner {
             }
             this.creatureSpawner.update();
 
-            p.sendMessage(EpicSpawnersPlugin.getInstance().getReferences().getPrefix() + EpicSpawnersPlugin.getInstance().getLocale().getMessage("event.convert.success"));
+            p.sendMessage(References.getPrefix() + EpicSpawnersPlugin.getInstance().getLocale().getMessage("event.convert.success"));
 
             instance.getHologramHandler().updateHologram(this);
             p.closeInventory();
@@ -559,12 +251,15 @@ public class ESpawner implements Spawner {
         int stackSize = 1;
 
         if (player.isSneaking() && EpicSpawnersPlugin.getInstance().getConfig().getBoolean("Main.Sneak To Receive A Stacked Spawner")
-                || instance.getConfig().getBoolean("Spawner Drops.Only Drop Stacked Spawners")) {
+                || SettingsManager.Setting.ONLY_DROP_STACKED.getBoolean()) {
             stackSize = stack.getStackSize();
         }
 
         if (instance.getConfig().getBoolean("Main.Sounds Enabled")) {
-            player.playSound(player.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 0.6F, 15.0F);
+            if (stackSize == stack.getStackSize() && spawnerStacks.size() == 1)
+                player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_STEP, 1L, 1L);
+            else
+                player.playSound(player.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 0.6F, 15.0F);
         }
         ItemStack item = stack.getSpawnerData().toItemStack(1, stackSize);
 
@@ -573,10 +268,11 @@ public class ESpawner implements Spawner {
             player.getInventory().addItem(item);
         else if (!instance.getConfig().getBoolean("Main.Only Drop Placed Spawner") || placedBy != null) { //ToDo: Clean this up.
 
-            if (instance.getConfig().getBoolean("Spawner Drops.Drop On SilkTouch")
+            if (SettingsManager.Setting.SILKTOUCH_SPAWNERS.getBoolean()
                     && player.getItemInHand() != null
                     && player.getItemInHand().hasItemMeta()
                     && player.getItemInHand().getItemMeta().hasEnchant(Enchantment.SILK_TOUCH)
+                    && player.getItemInHand().getEnchantmentLevel(Enchantment.SILK_TOUCH) >= SettingsManager.Setting.SILKTOUCH_MIN_LEVEL.getInt()
                     && player.hasPermission("epicspawners.silkdrop." + stack.getSpawnerData().getIdentifyingName().replace(' ', '_'))
                     || player.hasPermission("epicspawners.no-silk-drop")) {
 
@@ -586,7 +282,7 @@ public class ESpawner implements Spawner {
                 double rand = Math.random() * 100;
 
                 if (rand - ch < 0 || ch == 100) {
-                    if (instance.getConfig().getBoolean("Main.Add Spawners To Inventory On Drop") && player.getInventory().firstEmpty() != -1)
+                    if (SettingsManager.Setting.SPAWNERS_TO_INVENTORY.getBoolean() && player.getInventory().firstEmpty() != -1)
                         player.getInventory().addItem(item);
                     else
                         location.getWorld().dropItemNaturally(location.clone().add(.5, 0, .5), item);
@@ -624,11 +320,11 @@ public class ESpawner implements Spawner {
     public boolean stack(Player player, SpawnerData data, int amount) {
         EpicSpawnersPlugin instance = EpicSpawnersPlugin.getInstance();
 
-        int max = instance.getConfig().getInt("Main.Spawner Max Upgrade");
+        int max = SettingsManager.Setting.SPAWNERS_MAX.getInt();
         int currentStackSize = getSpawnerDataCount();
 
         if (getSpawnerDataCount() == max) {
-            player.sendMessage(instance.getLocale().getMessage("event.upgrade.maxed", max));
+            player.sendMessage(References.getPrefix() + instance.getLocale().getMessage("event.upgrade.maxed", max));
             return false;
         }
 
@@ -654,7 +350,7 @@ public class ESpawner implements Spawner {
             return true;
         }
 
-        if (!instance.getConfig().getBoolean("Main.OmniSpawners Enabled") || !player.hasPermission("epicspawners.omni"))
+        if (!SettingsManager.Setting.OMNI_SPAWNERS.getBoolean() || !player.hasPermission("epicspawners.omni"))
             return false;
 
         ESpawnerStack stack = new ESpawnerStack(data, amount);
@@ -670,10 +366,10 @@ public class ESpawner implements Spawner {
         try {
             int currentStackSize = getSpawnerDataCount();
 
-            if (getSpawnerDataCount() != EpicSpawnersPlugin.getInstance().getConfig().getInt("Main.Spawner Max Upgrade"))
-                player.sendMessage(EpicSpawnersPlugin.getInstance().getLocale().getMessage("event.upgrade.success", currentStackSize));
+            if (getSpawnerDataCount() != SettingsManager.Setting.SPAWNERS_MAX.getInt())
+                player.sendMessage(References.getPrefix() + EpicSpawnersPlugin.getInstance().getLocale().getMessage("event.upgrade.success", currentStackSize));
             else
-                player.sendMessage(EpicSpawnersPlugin.getInstance().getLocale().getMessage("event.upgrade.successmaxed", currentStackSize));
+                player.sendMessage(References.getPrefix() + EpicSpawnersPlugin.getInstance().getLocale().getMessage("event.upgrade.successmaxed", currentStackSize));
 
             SpawnerChangeEvent event = new SpawnerChangeEvent(player, this, currentStackSize, oldStackSize);
             Bukkit.getPluginManager().callEvent(event);
@@ -685,9 +381,8 @@ public class ESpawner implements Spawner {
             loc.setZ(loc.getZ() + .5);
             player.getWorld().spawnParticle(org.bukkit.Particle.valueOf(EpicSpawnersPlugin.getInstance().getConfig().getString("Main.Upgrade Particle Type")), loc, 100, .5, .5, .5);
 
-
-            if (!EpicSpawnersPlugin.getInstance().getConfig().getBoolean("Main.Sounds Enabled")) {
-                return;
+                if (!SettingsManager.Setting.SOUNDS_ENABLED.getBoolean()) {
+                    return;
             }
             if (currentStackSize != EpicSpawnersPlugin.getInstance().getConfig().getInt("Main.Spawner Max Upgrade")) {
                 player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 0.6F, 15.0F);
@@ -707,13 +402,10 @@ public class ESpawner implements Spawner {
         try {
             int cost = getUpgradeCost(type);
 
-            boolean maxed = false;
+            boolean maxed = getSpawnerDataCount() == SettingsManager.Setting.SPAWNERS_MAX.getInt();
 
-            if (getSpawnerDataCount() == EpicSpawnersPlugin.getInstance().getConfig().getInt("Main.Spawner Max Upgrade")) {
-                maxed = true;
-            }
             if (maxed) {
-                player.sendMessage(EpicSpawnersPlugin.getInstance().getLocale().getMessage("event.upgrade.maxed"));
+                player.sendMessage(References.getPrefix() + EpicSpawnersPlugin.getInstance().getLocale().getMessage("event.upgrade.maxed"));
             } else {
                 if (type == CostType.ECONOMY) {
                     if (EpicSpawnersPlugin.getInstance().getServer().getPluginManager().getPlugin("Vault") != null) {
@@ -725,7 +417,7 @@ public class ESpawner implements Spawner {
                             spawnerStacks.getFirst().setStackSize(spawnerStacks.getFirst().getStackSize() + 1);
                             upgradeFinal(player, oldMultiplier);
                         } else {
-                            player.sendMessage(EpicSpawnersPlugin.getInstance().getLocale().getMessage("event.upgrade.cannotafford"));
+                            player.sendMessage(References.getPrefix() + EpicSpawnersPlugin.getInstance().getLocale().getMessage("event.upgrade.cannotafford"));
                         }
                     } else {
                         player.sendMessage("Vault is not installed.");
@@ -739,7 +431,7 @@ public class ESpawner implements Spawner {
                         spawnerStacks.getFirst().setStackSize(spawnerStacks.getFirst().getStackSize() + 1);
                         upgradeFinal(player, oldMultiplier);
                     } else {
-                        player.sendMessage(EpicSpawnersPlugin.getInstance().getLocale().getMessage("event.upgrade.cannotafford"));
+                        player.sendMessage(References.getPrefix() + EpicSpawnersPlugin.getInstance().getLocale().getMessage("event.upgrade.cannotafford"));
                     }
                 }
             }
@@ -935,14 +627,6 @@ public class ESpawner implements Spawner {
 
     public void setOmniState(String omniState) {
         this.omniState = omniState;
-    }
-
-    public void addBoostAmt(Player player, int amt) {
-        boostAmt.put(player.getUniqueId(), amt);
-    }
-
-    public int getBoostAmt(Player player) {
-        return boostAmt.getOrDefault(player.getUniqueId(), 0);
     }
 
     @Override

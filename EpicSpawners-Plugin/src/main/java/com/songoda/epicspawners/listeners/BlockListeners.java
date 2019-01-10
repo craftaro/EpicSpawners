@@ -1,6 +1,7 @@
 package com.songoda.epicspawners.listeners;
 
 import com.songoda.epicspawners.EpicSpawnersPlugin;
+import com.songoda.epicspawners.References;
 import com.songoda.epicspawners.api.events.SpawnerBreakEvent;
 import com.songoda.epicspawners.api.events.SpawnerPlaceEvent;
 import com.songoda.epicspawners.api.spawner.Spawner;
@@ -14,6 +15,7 @@ import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.entity.EntityType;
@@ -24,6 +26,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
 /**
@@ -76,7 +79,7 @@ public class BlockListeners implements Listener {
         return false;
     }
 
-    public boolean doForceCombine(Player player, ESpawner placedSpawner) {
+    private boolean doForceCombine(Player player, ESpawner placedSpawner) {
         if (instance.getConfig().getInt("Main.Force Combine Radius") == 0) return false;
 
         for (Spawner spawner : instance.getSpawnerManager().getSpawners()) {
@@ -89,12 +92,22 @@ public class BlockListeners implements Listener {
             }
 
             if (instance.getConfig().getBoolean("Main.Deny Place On Force Combine"))
-                player.sendMessage(instance.getLocale().getMessage("event.block.forcedeny"));
+                player.sendMessage(References.getPrefix() + instance.getLocale().getMessage("event.block.forcedeny"));
             else if (spawner.stack(player, placedSpawner.getFirstStack().getSpawnerData(), placedSpawner.getSpawnerDataCount()))
-                player.sendMessage(instance.getLocale().getMessage("event.block.mergedistance"));
+                player.sendMessage(References.getPrefix() + instance.getLocale().getMessage("event.block.mergedistance"));
             return true;
         }
         return false;
+    }
+
+    private int maxSpawners(Player player) {
+        int limit = -1;
+        for (PermissionAttachmentInfo permissionAttachmentInfo : player.getEffectivePermissions()) {
+            if (!permissionAttachmentInfo.getPermission().toLowerCase().startsWith("epicspawners.limit")) continue;
+            limit = Integer.parseInt(permissionAttachmentInfo.getPermission().split("\\.")[2]);
+        }
+        if (limit == -1) limit = instance.getConfig().getInt("Main.Max Spawners Per Player");
+        return limit;
     }
 
     @EventHandler
@@ -126,7 +139,18 @@ public class BlockListeners implements Listener {
                 return;
             }
 
+            player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_STEP, 1L, 1L);
+
             if (doForceCombine(player, spawner)) {
+                event.setCancelled(true);
+                return;
+            }
+
+            int amountPlaced = instance.getSpawnerManager().getAmountPlaced(player);
+            int maxSpawners = maxSpawners(player);
+
+            if (maxSpawners != -1 && amountPlaced > maxSpawners) {
+                player.sendMessage(instance.getLocale().getMessage("event.spawner.toomany", maxSpawners));
                 event.setCancelled(true);
                 return;
             }
@@ -147,7 +171,7 @@ public class BlockListeners implements Listener {
             instance.getSpawnerManager().addSpawnerToWorld(location, spawner);
 
             if (instance.getConfig().getBoolean("Main.Alerts On Place And Break"))
-                player.sendMessage(instance.getLocale().getMessage("event.block.place", Methods.compileName(spawnerData, spawner.getFirstStack().getStackSize(), false)));
+                player.sendMessage(References.getPrefix() + instance.getLocale().getMessage("event.block.place", Methods.compileName(spawnerData, spawner.getFirstStack().getStackSize(), false)));
 
             try {
                 spawner.getCreatureSpawner().setSpawnedType(EntityType.valueOf(spawnerData.getIdentifyingName().toUpperCase().replace(" ", "_")));
@@ -220,7 +244,7 @@ public class BlockListeners implements Listener {
 
             if (spawner.getFirstStack().getSpawnerData().getPickupCost() != 0 && (!naturalOnly || spawner.getPlacedBy() == null)) {
                 if (!((ESpawnerManager) instance.getSpawnerManager()).hasCooldown(spawner)) {
-                    player.sendMessage(instance.getLocale().getMessage("event.block.chargebreak", spawner.getFirstStack().getSpawnerData().getPickupCost()));
+                    player.sendMessage(References.getPrefix() + instance.getLocale().getMessage("event.block.chargebreak", spawner.getFirstStack().getSpawnerData().getPickupCost()));
                     ((ESpawnerManager) instance.getSpawnerManager()).addCooldown(spawner);
                     Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(instance, () -> ((ESpawnerManager) instance.getSpawnerManager()).removeCooldown(spawner), 300L);
                     event.setCancelled(true);
@@ -235,7 +259,7 @@ public class BlockListeners implements Listener {
                 if (econ.has(player, cost)) {
                     econ.withdrawPlayer(player, cost);
                 } else {
-                    player.sendMessage(instance.getLocale().getMessage("event.block.cannotbreak"));
+                    player.sendMessage(References.getPrefix() + instance.getLocale().getMessage("event.block.cannotbreak"));
                     event.setCancelled(true);
                     return;
                 }
@@ -246,9 +270,9 @@ public class BlockListeners implements Listener {
             if (spawner.unstack(event.getPlayer())) {
                 if (instance.getConfig().getBoolean("Main.Alerts On Place And Break")) {
                     if (spawner.getSpawnerStacks().size() != 0) {
-                        player.sendMessage(instance.getLocale().getMessage("event.downgrade.success", Integer.toString(spawner.getSpawnerDataCount())));
+                        player.sendMessage(References.getPrefix() + instance.getLocale().getMessage("event.downgrade.success", Integer.toString(spawner.getSpawnerDataCount())));
                     } else {
-                        player.sendMessage(instance.getLocale().getMessage("event.block.break", Methods.compileName(firstData, currentStackSize, true)));
+                        player.sendMessage(References.getPrefix() + instance.getLocale().getMessage("event.block.break", Methods.compileName(firstData, currentStackSize, true)));
                     }
                 }
             }
