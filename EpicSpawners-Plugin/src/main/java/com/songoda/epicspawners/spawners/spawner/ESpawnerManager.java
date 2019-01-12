@@ -57,6 +57,13 @@ public class ESpawnerManager implements SpawnerManager {
     }
 
     @Override
+    public Collection<SpawnerData> getAllEnabledSpawnerData() {
+        Collection<SpawnerData> spawners = new ArrayList<>(getAllSpawnerData());
+        spawners.removeIf(spawnerData -> !spawnerData.isActive() && spawnerData.getIdentifyingName().equals("Omni"));
+        return Collections.unmodifiableCollection(spawners);
+    }
+
+    @Override
     public boolean isSpawner(Location location) {
         return spawnersInWorld.containsKey(roundLocation(location));
     }

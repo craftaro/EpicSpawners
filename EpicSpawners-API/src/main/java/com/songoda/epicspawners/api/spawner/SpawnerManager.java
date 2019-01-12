@@ -143,4 +143,6 @@ public interface SpawnerManager {
     Collection<Spawner> getSpawners();
 
     int getAmountPlaced(Player player);
+
+    Collection<SpawnerData> getAllEnabledSpawnerData();
 }

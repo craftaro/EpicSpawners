@@ -51,7 +51,7 @@ public class CommandGive extends AbstractCommand {
             sender.sendMessage(TextComponent.formatText("&6" + list));
         } else {
             if (args[2].equalsIgnoreCase("random")) {
-                Collection<SpawnerData> list = instance.getSpawnerManager().getAllSpawnerData();
+                Collection<SpawnerData> list = instance.getSpawnerManager().getAllEnabledSpawnerData();
                 Random rand = new Random();
                 data = Iterables.get(list, rand.nextInt(list.size()));
             }
