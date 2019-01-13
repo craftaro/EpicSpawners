@@ -399,7 +399,8 @@ public class ESpawner implements Spawner {
 
             if (maxed) {
                 player.sendMessage(References.getPrefix() + EpicSpawnersPlugin.getInstance().getLocale().getMessage("event.upgrade.maxed"));
-            } else {
+                return;
+            }
                 if (type == CostType.ECONOMY) {
                     if (EpicSpawnersPlugin.getInstance().getServer().getPluginManager().getPlugin("Vault") != null) {
                         RegisteredServiceProvider<Economy> rsp = EpicSpawnersPlugin.getInstance().getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
@@ -427,7 +428,6 @@ public class ESpawner implements Spawner {
                         player.sendMessage(References.getPrefix() + EpicSpawnersPlugin.getInstance().getLocale().getMessage("event.upgrade.cannotafford"));
                     }
                 }
-            }
         } catch (Exception e) {
             Debugger.runReport(e);
         }

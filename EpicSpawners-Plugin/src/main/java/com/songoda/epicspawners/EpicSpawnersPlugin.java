@@ -510,7 +510,6 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         this.spawnerFile.saveConfig();
 
         // Save game data
-
         for (Spawner spawner : spawnerManager.getSpawners()) {
             if (spawner.getFirstStack() == null
                     || spawner.getFirstStack().getSpawnerData() == null
