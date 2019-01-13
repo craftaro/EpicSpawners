@@ -210,8 +210,8 @@ public class SettingsManager implements Listener {
         HELPFUL_TIPS_ENABLED("Main.Display Helpful Tips For Operators", true),
         UPGRADE_WITH_ECO_ENABLED("Main.Upgrade With Economy", true),
         UPGRADE_WITH_XP_ENABLED("Main.Upgrade With XP", true),
-        UPGRADE_COST_ECO("Main.Cost To Upgrade With Economy", 10000),
-        UPGRADE_COST_XP("Main.Cost To Upgrade With XP", 50),
+        UPGRADE_COST_ECONOMY("Main.Cost To Upgrade With Economy", 10000),
+        UPGRADE_COST_EXPERIANCE("Main.Cost To Upgrade With XP", 50),
         USE_CUSTOM_UPGRADE_EQUATION("Main.Use Custom Equations for Upgrade Costs", false),
         LIQUID_REPEL_RADIUS("Main.Spawner Repel Liquid Radius", 1),
         REDSTONE_ACTIVATE("Main.Redstone Power Deactivates Spawners", true),
@@ -223,8 +223,8 @@ public class SettingsManager implements Listener {
         MAX_SPAWNERS("Main.Max Spawners Per Player", -1),
         AUTOSAVE("Main.Auto Save Interval In Seconds", 15),
 
-        COST_EQUATION_XP("Main.Equations.Calculate XP Upgrade Cost", "{XPCost} * {Level}"),
-        COST_EQUATION_ECO("Main.Equations.Calculate Economy Upgrade Cost", "{ECOCost} * {Level}"),
+        COST_EQUATION_EXPERIANCE("Main.Equations.Calculate XP Upgrade Cost", "{XPCost} * {Level}"),
+        COST_EQUATION_ECONOMY("Main.Equations.Calculate Economy Upgrade Cost", "{ECOCost} * {Level}"),
         SPAWNER_EQUATION_SPAWNS("Main.Equations.Mobs Spawned Per Spawn", "{MULTI} + {RAND}"),
 
         NAMED_SPAWNER_TIERS("Main.Named Spawners Tiers", false),
@@ -285,6 +285,10 @@ public class SettingsManager implements Listener {
 
         public int getInt() {
             return EpicSpawnersPlugin.getInstance().getConfig().getInt(setting);
+        }
+
+        public String getString() {
+            return EpicSpawnersPlugin.getInstance().getConfig().getString(setting);
         }
     }
 

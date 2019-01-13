@@ -588,6 +588,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         this.spawnerFile.saveConfig();
     }
 
+
     private ProtectionPluginHook register(Supplier<ProtectionPluginHook> hookSupplier) {
         return this.registerProtectionHook(hookSupplier.get());
     }

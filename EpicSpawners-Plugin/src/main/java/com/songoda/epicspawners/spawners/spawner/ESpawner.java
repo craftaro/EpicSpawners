@@ -1,11 +1,9 @@
 package com.songoda.epicspawners.spawners.spawner;
 
-import com.songoda.arconix.api.methods.formatting.TextComponent;
 import com.songoda.arconix.plugin.Arconix;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.References;
 import com.songoda.epicspawners.api.CostType;
-import com.songoda.epicspawners.api.EpicSpawners;
 import com.songoda.epicspawners.api.EpicSpawnersAPI;
 import com.songoda.epicspawners.api.events.SpawnerChangeEvent;
 import com.songoda.epicspawners.api.particles.ParticleType;
@@ -14,10 +12,7 @@ import com.songoda.epicspawners.api.spawner.SpawnerData;
 import com.songoda.epicspawners.api.spawner.SpawnerStack;
 import com.songoda.epicspawners.api.spawner.condition.SpawnCondition;
 import com.songoda.epicspawners.boost.BoostData;
-import com.songoda.epicspawners.boost.BoostType;
 import com.songoda.epicspawners.gui.GUISpawnerOverview;
-import com.songoda.epicspawners.player.MenuType;
-import com.songoda.epicspawners.player.PlayerData;
 import com.songoda.epicspawners.utils.Debugger;
 import com.songoda.epicspawners.utils.Methods;
 import com.songoda.epicspawners.utils.SettingsManager;
@@ -27,10 +22,7 @@ import org.bukkit.block.CreatureSpawner;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
 import javax.script.ScriptEngine;
@@ -221,18 +213,18 @@ public class ESpawner implements Spawner {
                 if (getFirstStack().getSpawnerData().getUpgradeCostEconomy() != 0)
                     cost = (int) getFirstStack().getSpawnerData().getUpgradeCostEconomy();
                 else
-                    cost = EpicSpawnersPlugin.getInstance().getConfig().getInt("Main.Cost To Upgrade With Economy");
-                if (EpicSpawnersPlugin.getInstance().getConfig().getBoolean("Main.Use Custom Equations for Upgrade Costs")) {
-                    String math = EpicSpawnersPlugin.getInstance().getConfig().getString("Main.Equations.Calculate Economy Upgrade Cost").replace("{ECOCost}", Integer.toString(cost)).replace("{Level}", Integer.toString(getSpawnerDataCount()));
+                    cost = SettingsManager.Setting.UPGRADE_COST_ECONOMY.getInt();
+                if (SettingsManager.Setting.USE_CUSTOM_UPGRADE_EQUATION.getBoolean()) {
+                    String math = SettingsManager.Setting.COST_EQUATION_ECONOMY.getString().replace("{ECOCost}", Integer.toString(cost)).replace("{Level}", Integer.toString(getSpawnerDataCount()));
                     cost = (int) Math.round(Double.parseDouble(engine.eval(math).toString()));
                 }
             } else if (type == CostType.EXPERIENCE) {
                 if (getFirstStack().getSpawnerData().getUpgradeCostExperience() != 0) {
                     cost = getFirstStack().getSpawnerData().getUpgradeCostExperience();
                 } else
-                    cost = EpicSpawnersPlugin.getInstance().getConfig().getInt("Main.Cost To Upgrade With XP");
-                if (EpicSpawnersPlugin.getInstance().getConfig().getBoolean("Main.Use Custom Equations for Upgrade Costs")) {
-                    String math = EpicSpawnersPlugin.getInstance().getConfig().getString("Main.Equations.Calculate XP Upgrade Cost").replace("{XPCost}", Integer.toString(cost)).replace("{Level}", Integer.toString(getSpawnerDataCount()));
+                    cost = SettingsManager.Setting.UPGRADE_COST_EXPERIANCE.getInt();
+                if (SettingsManager.Setting.USE_CUSTOM_UPGRADE_EQUATION.getBoolean()) {
+                    String math = SettingsManager.Setting.COST_EQUATION_EXPERIANCE.getString().replace("{XPCost}", Integer.toString(cost)).replace("{Level}", Integer.toString(getSpawnerDataCount()));
                     cost = (int) Math.round(Double.parseDouble(engine.eval(math).toString()));
                 }
             }
@@ -250,12 +242,12 @@ public class ESpawner implements Spawner {
 
         int stackSize = 1;
 
-        if (player.isSneaking() && EpicSpawnersPlugin.getInstance().getConfig().getBoolean("Main.Sneak To Receive A Stacked Spawner")
+        if (player.isSneaking() && SettingsManager.Setting.SNEAK_FOR_STACK.getBoolean()
                 || SettingsManager.Setting.ONLY_DROP_STACKED.getBoolean()) {
             stackSize = stack.getStackSize();
         }
 
-        if (instance.getConfig().getBoolean("Main.Sounds Enabled")) {
+        if (SettingsManager.Setting.SOUNDS_ENABLED.getBoolean()) {
             if (stackSize == stack.getStackSize() && spawnerStacks.size() == 1)
                 player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_STEP, 1L, 1L);
             else
@@ -264,20 +256,21 @@ public class ESpawner implements Spawner {
         ItemStack item = stack.getSpawnerData().toItemStack(1, stackSize);
 
 
-        if (EpicSpawnersPlugin.getInstance().getConfig().getBoolean("Main.Add Spawners To Inventory On Drop") && player.getInventory().firstEmpty() == -1)
+        if (SettingsManager.Setting.SPAWNERS_TO_INVENTORY.getBoolean() && player.getInventory().firstEmpty() == -1)
             player.getInventory().addItem(item);
-        else if (!instance.getConfig().getBoolean("Main.Only Drop Placed Spawner") || placedBy != null) { //ToDo: Clean this up.
+        else if (!SettingsManager.Setting.ONLY_DROP_PLACED.getBoolean() || placedBy != null) {
 
+            ItemStack inHand = player.getInventory().getItemInMainHand();
             if (SettingsManager.Setting.SILKTOUCH_SPAWNERS.getBoolean()
-                    && player.getItemInHand() != null
-                    && player.getItemInHand().hasItemMeta()
-                    && player.getItemInHand().getItemMeta().hasEnchant(Enchantment.SILK_TOUCH)
-                    && player.getItemInHand().getEnchantmentLevel(Enchantment.SILK_TOUCH) >= SettingsManager.Setting.SILKTOUCH_MIN_LEVEL.getInt()
+                    && inHand != null
+                    && inHand.hasItemMeta()
+                    && inHand.getItemMeta().hasEnchant(Enchantment.SILK_TOUCH)
+                    && inHand.getEnchantmentLevel(Enchantment.SILK_TOUCH) >= SettingsManager.Setting.SILKTOUCH_MIN_LEVEL.getInt()
                     && player.hasPermission("epicspawners.silkdrop." + stack.getSpawnerData().getIdentifyingName().replace(' ', '_'))
                     || player.hasPermission("epicspawners.no-silk-drop")) {
 
-                int ch = Integer.parseInt(instance.getConfig().getString((placedBy != null
-                        ? "Spawner Drops.Chance On Placed Silktouch" : "Spawner Drops.Chance On Natural Silktouch")).replace("%", ""));
+                int ch = Integer.parseInt((placedBy != null
+                        ? SettingsManager.Setting.SILKTOUCH_PLACED_SPAWNER_DROP_CHANCE.getString() : SettingsManager.Setting.SILKTOUCH_NATURAL_SPAWNER_DROP_CHANCE.getString()).replace("%", ""));
 
                 double rand = Math.random() * 100;
 
@@ -379,12 +372,12 @@ public class ESpawner implements Spawner {
             loc.setX(loc.getX() + .5);
             loc.setY(loc.getY() + .5);
             loc.setZ(loc.getZ() + .5);
-            player.getWorld().spawnParticle(org.bukkit.Particle.valueOf(EpicSpawnersPlugin.getInstance().getConfig().getString("Main.Upgrade Particle Type")), loc, 100, .5, .5, .5);
+            player.getWorld().spawnParticle(org.bukkit.Particle.valueOf(SettingsManager.Setting.UPGRADE_PARTICLE_TYPE.getString()), loc, 100, .5, .5, .5);
 
                 if (!SettingsManager.Setting.SOUNDS_ENABLED.getBoolean()) {
                     return;
             }
-            if (currentStackSize != EpicSpawnersPlugin.getInstance().getConfig().getInt("Main.Spawner Max Upgrade")) {
+            if (currentStackSize != SettingsManager.Setting.SPAWNERS_MAX.getInt()) {
                 player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 0.6F, 15.0F);
             } else {
                 player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 2F, 25.0F);
@@ -519,7 +512,7 @@ public class ESpawner implements Spawner {
     @Override
     public int updateDelay() { //ToDO: Should be redesigned to work with spawner.setmaxdelay
         try {
-            if (!EpicSpawnersPlugin.getInstance().getConfig().getBoolean("Main.Default Minecraft Spawner Cooldowns"))
+            if (!SettingsManager.Setting.ALTER_DELAY.getBoolean())
                 return 0;
 
             int max = 0;
@@ -541,7 +534,7 @@ public class ESpawner implements Spawner {
                     min = tickMin;
                 }
             }
-            int extraTicks = EpicSpawnersPlugin.getInstance().getConfig().getInt("Main.Extra Ticks Added To Each Spawn");
+            int extraTicks = SettingsManager.Setting.EXTRA_SPAWN_TICKS.getInt();
 
             if (getSpawnerDataCount() == 0) return 0;
             int delay = (rand.nextInt(min, max + 1) / getSpawnerDataCount()) + extraTicks;
