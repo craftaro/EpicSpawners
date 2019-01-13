@@ -273,8 +273,8 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         AbstractGUI.initializeListeners(this);
 
         // Register default hooks
-        if (pluginManager.isPluginEnabled("ASkyBlock")) this.register(HookASkyBlock::new);
-        if (pluginManager.isPluginEnabled("FactionsFramework")) this.register(HookFactions::new);
+        if (pluginManager.isPluginEnabled("ASkyBlock")) aSkyblockHook = (ClaimableProtectionPluginHook)this.register(HookASkyBlock::new);
+        if (pluginManager.isPluginEnabled("FactionsFramework")) factionsHook = (ClaimableProtectionPluginHook)this.register(HookFactions::new);
         if (pluginManager.isPluginEnabled("GriefPrevention")) this.register(HookGriefPrevention::new);
         if (pluginManager.isPluginEnabled("Kingdoms")) this.register(HookKingdoms::new);
         if (pluginManager.isPluginEnabled("PlotSquared")) this.register(HookPlotSquared::new);
