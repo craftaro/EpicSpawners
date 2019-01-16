@@ -93,7 +93,7 @@ public class SpawnerEditor {
                 }
 
                 String name = Methods.compileName(spawnerData, 1, false);
-                inventory.setItem(place, Methods.createButton(icon, TextComponent.convertToInvisibleString(spawnerData.getDisplayName() + ":") + name,
+                inventory.setItem(place, Methods.createButton(icon, TextComponent.convertToInvisibleString(spawnerData.getIdentifyingName() + ":") + name,
                         "&7Click to &a&lEdit&7."));
 
                 place++;
