@@ -14,11 +14,14 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -126,6 +129,13 @@ public class InteractListeners implements Listener {
             }
         } catch (Exception ee) {
             Debugger.runReport(ee);
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void PlayerInteractEvent(PlayerArmorStandManipulateEvent event) {
+        if (instance.getSpawnerManager().isSpawner(event.getRightClicked().getLocation().getBlock().getRelative(BlockFace.UP).getLocation())) {
+            event.setCancelled(true);
         }
     }
 
