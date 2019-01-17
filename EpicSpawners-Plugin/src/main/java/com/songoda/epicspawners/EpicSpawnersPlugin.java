@@ -146,7 +146,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
 
         ConsoleCommandSender console = Bukkit.getConsoleSender();
         console.sendMessage(TextComponent.formatText("&a============================="));
-        console.sendMessage(TextComponent.formatText(String.format("&7%s %s by &5Brianna <3&7!", this.getName(), this.getDescription().getVersion())));
+        console.sendMessage(TextComponent.formatText(String.format("&7%s %s by &5Songoda <3&7!", this.getName(), this.getDescription().getVersion())));
         console.sendMessage(TextComponent.formatText("&7Action: &aEnabling&7..."));
 
         this.heads = new Heads();
@@ -307,7 +307,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         //this.spawnerRegistry.clearRegistry();
         ConsoleCommandSender console = Bukkit.getConsoleSender();
         console.sendMessage(TextComponent.formatText("&a============================="));
-        console.sendMessage(TextComponent.formatText("&7EpicSpawners " + this.getDescription().getVersion() + " by &5Brianna <3!"));
+        console.sendMessage(TextComponent.formatText("&7EpicSpawners " + this.getDescription().getVersion() + " by &5Songoda <3!"));
         console.sendMessage(TextComponent.formatText("&7Action: &cDisabling&7..."));
         console.sendMessage(TextComponent.formatText("&a============================="));
     }
