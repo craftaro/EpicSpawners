@@ -40,8 +40,6 @@ public class SpawnerSpawnTask extends BukkitRunnable {
             spawner.getCreatureSpawner().setDelay(delay);
             if (delay >= 0) continue;
 
-            if (!spawner.isRedstonePowered()) continue;
-
             if (!spawner.getWorld().isChunkLoaded(spawner.getX() >> 4, spawner.getZ() >> 4) || !spawner.checkConditions()) {
                 spawner.getCreatureSpawner().setDelay(300);
                 continue;

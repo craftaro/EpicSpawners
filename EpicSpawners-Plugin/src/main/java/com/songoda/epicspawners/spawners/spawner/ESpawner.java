@@ -68,6 +68,8 @@ public class ESpawner implements Spawner {
 
         SpawnerData spawnerData = getFirstStack().getSpawnerData();
 
+        if (!isRedstonePowered()) return false;
+
         ParticleType particleType = spawnerData.getSpawnerSpawnParticle();
         if (particleType != ParticleType.NONE) {
             float x = (float) (0 + (Math.random() * .8));
