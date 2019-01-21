@@ -1,22 +1,20 @@
 package com.songoda.epicspawners.gui;
 
-import com.songoda.arconix.api.methods.formatting.TextComponent;
-import com.songoda.arconix.plugin.Arconix;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.References;
 import com.songoda.epicspawners.api.spawner.Spawner;
 import com.songoda.epicspawners.boost.BoostData;
 import com.songoda.epicspawners.boost.BoostType;
-import com.songoda.epicspawners.spawners.spawner.ESpawner;
 import com.songoda.epicspawners.utils.Debugger;
 import com.songoda.epicspawners.utils.Methods;
 import com.songoda.epicspawners.utils.SettingsManager;
 import com.songoda.epicspawners.utils.gui.AbstractGUI;
 import net.milkbowl.vault.economy.Economy;
-import org.bukkit.*;
-import org.bukkit.entity.EntityType;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -25,7 +23,6 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Map;
 
 public class GUISpawnerBoost extends AbstractGUI {
 
@@ -64,7 +61,7 @@ public class GUISpawnerBoost extends AbstractGUI {
         ItemMeta coalMeta = coal.getItemMeta();
         coalMeta.setDisplayName(EpicSpawnersPlugin.getInstance().getLocale().getMessage("interface.boost.boostfor", "5"));
         ArrayList<String> coalLore = new ArrayList<>();
-        coalLore.add(TextComponent.formatText("&7Costs &6&l" + Methods.getBoostCost(5, amount) + "."));
+        coalLore.add(Methods.formatText("&7Costs &6&l" + Methods.getBoostCost(5, amount) + "."));
         coalMeta.setLore(coalLore);
         coal.setItemMeta(coalMeta);
 
@@ -72,7 +69,7 @@ public class GUISpawnerBoost extends AbstractGUI {
         ItemMeta ironMeta = iron.getItemMeta();
         ironMeta.setDisplayName(EpicSpawnersPlugin.getInstance().getLocale().getMessage("interface.boost.boostfor", "15"));
         ArrayList<String> ironLore = new ArrayList<>();
-        ironLore.add(TextComponent.formatText("&7Costs &6&l" + Methods.getBoostCost(15, amount) + "."));
+        ironLore.add(Methods.formatText("&7Costs &6&l" + Methods.getBoostCost(15, amount) + "."));
         ironMeta.setLore(ironLore);
         iron.setItemMeta(ironMeta);
 
@@ -80,7 +77,7 @@ public class GUISpawnerBoost extends AbstractGUI {
         ItemMeta diamondMeta = diamond.getItemMeta();
         diamondMeta.setDisplayName(EpicSpawnersPlugin.getInstance().getLocale().getMessage("interface.boost.boostfor", "30"));
         ArrayList<String> diamondLore = new ArrayList<>();
-        diamondLore.add(TextComponent.formatText("&7Costs &6&l" + Methods.getBoostCost(30, amount) + "."));
+        diamondLore.add(Methods.formatText("&7Costs &6&l" + Methods.getBoostCost(30, amount) + "."));
         diamondMeta.setLore(diamondLore);
         diamond.setItemMeta(diamondMeta);
 
@@ -88,7 +85,7 @@ public class GUISpawnerBoost extends AbstractGUI {
         ItemMeta emeraldMeta = emerald.getItemMeta();
         emeraldMeta.setDisplayName(EpicSpawnersPlugin.getInstance().getLocale().getMessage("interface.boost.boostfor", "60"));
         ArrayList<String> emeraldLore = new ArrayList<>();
-        emeraldLore.add(TextComponent.formatText("&7Costs &6&l" + Methods.getBoostCost(60, amount) + "."));
+        emeraldLore.add(Methods.formatText("&7Costs &6&l" + Methods.getBoostCost(60, amount) + "."));
         emeraldMeta.setLore(emeraldLore);
         emerald.setItemMeta(emeraldMeta);
 
@@ -113,17 +110,17 @@ public class GUISpawnerBoost extends AbstractGUI {
         inventory.setItem(26, Methods.getBackgroundGlass(true));
 
         ItemStack head = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
-        ItemStack skull = Arconix.pl().getApi().getGUI().addTexture(head, "http://textures.minecraft.net/texture/1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b");
+        ItemStack skull = Methods.addTexture(head, "http://textures.minecraft.net/texture/1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b");
         SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
         skull.setDurability((short) 3);
-        skullMeta.setDisplayName(TextComponent.formatText("&6&l+1"));
+        skullMeta.setDisplayName(Methods.formatText("&6&l+1"));
         skull.setItemMeta(skullMeta);
 
         ItemStack head2 = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
-        ItemStack skull2 = Arconix.pl().getApi().getGUI().addTexture(head2, "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23");
+        ItemStack skull2 = Methods.addTexture(head2, "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23");
         SkullMeta skull2Meta = (SkullMeta) skull2.getItemMeta();
         skull2.setDurability((short) 3);
-        skull2Meta.setDisplayName(TextComponent.formatText("&6&l-1"));
+        skull2Meta.setDisplayName(Methods.formatText("&6&l-1"));
         skull2.setItemMeta(skull2Meta);
 
         if (amount != 1) {
@@ -177,10 +174,10 @@ public class GUISpawnerBoost extends AbstractGUI {
             int cost = Methods.boostCost(multi, time, amt);
             if (!type.equals("ECO") && !type.equals("XP")) {
                 ItemStack stack = new ItemStack(Material.valueOf(type));
-                int invAmt = Arconix.pl().getApi().getGUI().getAmount(player.getInventory(), stack);
+                int invAmt = Methods.getAmountInInventory(player.getInventory(), stack);
                 if (invAmt >= cost) {
                     stack.setAmount(cost);
-                    Arconix.pl().getApi().getGUI().removeFromInventory(player.getInventory(), stack);
+                    Methods.removeFromInventory(player.getInventory(), stack);
                 } else {
                     player.sendMessage(References.getPrefix() + EpicSpawnersPlugin.getInstance().getLocale().getMessage("event.upgrade.cannotafford"));
                     return;
@@ -218,7 +215,7 @@ public class GUISpawnerBoost extends AbstractGUI {
             BoostData boostData = new BoostData(BoostType.LOCATION, amt, c.getTime().getTime(), location);
             instance.getBoostManager().addBoostToSpawner(boostData);
             player.sendMessage(References.getPrefix() + plugin.getLocale().getMessage("event.boost.applied"));
-            player.playSound(location, Sound.ENTITY_VILLAGER_YES, 1,1);
+            player.playSound(location, Sound.ENTITY_VILLAGER_YES, 1, 1);
         } catch (Exception e) {
             Debugger.runReport(e);
         }

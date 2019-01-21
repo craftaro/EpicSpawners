@@ -1,19 +1,14 @@
 package com.songoda.epicspawners.gui;
 
-import com.songoda.arconix.api.methods.formatting.TextComponent;
-import com.songoda.arconix.api.methods.formatting.TimeComponent;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.Locale;
 import com.songoda.epicspawners.api.CostType;
-import com.songoda.epicspawners.api.spawner.SpawnerData;
 import com.songoda.epicspawners.api.spawner.SpawnerStack;
-import com.songoda.epicspawners.player.MenuType;
 import com.songoda.epicspawners.spawners.spawner.ESpawner;
 import com.songoda.epicspawners.utils.Debugger;
 import com.songoda.epicspawners.utils.Methods;
 import com.songoda.epicspawners.utils.SettingsManager;
 import com.songoda.epicspawners.utils.gui.AbstractGUI;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -24,7 +19,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -95,7 +89,7 @@ public class GUISpawnerOverview extends AbstractGUI {
                 num++;
             }
 
-            lore.add(TextComponent.formatText(only.toString()));
+            lore.add(Methods.formatText(only.toString()));
         }
 
         List<Material> blocks = spawner.getFirstStack().getSpawnerData().getSpawnBlocksList();
@@ -127,10 +121,10 @@ public class GUISpawnerOverview extends AbstractGUI {
         if (spawner.getBoost() != 0) {
 
             // ToDo: Make it display all boosts.
-            String[] parts = plugin.getLocale().getMessage("interface.spawner.boostedstats", Integer.toString(spawner.getBoost()), spawner.getIdentifyingData().getIdentifyingName(), TimeComponent.makeReadable(spawner.getBoostEnd().toEpochMilli() - System.currentTimeMillis())).split("\\|");
+            String[] parts = plugin.getLocale().getMessage("interface.spawner.boostedstats", Integer.toString(spawner.getBoost()), spawner.getIdentifyingData().getIdentifyingName(), Methods.makeReadable(spawner.getBoostEnd().toEpochMilli() - System.currentTimeMillis())).split("\\|");
             lore.add("");
             for (String line : parts)
-                lore.add(TextComponent.formatText(line));
+                lore.add(Methods.formatText(line));
         }
         itemmeta.setLore(lore);
         item.setItemMeta(itemmeta);
@@ -159,7 +153,7 @@ public class GUISpawnerOverview extends AbstractGUI {
         itemmetaECO.setDisplayName(plugin.getLocale().getMessage("interface.spawner.upgradewitheconomy"));
         ArrayList<String> loreECO = new ArrayList<>();
         if (!maxed)
-            loreECO.add(plugin.getLocale().getMessage("interface.spawner.upgradewitheconomylore", TextComponent.formatEconomy(ecoCost)));
+            loreECO.add(plugin.getLocale().getMessage("interface.spawner.upgradewitheconomylore", Methods.formatEconomy(ecoCost)));
         else
             loreECO.add(plugin.getLocale().getMessage("event.upgrade.maxed"));
         itemmetaECO.setLore(loreECO);
@@ -206,7 +200,7 @@ public class GUISpawnerOverview extends AbstractGUI {
                 while (m.find()) {
                     if (li > start) {
                         if (li < start + 15) {
-                            loreO.add(TextComponent.formatText("&7" + m.group()));
+                            loreO.add(Methods.formatText("&7" + m.group()));
                             added++;
                         } else {
                             max = true;
@@ -295,7 +289,7 @@ public class GUISpawnerOverview extends AbstractGUI {
             while (m.find()) {
                 if (li > start) {
                     if (li < start + 15) {
-                        loreO.add(TextComponent.formatText("&7" + m.group()));
+                        loreO.add(Methods.formatText("&7" + m.group()));
                         added++;
                     } else {
                         max = true;

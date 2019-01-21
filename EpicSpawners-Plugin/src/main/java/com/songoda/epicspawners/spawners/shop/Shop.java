@@ -1,7 +1,5 @@
 package com.songoda.epicspawners.spawners.shop;
 
-import com.songoda.arconix.api.methods.formatting.TextComponent;
-import com.songoda.arconix.plugin.Arconix;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.References;
 import com.songoda.epicspawners.api.spawner.SpawnerData;
@@ -56,7 +54,7 @@ public class Shop {
             }
 
             int amount = entities.size();
-            String title = TextComponent.formatTitle(instance.getLocale().getMessage("interface.shop.title"));
+            String title = instance.getLocale().getMessage("interface.shop.title");
             Inventory inventory = Bukkit.createInventory(null, 54, title);
             int max2 = 54;
 
@@ -89,7 +87,7 @@ public class Shop {
                 String name = Methods.compileName(spawnerData, 1, true);
                 ArrayList<String> lore = new ArrayList<>();
                 double price = spawnerData.getShopPrice();
-                lore.add(TextComponent.formatText(instance.getLocale().getMessage("interface.shop.buyprice", TextComponent.formatEconomy(price))));
+                lore.add(Methods.formatText(instance.getLocale().getMessage("interface.shop.buyprice", Methods.formatEconomy(price))));
                 String loreString = instance.getLocale().getMessage("interface.shop.lore", Methods.getTypeFromString(Methods.getTypeFromString(spawnerData.getDisplayName())));
                 if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
                     loreString = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, loreString.replace(" ", "_")).replace("_", " ");
@@ -121,14 +119,14 @@ public class Shop {
             exit.setItemMeta(exitmeta);
 
             ItemStack head = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
-            ItemStack skull = Arconix.pl().getApi().getGUI().addTexture(head, "http://textures.minecraft.net/texture/1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b");
+            ItemStack skull = Methods.addTexture(head, "http://textures.minecraft.net/texture/1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b");
             SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
             skull.setDurability((short) 3);
             skullMeta.setDisplayName(instance.getLocale().getMessage("general.nametag.next"));
             skull.setItemMeta(skullMeta);
 
             ItemStack head2 = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
-            ItemStack skull2 = Arconix.pl().getApi().getGUI().addTexture(head2, "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23");
+            ItemStack skull2 = Methods.addTexture(head2, "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23");
             SkullMeta skull2Meta = (SkullMeta) skull2.getItemMeta();
             skull2.setDurability((short) 3);
             skull2Meta.setDisplayName(instance.getLocale().getMessage("general.nametag.back"));
@@ -173,7 +171,7 @@ public class Shop {
         try {
             PlayerData playerData = instance.getPlayerActionManager().getPlayerAction(player);
             SpawnerData spawnerData = playerData.getLastData();
-            Inventory inventory = Bukkit.createInventory(null, 45, TextComponent.formatTitle(instance.getLocale().getMessage("interface.shop.spawnershoptitle", Methods.compileName(spawnerData, 1, false))));
+            Inventory inventory = Bukkit.createInventory(null, 45, instance.getLocale().getMessage("interface.shop.spawnershoptitle", Methods.compileName(spawnerData, 1, false)));
 
             int num = 0;
             while (num != 9) {
@@ -224,7 +222,7 @@ public class Shop {
             String name = Methods.compileName(spawnerData, 1, false);
             itemmeta.setDisplayName(name);
             ArrayList<String> lore = new ArrayList<>();
-            lore.add(instance.getLocale().getMessage("interface.shop.buyprice", TextComponent.formatEconomy(price)));
+            lore.add(instance.getLocale().getMessage("interface.shop.buyprice", Methods.formatEconomy(price)));
             itemmeta.setLore(lore);
             item.setItemMeta(itemmeta);
             inventory.setItem(22, item);
@@ -281,7 +279,7 @@ public class Shop {
             inventory.setItem(8, exit);
 
             ItemStack head2 = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
-            ItemStack skull2 = Arconix.pl().getApi().getGUI().addTexture(head2, "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23");
+            ItemStack skull2 = Methods.addTexture(head2, "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23");
             SkullMeta skull2Meta = (SkullMeta) skull2.getItemMeta();
             skull2.setDurability((short) 3);
             skull2Meta.setDisplayName(instance.getLocale().getMessage("general.nametag.back"));

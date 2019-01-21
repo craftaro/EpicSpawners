@@ -1,27 +1,20 @@
 package com.songoda.epicspawners.gui;
 
-import com.songoda.arconix.api.methods.formatting.TextComponent;
-import com.songoda.arconix.plugin.Arconix;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.api.spawner.Spawner;
 import com.songoda.epicspawners.api.spawner.SpawnerData;
-import com.songoda.epicspawners.player.MenuType;
-import com.songoda.epicspawners.player.PlayerData;
 import com.songoda.epicspawners.spawners.spawner.ESpawner;
 import com.songoda.epicspawners.utils.Methods;
 import com.songoda.epicspawners.utils.gui.AbstractGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class GUISpawnerConvert extends AbstractGUI {
 
@@ -50,7 +43,8 @@ public class GUISpawnerConvert extends AbstractGUI {
         for (SpawnerData spawnerData : plugin.getSpawnerManager().getAllSpawnerData()) {
             if (spawnerData.getIdentifyingName().equalsIgnoreCase("omni")
                     || !spawnerData.isConvertible()
-                    || !player.hasPermission("epicspawners.convert." + spawnerData.getIdentifyingName().replace(" ", "_"))) continue;
+                    || !player.hasPermission("epicspawners.convert." + spawnerData.getIdentifyingName().replace(" ", "_")))
+                continue;
             if (totalAmount >= start) {
                 if (show <= 32) {
                     entities.add(spawnerData);
@@ -100,7 +94,7 @@ public class GUISpawnerConvert extends AbstractGUI {
             ArrayList<String> lore = new ArrayList<>();
             double price = spawnerData.getConvertPrice() * spawner.getSpawnerDataCount();
 
-            lore.add(plugin.getLocale().getMessage("interface.shop.buyprice", TextComponent.formatEconomy(price)));
+            lore.add(plugin.getLocale().getMessage("interface.shop.buyprice", Methods.formatEconomy(price)));
             String loreString = plugin.getLocale().getMessage("interface.convert.lore", Methods.getTypeFromString(spawnerData.getIdentifyingName()));
             if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
                 loreString = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, loreString.replace(" ", "_")).replace("_", " ");
@@ -113,10 +107,10 @@ public class GUISpawnerConvert extends AbstractGUI {
             place++;
         }
 
-        for (int i = 0; i < 9; i ++) {
+        for (int i = 0; i < 9; i++) {
             inventory.setItem(i, Methods.getGlass());
         }
-        for (int i = slots - 9; i < slots; i ++) {
+        for (int i = slots - 9; i < slots; i++) {
             inventory.setItem(i, Methods.getGlass());
         }
 
@@ -144,14 +138,14 @@ public class GUISpawnerConvert extends AbstractGUI {
                 plugin.getLocale().getMessage("general.nametag.exit"));
 
         ItemStack head = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
-        ItemStack skull = Arconix.pl().getApi().getGUI().addTexture(head, "http://textures.minecraft.net/texture/1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b");
+        ItemStack skull = Methods.addTexture(head, "http://textures.minecraft.net/texture/1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b");
         SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
         skull.setDurability((short) 3);
         skullMeta.setDisplayName(plugin.getLocale().getMessage("general.nametag.next"));
         skull.setItemMeta(skullMeta);
 
         ItemStack head2 = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
-        ItemStack skull2 = Arconix.pl().getApi().getGUI().addTexture(head2, "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23");
+        ItemStack skull2 = Methods.addTexture(head2, "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23");
         SkullMeta skull2Meta = (SkullMeta) skull2.getItemMeta();
         skull2.setDurability((short) 3);
         skull2Meta.setDisplayName(plugin.getLocale().getMessage("general.nametag.back"));
@@ -169,13 +163,13 @@ public class GUISpawnerConvert extends AbstractGUI {
 
         registerClickable(10, 10 + entities.size(), (player, inventory, cursor, slot, type) -> {
             if (inventory.getItem(slot).getType() == Material.PLAYER_HEAD) {
-                ((ESpawner)spawner).convert(plugin.getSpawnerDataFromItem(inventory.getItem(slot)), player);
+                ((ESpawner) spawner).convert(plugin.getSpawnerDataFromItem(inventory.getItem(slot)), player);
             }
         });
 
         registerClickable(slots - 8, (player, inventory, cursor, slot, type) -> {
             if (page == 1) return;
-            page --;
+            page--;
             setUp();
             constructGUI();
             registerClickables();
@@ -183,7 +177,7 @@ public class GUISpawnerConvert extends AbstractGUI {
 
         registerClickable(slots - 2, (player, inventory, cursor, slot, type) -> {
             if (page == max) return;
-            page ++;
+            page++;
             setUp();
             constructGUI();
             registerClickables();

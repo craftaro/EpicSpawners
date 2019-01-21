@@ -1,7 +1,5 @@
 package com.songoda.epicspawners.utils;
 
-import com.songoda.arconix.api.methods.formatting.TextComponent;
-import com.songoda.arconix.api.utils.ConfigWrapper;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -107,9 +105,9 @@ public class SettingsManager implements Listener {
 
         player.closeInventory();
         player.sendMessage("");
-        player.sendMessage(TextComponent.formatText("&7Please enter a value for &6" + current + "&7."));
+        player.sendMessage(Methods.formatText("&7Please enter a value for &6" + current + "&7."));
         if (instance.getConfig().isInt(current) || instance.getConfig().isDouble(current)) {
-            player.sendMessage(TextComponent.formatText("&cUse only numbers."));
+            player.sendMessage(Methods.formatText("&cUse only numbers."));
         }
         player.sendMessage("");
     }
@@ -125,8 +123,8 @@ public class SettingsManager implements Listener {
         for (String key : instance.getConfig().getDefaultSection().getKeys(false)) {
             ItemStack item = new ItemStack(Material.WHITE_WOOL, 1, (byte) (slot - 9)); //ToDo: Make this function as it was meant to.
             ItemMeta meta = item.getItemMeta();
-            meta.setLore(Collections.singletonList(TextComponent.formatText("&6Click To Edit This Category.")));
-            meta.setDisplayName(TextComponent.formatText("&f&l" + key));
+            meta.setLore(Collections.singletonList(Methods.formatText("&6Click To Edit This Category.")));
+            meta.setDisplayName(Methods.formatText("&f&l" + key));
             item.setItemMeta(meta);
             inventory.setItem(slot, item);
             slot++;
@@ -144,18 +142,18 @@ public class SettingsManager implements Listener {
             String fKey = cat.get(player) + "." + key;
             ItemStack item = new ItemStack(Material.DIAMOND_HELMET);
             ItemMeta meta = item.getItemMeta();
-            meta.setDisplayName(TextComponent.formatText("&6" + key));
+            meta.setDisplayName(Methods.formatText("&6" + key));
 
             List<String> lore = new ArrayList<>();
             if (config.isBoolean(fKey)) {
                 item.setType(Material.LEVER);
-                lore.add(TextComponent.formatText(config.getBoolean(fKey) ? "&atrue" : "&cfalse"));
+                lore.add(Methods.formatText(config.getBoolean(fKey) ? "&atrue" : "&cfalse"));
             } else if (config.isString(fKey)) {
                 item.setType(Material.PAPER);
-                lore.add(TextComponent.formatText("&9" + config.getString(fKey)));
+                lore.add(Methods.formatText("&9" + config.getString(fKey)));
             } else if (config.isInt(fKey)) {
                 item.setType(Material.CLOCK);
-                lore.add(TextComponent.formatText("&5" + config.getInt(fKey)));
+                lore.add(Methods.formatText("&5" + config.getInt(fKey)));
             }
 
             if (defs.getConfig().contains(fKey)) {
@@ -164,7 +162,7 @@ public class SettingsManager implements Listener {
                 Matcher m = SETTINGS_PATTERN.matcher(text);
                 while (m.find()) {
                     if (m.end() != text.length() || m.group().length() != 0)
-                        lore.add(TextComponent.formatText("&7" + m.group()));
+                        lore.add(Methods.formatText("&7" + m.group()));
                 }
             }
 

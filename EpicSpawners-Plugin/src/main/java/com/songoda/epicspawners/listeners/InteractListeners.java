@@ -21,7 +21,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -123,7 +122,9 @@ public class InteractListeners implements Listener {
                 spawner.getCreatureSpawner().setSpawnedType(EntityType.DROPPED_ITEM);
             }
             spawner.getCreatureSpawner().update();
-            EpicSpawnersPlugin.getInstance().getHologramHandler().processChange(b);
+
+            if (instance.getHologramHandler() != null)
+                EpicSpawnersPlugin.getInstance().getHologramHandler().processChange(b);
             if (p.getGameMode() != GameMode.CREATIVE) {
                 Methods.takeItem(p, bmulti - 1);
             }
@@ -177,7 +178,8 @@ public class InteractListeners implements Listener {
                     SpawnerData spawnerData = instance.getSpawnerDataFromItem(item);
                     if (player.hasPermission("epicspawners.stack." + spawnerData.getIdentifyingName()) || player.hasPermission("epicspawners.stack.*")) {
                         spawner.preStack(player, item);
-                        instance.getHologramHandler().updateHologram(spawner);
+                        if (instance.getHologramHandler() != null)
+                            instance.getHologramHandler().updateHologram(spawner);
                         event.setCancelled(true);
                     }
                 }
@@ -186,7 +188,8 @@ public class InteractListeners implements Listener {
                     Spawner spawner = EpicSpawnersPlugin.getInstance().getSpawnerManager().getSpawnerFromWorld(location);
 
                     ((ESpawner) spawner).overview(player);
-                    EpicSpawnersPlugin.getInstance().getHologramHandler().processChange(block);
+                    if (instance.getHologramHandler() != null)
+                        EpicSpawnersPlugin.getInstance().getHologramHandler().processChange(block);
                     event.setCancelled(true);
                 }
             }

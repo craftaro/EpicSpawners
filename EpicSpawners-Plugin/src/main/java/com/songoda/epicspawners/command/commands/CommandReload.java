@@ -1,9 +1,9 @@
 package com.songoda.epicspawners.command.commands;
 
-import com.songoda.arconix.api.methods.formatting.TextComponent;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.References;
 import com.songoda.epicspawners.command.AbstractCommand;
+import com.songoda.epicspawners.utils.Methods;
 import org.bukkit.command.CommandSender;
 
 public class CommandReload extends AbstractCommand {
@@ -15,7 +15,7 @@ public class CommandReload extends AbstractCommand {
     @Override
     protected ReturnType runCommand(EpicSpawnersPlugin instance, CommandSender sender, String... args) {
         instance.reload();
-        sender.sendMessage(TextComponent.formatText(References.getPrefix() + "&7Configuration and Language files reloaded."));
+        sender.sendMessage(Methods.formatText(References.getPrefix() + "&7Configuration and Language files reloaded."));
         return ReturnType.SUCCESS;
     }
 

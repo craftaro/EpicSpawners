@@ -74,7 +74,7 @@ public abstract class AbstractGUI implements Listener {
                         }
                     }
                 }
-                
+
                 Map<Range, Clickable> entries = new HashMap<>(gui.clickables);
 
                 for (Map.Entry<Range, Clickable> entry : entries.entrySet()) {

@@ -116,7 +116,7 @@ public class ESpawnerManager implements SpawnerManager {
         int amount = 0;
         for (Spawner spawner : spawnersInWorld.values()) {
             if (spawner.getPlacedBy() == null || player.getUniqueId() != spawner.getPlacedBy().getUniqueId()) continue;
-            amount ++;
+            amount++;
         }
         return amount;
     }

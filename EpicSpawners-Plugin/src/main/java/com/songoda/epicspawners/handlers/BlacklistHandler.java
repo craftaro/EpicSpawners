@@ -1,7 +1,7 @@
 package com.songoda.epicspawners.handlers;
 
-import com.songoda.arconix.api.utils.ConfigWrapper;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
+import com.songoda.epicspawners.utils.ConfigWrapper;
 import com.songoda.epicspawners.utils.Debugger;
 import org.bukkit.entity.Player;
 

@@ -1,7 +1,5 @@
 package com.songoda.epicspawners.tasks;
 
-import com.songoda.arconix.api.packets.Particle;
-import com.songoda.arconix.plugin.Arconix;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.api.particles.ParticleDensity;
 import com.songoda.epicspawners.api.particles.ParticleEffect;
@@ -9,6 +7,7 @@ import com.songoda.epicspawners.api.particles.ParticleType;
 import com.songoda.epicspawners.api.spawner.Spawner;
 import com.songoda.epicspawners.api.spawner.SpawnerData;
 import com.songoda.epicspawners.api.spawner.SpawnerManager;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -19,12 +18,10 @@ public class SpawnerParticleTask extends BukkitRunnable {
 
     private static SpawnerParticleTask instance;
     private final SpawnerManager manager;
-    private final Particle particleManager;
     private double theta = 0;
 
     private SpawnerParticleTask(EpicSpawnersPlugin plugin) {
         this.manager = plugin.getSpawnerManager();
-        this.particleManager = Arconix.pl().getApi().packetLibrary.getParticleManager();
     }
 
     public static SpawnerParticleTask startTask(EpicSpawnersPlugin plugin) {
@@ -62,7 +59,7 @@ public class SpawnerParticleTask extends BukkitRunnable {
                 double z = HALO_RADIUS * Math.sin(theta);
 
                 centre.add(x, 0.2, z);
-                this.particleManager.broadcastParticle(centre, 0, 0, 0, 0, particle.getEffect(), density.getEffect());
+                centre.getWorld().spawnParticle(particle.getEffect(), centre, density.getEffect(), 0, 0, 0, 0, particle.getEffect() == org.bukkit.Particle.REDSTONE ? new org.bukkit.Particle.DustOptions(Color.RED, 1) : null);
             } else if (effect == ParticleEffect.TARGET) {
                 for (int i = 0; i < 360; i += 10) {
                     double angle = Math.toRadians(i);
@@ -71,14 +68,14 @@ public class SpawnerParticleTask extends BukkitRunnable {
                     // Outer circle
                     double x = 1.2 * cosAngle, z = 1.2 * sinAngle;
                     centre.add(x, -0.2, z);
-                    this.particleManager.broadcastParticle(centre, 0, 0, 0, 0, particle.getEffect(), density.getEffect() - 2);
+                    centre.getWorld().spawnParticle(particle.getEffect(), centre, density.getEffect(), 0, 0, 0, 0, particle.getEffect() == org.bukkit.Particle.REDSTONE ? new org.bukkit.Particle.DustOptions(Color.RED, 1) : null);
                     centre.subtract(x, -0.2, z);
 
                     // Inner circle
                     x = 0.8 * cosAngle;
                     z = 0.8 * sinAngle;
                     centre.add(x, 0, z);
-                    this.particleManager.broadcastParticle(centre, 0, 0, 0, 0, particle.getEffect(), density.getEffect() - 2);
+                    centre.getWorld().spawnParticle(particle.getEffect(), centre, density.getEffect(), 0, 0, 0, 0, particle.getEffect() == org.bukkit.Particle.REDSTONE ? new org.bukkit.Particle.DustOptions(Color.RED, 1) : null);
                     centre.subtract(x, 0, z);
                 }
             }
@@ -88,5 +85,4 @@ public class SpawnerParticleTask extends BukkitRunnable {
             this.theta = 0;
         }
     }
-
 }

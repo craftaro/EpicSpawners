@@ -1,12 +1,11 @@
 package com.songoda.epicspawners.command.commands;
 
-import com.songoda.arconix.api.methods.formatting.TextComponent;
-import com.songoda.arconix.api.methods.math.AMath;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.References;
 import com.songoda.epicspawners.boost.BoostData;
 import com.songoda.epicspawners.boost.BoostType;
 import com.songoda.epicspawners.command.AbstractCommand;
+import com.songoda.epicspawners.utils.Methods;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
@@ -22,19 +21,19 @@ public class CommandBoost extends AbstractCommand {
     @Override
     protected ReturnType runCommand(EpicSpawnersPlugin instance, CommandSender sender, String... args) {
         if (args.length < 3) {
-            sender.sendMessage(References.getPrefix() + TextComponent.formatText("&7Syntax error..."));
+            sender.sendMessage(References.getPrefix() + Methods.formatText("&7Syntax error..."));
             return ReturnType.SYNTAX_ERROR;
         }
         if (!args[1].contains("p:") && !args[1].contains("player:") &&
                 !args[1].contains("f:") && !args[1].contains("faction:") &&
                 !args[1].contains("t:") && !args[1].contains("town:") &&
                 !args[1].contains("i:") && !args[1].contains("island:")) {
-            sender.sendMessage(TextComponent.formatText(References.getPrefix() + "&6" + args[1] + " &7this is incorrect"));
+            sender.sendMessage(Methods.formatText(References.getPrefix() + "&6" + args[1] + " &7this is incorrect"));
             return ReturnType.SYNTAX_ERROR;
         }
         String[] arr = (args[1]).split(":");
-        if (!AMath.isInt(args[2])) {
-            sender.sendMessage(TextComponent.formatText(References.getPrefix() + "&6" + args[2] + " &7is not a number..."));
+        if (!Methods.isInt(args[2])) {
+            sender.sendMessage(Methods.formatText(References.getPrefix() + "&6" + args[2] + " &7is not a number..."));
             return ReturnType.SYNTAX_ERROR;
         }
 
@@ -62,7 +61,7 @@ public class CommandBoost extends AbstractCommand {
                 c.add(Calendar.YEAR, Integer.parseInt(arr2[1]));
                 response += " &7for &6" + arr2[1] + " years&7.";
             } else {
-                sender.sendMessage(TextComponent.formatText(References.getPrefix() + "&7" + args[3] + " &7is invalid."));
+                sender.sendMessage(Methods.formatText(References.getPrefix() + "&7" + args[3] + " &7is invalid."));
                 return ReturnType.SYNTAX_ERROR;
             }
         } else {
@@ -78,7 +77,7 @@ public class CommandBoost extends AbstractCommand {
 
         if (arr[0].equalsIgnoreCase("p") || arr[0].equalsIgnoreCase("player")) {
             if (Bukkit.getOfflinePlayer(arr[1]) == null) {
-                sender.sendMessage(TextComponent.formatText(References.getPrefix() + "&cThat player does not exist..."));
+                sender.sendMessage(Methods.formatText(References.getPrefix() + "&cThat player does not exist..."));
             } else {
                 start += "The player";
                 boostType = BoostType.PLAYER;
@@ -86,7 +85,7 @@ public class CommandBoost extends AbstractCommand {
             }
         } else if (arr[0].equalsIgnoreCase("f") || arr[0].equalsIgnoreCase("faction")) {
             if (instance.getFactionId(arr[1]) == null) {
-                sender.sendMessage(TextComponent.formatText(References.getPrefix() + "&cThat faction does not exist..."));
+                sender.sendMessage(Methods.formatText(References.getPrefix() + "&cThat faction does not exist..."));
                 return ReturnType.FAILURE;
             }
 
@@ -95,7 +94,7 @@ public class CommandBoost extends AbstractCommand {
             boostObject = instance.getFactionId(arr[1]);
         } else if (arr[0].equalsIgnoreCase("t") || arr[0].equalsIgnoreCase("town")) {
             if (instance.getTownId(arr[1]) == null) {
-                sender.sendMessage(TextComponent.formatText(References.getPrefix() + "&cThat town does not exist..."));
+                sender.sendMessage(Methods.formatText(References.getPrefix() + "&cThat town does not exist..."));
                 return ReturnType.FAILURE;
             }
 
@@ -104,7 +103,7 @@ public class CommandBoost extends AbstractCommand {
             boostObject = instance.getTownId(arr[1]);
         } else if (arr[0].equalsIgnoreCase("i") || arr[0].equalsIgnoreCase("island")) {
             if (instance.getIslandId(arr[1]) == null) {
-                sender.sendMessage(TextComponent.formatText(References.getPrefix() + "&cThat island does not exist..."));
+                sender.sendMessage(Methods.formatText(References.getPrefix() + "&cThat island does not exist..."));
                 return ReturnType.FAILURE;
             }
 
@@ -119,7 +118,7 @@ public class CommandBoost extends AbstractCommand {
 
         BoostData boostData = new BoostData(boostType, Integer.parseInt(args[2]), c.getTime().getTime(), boostObject);
         instance.getBoostManager().addBoostToSpawner(boostData);
-        sender.sendMessage(TextComponent.formatText(References.getPrefix() + start + response));
+        sender.sendMessage(Methods.formatText(References.getPrefix() + start + response));
 
         return ReturnType.SUCCESS;
     }

@@ -75,7 +75,6 @@ public class HologramHandler {
             if (block.getType() != Material.SPAWNER) return;
             Spawner spawner = instance.getSpawnerManager().getSpawnerFromWorld(block.getLocation());
             Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(instance, () -> instance.getHologramHandler().updateHologram(spawner), 1L);
-
         } catch (Exception e) {
             Debugger.runReport(e);
         }

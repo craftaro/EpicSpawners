@@ -1,9 +1,9 @@
 package com.songoda.epicspawners.command;
 
-import com.songoda.arconix.api.methods.formatting.TextComponent;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.References;
 import com.songoda.epicspawners.command.commands.*;
+import com.songoda.epicspawners.utils.Methods;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -15,9 +15,8 @@ import java.util.List;
 
 public class CommandManager implements CommandExecutor {
 
-    private EpicSpawnersPlugin instance;
-
     private static final List<AbstractCommand> commands = new ArrayList<>();
+    private EpicSpawnersPlugin instance;
 
     public CommandManager(EpicSpawnersPlugin instance) {
         this.instance = instance;
@@ -59,7 +58,7 @@ public class CommandManager implements CommandExecutor {
                 }
             }
         }
-        commandSender.sendMessage(References.getPrefix() + TextComponent.formatText("&7The command you entered does not exist or is spelt incorrectly."));
+        commandSender.sendMessage(References.getPrefix() + Methods.formatText("&7The command you entered does not exist or is spelt incorrectly."));
         return true;
     }
 
@@ -71,8 +70,8 @@ public class CommandManager implements CommandExecutor {
         if (command.getPermissionNode() == null || sender.hasPermission(command.getPermissionNode())) {
             AbstractCommand.ReturnType returnType = command.runCommand(instance, sender, strings);
             if (returnType == AbstractCommand.ReturnType.SYNTAX_ERROR) {
-                sender.sendMessage(References.getPrefix() + TextComponent.formatText("&cInvalid Syntax!"));
-                sender.sendMessage(References.getPrefix() + TextComponent.formatText("&7The valid syntax is: &6" + command.getSyntax() + "&7."));
+                sender.sendMessage(References.getPrefix() + Methods.formatText("&cInvalid Syntax!"));
+                sender.sendMessage(References.getPrefix() + Methods.formatText("&7The valid syntax is: &6" + command.getSyntax() + "&7."));
             }
             return;
         }

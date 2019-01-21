@@ -1,12 +1,11 @@
 package com.songoda.epicspawners.listeners;
 
-import com.songoda.arconix.api.methods.formatting.TextComponent;
-import com.songoda.arconix.api.methods.math.AMath;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.References;
 import com.songoda.epicspawners.api.spawner.SpawnerData;
 import com.songoda.epicspawners.spawners.editor.EditingMenu;
 import com.songoda.epicspawners.utils.Debugger;
+import com.songoda.epicspawners.utils.Methods;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -52,10 +51,10 @@ public class ChatListeners implements Listener {
                     break;
                 case SHOP_PRICE:
                     SpawnerData spawnerData = instance.getSpawnerEditor().getEditingData(player).getSpawnerEditing();
-                    if (AMath.isInt(e.getMessage())) {
+                    if (Methods.isInt(e.getMessage())) {
                         spawnerData.setShopPrice(Double.parseDouble(e.getMessage()));
                     } else {
-                        player.sendMessage(TextComponent.formatText("&CYou must enter a number."));
+                        player.sendMessage(Methods.formatText("&CYou must enter a number."));
                     }
                     instance.getSpawnerEditor().basicSettings(player);
                     break;
@@ -64,49 +63,49 @@ public class ChatListeners implements Listener {
                     instance.getSpawnerEditor().basicSettings(player);
                     break;
                 case CUSTOM_ECO_COST:
-                    if (AMath.isInt(e.getMessage())) {
+                    if (Methods.isInt(e.getMessage())) {
                         instance.getSpawnerEditor().getEditingData(player).getSpawnerEditing().setUpgradeCostEconomy(Double.parseDouble(e.getMessage()));
                     } else {
-                        player.sendMessage(TextComponent.formatText("&CYou must enter a number."));
+                        player.sendMessage(Methods.formatText("&CYou must enter a number."));
                     }
                     instance.getSpawnerEditor().basicSettings(player);
                     break;
                 case CUSTOM_XP_COST:
-                    if (AMath.isInt(e.getMessage())) {
+                    if (Methods.isInt(e.getMessage())) {
                         instance.getSpawnerEditor().getEditingData(player).getSpawnerEditing().setUpgradeCostExperience(Integer.parseInt(e.getMessage()));
                     } else {
-                        player.sendMessage(TextComponent.formatText("&CYou must enter a number."));
+                        player.sendMessage(Methods.formatText("&CYou must enter a number."));
                     }
                     instance.getSpawnerEditor().basicSettings(player);
                     break;
                 case COMMAND:
                     String msg = e.getMessage();
-                    player.sendMessage(TextComponent.formatText(References.getPrefix() + "&8Command &5" + msg + "&8 saved to your inventory."));
+                    player.sendMessage(Methods.formatText(References.getPrefix() + "&8Command &5" + msg + "&8 saved to your inventory."));
                     instance.getSpawnerEditor().addCommand(player, e.getMessage());
                     break;
                 case CUSTOM_GOAL:
-                    if (AMath.isInt(e.getMessage())) {
+                    if (Methods.isInt(e.getMessage())) {
                         instance.getSpawnerEditor().getEditingData(player).getSpawnerEditing().setKillGoal(Integer.parseInt(e.getMessage()));
                     } else {
-                        player.sendMessage(TextComponent.formatText("&CYou must enter a number."));
+                        player.sendMessage(Methods.formatText("&CYou must enter a number."));
                     }
                     instance.getSpawnerEditor().basicSettings(player);
                     break;
                 case PICKUP_COST:
-                    if (AMath.isInt(e.getMessage())) {
+                    if (Methods.isInt(e.getMessage())) {
                         instance.getSpawnerEditor().getEditingData(player).getSpawnerEditing().setPickupCost(Double.parseDouble(e.getMessage()));
                     } else {
-                        player.sendMessage(TextComponent.formatText("&CYou must enter a number."));
+                        player.sendMessage(Methods.formatText("&CYou must enter a number."));
                     }
                     instance.getSpawnerEditor().basicSettings(player);
                     break;
                 case SPAWN_LIMIT:
                     //SpawnerData spawnerData = instance.getSpawnerEditor().getType(instance.getSpawnerEditor().getEditingData(player).getSpawnerSlot());
-                    if (AMath.isInt(e.getMessage())) { //ToDo: Make this work.
+                    if (Methods.isInt(e.getMessage())) { //ToDo: Make this work.
                         //instance.spawnerFile.getConfig().set("Entities." + Methods.getTypeFromString(instance.getSpawnerEditor().getType(instance.editing.get(player))) + ".commandSpawnLimit", Double.parseDouble(e.getMessage()));
                         instance.getSpawnerEditor().editor(player, EditingMenu.COMMAND);
                     } else {
-                        player.sendMessage(TextComponent.formatText("&CYou must enter a number."));
+                        player.sendMessage(Methods.formatText("&CYou must enter a number."));
                     }
                     instance.getSpawnerEditor().basicSettings(player);
                     break;

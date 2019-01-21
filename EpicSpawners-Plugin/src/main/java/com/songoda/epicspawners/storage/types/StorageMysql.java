@@ -17,8 +17,8 @@ import java.util.Map;
 
 public class StorageMysql extends Storage {
 
-    private MySQLDatabase database;
     private static List<String> toSave = new ArrayList<>();
+    private MySQLDatabase database;
 
     public StorageMysql(EpicSpawnersPlugin instance) {
         super(instance);
@@ -65,29 +65,29 @@ public class StorageMysql extends Storage {
 
     @Override
     public void prepareSaveItem(String group, StorageItem... items) {
-            StringBuilder sql = new StringBuilder(String.format("INSERT INTO `" + instance.getConfig().getString("Database.Prefix") + "%s`", group));
+        StringBuilder sql = new StringBuilder(String.format("INSERT INTO `" + instance.getConfig().getString("Database.Prefix") + "%s`", group));
 
-            sql.append(" (");
+        sql.append(" (");
 
-            for (StorageItem item : items) {
-                if (item == null || item.asObject() == null) continue;
-                sql.append(String.format("`%s`, ", item.getKey()));
-            }
+        for (StorageItem item : items) {
+            if (item == null || item.asObject() == null) continue;
+            sql.append(String.format("`%s`, ", item.getKey()));
+        }
 
-            sql = new StringBuilder(sql.substring(0, sql.length() - 2));
+        sql = new StringBuilder(sql.substring(0, sql.length() - 2));
 
-            sql.append(") VALUES (");
+        sql.append(") VALUES (");
 
-            for (StorageItem item : items) {
-                if (item == null || item.asObject() == null) continue;
-                sql.append(String.format("'%s', ", item.asObject().toString()));
-            }
+        for (StorageItem item : items) {
+            if (item == null || item.asObject() == null) continue;
+            sql.append(String.format("'%s', ", item.asObject().toString()));
+        }
 
-            sql = new StringBuilder(sql.substring(0, sql.length() - 2));
+        sql = new StringBuilder(sql.substring(0, sql.length() - 2));
 
-            sql.append(");");
+        sql.append(");");
 
-            toSave.add(sql.toString());
+        toSave.add(sql.toString());
     }
 
     @Override

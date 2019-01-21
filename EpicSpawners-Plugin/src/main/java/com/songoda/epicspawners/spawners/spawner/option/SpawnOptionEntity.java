@@ -1,6 +1,5 @@
 package com.songoda.epicspawners.spawners.spawner.option;
 
-import com.songoda.arconix.plugin.Arconix;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.api.events.SpawnerSpawnEvent;
 import com.songoda.epicspawners.api.particles.ParticleType;
@@ -43,12 +42,14 @@ public class SpawnOptionEntity implements SpawnOption {
     private Class<?> clazzMobSpawnerData, clazzNBTTagCompound, clazzNBTTagList, clazzCraftWorld, clazzWorld, clazzChunkRegionLoader, clazzEntity, clazzCraftEntity, clazzEntityInsentient, clazzGroupDataEntity, clazzDifficultyDamageScaler, clazzBlockPosition, clazzIWorldReader, clazzAxisAlignedBB;
     private Method methodB, methodSetString, methodGetHandle, methodChunkRegionLoaderA, methodEntityGetBukkitEntity, methodCraftEntityTeleport, methodEntityInsentientCanSpawn, methodEntityInsentientPrepare, methodChunkRegionLoaderA2, methodGetDamageScaler, methodGetCubes, methodGetBoundingBox;
     private Field fieldWorldRandom;
+
     public SpawnOptionEntity(EntityType... types) {
         this.types = types;
         this.mgr = new ScriptEngineManager();
         this.engine = mgr.getEngineByName("JavaScript");
         init();
     }
+
     public SpawnOptionEntity(Collection<EntityType> entities) {
         this(entities.toArray(new EntityType[entities.size()]));
     }
@@ -176,14 +177,14 @@ public class SpawnOptionEntity implements SpawnOption {
                 if (!canSpawn(objWorld, objEntityInsentient, data, spot))
                     continue;
 
-                float px = (float) (0 + (Math.random() * 1));
-                float py = (float) (0 + (Math.random() * 2));
-                float pz = (float) (0 + (Math.random() * 1));
-
                 ParticleType particleType = data.getEntitySpawnParticle();
 
-                if (particleType != ParticleType.NONE)
-                    Arconix.pl().getApi().packetLibrary.getParticleManager().broadcastParticle(spot, px, py, pz, 0, particleType.getEffect(), data.getParticleDensity().getEntitySpawn());
+                if (particleType != ParticleType.NONE) {
+                    float xx = (float) (0 + (Math.random() * 1));
+                    float yy = (float) (0 + (Math.random() * 2));
+                    float zz = (float) (0 + (Math.random() * 1));
+                    spot.getWorld().spawnParticle(particleType.getEffect(), spot, 5, xx, yy, zz, 0);
+                }
 
                 Entity craftEntity = (Entity) methodEntityGetBukkitEntity.invoke(objEntity);
 

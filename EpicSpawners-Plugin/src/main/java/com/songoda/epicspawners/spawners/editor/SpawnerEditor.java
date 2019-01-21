@@ -1,7 +1,5 @@
 package com.songoda.epicspawners.spawners.editor;
 
-import com.songoda.arconix.api.methods.formatting.TextComponent;
-import com.songoda.arconix.plugin.Arconix;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.References;
 import com.songoda.epicspawners.api.spawner.SpawnerData;
@@ -60,24 +58,24 @@ public class SpawnerEditor {
             int max = (int) Math.ceil((double) num / (double) 32);
             int amt = entities.size();
             if (amt == 24 || amt == 25) amt = 26;
-            Inventory inventory = Bukkit.createInventory(null, 54, TextComponent.formatTitle("Spawner Editor"));
+            Inventory inventory = Bukkit.createInventory(null, 54, "Spawner Editor");
             int max2 = 54;
             if (amt <= 7) {
-                inventory = Bukkit.createInventory(null, 27, TextComponent.formatTitle("Spawner Editor"));
+                inventory = Bukkit.createInventory(null, 27, "Spawner Editor");
                 max2 = 27;
             } else if (amt <= 15) {
-                inventory = Bukkit.createInventory(null, 36, TextComponent.formatTitle("Spawner Editor"));
+                inventory = Bukkit.createInventory(null, 36, "Spawner Editor");
                 max2 = 36;
             } else if (amt <= 25) {
-                inventory = Bukkit.createInventory(null, 45, TextComponent.formatTitle("Spawner Editor"));
+                inventory = Bukkit.createInventory(null, 45, "Spawner Editor");
                 max2 = 45;
             }
 
             inventory.setItem(8, Methods.createButton(Material.OAK_DOOR, instance.getLocale().getMessage("general.nametag.exit")));
 
-            ItemStack next = Methods.createButton(Arconix.pl().getApi().getGUI().addTexture(new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3), "http://textures.minecraft.net/texture/1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b"), instance.getLocale().getMessage("general.nametag.next"));
+            ItemStack next = Methods.createButton(Methods.addTexture(new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3), "http://textures.minecraft.net/texture/1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b"), instance.getLocale().getMessage("general.nametag.next"));
 
-            ItemStack back = Methods.createButton(Arconix.pl().getApi().getGUI().addTexture(new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3), "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23"), instance.getLocale().getMessage("general.nametag.back"));
+            ItemStack back = Methods.createButton(Methods.addTexture(new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3), "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23"), instance.getLocale().getMessage("general.nametag.back"));
 
 
             int max22 = max2;
@@ -93,7 +91,7 @@ public class SpawnerEditor {
                 }
 
                 String name = Methods.compileName(spawnerData, 1, false);
-                inventory.setItem(place, Methods.createButton(icon, TextComponent.convertToInvisibleString(spawnerData.getIdentifyingName() + ":") + name,
+                inventory.setItem(place, Methods.createButton(icon, Methods.convertToInvisibleString(spawnerData.getIdentifyingName() + ":") + name,
                         "&7Click to &a&lEdit&7."));
 
                 place++;
@@ -172,7 +170,7 @@ public class SpawnerEditor {
             spawnerData = instance.getSpawnerManager().getSpawnerData(type);
 
             name = Methods.compileName(spawnerData, 1, false);
-            Inventory i = Bukkit.createInventory(null, 54, TextComponent.formatTitle(TextComponent.formatText("&8Editing: " + name + "&8.")));
+            Inventory i = Bukkit.createInventory(null, 54, Methods.formatText("&8Editing: " + name + "&8."));
 
             int num = 0;
             while (num != 54) {
@@ -214,7 +212,7 @@ public class SpawnerEditor {
             i.setItem(52, Methods.getBackgroundGlass(false));
             i.setItem(53, Methods.getBackgroundGlass(false));
 
-            i.setItem(8, Methods.createButton(Arconix.pl().getApi().getGUI().addTexture(new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3), "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23"), instance.getLocale().getMessage("general.nametag.back")));
+            i.setItem(8, Methods.createButton(Methods.addTexture(new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3), "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23"), instance.getLocale().getMessage("general.nametag.back")));
 
             ItemStack it = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
 
@@ -225,23 +223,23 @@ public class SpawnerEditor {
 
             ItemMeta itemmeta = item.getItemMeta();
             ArrayList<String> lore = new ArrayList<>();
-            lore.add(TextComponent.formatText("&7Left-Click to &9Change Spawner Name&7."));
-            lore.add(TextComponent.formatText("&7Middle-Click to &bChange Spawner Display Item&7."));
+            lore.add(Methods.formatText("&7Left-Click to &9Change Spawner Name&7."));
+            lore.add(Methods.formatText("&7Middle-Click to &bChange Spawner Display Item&7."));
             if (instance.getConfig().getBoolean("settings.beta-features"))
-                lore.add(TextComponent.formatText("&7Right-Click to &9Change Spawner Head&7."));
-            lore.add(TextComponent.formatText("&6-----------------------------"));
+                lore.add(Methods.formatText("&7Right-Click to &9Change Spawner Head&7."));
+            lore.add(Methods.formatText("&6-----------------------------"));
 
-            lore.add(TextComponent.formatText("&6Display Name: &7" + spawnerData.getDisplayName() + "&7."));
+            lore.add(Methods.formatText("&6Display Name: &7" + spawnerData.getDisplayName() + "&7."));
             if (spawnerData.getDisplayItem() != null) {
-                lore.add(TextComponent.formatText("&6Display Item: &7" + spawnerData.getDisplayItem().name() + "&7."));
+                lore.add(Methods.formatText("&6Display Item: &7" + spawnerData.getDisplayItem().name() + "&7."));
             } else {
                 if (!name.contains("Custom")) {
-                    lore.add(TextComponent.formatText("&6Display Item: &7Unavailable&7."));
+                    lore.add(Methods.formatText("&6Display Item: &7Unavailable&7."));
                 } else {
-                    lore.add(TextComponent.formatText("&6Display Item: &7Dirt&7."));
+                    lore.add(Methods.formatText("&6Display Item: &7Dirt&7."));
                 }
             }
-            lore.add(TextComponent.formatText("&6Config Name: &7" + type + "&7."));
+            lore.add(Methods.formatText("&6Config Name: &7" + type + "&7."));
             itemmeta.setLore(lore);
             itemmeta.setDisplayName(name);
             item.setItemMeta(itemmeta);
@@ -257,9 +255,9 @@ public class SpawnerEditor {
             }
 
             lore = new ArrayList<>();
-            if (!dont) lore.add(TextComponent.formatText("&7Right-Click to: &cDestroy Spawner"));
-            lore.add(TextComponent.formatText("&6---------------------------"));
-            lore.add(TextComponent.formatText(spawnerData.isActive() ? "&6Currently:&a Enabled." : "&6Currently:&c Disabled."));
+            if (!dont) lore.add(Methods.formatText("&7Right-Click to: &cDestroy Spawner"));
+            lore.add(Methods.formatText("&6---------------------------"));
+            lore.add(Methods.formatText(spawnerData.isActive() ? "&6Currently:&a Enabled." : "&6Currently:&c Disabled."));
 
             i.setItem(29, Methods.createButton(Material.TNT, "&7Left-Click to: &cDisable Spawner", lore));
 
@@ -298,7 +296,7 @@ public class SpawnerEditor {
         SpawnerData spawnerData = editingData.getSpawnerEditing();
 
         String name = Methods.compileName(spawnerData, 1, false);
-        Inventory i = Bukkit.createInventory(null, 45, TextComponent.formatTitle(TextComponent.formatText(name + " &8Particle &8Settings.")));
+        Inventory i = Bukkit.createInventory(null, 45, Methods.formatText(name + " &8Particle &8Settings."));
 
         int num = 0;
         while (num != 45) {
@@ -306,7 +304,7 @@ public class SpawnerEditor {
             num++;
         }
 
-        i.setItem(0, Methods.createButton(Arconix.pl().getApi().getGUI().addTexture(new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3), "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23"), instance.getLocale().getMessage("general.nametag.back")));
+        i.setItem(0, Methods.createButton(Methods.addTexture(new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3), "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23"), instance.getLocale().getMessage("general.nametag.back")));
 
         i.setItem(1, Methods.getBackgroundGlass(true));
         i.setItem(2, Methods.getBackgroundGlass(false));
@@ -355,7 +353,7 @@ public class SpawnerEditor {
             SpawnerData spawnerData = editingData.getSpawnerEditing();
 
             String name = Methods.compileName(spawnerData, 1, false);
-            Inventory i = Bukkit.createInventory(null, 54, TextComponent.formatTitle(TextComponent.formatText(name + "&8 " + editingMenu + " &8Settings.")));
+            Inventory i = Bukkit.createInventory(null, 54, Methods.formatText(name + "&8 " + editingMenu + " &8Settings."));
 
             int num = 0;
             while (num != 54) {
@@ -380,14 +378,14 @@ public class SpawnerEditor {
                     ItemStack item = instance.getHeads().addTexture(it,
                             instance.getSpawnerManager().getSpawnerData(spawnerData.getEntities().get(spot)));
                     ItemMeta meta = item.getItemMeta();
-                    meta.setDisplayName(TextComponent.formatText("&e" + Methods.getTypeFromString(spawnerData.getEntities().get(spot).name())));
+                    meta.setDisplayName(Methods.formatText("&e" + Methods.getTypeFromString(spawnerData.getEntities().get(spot).name())));
                     item.setItemMeta(meta);
                     i.setItem(num, item);
 
                 } else if (spawnerData.getCommands().size() >= spot + 1 && editingMenu == EditingMenu.COMMAND) {
                     ItemStack parseStack = new ItemStack(Material.PAPER, 1);
                     ItemMeta meta = parseStack.getItemMeta();
-                    meta.setDisplayName(TextComponent.formatText("&a/" + spawnerData.getCommands().get(spot)));
+                    meta.setDisplayName(Methods.formatText("&a/" + spawnerData.getCommands().get(spot)));
                     parseStack.setItemMeta(meta);
                     i.setItem(num, parseStack);
                 } else {
@@ -418,14 +416,14 @@ public class SpawnerEditor {
             i.setItem(52, Methods.getBackgroundGlass(true));
             i.setItem(53, Methods.getBackgroundGlass(true));
 
-            i.setItem(0, Methods.createButton(Arconix.pl().getApi().getGUI().addTexture(new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3), "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23"), instance.getLocale().getMessage("general.nametag.back")));
+            i.setItem(0, Methods.createButton(Methods.addTexture(new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3), "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23"), instance.getLocale().getMessage("general.nametag.back")));
 
             if (editingMenu == EditingMenu.COMMAND) {
                 i.setItem(49, Methods.createButton(Material.CLOCK, "&bSpawn Limit",
                         "",
                         "&7This is the spawn limit for entities you spawn",
                         "&7from this spawner. Set to &60 &7to disable this."));
-                }
+            }
 
             if (editingMenu != EditingMenu.ITEM && editingMenu != EditingMenu.BLOCK && editingMenu != EditingMenu.DROPS) {
                 ItemStack add;
@@ -455,14 +453,14 @@ public class SpawnerEditor {
             EditingData editingData = userEditingData.get(player.getUniqueId());
             SpawnerData spawnerData = editingData.getSpawnerEditing();
             String name = Methods.compileName(spawnerData, 1, false);
-            Inventory i = Bukkit.createInventory(null, 45, TextComponent.formatTitle(TextComponent.formatText(name + " &8Settings.")));
+            Inventory i = Bukkit.createInventory(null, 45, Methods.formatText(name + " &8Settings."));
             int num = 0;
             while (num != 45) {
                 i.setItem(num, Methods.getGlass());
                 num++;
             }
 
-            i.setItem(0, Methods.createButton(Arconix.pl().getApi().getGUI().addTexture(new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3), "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23"), instance.getLocale().getMessage("general.nametag.back")));
+            i.setItem(0, Methods.createButton(Methods.addTexture(new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3), "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23"), instance.getLocale().getMessage("general.nametag.back")));
 
             i.setItem(1, Methods.getBackgroundGlass(true));
             i.setItem(2, Methods.getBackgroundGlass(false));
@@ -546,33 +544,33 @@ public class SpawnerEditor {
             player.sendMessage("");
             switch (type) {
                 case SHOP_PRICE:
-                    player.sendMessage(TextComponent.formatText("&7Enter a sale price for &6" + Methods.getTypeFromString(entity.getIdentifyingName()) + "&7."));
-                    player.sendMessage(TextComponent.formatText("&7Example: &619.99&7."));
+                    player.sendMessage(Methods.formatText("&7Enter a sale price for &6" + Methods.getTypeFromString(entity.getIdentifyingName()) + "&7."));
+                    player.sendMessage(Methods.formatText("&7Example: &619.99&7."));
                     break;
                 case CUSTOM_ECO_COST:
-                    player.sendMessage(TextComponent.formatText("&7Enter a custom eco cost for " + Methods.getTypeFromString(entity.getIdentifyingName()) + "&7."));
-                    player.sendMessage(TextComponent.formatText("&7Use &60 &7to use the default cost."));
-                    player.sendMessage(TextComponent.formatText("&7Example: &619.99&7."));
+                    player.sendMessage(Methods.formatText("&7Enter a custom eco cost for " + Methods.getTypeFromString(entity.getIdentifyingName()) + "&7."));
+                    player.sendMessage(Methods.formatText("&7Use &60 &7to use the default cost."));
+                    player.sendMessage(Methods.formatText("&7Example: &619.99&7."));
                     break;
                 case CUSTOM_XP_COST:
-                    player.sendMessage(TextComponent.formatText("&7Enter a custom xp cost for " + Methods.getTypeFromString(entity.getIdentifyingName()) + "&7."));
-                    player.sendMessage(TextComponent.formatText("&7Use &60 &7to use the default cost."));
-                    player.sendMessage(TextComponent.formatText("&7Example: &625&7."));
+                    player.sendMessage(Methods.formatText("&7Enter a custom xp cost for " + Methods.getTypeFromString(entity.getIdentifyingName()) + "&7."));
+                    player.sendMessage(Methods.formatText("&7Use &60 &7to use the default cost."));
+                    player.sendMessage(Methods.formatText("&7Example: &625&7."));
                     break;
                 case PICKUP_COST:
-                    player.sendMessage(TextComponent.formatText("&7Enter a pickup cost for " + Methods.getTypeFromString(entity.getIdentifyingName()) + "&7."));
-                    player.sendMessage(TextComponent.formatText("&7Use &60 &7to disable."));
-                    player.sendMessage(TextComponent.formatText("&7Example: &719.99&6."));
-                    player.sendMessage(TextComponent.formatText("&7Example: &625&7."));
+                    player.sendMessage(Methods.formatText("&7Enter a pickup cost for " + Methods.getTypeFromString(entity.getIdentifyingName()) + "&7."));
+                    player.sendMessage(Methods.formatText("&7Use &60 &7to disable."));
+                    player.sendMessage(Methods.formatText("&7Example: &719.99&6."));
+                    player.sendMessage(Methods.formatText("&7Example: &625&7."));
                     break;
                 case CUSTOM_GOAL:
-                    player.sendMessage(TextComponent.formatText("&7Enter a custom goal for " + Methods.getTypeFromString(entity.getIdentifyingName()) + "&7."));
-                    player.sendMessage(TextComponent.formatText("&7Use &60 &7to use the default price."));
-                    player.sendMessage(TextComponent.formatText("&7Example: &35&6."));
+                    player.sendMessage(Methods.formatText("&7Enter a custom goal for " + Methods.getTypeFromString(entity.getIdentifyingName()) + "&7."));
+                    player.sendMessage(Methods.formatText("&7Use &60 &7to use the default price."));
+                    player.sendMessage(Methods.formatText("&7Example: &35&6."));
                     break;
                 case TICK_RATE:
-                    player.sendMessage(TextComponent.formatText("&7Enter a tick rate min and max for " + Methods.getTypeFromString(entity.getIdentifyingName()) + "&7."));
-                    player.sendMessage(TextComponent.formatText("&7Example: &3800:200&6."));
+                    player.sendMessage(Methods.formatText("&7Enter a tick rate min and max for " + Methods.getTypeFromString(entity.getIdentifyingName()) + "&7."));
+                    player.sendMessage(Methods.formatText("&7Example: &3800:200&6."));
                     break;
             }
             player.sendMessage("");
@@ -635,7 +633,7 @@ public class SpawnerEditor {
                 }
                 spawnerData.setCommands(list);
             }
-            p.sendMessage(TextComponent.formatText(References.getPrefix() + "&7Spawner Saved."));
+            p.sendMessage(Methods.formatText(References.getPrefix() + "&7Spawner Saved."));
             spawnerData.reloadSpawnMethods();
         } catch (Exception e) {
             Debugger.runReport(e);
@@ -652,7 +650,7 @@ public class SpawnerEditor {
                     list.append(value.toString()).append("&7, &6");
                 }
             }
-            p.sendMessage(TextComponent.formatText("&6" + list));
+            p.sendMessage(Methods.formatText("&6" + list));
             p.sendMessage("Enter an entity Type.");
             p.sendMessage("");
             instance.getChatListeners().addToEditor(p, ChatListeners.EditingType.ADD_ENTITY);
@@ -666,8 +664,8 @@ public class SpawnerEditor {
         try {
             EditingData editingData = userEditingData.get(p.getUniqueId());
             p.sendMessage("");
-            p.sendMessage(TextComponent.formatText("&cAre you sure you want to destroy &6" + editingData.getSpawnerEditing().getIdentifyingName() + "&7."));
-            p.sendMessage(TextComponent.formatText("&7Type &l&6CONFIRM &7to continue. Otherwise Type anything else to cancel."));
+            p.sendMessage(Methods.formatText("&cAre you sure you want to destroy &6" + editingData.getSpawnerEditing().getIdentifyingName() + "&7."));
+            p.sendMessage(Methods.formatText("&7Type &l&6CONFIRM &7to continue. Otherwise Type anything else to cancel."));
             p.sendMessage("");
             instance.getChatListeners().addToEditor(p, ChatListeners.EditingType.DESTROY);
             p.closeInventory();
@@ -681,11 +679,11 @@ public class SpawnerEditor {
             EditingData editingData = userEditingData.get(p.getUniqueId());
 
             if (msg.toLowerCase().equals("confirm")) {
-                p.sendMessage(TextComponent.formatText("&6" + editingData.getSpawnerEditing().getIdentifyingName() + " Spawner &7 has been destroyed successfully"));
+                p.sendMessage(Methods.formatText("&6" + editingData.getSpawnerEditing().getIdentifyingName() + " Spawner &7 has been destroyed successfully"));
                 instance.getSpawnerManager().removeSpawnerData(editingData.getSpawnerEditing().getIdentifyingName());
                 openSpawnerSelector(p, 1);
             } else {
-                p.sendMessage(TextComponent.formatText("&7Action canceled..."));
+                p.sendMessage(Methods.formatText("&7Action canceled..."));
                 overview(p, editingData.getSpawnerEditing());
             }
         } catch (Exception e) {
@@ -700,7 +698,7 @@ public class SpawnerEditor {
                 SpawnerData spawnerData = editingData.getSpawnerEditing();
 
                 p.sendMessage("");
-                p.sendMessage(TextComponent.formatText("&7Enter a spawn limit for &6" + Methods.getTypeFromString(spawnerData.getIdentifyingName()) + "&7."));
+                p.sendMessage(Methods.formatText("&7Enter a spawn limit for &6" + Methods.getTypeFromString(spawnerData.getIdentifyingName()) + "&7."));
                 p.sendMessage("");
                 instance.getChatListeners().addToEditor(p, ChatListeners.EditingType.SPAWN_LIMIT);
                 p.closeInventory();
@@ -713,11 +711,11 @@ public class SpawnerEditor {
     public void createCommand(Player p) {
         try {
             p.sendMessage("");
-            p.sendMessage(TextComponent.formatText("&7Please Type a command. Example: &6eco give @p 1000&7."));
-            p.sendMessage(TextComponent.formatText("&7You can use @X @Y and @Z for random X Y and Z coordinates around the spawner."));
-            p.sendMessage(TextComponent.formatText("&7@n will execute the command for the person who originally placed the spawner."));
-            p.sendMessage(TextComponent.formatText("&7If you're getting command output try &6/gamerule sendCommandFeedback false&7."));
-            p.sendMessage(TextComponent.formatText("&7do not include a &a/"));
+            p.sendMessage(Methods.formatText("&7Please Type a command. Example: &6eco give @p 1000&7."));
+            p.sendMessage(Methods.formatText("&7You can use @X @Y and @Z for random X Y and Z coordinates around the spawner."));
+            p.sendMessage(Methods.formatText("&7@n will execute the command for the person who originally placed the spawner."));
+            p.sendMessage(Methods.formatText("&7If you're getting command output try &6/gamerule sendCommandFeedback false&7."));
+            p.sendMessage(Methods.formatText("&7do not include a &a/"));
             p.sendMessage("");
 
             instance.getChatListeners().addToEditor(p, ChatListeners.EditingType.COMMAND);
@@ -747,7 +745,7 @@ public class SpawnerEditor {
             SpawnerData spawnerData = editingData.getSpawnerEditing();
 
             p.sendMessage("");
-            p.sendMessage(TextComponent.formatText("&7Enter a display name for &6" + Methods.getTypeFromString(spawnerData.getIdentifyingName()) + "&7."));
+            p.sendMessage(Methods.formatText("&7Enter a display name for &6" + Methods.getTypeFromString(spawnerData.getIdentifyingName()) + "&7."));
             p.sendMessage("");
             instance.getChatListeners().addToEditor(p, ChatListeners.EditingType.NAME);
             p.closeInventory();

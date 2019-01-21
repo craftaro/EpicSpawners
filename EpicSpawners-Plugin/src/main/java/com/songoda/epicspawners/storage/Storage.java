@@ -1,7 +1,7 @@
 package com.songoda.epicspawners.storage;
 
-import com.songoda.arconix.api.utils.ConfigWrapper;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
+import com.songoda.epicspawners.utils.ConfigWrapper;
 
 import java.util.List;
 

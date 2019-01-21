@@ -1,6 +1,5 @@
 package com.songoda.epicspawners.utils;
 
-import com.songoda.arconix.plugin.Arconix;
 import com.songoda.epicspawners.api.spawner.SpawnerData;
 import org.bukkit.inventory.ItemStack;
 
@@ -28,7 +27,7 @@ public class Heads {
         try {
             String headURL = textureURL.get(getHeadTypeOrDefault(spawnerData.getIdentifyingName().toUpperCase().replace(" ", "_")));
 
-            return Arconix.pl().getApi().getGUI().addTexture(item, headURL);
+            return Methods.addTexture(item, headURL);
         } catch (Exception e) {
             Debugger.runReport(e);
         }

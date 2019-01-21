@@ -1,16 +1,12 @@
 package com.songoda.epicspawners.gui;
 
-import com.songoda.arconix.api.methods.formatting.TextComponent;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.api.spawner.SpawnerData;
-import com.songoda.epicspawners.command.AbstractCommand;
 import com.songoda.epicspawners.utils.Methods;
 import com.songoda.epicspawners.utils.gui.AbstractGUI;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -49,7 +45,7 @@ public class GUISpawnerStats extends AbstractGUI {
     @Override
     protected void constructGUI() {
 
-        for (int i = 0; i < 9; i ++) {
+        for (int i = 0; i < 9; i++) {
             inventory.setItem(i, Methods.getGlass());
         }
         ItemStack exit = new ItemStack(Material.valueOf(plugin.getConfig().getString("Interfaces.Exit Icon")), 1);
@@ -74,7 +70,7 @@ public class GUISpawnerStats extends AbstractGUI {
             ItemMeta itemmeta = item.getItemMeta();
             ArrayList<String> lore = new ArrayList<>();
             itemmeta.setLore(lore);
-            itemmeta.setDisplayName(TextComponent.formatText("&6" + spawnerData.getDisplayName() + "&7: &e" + entry.getValue() + "&7/&e" + goal));
+            itemmeta.setDisplayName(Methods.formatText("&6" + spawnerData.getDisplayName() + "&7: &e" + entry.getValue() + "&7/&e" + goal));
             item.setItemMeta(itemmeta);
             inventory.setItem(place, item);
 

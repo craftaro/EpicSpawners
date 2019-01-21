@@ -15,7 +15,6 @@ import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.entity.EntityType;
@@ -139,8 +138,6 @@ public class BlockListeners implements Listener {
                 return;
             }
 
-            player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_STEP, 1L, 1L);
-
             if (doForceCombine(player, spawner)) {
                 event.setCancelled(true);
                 return;
@@ -183,15 +180,17 @@ public class BlockListeners implements Listener {
 
             spawner.setPlacedBy(player);
 
-            instance.getHologramHandler().processChange(event.getBlock());
-
-            instance.getHologramHandler().updateHologram(spawner);
+            if (instance.getHologramHandler() != null) {
+                instance.getHologramHandler().processChange(event.getBlock());
+                instance.getHologramHandler().updateHologram(spawner);
+            }
             instance.getAppearanceHandler().updateDisplayItem(spawner, spawnerData);
 
             return;
         }
 
-        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(instance, () -> instance.getHologramHandler().processChange(event.getBlock()), 10L);
+        if (instance.getHologramHandler() != null)
+            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(instance, () -> instance.getHologramHandler().processChange(event.getBlock()), 10L);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -235,7 +234,8 @@ public class BlockListeners implements Listener {
                 event.getBlock().setType(Material.AIR);
                 System.out.println("A corrupted spawner has been removed as its Type no longer exists.");
                 instance.getSpawnerManager().removeSpawnerFromWorld(location);
-                instance.getHologramHandler().updateHologram(spawner);
+                if (instance.getHologramHandler() != null)
+                    instance.getHologramHandler().updateHologram(spawner);
                 instance.getAppearanceHandler().removeDisplayItem(spawner);
                 return;
             }
@@ -277,12 +277,15 @@ public class BlockListeners implements Listener {
                 }
             }
 
-            instance.getHologramHandler().updateHologram(spawner);
+            if (instance.getHologramHandler() != null)
+                instance.getHologramHandler().updateHologram(spawner);
+
             instance.getAppearanceHandler().removeDisplayItem(spawner);
 
             return;
         }
-        if (event.getBlock() == null) return;
+        if (event.getBlock() == null || instance.getHologramHandler() == null) return;
+
         Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(instance, () -> instance.getHologramHandler().processChange(event.getBlock()), 10L);
     }
 }

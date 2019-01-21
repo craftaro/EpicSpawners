@@ -1,11 +1,6 @@
 package com.songoda.epicspawners;
 
 import com.google.common.base.Preconditions;
-import com.songoda.arconix.api.methods.Maths;
-import com.songoda.arconix.api.methods.formatting.TextComponent;
-import com.songoda.arconix.api.methods.serialize.Serialize;
-import com.songoda.arconix.api.utils.ConfigWrapper;
-import com.songoda.arconix.plugin.Arconix;
 import com.songoda.epicspawners.api.EpicSpawners;
 import com.songoda.epicspawners.api.EpicSpawnersAPI;
 import com.songoda.epicspawners.api.particles.ParticleDensity;
@@ -44,10 +39,7 @@ import com.songoda.epicspawners.storage.types.StorageMysql;
 import com.songoda.epicspawners.storage.types.StorageYaml;
 import com.songoda.epicspawners.tasks.SpawnerParticleTask;
 import com.songoda.epicspawners.tasks.SpawnerSpawnTask;
-import com.songoda.epicspawners.utils.ESpawnerDataBuilder;
-import com.songoda.epicspawners.utils.Heads;
-import com.songoda.epicspawners.utils.Methods;
-import com.songoda.epicspawners.utils.SettingsManager;
+import com.songoda.epicspawners.utils.*;
 import com.songoda.epicspawners.utils.gui.AbstractGUI;
 import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.Bukkit;
@@ -142,12 +134,10 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
 
         EpicSpawnersAPI.setImplementation(this);
 
-        Arconix.pl().hook(this);
-
         ConsoleCommandSender console = Bukkit.getConsoleSender();
-        console.sendMessage(TextComponent.formatText("&a============================="));
-        console.sendMessage(TextComponent.formatText(String.format("&7%s %s by &5Songoda <3&7!", this.getName(), this.getDescription().getVersion())));
-        console.sendMessage(TextComponent.formatText("&7Action: &aEnabling&7..."));
+        console.sendMessage(Methods.formatText("&a============================="));
+        console.sendMessage(Methods.formatText(String.format("&7%s %s by &5Songoda <3&7!", this.getName(), this.getDescription().getVersion())));
+        console.sendMessage(Methods.formatText("&7Action: &aEnabling&7..."));
 
         this.heads = new Heads();
         this.settingsManager = new SettingsManager(this);
@@ -185,7 +175,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
             if (storage.containsGroup("spawners")) {
                 for (StorageRow row : storage.getRowsByGroup("spawners")) {
                     try {
-                        Location location = Serialize.getInstance().unserializeLocation(row.getKey());
+                        Location location = Methods.unserializeLocation(row.getKey());
 
                         if (location.getWorld() == null || location.getBlock().getType() != Material.SPAWNER) {
                             if (location.getWorld() != null && location.getBlock().getType() != Material.SPAWNER) {
@@ -273,15 +263,20 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         AbstractGUI.initializeListeners(this);
 
         // Register default hooks
-        if (pluginManager.isPluginEnabled("ASkyBlock")) aSkyblockHook = (ClaimableProtectionPluginHook)this.register(HookASkyBlock::new);
-        if (pluginManager.isPluginEnabled("FactionsFramework")) factionsHook = (ClaimableProtectionPluginHook)this.register(HookFactions::new);
+        if (pluginManager.isPluginEnabled("ASkyBlock"))
+            aSkyblockHook = (ClaimableProtectionPluginHook) this.register(HookASkyBlock::new);
+        if (pluginManager.isPluginEnabled("FactionsFramework"))
+            factionsHook = (ClaimableProtectionPluginHook) this.register(HookFactions::new);
         if (pluginManager.isPluginEnabled("GriefPrevention")) this.register(HookGriefPrevention::new);
         if (pluginManager.isPluginEnabled("Kingdoms")) this.register(HookKingdoms::new);
         if (pluginManager.isPluginEnabled("PlotSquared")) this.register(HookPlotSquared::new);
         if (pluginManager.isPluginEnabled("RedProtect")) this.register(HookRedProtect::new);
-        if (pluginManager.isPluginEnabled("Towny")) townyHook = (ClaimableProtectionPluginHook)this.register(HookTowny::new);
-        if (pluginManager.isPluginEnabled("USkyBlock")) uSkyblockHook = (ClaimableProtectionPluginHook)this.register(HookUSkyBlock::new);
-        if (pluginManager.isPluginEnabled("SkyBlock")) skyBlockEarhHook = (ClaimableProtectionPluginHook)this.register(HookSkyBlockEarth::new);
+        if (pluginManager.isPluginEnabled("Towny"))
+            townyHook = (ClaimableProtectionPluginHook) this.register(HookTowny::new);
+        if (pluginManager.isPluginEnabled("USkyBlock"))
+            uSkyblockHook = (ClaimableProtectionPluginHook) this.register(HookUSkyBlock::new);
+        if (pluginManager.isPluginEnabled("SkyBlock"))
+            skyBlockEarhHook = (ClaimableProtectionPluginHook) this.register(HookSkyBlockEarth::new);
         if (pluginManager.isPluginEnabled("WorldGuard")) this.register(HookWorldGuard::new);
 
 
@@ -292,7 +287,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         this.particleTask = SpawnerParticleTask.startTask(this);
         this.spawnerCustomSpawnTask = SpawnerSpawnTask.startTask(this);
 
-        console.sendMessage(TextComponent.formatText("&a============================="));
+        console.sendMessage(Methods.formatText("&a============================="));
 
     }
 
@@ -306,10 +301,10 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
 
         //this.spawnerRegistry.clearRegistry();
         ConsoleCommandSender console = Bukkit.getConsoleSender();
-        console.sendMessage(TextComponent.formatText("&a============================="));
-        console.sendMessage(TextComponent.formatText("&7EpicSpawners " + this.getDescription().getVersion() + " by &5Songoda <3!"));
-        console.sendMessage(TextComponent.formatText("&7Action: &cDisabling&7..."));
-        console.sendMessage(TextComponent.formatText("&a============================="));
+        console.sendMessage(Methods.formatText("&a============================="));
+        console.sendMessage(Methods.formatText("&7EpicSpawners " + this.getDescription().getVersion() + " by &5Songoda <3!"));
+        console.sendMessage(Methods.formatText("&7Action: &cDisabling&7..."));
+        console.sendMessage(Methods.formatText("&a============================="));
     }
 
     @SuppressWarnings("unchecked")
@@ -516,7 +511,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
                     || spawner.getLocation() == null
                     || spawner.getLocation().getWorld() == null) continue;
 
-            StorageItem location = new StorageItem("location", Serialize.getInstance().serializeLocation(spawner.getLocation()));
+            StorageItem location = new StorageItem("location", Methods.serializeLocation(spawner.getLocation()));
 
             StringBuilder stacksStr = new StringBuilder();
             for (SpawnerStack stack : spawner.getSpawnerStacks()) {
@@ -823,7 +818,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
 
         if (name.contains(":")) {
             String value = name.replace(String.valueOf(ChatColor.COLOR_CHAR), "").replace(";", "").split(":")[0];
-            if (Maths.isInt(value)) {
+            if (Methods.isInt(value)) {
                 return identifySpawner(value);
             }
             return spawnerManager.getSpawnerData(value.toLowerCase().replace("_", " "));

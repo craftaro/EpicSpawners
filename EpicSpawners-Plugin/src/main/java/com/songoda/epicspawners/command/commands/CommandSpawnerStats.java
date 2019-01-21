@@ -1,23 +1,11 @@
 package com.songoda.epicspawners.command.commands;
 
-import com.songoda.arconix.api.methods.formatting.TextComponent;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.References;
-import com.songoda.epicspawners.api.spawner.SpawnerData;
 import com.songoda.epicspawners.command.AbstractCommand;
 import com.songoda.epicspawners.gui.GUISpawnerStats;
-import com.songoda.epicspawners.utils.Methods;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-
-import java.util.ArrayList;
-import java.util.Map;
 
 public class CommandSpawnerStats extends AbstractCommand {
 
@@ -36,7 +24,7 @@ public class CommandSpawnerStats extends AbstractCommand {
 
 
         new GUISpawnerStats(instance, player);
-        
+
         return ReturnType.SUCCESS;
     }
 

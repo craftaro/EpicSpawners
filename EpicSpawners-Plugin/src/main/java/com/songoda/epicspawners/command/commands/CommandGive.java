@@ -1,8 +1,6 @@
 package com.songoda.epicspawners.command.commands;
 
 import com.google.common.collect.Iterables;
-import com.songoda.arconix.api.methods.formatting.TextComponent;
-import com.songoda.arconix.api.methods.math.AMath;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.References;
 import com.songoda.epicspawners.api.spawner.SpawnerData;
@@ -28,7 +26,7 @@ public class CommandGive extends AbstractCommand {
             return ReturnType.SYNTAX_ERROR;
         }
         if (Bukkit.getPlayerExact(args[1]) == null && !args[1].toLowerCase().equals("all")) {
-            sender.sendMessage(TextComponent.formatText(References.getPrefix() + "&cThat username does not exist, or the user is not online!"));
+            sender.sendMessage(Methods.formatText(References.getPrefix() + "&cThat username does not exist, or the user is not online!"));
             return ReturnType.FAILURE;
         }
         int multi = 1;
@@ -42,13 +40,13 @@ public class CommandGive extends AbstractCommand {
         }
 
         if (data == null && !args[2].equalsIgnoreCase("random")) {
-            sender.sendMessage(References.getPrefix() + TextComponent.formatText(References.getPrefix() + "&7The entity Type &6" + args[2] + " &7does not exist. Try one of these:"));
+            sender.sendMessage(References.getPrefix() + Methods.formatText(References.getPrefix() + "&7The entity Type &6" + args[2] + " &7does not exist. Try one of these:"));
             StringBuilder list = new StringBuilder();
 
             for (SpawnerData spawnerData : instance.getSpawnerManager().getAllSpawnerData()) {
                 list.append(spawnerData.getIdentifyingName().toUpperCase().replace(" ", "_")).append("&7, &6");
             }
-            sender.sendMessage(TextComponent.formatText("&6" + list));
+            sender.sendMessage(Methods.formatText("&6" + list));
         } else {
             if (args[2].equalsIgnoreCase("random")) {
                 Collection<SpawnerData> list = instance.getSpawnerManager().getAllEnabledSpawnerData();
@@ -56,8 +54,8 @@ public class CommandGive extends AbstractCommand {
                 data = Iterables.get(list, rand.nextInt(list.size()));
             }
             if (args.length == 4) {
-                if (!AMath.isInt(args[3])) {
-                    sender.sendMessage(TextComponent.formatText(References.getPrefix() + "&6" + args[3] + "&7 is not a number."));
+                if (!Methods.isInt(args[3])) {
+                    sender.sendMessage(Methods.formatText(References.getPrefix() + "&6" + args[3] + "&7 is not a number."));
                     return ReturnType.SYNTAX_ERROR;
                 }
                 int amt = Integer.parseInt(args[3]);
@@ -65,21 +63,21 @@ public class CommandGive extends AbstractCommand {
                 if (args[1].toLowerCase().equals("all")) {
                     for (Player pl : Bukkit.getOnlinePlayers()) {
                         pl.getInventory().addItem(spawnerItem);
-                        pl.sendMessage(TextComponent.formatText(References.getPrefix() + instance.getLocale().getMessage("command.give.success", amt, Methods.compileName(data, multi, false))));
+                        pl.sendMessage(Methods.formatText(References.getPrefix() + instance.getLocale().getMessage("command.give.success", amt, Methods.compileName(data, multi, false))));
                     }
                 } else {
                     Player pl = Bukkit.getPlayerExact(args[1]);
                     pl.getInventory().addItem(spawnerItem);
-                    pl.sendMessage(TextComponent.formatText(References.getPrefix() + instance.getLocale().getMessage("command.give.success", amt, Methods.compileName(data, multi, false))));
+                    pl.sendMessage(Methods.formatText(References.getPrefix() + instance.getLocale().getMessage("command.give.success", amt, Methods.compileName(data, multi, false))));
 
                 }
             } else {
-                if (!AMath.isInt(args[3])) {
-                    sender.sendMessage(TextComponent.formatText(References.getPrefix() + "&6" + args[3] + "&7 is not a number."));
+                if (!Methods.isInt(args[3])) {
+                    sender.sendMessage(Methods.formatText(References.getPrefix() + "&6" + args[3] + "&7 is not a number."));
                     return ReturnType.FAILURE;
                 }
-                if (!AMath.isInt(args[4])) {
-                    sender.sendMessage(TextComponent.formatText(References.getPrefix() + "&6" + args[4] + "&7 is not a number."));
+                if (!Methods.isInt(args[4])) {
+                    sender.sendMessage(Methods.formatText(References.getPrefix() + "&6" + args[4] + "&7 is not a number."));
                     return ReturnType.FAILURE;
                 }
                 int amt = Integer.parseInt(args[3]);
@@ -88,12 +86,12 @@ public class CommandGive extends AbstractCommand {
                 if (args[1].toLowerCase().equals("all")) {
                     for (Player pl : Bukkit.getOnlinePlayers()) {
                         pl.getInventory().addItem(spawnerItem);
-                        pl.sendMessage(TextComponent.formatText(References.getPrefix() + instance.getLocale().getMessage("command.give.success", amt, Methods.compileName(data, multi, false))));
+                        pl.sendMessage(Methods.formatText(References.getPrefix() + instance.getLocale().getMessage("command.give.success", amt, Methods.compileName(data, multi, false))));
                     }
                 } else {
                     Player pl = Bukkit.getPlayerExact(args[1]);
                     pl.getInventory().addItem(spawnerItem);
-                    pl.sendMessage(TextComponent.formatText(References.getPrefix() + instance.getLocale().getMessage("command.give.success", amt, Methods.compileName(data, multi, false))));
+                    pl.sendMessage(Methods.formatText(References.getPrefix() + instance.getLocale().getMessage("command.give.success", amt, Methods.compileName(data, multi, false))));
 
                 }
             }

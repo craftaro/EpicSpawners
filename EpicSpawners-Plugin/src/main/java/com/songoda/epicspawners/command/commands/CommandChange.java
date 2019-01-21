@@ -1,6 +1,5 @@
 package com.songoda.epicspawners.command.commands;
 
-import com.songoda.arconix.api.methods.formatting.TextComponent;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.References;
 import com.songoda.epicspawners.api.spawner.Spawner;
@@ -8,6 +7,7 @@ import com.songoda.epicspawners.api.spawner.SpawnerData;
 import com.songoda.epicspawners.api.spawner.SpawnerStack;
 import com.songoda.epicspawners.command.AbstractCommand;
 import com.songoda.epicspawners.spawners.spawner.ESpawnerStack;
+import com.songoda.epicspawners.utils.Methods;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
@@ -31,7 +31,7 @@ public class CommandChange extends AbstractCommand {
         Block block = player.getTargetBlock(null, 200);
 
         if (block.getType() != Material.SPAWNER) {
-            sender.sendMessage(TextComponent.formatText(References.getPrefix() + "&cThis is not a spawner."));
+            sender.sendMessage(Methods.formatText(References.getPrefix() + "&cThis is not a spawner."));
             return ReturnType.FAILURE;
         }
 
@@ -62,10 +62,10 @@ public class CommandChange extends AbstractCommand {
             }
             spawner.getCreatureSpawner().update();
             instance.getHologramHandler().processChange(block);
-            sender.sendMessage(TextComponent.formatText(References.getPrefix() + "&7Successfully changed this spawner to &6" + args[1] + "&7."));
+            sender.sendMessage(Methods.formatText(References.getPrefix() + "&7Successfully changed this spawner to &6" + args[1] + "&7."));
             return ReturnType.SUCCESS;
         } catch (Exception ee) {
-            sender.sendMessage(TextComponent.formatText(References.getPrefix() + "&7That entity does not exist."));
+            sender.sendMessage(Methods.formatText(References.getPrefix() + "&7That entity does not exist."));
             return ReturnType.FAILURE;
         }
     }

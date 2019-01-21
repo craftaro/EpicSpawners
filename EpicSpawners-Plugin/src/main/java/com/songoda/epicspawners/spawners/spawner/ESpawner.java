@@ -1,6 +1,5 @@
 package com.songoda.epicspawners.spawners.spawner;
 
-import com.songoda.arconix.plugin.Arconix;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.References;
 import com.songoda.epicspawners.api.CostType;
@@ -64,19 +63,18 @@ public class ESpawner implements Spawner {
 
         if (getFirstStack().getSpawnerData() == null) return false;
 
-        float x = (float) (0 + (Math.random() * .8));
-        float y = (float) (0 + (Math.random() * .8));
-        float z = (float) (0 + (Math.random() * .8));
-
         Location particleLocation = location.clone();
         particleLocation.add(.5, .5, .5);
 
         SpawnerData spawnerData = getFirstStack().getSpawnerData();
 
-
         ParticleType particleType = spawnerData.getSpawnerSpawnParticle();
-        if (particleType != ParticleType.NONE)
-            Arconix.pl().getApi().packetLibrary.getParticleManager().broadcastParticle(particleLocation, x, y, z, 0, particleType.getEffect(), spawnerData.getParticleDensity().getSpawnerSpawn());
+        if (particleType != ParticleType.NONE) {
+            float x = (float) (0 + (Math.random() * .8));
+            float y = (float) (0 + (Math.random() * .8));
+            float z = (float) (0 + (Math.random() * .8));
+            particleLocation.getWorld().spawnParticle(particleType.getEffect(), particleLocation, 0, x, y, z, 0);
+        }
 
         for (SpawnerStack stack : getSpawnerStacks()) {
             ((ESpawnerData) stack.getSpawnerData()).spawn(this, stack);
@@ -248,10 +246,7 @@ public class ESpawner implements Spawner {
         }
 
         if (SettingsManager.Setting.SOUNDS_ENABLED.getBoolean()) {
-            if (stackSize == stack.getStackSize() && spawnerStacks.size() == 1)
-                player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_STEP, 1L, 1L);
-            else
-                player.playSound(player.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 0.6F, 15.0F);
+            player.playSound(player.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 0.6F, 15.0F);
         }
         ItemStack item = stack.getSpawnerData().toItemStack(1, stackSize);
 
@@ -374,8 +369,8 @@ public class ESpawner implements Spawner {
             loc.setZ(loc.getZ() + .5);
             player.getWorld().spawnParticle(org.bukkit.Particle.valueOf(SettingsManager.Setting.UPGRADE_PARTICLE_TYPE.getString()), loc, 100, .5, .5, .5);
 
-                if (!SettingsManager.Setting.SOUNDS_ENABLED.getBoolean()) {
-                    return;
+            if (!SettingsManager.Setting.SOUNDS_ENABLED.getBoolean()) {
+                return;
             }
             if (currentStackSize != SettingsManager.Setting.SPAWNERS_MAX.getInt()) {
                 player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 0.6F, 15.0F);
@@ -401,33 +396,33 @@ public class ESpawner implements Spawner {
                 player.sendMessage(References.getPrefix() + EpicSpawnersPlugin.getInstance().getLocale().getMessage("event.upgrade.maxed"));
                 return;
             }
-                if (type == CostType.ECONOMY) {
-                    if (EpicSpawnersPlugin.getInstance().getServer().getPluginManager().getPlugin("Vault") != null) {
-                        RegisteredServiceProvider<Economy> rsp = EpicSpawnersPlugin.getInstance().getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
-                        net.milkbowl.vault.economy.Economy econ = rsp.getProvider();
-                        if (econ.has(player, cost)) {
-                            econ.withdrawPlayer(player, cost);
-                            int oldMultiplier = getSpawnerDataCount();
-                            spawnerStacks.getFirst().setStackSize(spawnerStacks.getFirst().getStackSize() + 1);
-                            upgradeFinal(player, oldMultiplier);
-                        } else {
-                            player.sendMessage(References.getPrefix() + EpicSpawnersPlugin.getInstance().getLocale().getMessage("event.upgrade.cannotafford"));
-                        }
-                    } else {
-                        player.sendMessage("Vault is not installed.");
-                    }
-                } else if (type == CostType.EXPERIENCE) {
-                    if (player.getLevel() >= cost || player.getGameMode() == GameMode.CREATIVE) {
-                        if (player.getGameMode() != GameMode.CREATIVE) {
-                            player.setLevel(player.getLevel() - cost);
-                        }
+            if (type == CostType.ECONOMY) {
+                if (EpicSpawnersPlugin.getInstance().getServer().getPluginManager().getPlugin("Vault") != null) {
+                    RegisteredServiceProvider<Economy> rsp = EpicSpawnersPlugin.getInstance().getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
+                    net.milkbowl.vault.economy.Economy econ = rsp.getProvider();
+                    if (econ.has(player, cost)) {
+                        econ.withdrawPlayer(player, cost);
                         int oldMultiplier = getSpawnerDataCount();
                         spawnerStacks.getFirst().setStackSize(spawnerStacks.getFirst().getStackSize() + 1);
                         upgradeFinal(player, oldMultiplier);
                     } else {
                         player.sendMessage(References.getPrefix() + EpicSpawnersPlugin.getInstance().getLocale().getMessage("event.upgrade.cannotafford"));
                     }
+                } else {
+                    player.sendMessage("Vault is not installed.");
                 }
+            } else if (type == CostType.EXPERIENCE) {
+                if (player.getLevel() >= cost || player.getGameMode() == GameMode.CREATIVE) {
+                    if (player.getGameMode() != GameMode.CREATIVE) {
+                        player.setLevel(player.getLevel() - cost);
+                    }
+                    int oldMultiplier = getSpawnerDataCount();
+                    spawnerStacks.getFirst().setStackSize(spawnerStacks.getFirst().getStackSize() + 1);
+                    upgradeFinal(player, oldMultiplier);
+                } else {
+                    player.sendMessage(References.getPrefix() + EpicSpawnersPlugin.getInstance().getLocale().getMessage("event.upgrade.cannotafford"));
+                }
+            }
         } catch (Exception e) {
             Debugger.runReport(e);
         }

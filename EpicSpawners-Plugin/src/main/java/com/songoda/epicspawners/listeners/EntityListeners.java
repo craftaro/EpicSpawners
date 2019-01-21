@@ -1,11 +1,12 @@
 package com.songoda.epicspawners.listeners;
 
-import com.songoda.arconix.plugin.Arconix;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.api.spawner.Spawner;
 import com.songoda.epicspawners.api.spawner.SpawnerData;
 import com.songoda.epicspawners.api.spawner.SpawnerStack;
 import com.songoda.epicspawners.utils.Debugger;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -38,56 +39,54 @@ public class EntityListeners implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onBlow(EntityExplodeEvent e) {
         try {
-            if (!e.isCancelled()) {
-                List<Block> destroyed = e.blockList();
-                Iterator<Block> it = destroyed.iterator();
-                List<Block> toCancel = new ArrayList<>();
-                while (it.hasNext()) {
-                    Block b = it.next();
-                    if (b.getType() != Material.SPAWNER) continue;
+            if (e.isCancelled()) return;
+            List<Block> destroyed = e.blockList();
+            Iterator<Block> it = destroyed.iterator();
+            List<Block> toCancel = new ArrayList<>();
+            while (it.hasNext()) {
+                Block b = it.next();
+                if (b.getType() != Material.SPAWNER) continue;
 
-                    Location spawnLocation = b.getLocation();
+                Location spawnLocation = b.getLocation();
 
-                    Spawner spawner = instance.getSpawnerManager().getSpawnerFromWorld(b.getLocation());
+                Spawner spawner = instance.getSpawnerManager().getSpawnerFromWorld(b.getLocation());
 
-                    if (instance.getConfig().getBoolean("Main.Prevent Spawners From Exploding"))
-                        toCancel.add(b);
-                    else if (e.getEntity() instanceof Creeper && instance.getConfig().getBoolean("Spawner Drops.Drop On Creeper Explosion")
-                            || e.getEntity() instanceof TNTPrimed && instance.getConfig().getBoolean("Spawner Drops.Drop On TNT Explosion")) {
+                if (instance.getConfig().getBoolean("Main.Prevent Spawners From Exploding"))
+                    toCancel.add(b);
+                else if (e.getEntity() instanceof Creeper && instance.getConfig().getBoolean("Spawner Drops.Drop On Creeper Explosion")
+                        || e.getEntity() instanceof TNTPrimed && instance.getConfig().getBoolean("Spawner Drops.Drop On TNT Explosion")) {
 
-                        String chance = "";
-                        if (e.getEntity() instanceof Creeper && instance.getConfig().getBoolean("Spawner Drops.Drop On Creeper Explosion"))
-                            chance = instance.getConfig().getString("Spawner Drops.Chance On TNT Explosion");
-                        else if (e.getEntity() instanceof TNTPrimed && instance.getConfig().getBoolean("Spawner Drops.Drop On TNT Explosion"))
-                            chance = instance.getConfig().getString("Spawner Drops.Chance On Creeper Explosion");
-                        int ch = Integer.parseInt(chance.replace("%", ""));
-                        double rand = Math.random() * 100;
-                        if (rand - ch < 0 || ch == 100) {
-                            for (SpawnerStack stack : spawner.getSpawnerStacks()) {
-                                ItemStack item = stack.getSpawnerData().toItemStack(1, stack.getStackSize());
-                                spawnLocation.getWorld().dropItemNaturally(spawnLocation.clone().add(.5, 0, .5), item);
-                            }
+                    String chance = "";
+                    if (e.getEntity() instanceof Creeper && instance.getConfig().getBoolean("Spawner Drops.Drop On Creeper Explosion"))
+                        chance = instance.getConfig().getString("Spawner Drops.Chance On TNT Explosion");
+                    else if (e.getEntity() instanceof TNTPrimed && instance.getConfig().getBoolean("Spawner Drops.Drop On TNT Explosion"))
+                        chance = instance.getConfig().getString("Spawner Drops.Chance On Creeper Explosion");
+                    int ch = Integer.parseInt(chance.replace("%", ""));
+                    double rand = Math.random() * 100;
+                    if (rand - ch < 0 || ch == 100) {
+                        for (SpawnerStack stack : spawner.getSpawnerStacks()) {
+                            ItemStack item = stack.getSpawnerData().toItemStack(1, stack.getStackSize());
+                            spawnLocation.getWorld().dropItemNaturally(spawnLocation.clone().add(.5, 0, .5), item);
                         }
                     }
-                    instance.getSpawnerManager().removeSpawnerFromWorld(spawnLocation);
-                    instance.getHologramHandler().despawn(spawnLocation.getBlock());
-                    if (spawner != null) instance.getAppearanceHandler().removeDisplayItem(spawner);
+                }
+                instance.getSpawnerManager().removeSpawnerFromWorld(spawnLocation);
+                instance.getHologramHandler().despawn(spawnLocation.getBlock());
+                if (spawner != null) instance.getAppearanceHandler().removeDisplayItem(spawner);
 
-                    Location nloc = spawnLocation.clone();
-                    nloc.add(.5, -.4, .5);
-                    List<Entity> near = (List<Entity>) nloc.getWorld().getNearbyEntities(nloc, 8, 8, 8);
-                    for (Entity ee : near) {
-                        if (ee.getLocation().getX() == nloc.getX() && ee.getLocation().getY() == nloc.getY() && ee.getLocation().getZ() == nloc.getZ()) {
-                            ee.remove();
-                        }
+                Location nloc = spawnLocation.clone();
+                nloc.add(.5, -.4, .5);
+                List<Entity> near = (List<Entity>) nloc.getWorld().getNearbyEntities(nloc, 8, 8, 8);
+                for (Entity ee : near) {
+                    if (ee.getLocation().getX() == nloc.getX() && ee.getLocation().getY() == nloc.getY() && ee.getLocation().getZ() == nloc.getZ()) {
+                        ee.remove();
                     }
-
                 }
 
-                for (Block block : toCancel) {
-                    e.blockList().remove(block);
-                }
+            }
 
+            for (Block block : toCancel) {
+                e.blockList().remove(block);
             }
         } catch (Exception ex) {
             Debugger.runReport(ex);
@@ -130,16 +129,15 @@ public class EntityListeners implements Listener {
             if (instance.getConfig().getInt("Spawner Drops.Alert Every X Before Drop") != 0
                     && amt % instance.getConfig().getInt("Spawner Drops.Alert Every X Before Drop") == 0
                     && amt != goal) {
-                Arconix.pl().getApi().packetLibrary.getActionBarManager().sendActionBar(player, instance.getLocale().getMessage("event.goal.alert", goal - amt, spawnerData.getIdentifyingName()));
+                player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(instance.getLocale().getMessage("event.goal.alert", goal - amt, spawnerData.getIdentifyingName())));
             }
 
             if (amt >= goal) {
                 ItemStack item = spawnerData.toItemStack();
                 event.getEntity().getLocation().getWorld().dropItemNaturally(event.getEntity().getLocation(), item);
                 instance.getPlayerActionManager().getPlayerAction(player).removeEntity(event.getEntityType());
-                Arconix.pl().getApi().packetLibrary.getActionBarManager().sendActionBar(player, instance.getLocale().getMessage("event.goal.reached", spawnerData.getIdentifyingName()));
+                player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(instance.getLocale().getMessage("event.goal.reached", spawnerData.getIdentifyingName())));
             }
-
         } catch (Exception ex) {
             Debugger.runReport(ex);
         }
