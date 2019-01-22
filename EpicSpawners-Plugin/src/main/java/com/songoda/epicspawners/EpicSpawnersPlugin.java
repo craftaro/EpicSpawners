@@ -170,14 +170,15 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         checkStorage();
 
         Bukkit.getScheduler().runTaskLater(this, () -> {
-            this.hologramHandler = new HologramHandler(this);
+            if (Bukkit.getPluginManager().isPluginEnabled("Arconix"))
+                this.hologramHandler = new HologramHandler(this);
             // Adding in spawners.
             if (storage.containsGroup("spawners")) {
                 for (StorageRow row : storage.getRowsByGroup("spawners")) {
                     try {
                         Location location = Methods.unserializeLocation(row.getKey());
 
-                        if (location.getWorld() == null || location.getBlock().getType() != Material.SPAWNER) {
+                        if (hologramHandler != null && (location.getWorld() == null || location.getBlock().getType() != Material.SPAWNER)) {
                             if (location.getWorld() != null && location.getBlock().getType() != Material.SPAWNER) {
                                 if (location.getBlock() == null) continue;
                                 this.hologramHandler.despawn(location.getBlock());
