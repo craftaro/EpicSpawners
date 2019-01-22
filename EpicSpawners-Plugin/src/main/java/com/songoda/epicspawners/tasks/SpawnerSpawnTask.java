@@ -3,6 +3,7 @@ package com.songoda.epicspawners.tasks;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.api.spawner.Spawner;
 import com.songoda.epicspawners.api.spawner.SpawnerManager;
+import com.songoda.epicspawners.utils.SettingsManager;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -23,7 +24,7 @@ public class SpawnerSpawnTask extends BukkitRunnable {
         plugin = plug;
         if (instance == null) {
             instance = new SpawnerSpawnTask(plugin);
-            instance.runTaskTimer(plugin, 0, plugin.getConfig().getInt("Main.Custom Spawner Tick Rate"));
+            instance.runTaskTimer(plugin, 0, SettingsManager.Setting.CUSTOM_SPAWNER_TICK_RATE.getInt());
         }
 
 
