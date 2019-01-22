@@ -53,7 +53,10 @@ public class SpawnerSpawnTask extends BukkitRunnable {
                 return;
             }
 
-            spawner.spawn();
+
+            if (!spawner.spawn()) {
+                spawner.getCreatureSpawner().setDelay(300);
+            }
         }
     }
 
