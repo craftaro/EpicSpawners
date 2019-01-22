@@ -40,61 +40,61 @@ public class CommandGive extends AbstractCommand {
         }
 
         if (data == null && !args[2].equalsIgnoreCase("random")) {
-            sender.sendMessage(References.getPrefix() + Methods.formatText(References.getPrefix() + "&7The entity Type &6" + args[2] + " &7does not exist. Try one of these:"));
+            sender.sendMessage(Methods.formatText(References.getPrefix() + "&7The entity Type &6" + args[2] + " &7does not exist. Try one of these:"));
             StringBuilder list = new StringBuilder();
 
             for (SpawnerData spawnerData : instance.getSpawnerManager().getAllSpawnerData()) {
                 list.append(spawnerData.getIdentifyingName().toUpperCase().replace(" ", "_")).append("&7, &6");
             }
             sender.sendMessage(Methods.formatText("&6" + list));
-        } else {
-            if (args[2].equalsIgnoreCase("random")) {
-                Collection<SpawnerData> list = instance.getSpawnerManager().getAllEnabledSpawnerData();
-                Random rand = new Random();
-                data = Iterables.get(list, rand.nextInt(list.size()));
+            return ReturnType.FAILURE;
+        }
+        if (args[2].equalsIgnoreCase("random")) {
+            Collection<SpawnerData> list = instance.getSpawnerManager().getAllEnabledSpawnerData();
+            Random rand = new Random();
+            data = Iterables.get(list, rand.nextInt(list.size()));
+        }
+        if (args.length == 4) {
+            if (!Methods.isInt(args[3])) {
+                sender.sendMessage(Methods.formatText(References.getPrefix() + "&6" + args[3] + "&7 is not a number."));
+                return ReturnType.SYNTAX_ERROR;
             }
-            if (args.length == 4) {
-                if (!Methods.isInt(args[3])) {
-                    sender.sendMessage(Methods.formatText(References.getPrefix() + "&6" + args[3] + "&7 is not a number."));
-                    return ReturnType.SYNTAX_ERROR;
-                }
-                int amt = Integer.parseInt(args[3]);
-                ItemStack spawnerItem = data.toItemStack(Integer.parseInt(args[3]));
-                if (args[1].toLowerCase().equals("all")) {
-                    for (Player pl : Bukkit.getOnlinePlayers()) {
-                        pl.getInventory().addItem(spawnerItem);
-                        pl.sendMessage(Methods.formatText(References.getPrefix() + instance.getLocale().getMessage("command.give.success", amt, Methods.compileName(data, multi, false))));
-                    }
-                } else {
-                    Player pl = Bukkit.getPlayerExact(args[1]);
+            int amt = Integer.parseInt(args[3]);
+            ItemStack spawnerItem = data.toItemStack(Integer.parseInt(args[3]));
+            if (args[1].toLowerCase().equals("all")) {
+                for (Player pl : Bukkit.getOnlinePlayers()) {
                     pl.getInventory().addItem(spawnerItem);
                     pl.sendMessage(Methods.formatText(References.getPrefix() + instance.getLocale().getMessage("command.give.success", amt, Methods.compileName(data, multi, false))));
-
                 }
             } else {
-                if (!Methods.isInt(args[3])) {
-                    sender.sendMessage(Methods.formatText(References.getPrefix() + "&6" + args[3] + "&7 is not a number."));
-                    return ReturnType.FAILURE;
-                }
-                if (!Methods.isInt(args[4])) {
-                    sender.sendMessage(Methods.formatText(References.getPrefix() + "&6" + args[4] + "&7 is not a number."));
-                    return ReturnType.FAILURE;
-                }
-                int amt = Integer.parseInt(args[3]);
-                multi = Integer.parseInt(args[4]);
-                ItemStack spawnerItem = data.toItemStack(amt, multi);
-                if (args[1].toLowerCase().equals("all")) {
-                    for (Player pl : Bukkit.getOnlinePlayers()) {
-                        pl.getInventory().addItem(spawnerItem);
-                        pl.sendMessage(Methods.formatText(References.getPrefix() + instance.getLocale().getMessage("command.give.success", amt, Methods.compileName(data, multi, false))));
-                    }
-                } else {
-                    Player pl = Bukkit.getPlayerExact(args[1]);
-                    pl.getInventory().addItem(spawnerItem);
-                    pl.sendMessage(Methods.formatText(References.getPrefix() + instance.getLocale().getMessage("command.give.success", amt, Methods.compileName(data, multi, false))));
+                Player pl = Bukkit.getPlayerExact(args[1]);
+                pl.getInventory().addItem(spawnerItem);
+                pl.sendMessage(Methods.formatText(References.getPrefix() + instance.getLocale().getMessage("command.give.success", amt, Methods.compileName(data, multi, false))));
 
-                }
             }
+            return ReturnType.FAILURE;
+        }
+        if (!Methods.isInt(args[3])) {
+            sender.sendMessage(Methods.formatText(References.getPrefix() + "&6" + args[3] + "&7 is not a number."));
+            return ReturnType.FAILURE;
+        }
+        if (!Methods.isInt(args[4])) {
+            sender.sendMessage(Methods.formatText(References.getPrefix() + "&6" + args[4] + "&7 is not a number."));
+            return ReturnType.FAILURE;
+        }
+        int amt = Integer.parseInt(args[3]);
+        multi = Integer.parseInt(args[4]);
+        ItemStack spawnerItem = data.toItemStack(amt, multi);
+        if (args[1].toLowerCase().equals("all")) {
+            for (Player pl : Bukkit.getOnlinePlayers()) {
+                pl.getInventory().addItem(spawnerItem);
+                pl.sendMessage(Methods.formatText(References.getPrefix() + instance.getLocale().getMessage("command.give.success", amt, Methods.compileName(data, multi, false))));
+            }
+        } else {
+            Player pl = Bukkit.getPlayerExact(args[1]);
+            pl.getInventory().addItem(spawnerItem);
+            pl.sendMessage(Methods.formatText(References.getPrefix() + instance.getLocale().getMessage("command.give.success", amt, Methods.compileName(data, multi, false))));
+
         }
         return ReturnType.SUCCESS;
     }
