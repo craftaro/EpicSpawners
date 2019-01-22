@@ -15,8 +15,18 @@
             <id>private</id>
             <url>http://repo.songoda.com/repository/private</url>
         </repository>
+        <repository>
+            <id>maven.sainttx.com</id>
+            <url>http://maven.sainttx.com/nexus/content/groups/public/</url>
+        </repository>
     </repositories>
     <dependencies>
+        <dependency>
+            <groupId>com.gmail.filoghost.holographicdisplays</groupId>
+            <artifactId>holographicdisplays-api</artifactId>
+            <version>2.3.3-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>com.songoda</groupId>
             <artifactId>EpicSpawners-API</artifactId>

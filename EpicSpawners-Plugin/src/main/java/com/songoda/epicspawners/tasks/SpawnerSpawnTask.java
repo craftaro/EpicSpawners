@@ -50,7 +50,7 @@ public class SpawnerSpawnTask extends BukkitRunnable {
                 Location location = spawner.getLocation();
                 plugin.getAppearanceHandler().removeDisplayItem(spawner);
                 plugin.getSpawnerManager().removeSpawnerFromWorld(location);
-                plugin.getHologramHandler().despawn(location.getBlock());
+                plugin.getHologram().remove(spawner);
                 return;
             }
 

@@ -20,7 +20,9 @@ import com.songoda.epicspawners.boost.BoostType;
 import com.songoda.epicspawners.command.CommandManager;
 import com.songoda.epicspawners.handlers.AppearanceHandler;
 import com.songoda.epicspawners.handlers.BlacklistHandler;
-import com.songoda.epicspawners.handlers.HologramHandler;
+import com.songoda.epicspawners.hologram.Hologram;
+import com.songoda.epicspawners.hologram.HologramArconix;
+import com.songoda.epicspawners.hologram.HologramHolographicDisplays;
 import com.songoda.epicspawners.hooks.*;
 import com.songoda.epicspawners.listeners.*;
 import com.songoda.epicspawners.player.PlayerActionManager;
@@ -89,8 +91,9 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
     private CommandManager commandManager;
 
     private BlacklistHandler blacklistHandler;
-    private HologramHandler hologramHandler;
     private AppearanceHandler appearanceHandler;
+
+    private Hologram hologram;
 
     private SpawnerParticleTask particleTask;
     private SpawnerSpawnTask spawnerCustomSpawnTask;
@@ -169,22 +172,61 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
 
         checkStorage();
 
+        this.shop = new Shop(this);
+        this.spawnerEditor = new SpawnerEditor(this);
+        this.appearanceHandler = new AppearanceHandler();
+
+        PluginManager pluginManager = Bukkit.getPluginManager();
+
+        // Event registration
+        pluginManager.registerEvents(new BlockListeners(this), this);
+        pluginManager.registerEvents(chatListeners, this);
+        pluginManager.registerEvents(new EntityListeners(this), this);
+        pluginManager.registerEvents(new InteractListeners(this), this);
+        pluginManager.registerEvents(new InventoryListeners(this), this);
+        pluginManager.registerEvents(new SpawnerListeners(this), this);
+        pluginManager.registerEvents(new PlayerJoinListeners(this), this);
+
+        AbstractGUI.initializeListeners(this);
+
+        // Register Hologram Plugin
+        if (pluginManager.isPluginEnabled("Arconix"))
+            hologram = new HologramArconix(this);
+        else if (pluginManager.isPluginEnabled("HolographicDisplays"))
+            hologram = new HologramHolographicDisplays(this);
+
+        // Register default hooks
+        if (pluginManager.isPluginEnabled("ASkyBlock"))
+            aSkyblockHook = (ClaimableProtectionPluginHook) this.register(HookASkyBlock::new);
+        if (pluginManager.isPluginEnabled("FactionsFramework"))
+            factionsHook = (ClaimableProtectionPluginHook) this.register(HookFactions::new);
+        if (pluginManager.isPluginEnabled("GriefPrevention")) this.register(HookGriefPrevention::new);
+        if (pluginManager.isPluginEnabled("Kingdoms")) this.register(HookKingdoms::new);
+        if (pluginManager.isPluginEnabled("PlotSquared")) this.register(HookPlotSquared::new);
+        if (pluginManager.isPluginEnabled("RedProtect")) this.register(HookRedProtect::new);
+        if (pluginManager.isPluginEnabled("Towny"))
+            townyHook = (ClaimableProtectionPluginHook) this.register(HookTowny::new);
+        if (pluginManager.isPluginEnabled("USkyBlock"))
+            uSkyblockHook = (ClaimableProtectionPluginHook) this.register(HookUSkyBlock::new);
+        if (pluginManager.isPluginEnabled("SkyBlock"))
+            skyBlockEarhHook = (ClaimableProtectionPluginHook) this.register(HookSkyBlockEarth::new);
+        if (pluginManager.isPluginEnabled("WorldGuard")) this.register(HookWorldGuard::new);
+
+
+        int timeout = SettingsManager.Setting.AUTOSAVE.getInt() * 60 * 20;
+        Bukkit.getScheduler().runTaskTimerAsynchronously(this, this::saveToFile, timeout, timeout);
+
+        // Start tasks
+        this.particleTask = SpawnerParticleTask.startTask(this);
+        this.spawnerCustomSpawnTask = SpawnerSpawnTask.startTask(this);
+
+        // Load Spawners
         Bukkit.getScheduler().runTaskLater(this, () -> {
-            if (Bukkit.getPluginManager().isPluginEnabled("Arconix"))
-                this.hologramHandler = new HologramHandler(this);
             // Adding in spawners.
             if (storage.containsGroup("spawners")) {
                 for (StorageRow row : storage.getRowsByGroup("spawners")) {
                     try {
                         Location location = Methods.unserializeLocation(row.getKey());
-
-                        if (hologramHandler != null && (location.getWorld() == null || location.getBlock().getType() != Material.SPAWNER)) {
-                            if (location.getWorld() != null && location.getBlock().getType() != Material.SPAWNER) {
-                                if (location.getBlock() == null) continue;
-                                this.hologramHandler.despawn(location.getBlock());
-                            }
-                            continue;
-                        }
 
                         ESpawner spawner = new ESpawner(location);
 
@@ -242,51 +284,10 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
                     playerData.setEntityKills(entityKills);
                 }
             }
+            hologram.loadHolograms();
             // Save data initially so that if the person reloads again fast they don't lose all their data.
             this.saveToFile();
         }, 10);
-
-        this.shop = new Shop(this);
-        this.spawnerEditor = new SpawnerEditor(this);
-        this.appearanceHandler = new AppearanceHandler();
-
-        PluginManager pluginManager = Bukkit.getPluginManager();
-
-        // Event registration
-        pluginManager.registerEvents(new BlockListeners(this), this);
-        pluginManager.registerEvents(chatListeners, this);
-        pluginManager.registerEvents(new EntityListeners(this), this);
-        pluginManager.registerEvents(new InteractListeners(this), this);
-        pluginManager.registerEvents(new InventoryListeners(this), this);
-        pluginManager.registerEvents(new SpawnerListeners(this), this);
-        pluginManager.registerEvents(new PlayerJoinListeners(this), this);
-
-        AbstractGUI.initializeListeners(this);
-
-        // Register default hooks
-        if (pluginManager.isPluginEnabled("ASkyBlock"))
-            aSkyblockHook = (ClaimableProtectionPluginHook) this.register(HookASkyBlock::new);
-        if (pluginManager.isPluginEnabled("FactionsFramework"))
-            factionsHook = (ClaimableProtectionPluginHook) this.register(HookFactions::new);
-        if (pluginManager.isPluginEnabled("GriefPrevention")) this.register(HookGriefPrevention::new);
-        if (pluginManager.isPluginEnabled("Kingdoms")) this.register(HookKingdoms::new);
-        if (pluginManager.isPluginEnabled("PlotSquared")) this.register(HookPlotSquared::new);
-        if (pluginManager.isPluginEnabled("RedProtect")) this.register(HookRedProtect::new);
-        if (pluginManager.isPluginEnabled("Towny"))
-            townyHook = (ClaimableProtectionPluginHook) this.register(HookTowny::new);
-        if (pluginManager.isPluginEnabled("USkyBlock"))
-            uSkyblockHook = (ClaimableProtectionPluginHook) this.register(HookUSkyBlock::new);
-        if (pluginManager.isPluginEnabled("SkyBlock"))
-            skyBlockEarhHook = (ClaimableProtectionPluginHook) this.register(HookSkyBlockEarth::new);
-        if (pluginManager.isPluginEnabled("WorldGuard")) this.register(HookWorldGuard::new);
-
-
-        int timeout = SettingsManager.Setting.AUTOSAVE.getInt() * 60 * 20;
-        Bukkit.getScheduler().runTaskTimerAsynchronously(this, this::saveToFile, timeout, timeout);
-
-        // Start tasks
-        this.particleTask = SpawnerParticleTask.startTask(this);
-        this.spawnerCustomSpawnTask = SpawnerSpawnTask.startTask(this);
 
         console.sendMessage(Methods.formatText("&a============================="));
 
@@ -299,8 +300,8 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         this.particleTask.cancel();
         this.protectionHooks.clear();
         this.spawnerCustomSpawnTask.cancel();
+        this.hologram.unloadHolograms();
 
-        //this.spawnerRegistry.clearRegistry();
         ConsoleCommandSender console = Bukkit.getConsoleSender();
         console.sendMessage(Methods.formatText("&a============================="));
         console.sendMessage(Methods.formatText("&7EpicSpawners " + this.getDescription().getVersion() + " by &5Songoda <3!"));
@@ -705,8 +706,8 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         return playerActionManager;
     }
 
-    public HologramHandler getHologramHandler() {
-        return hologramHandler;
+    public Hologram getHologram() {
+        return hologram;
     }
 
     public AppearanceHandler getAppearanceHandler() {

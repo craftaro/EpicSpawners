@@ -61,7 +61,8 @@ public class CommandChange extends AbstractCommand {
                 spawner.getCreatureSpawner().setSpawnedType(EntityType.valueOf("PIG"));
             }
             spawner.getCreatureSpawner().update();
-            instance.getHologramHandler().processChange(block);
+            if (instance.getHologram() != null)
+                instance.getHologram().processChange(block);
             sender.sendMessage(Methods.formatText(References.getPrefix() + "&7Successfully changed this spawner to &6" + args[1] + "&7."));
             return ReturnType.SUCCESS;
         } catch (Exception ee) {

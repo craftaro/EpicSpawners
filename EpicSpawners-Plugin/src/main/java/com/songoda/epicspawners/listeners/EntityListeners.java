@@ -71,7 +71,8 @@ public class EntityListeners implements Listener {
                     }
                 }
                 instance.getSpawnerManager().removeSpawnerFromWorld(spawnLocation);
-                instance.getHologramHandler().despawn(spawnLocation.getBlock());
+                if (instance.getHologram() != null)
+                instance.getHologram().remove(spawner);
                 if (spawner != null) instance.getAppearanceHandler().removeDisplayItem(spawner);
 
                 Location nloc = spawnLocation.clone();

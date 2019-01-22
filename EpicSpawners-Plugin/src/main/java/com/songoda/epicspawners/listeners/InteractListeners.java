@@ -123,8 +123,8 @@ public class InteractListeners implements Listener {
             }
             spawner.getCreatureSpawner().update();
 
-            if (instance.getHologramHandler() != null)
-                EpicSpawnersPlugin.getInstance().getHologramHandler().processChange(b);
+            if (instance.getHologram() != null)
+                EpicSpawnersPlugin.getInstance().getHologram().processChange(b);
             if (p.getGameMode() != GameMode.CREATIVE) {
                 Methods.takeItem(p, bmulti - 1);
             }
@@ -178,8 +178,8 @@ public class InteractListeners implements Listener {
                     SpawnerData spawnerData = instance.getSpawnerDataFromItem(item);
                     if (player.hasPermission("epicspawners.stack." + spawnerData.getIdentifyingName()) || player.hasPermission("epicspawners.stack.*")) {
                         spawner.preStack(player, item);
-                        if (instance.getHologramHandler() != null)
-                            instance.getHologramHandler().updateHologram(spawner);
+                        if (instance.getHologram() != null)
+                            instance.getHologram().update(spawner);
                         event.setCancelled(true);
                     }
                 }
@@ -188,8 +188,8 @@ public class InteractListeners implements Listener {
                     Spawner spawner = EpicSpawnersPlugin.getInstance().getSpawnerManager().getSpawnerFromWorld(location);
 
                     ((ESpawner) spawner).overview(player);
-                    if (instance.getHologramHandler() != null)
-                        EpicSpawnersPlugin.getInstance().getHologramHandler().processChange(block);
+                    if (instance.getHologram() != null)
+                        EpicSpawnersPlugin.getInstance().getHologram().processChange(block);
                     event.setCancelled(true);
                 }
             }
