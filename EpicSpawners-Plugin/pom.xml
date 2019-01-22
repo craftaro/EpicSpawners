@@ -21,7 +21,7 @@
             <groupId>com.gmail.filoghost.holographicdisplays</groupId>
             <artifactId>holographicdisplays</artifactId>
             <version>LATEST</version>
-            <scope>LATEST</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.songoda</groupId>
