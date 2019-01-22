@@ -196,7 +196,8 @@ public class ESpawner implements Spawner {
 
             p.sendMessage(References.getPrefix() + EpicSpawnersPlugin.getInstance().getLocale().getMessage("event.convert.success"));
 
-            instance.getHologramHandler().updateHologram(this);
+            if (instance.getHologramHandler() != null)
+                instance.getHologramHandler().updateHologram(this);
             p.closeInventory();
             if (!p.isOp()) {
                 econ.withdrawPlayer(p, price);
@@ -291,7 +292,8 @@ public class ESpawner implements Spawner {
 
         location.getBlock().setType(Material.AIR);
         EpicSpawnersPlugin.getInstance().getSpawnerManager().removeSpawnerFromWorld(location);
-        instance.getHologramHandler().despawn(location.getBlock());
+        if (instance.getHologramHandler() != null)
+            instance.getHologramHandler().despawn(location.getBlock());
         return true;
     }
 
@@ -382,6 +384,7 @@ public class ESpawner implements Spawner {
                 Bukkit.getScheduler().scheduleSyncDelayedTask(EpicSpawnersPlugin.getInstance(), () -> player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 1.2F, 35.0F), 5L);
                 Bukkit.getScheduler().scheduleSyncDelayedTask(EpicSpawnersPlugin.getInstance(), () -> player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 1.8F, 35.0F), 10L);
             }
+            if (EpicSpawnersPlugin.getInstance().getHologramHandler() != null)
             EpicSpawnersPlugin.getInstance().getHologramHandler().updateHologram(this);
         } catch (Exception e) {
             Debugger.runReport(e);
