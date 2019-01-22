@@ -15,17 +15,13 @@
             <id>private</id>
             <url>http://repo.songoda.com/repository/private</url>
         </repository>
-        <repository>
-            <id>maven.sainttx.com</id>
-            <url>http://maven.sainttx.com/nexus/content/groups/public/</url>
-        </repository>
     </repositories>
     <dependencies>
         <dependency>
             <groupId>com.gmail.filoghost.holographicdisplays</groupId>
-            <artifactId>holographicdisplays-api</artifactId>
+            <artifactId>holographicdisplays</artifactId>
             <version>2.3.3-SNAPSHOT</version>
-            <scope>provided</scope>
+            <scope>LATEST</scope>
         </dependency>
         <dependency>
             <groupId>com.songoda</groupId>
