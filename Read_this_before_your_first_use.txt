@@ -1,13 +1,8 @@
 Hey loves,
 
-Thanks for downloading our plugin ^_^ In order to 
-run it you will need a plugin called arconix. It
-basically takes a bunch of methods that we use all
-over the place throughout our plugin lineup and 
-stores it in one place so we don't have to write 
-new code every time we need to get something simple 
-done. So make sure to stay up to date with the latest
-updates for it.
+Thanks for downloading our plugin ^_^ If you
+want hologram support you have to download
+the plugin below.
 
 Link to download:
 https://gitlab.com/Songoda/Arconix/-/jobs/artifacts/master/download?job=build
