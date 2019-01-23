@@ -220,6 +220,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         this.particleTask.cancel();
         this.protectionHooks.clear();
         this.spawnerCustomSpawnTask.cancel();
+        if (hologram != null)
         this.hologram.unloadHolograms();
 
         ConsoleCommandSender console = Bukkit.getConsoleSender();
@@ -288,11 +289,11 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
                     int amt = Integer.parseInt(entityKills2[1]);
                     entityKills.put(entityType, amt);
                 }
-
                 playerData.setEntityKills(entityKills);
             }
         }
-        hologram.loadHolograms();
+        if (hologram != null)
+            hologram.loadHolograms();
         // Save data initially so that if the person reloads again fast they don't lose all their data.
         this.saveToFile();
     }
