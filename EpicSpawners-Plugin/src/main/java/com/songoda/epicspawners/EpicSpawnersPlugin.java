@@ -147,15 +147,9 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
 
         this.setupConfig();
         this.setupSpawners();
+        this.setupLanguage();
 
-        String langMode = getConfig().getString("System.Language Mode");
-        Locale.init(this);
-        Locale.saveDefaultLocale("en_US");
-        this.locale = Locale.getLocale(getConfig().getString("System.Language Mode", langMode));
-
-        if (getConfig().getBoolean("System.Download Needed Data Files")) {
-            this.update();
-        }
+        if (SettingsManager.Setting.DOWNLOAD_FILES.getBoolean()) this.update();
 
         this.hooksFile.createNewFile("Loading Hooks File", "EpicSpawners Hooks File");
 
@@ -168,9 +162,8 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         this.playerActionManager = new PlayerActionManager();
         this.chatListeners = new ChatListeners(this);
 
-        loadSpawnersFromFile();
-
-        checkStorage();
+        this.loadSpawnersFromFile();
+        this.checkStorage();
 
         this.shop = new Shop(this);
         this.spawnerEditor = new SpawnerEditor(this);
@@ -190,26 +183,19 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         AbstractGUI.initializeListeners(this);
 
         // Register Hologram Plugin
-        if (pluginManager.isPluginEnabled("Arconix"))
-            hologram = new HologramArconix(this);
-        else if (pluginManager.isPluginEnabled("HolographicDisplays"))
-            hologram = new HologramHolographicDisplays(this);
+        if (pluginManager.isPluginEnabled("Arconix")) hologram = new HologramArconix(this);
+        else if (pluginManager.isPluginEnabled("HolographicDisplays")) hologram = new HologramHolographicDisplays(this);
 
         // Register default hooks
-        if (pluginManager.isPluginEnabled("ASkyBlock"))
-            aSkyblockHook = (ClaimableProtectionPluginHook) this.register(HookASkyBlock::new);
-        if (pluginManager.isPluginEnabled("FactionsFramework"))
-            factionsHook = (ClaimableProtectionPluginHook) this.register(HookFactions::new);
+        if (pluginManager.isPluginEnabled("ASkyBlock")) aSkyblockHook = (ClaimableProtectionPluginHook) this.register(HookASkyBlock::new);
+        if (pluginManager.isPluginEnabled("FactionsFramework")) factionsHook = (ClaimableProtectionPluginHook) this.register(HookFactions::new);
         if (pluginManager.isPluginEnabled("GriefPrevention")) this.register(HookGriefPrevention::new);
         if (pluginManager.isPluginEnabled("Kingdoms")) this.register(HookKingdoms::new);
         if (pluginManager.isPluginEnabled("PlotSquared")) this.register(HookPlotSquared::new);
         if (pluginManager.isPluginEnabled("RedProtect")) this.register(HookRedProtect::new);
-        if (pluginManager.isPluginEnabled("Towny"))
-            townyHook = (ClaimableProtectionPluginHook) this.register(HookTowny::new);
-        if (pluginManager.isPluginEnabled("USkyBlock"))
-            uSkyblockHook = (ClaimableProtectionPluginHook) this.register(HookUSkyBlock::new);
-        if (pluginManager.isPluginEnabled("SkyBlock"))
-            skyBlockEarhHook = (ClaimableProtectionPluginHook) this.register(HookSkyBlockEarth::new);
+        if (pluginManager.isPluginEnabled("Towny")) townyHook = (ClaimableProtectionPluginHook) this.register(HookTowny::new);
+        if (pluginManager.isPluginEnabled("USkyBlock")) uSkyblockHook = (ClaimableProtectionPluginHook) this.register(HookUSkyBlock::new);
+        if (pluginManager.isPluginEnabled("SkyBlock")) skyBlockEarhHook = (ClaimableProtectionPluginHook) this.register(HookSkyBlockEarth::new);
         if (pluginManager.isPluginEnabled("WorldGuard")) this.register(HookWorldGuard::new);
 
 
@@ -221,73 +207,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         this.spawnerCustomSpawnTask = SpawnerSpawnTask.startTask(this);
 
         // Load Spawners
-        Bukkit.getScheduler().runTaskLater(this, () -> {
-            // Adding in spawners.
-            if (storage.containsGroup("spawners")) {
-                for (StorageRow row : storage.getRowsByGroup("spawners")) {
-                    try {
-                        Location location = Methods.unserializeLocation(row.getKey());
-
-                        ESpawner spawner = new ESpawner(location);
-
-                        for (String stackKey : row.get("stacks").asString().split(";")) {
-                            if (stackKey == null) continue;
-                            String[] stack = stackKey.split(":");
-                            if (!spawnerManager.isSpawnerData(stack[0].toLowerCase())) continue;
-                            spawner.addSpawnerStack(new ESpawnerStack(spawnerManager.getSpawnerData(stack[0]), Integer.parseInt(stack[1])));
-                        }
-
-                        if (row.getItems().containsKey("placedby"))
-                            spawner.setPlacedBy(UUID.fromString(row.get("placedby").asString()));
-
-                        spawner.setSpawnCount(row.get("spawns").asInt());
-                        this.spawnerManager.addSpawnerToWorld(location, spawner);
-                    } catch (Exception e) {
-                        console.sendMessage("Failed to load spawner.");
-                        e.printStackTrace();
-                    }
-                }
-            }
-
-            // Adding in Boosts
-            if (storage.containsGroup("boosts")) {
-                for (StorageRow row : storage.getRowsByGroup("boosts")) {
-                    if (row.get("boosttype").asObject() != null)
-                        continue;
-
-                    BoostData boostData = new BoostData(
-                            BoostType.valueOf(row.get("boosttype").asString()),
-                            row.get("amount").asInt(),
-                            Long.parseLong(row.getKey()),
-                            row.get("data").asObject());
-
-                    this.boostManager.addBoostToSpawner(boostData);
-                }
-            }
-
-            // Adding in Player Data
-            if (storage.containsGroup("players")) {
-                for (StorageRow row : storage.getRowsByGroup("players")) {
-                    PlayerData playerData = playerActionManager.getPlayerAction(UUID.fromString(row.getKey()));
-
-                    Map<EntityType, Integer> entityKills = new HashMap<>();
-                    if (row.get("entitykills").asObject() == null) continue;
-                    for (String entityKillsKey : row.get("entitykills").asString().split(";")) {
-                        if (entityKillsKey == null) continue;
-                        String[] entityKills2 = entityKillsKey.split(":");
-                        if (entityKills2[0] == null || entityKills2[0].equals("")) continue;
-                        EntityType entityType = EntityType.valueOf(entityKills2[0]);
-                        int amt = Integer.parseInt(entityKills2[1]);
-                        entityKills.put(entityType, amt);
-                    }
-
-                    playerData.setEntityKills(entityKills);
-                }
-            }
-            hologram.loadHolograms();
-            // Save data initially so that if the person reloads again fast they don't lose all their data.
-            this.saveToFile();
-        }, 10);
+        Bukkit.getScheduler().runTaskLater(this, this::loadData, 10);
 
         console.sendMessage(Methods.formatText("&a============================="));
 
@@ -307,6 +227,74 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         console.sendMessage(Methods.formatText("&7EpicSpawners " + this.getDescription().getVersion() + " by &5Songoda <3!"));
         console.sendMessage(Methods.formatText("&7Action: &cDisabling&7..."));
         console.sendMessage(Methods.formatText("&a============================="));
+    }
+
+    private void loadData() {
+        // Adding in spawners.
+        if (storage.containsGroup("spawners")) {
+            for (StorageRow row : storage.getRowsByGroup("spawners")) {
+                try {
+                    Location location = Methods.unserializeLocation(row.getKey());
+
+                    ESpawner spawner = new ESpawner(location);
+
+                    for (String stackKey : row.get("stacks").asString().split(";")) {
+                        if (stackKey == null) continue;
+                        String[] stack = stackKey.split(":");
+                        if (!spawnerManager.isSpawnerData(stack[0].toLowerCase())) continue;
+                        spawner.addSpawnerStack(new ESpawnerStack(spawnerManager.getSpawnerData(stack[0]), Integer.parseInt(stack[1])));
+                    }
+
+                    if (row.getItems().containsKey("placedby"))
+                        spawner.setPlacedBy(UUID.fromString(row.get("placedby").asString()));
+
+                    spawner.setSpawnCount(row.get("spawns").asInt());
+                    this.spawnerManager.addSpawnerToWorld(location, spawner);
+                } catch (Exception e) {
+                    System.out.println("Failed to load spawner.");
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        // Adding in Boosts
+        if (storage.containsGroup("boosts")) {
+            for (StorageRow row : storage.getRowsByGroup("boosts")) {
+                if (row.get("boosttype").asObject() != null)
+                    continue;
+
+                BoostData boostData = new BoostData(
+                        BoostType.valueOf(row.get("boosttype").asString()),
+                        row.get("amount").asInt(),
+                        Long.parseLong(row.getKey()),
+                        row.get("data").asObject());
+
+                this.boostManager.addBoostToSpawner(boostData);
+            }
+        }
+
+        // Adding in Player Data
+        if (storage.containsGroup("players")) {
+            for (StorageRow row : storage.getRowsByGroup("players")) {
+                PlayerData playerData = playerActionManager.getPlayerAction(UUID.fromString(row.getKey()));
+
+                Map<EntityType, Integer> entityKills = new HashMap<>();
+                if (row.get("entitykills").asObject() == null) continue;
+                for (String entityKillsKey : row.get("entitykills").asString().split(";")) {
+                    if (entityKillsKey == null) continue;
+                    String[] entityKills2 = entityKillsKey.split(":");
+                    if (entityKills2[0] == null || entityKills2[0].equals("")) continue;
+                    EntityType entityType = EntityType.valueOf(entityKills2[0]);
+                    int amt = Integer.parseInt(entityKills2[1]);
+                    entityKills.put(entityType, amt);
+                }
+
+                playerData.setEntityKills(entityKills);
+            }
+        }
+        hologram.loadHolograms();
+        // Save data initially so that if the person reloads again fast they don't lose all their data.
+        this.saveToFile();
     }
 
     @SuppressWarnings("unchecked")
@@ -584,6 +572,12 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         this.spawnerFile.saveConfig();
     }
 
+    private void setupLanguage() {
+        String langMode = getConfig().getString("System.Language Mode");
+        Locale.init(this);
+        Locale.saveDefaultLocale("en_US");
+        this.locale = Locale.getLocale(getConfig().getString("System.Language Mode", langMode));
+    }
 
     private ProtectionPluginHook register(Supplier<ProtectionPluginHook> hookSupplier) {
         return this.registerProtectionHook(hookSupplier.get());
