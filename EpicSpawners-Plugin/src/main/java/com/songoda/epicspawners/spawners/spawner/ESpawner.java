@@ -254,9 +254,12 @@ public class ESpawner implements Spawner {
         ItemStack item = stack.getSpawnerData().toItemStack(1, stackSize);
 
 
-        if (SettingsManager.Setting.SPAWNERS_TO_INVENTORY.getBoolean() && player.getInventory().firstEmpty() == -1)
-            player.getInventory().addItem(item);
-        else if (!SettingsManager.Setting.ONLY_DROP_PLACED.getBoolean() || placedBy != null) {
+        if (SettingsManager.Setting.SPAWNERS_TO_INVENTORY.getBoolean()) {
+            Collection<ItemStack> leftOver = player.getInventory().addItem(item).values();
+            for (ItemStack itemStack : leftOver) {
+                player.getWorld().dropItemNaturally(player.getLocation(), itemStack);
+            }
+        } else if (!SettingsManager.Setting.ONLY_DROP_PLACED.getBoolean() || placedBy != null) {
 
             ItemStack inHand = player.getInventory().getItemInMainHand();
             if (SettingsManager.Setting.SILKTOUCH_SPAWNERS.getBoolean()
