@@ -183,8 +183,11 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         AbstractGUI.initializeListeners(this);
 
         // Register Hologram Plugin
-        if (pluginManager.isPluginEnabled("Arconix")) hologram = new HologramArconix(this);
-        else if (pluginManager.isPluginEnabled("HolographicDisplays")) hologram = new HologramHolographicDisplays(this);
+        if (SettingsManager.Setting.SPAWNER_HOLOGRAMS.getBoolean()) {
+            if (pluginManager.isPluginEnabled("HolographicDisplays"))
+                hologram = new HologramHolographicDisplays(this);
+            else if (pluginManager.isPluginEnabled("Arconix")) hologram = new HologramArconix(this);
+        }
 
         // Register default hooks
         if (pluginManager.isPluginEnabled("ASkyBlock")) aSkyblockHook = (ClaimableProtectionPluginHook) this.register(HookASkyBlock::new);
