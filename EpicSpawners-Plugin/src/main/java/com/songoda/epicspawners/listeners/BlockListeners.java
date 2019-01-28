@@ -138,6 +138,11 @@ public class BlockListeners implements Listener {
                 return;
             }
 
+            if (!player.hasPermission("epicspawners.place." + spawnerData.getIdentifyingName())) {
+                event.setCancelled(true);
+                return;
+            }
+
             if (doForceCombine(player, spawner)) {
                 event.setCancelled(true);
                 return;
