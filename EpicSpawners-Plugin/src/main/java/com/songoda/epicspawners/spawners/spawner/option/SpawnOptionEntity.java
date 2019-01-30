@@ -39,9 +39,7 @@ public class SpawnOptionEntity implements SpawnOption {
     private EpicSpawnersPlugin instance = EpicSpawnersPlugin.getInstance();
 
     private Map<String, Integer> cache = new HashMap<>();
-    private Class<?> clazzMobSpawnerData, clazzNBTTagCompound, clazzNBTTagList, clazzCraftWorld, clazzWorld, clazzChunkRegionLoader, clazzEntity, clazzCraftEntity, clazzEntityInsentient, clazzGroupDataEntity, clazzDifficultyDamageScaler, clazzBlockPosition, clazzIWorldReader, clazzAxisAlignedBB;
-    private Method methodB, methodSetString, methodGetHandle, methodChunkRegionLoaderA, methodEntityGetBukkitEntity, methodCraftEntityTeleport, methodEntityInsentientCanSpawn, methodEntityInsentientPrepare, methodChunkRegionLoaderA2, methodGetDamageScaler, methodGetCubes, methodGetBoundingBox;
-    private Field fieldWorldRandom;
+    private Field fieldWorldRandom, fieldFromMobSpawner;
 
     public SpawnOptionEntity(EntityType... types) {
         this.types = types;
@@ -80,6 +78,7 @@ public class SpawnOptionEntity implements SpawnOption {
             methodGetHandle = clazzCraftWorld.getDeclaredMethod("getHandle");
             methodChunkRegionLoaderA = clazzChunkRegionLoader.getDeclaredMethod("a", clazzNBTTagCompound, clazzWorld, double.class, double.class, double.class, boolean.class);
             methodEntityGetBukkitEntity = clazzEntity.getDeclaredMethod("getBukkitEntity");
+            fieldFromMobSpawner = clazzEntity.getDeclaredField("fromMobSpawner");
             methodCraftEntityTeleport = clazzCraftEntity.getDeclaredMethod("teleport", Location.class);
             methodEntityInsentientCanSpawn = clazzEntityInsentient.getDeclaredMethod("canSpawn");
             methodEntityInsentientPrepare = clazzEntityInsentient.getDeclaredMethod("prepare", clazzDifficultyDamageScaler, clazzGroupDataEntity, clazzNBTTagCompound);
@@ -185,6 +184,8 @@ public class SpawnOptionEntity implements SpawnOption {
                     float zz = (float) (0 + (Math.random() * 1));
                     spot.getWorld().spawnParticle(particleType.getEffect(), spot, 5, xx, yy, zz, 0);
                 }
+
+                fieldFromMobSpawner.set(objEntity, true);
 
                 Entity craftEntity = (Entity) methodEntityGetBukkitEntity.invoke(objEntity);
 
