@@ -244,9 +244,9 @@ public class GUISpawnerOverview extends AbstractGUI {
         });
 
         registerClickable(13, (player, inventory, cursor, slot, type) -> {
-            if (type.isRightClick() && spawner.getBoost() == 0) {
+            if (type.isRightClick() && spawner.getBoost() == 0 && player.hasPermission("epicspawners.canboost")) {
                 new GUISpawnerBoost(plugin, spawner, player);
-            } else if (type.isLeftClick() && spawner.getSpawnerStacks().size() == 1) {
+            } else if (type.isLeftClick() && spawner.getSpawnerStacks().size() == 1 && player.hasPermission("epicspawners.convert") ) {
                 new GUISpawnerConvert(plugin, spawner, player);
             }
         });
