@@ -99,6 +99,7 @@ public class InteractListeners implements Listener {
             SpawnerData itemType = instance.getSpawnerManager().getSpawnerData(itype);
 
             if (!p.hasPermission("epicspawners.egg." + itype) && !p.hasPermission("epicspawners.egg.*")) {
+                e.setCancelled(true);
                 return;
             }
             if (amt < bmulti) {
