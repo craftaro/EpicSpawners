@@ -39,6 +39,8 @@ public class SpawnOptionEntity implements SpawnOption {
     private EpicSpawnersPlugin instance = EpicSpawnersPlugin.getInstance();
 
     private Map<String, Integer> cache = new HashMap<>();
+    private Class<?> clazzMobSpawnerData, clazzNBTTagCompound, clazzNBTTagList, clazzCraftWorld, clazzWorld, clazzChunkRegionLoader, clazzEntity, clazzCraftEntity, clazzEntityInsentient, clazzGroupDataEntity, clazzDifficultyDamageScaler, clazzBlockPosition, clazzIWorldReader, clazzAxisAlignedBB;
+    private Method methodB, methodSetString, methodGetHandle, methodChunkRegionLoaderA, methodEntityGetBukkitEntity, methodCraftEntityTeleport, methodEntityInsentientCanSpawn, methodEntityInsentientPrepare, methodChunkRegionLoaderA2, methodGetDamageScaler, methodGetCubes, methodGetBoundingBox;
     private Field fieldWorldRandom, fieldFromMobSpawner;
 
     public SpawnOptionEntity(EntityType... types) {
