@@ -19,7 +19,7 @@
     <dependencies>
         <dependency>
             <groupId>com.gmail.filoghost.holographicdisplays</groupId>
-            <artifactId>holographicdisplays</artifactId>
+            <artifactId>holographicdisplays-api</artifactId>
             <version>LATEST</version>
             <scope>provided</scope>
         </dependency>
