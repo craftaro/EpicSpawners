@@ -87,7 +87,6 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
     private PlayerActionManager playerActionManager;
     private SpawnerManager spawnerManager;
     private BoostManager boostManager;
-    private BoostManager boostManager;
     private SettingsManager settingsManager;
     private CommandManager commandManager;
 

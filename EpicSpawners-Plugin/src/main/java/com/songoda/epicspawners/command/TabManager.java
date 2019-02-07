@@ -1,7 +1,6 @@
 package com.songoda.epicspawners.command;
 
 import com.songoda.epicspawners.EpicSpawnersPlugin;
-import com.songoda.epicspawners.api.EpicSpawners;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
