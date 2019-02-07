@@ -112,7 +112,7 @@ public class CommandGive extends AbstractCommand {
             List<String> spawners = new ArrayList<>();
             spawners.add("Random");
             for (SpawnerData spawnerData : instance.getSpawnerManager().getAllSpawnerData()) {
-                spawners.add(spawnerData.getIdentifyingName());
+                spawners.add(spawnerData.getIdentifyingName().replace( " ", "_"));
             }
             return spawners;
         } else if (args.length == 4) {

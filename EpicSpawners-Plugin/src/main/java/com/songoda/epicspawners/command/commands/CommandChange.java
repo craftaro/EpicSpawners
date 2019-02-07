@@ -82,7 +82,7 @@ public class CommandChange extends AbstractCommand {
         if (args.length == 2) {
             List<String> spawners = new ArrayList<>();
             for (SpawnerData spawnerData : instance.getSpawnerManager().getAllSpawnerData()) {
-                spawners.add(spawnerData.getIdentifyingName());
+                spawners.add(spawnerData.getIdentifyingName().replace( " ", "_"));
             }
             return spawners;
         }
