@@ -33,7 +33,8 @@ public class SpawnOptionBlock implements SpawnOption {
         Location location = spawner.getLocation();
         if (location == null || location.getWorld() == null) return;
 
-        for (int i = 0; i < spawner.getSpawnerDataCount(); i++) {
+        int spawnerBoost = spawner.getBoost();
+        for (int i = 0; i < spawner.getSpawnerDataCount() + spawnerBoost; i++) {
             for (Material material : blocks) {
                 int searchIndex = 0;
                 while (searchIndex++ <= MAX_SEARCH_COUNT) {

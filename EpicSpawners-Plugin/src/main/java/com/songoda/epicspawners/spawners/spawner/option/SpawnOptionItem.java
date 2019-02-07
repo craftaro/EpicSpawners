@@ -37,7 +37,8 @@ public class SpawnOptionItem implements SpawnOption {
         Location spawnLocation = location.clone().add(0.5, 0.9, 0.5);
         location.getWorld().playSound(location, Sound.ENTITY_ITEM_PICKUP, 0.1F, 1F);
 
-        for (int i = 0; i < spawner.getSpawnerDataCount(); i++) {
+        int spawnerBoost = spawner.getBoost();
+        for (int i = 0; i < spawner.getSpawnerDataCount() + spawnerBoost; i++) {
             for (ItemStack item : items) {
                 Item droppedItem = world.dropItem(spawnLocation, item);
                 spawner.setSpawnCount(spawner.getSpawnCount() + 1);

@@ -37,7 +37,8 @@ public class SpawnOptionCommand implements SpawnOption {
         Location location = spawner.getLocation();
         if (location == null || location.getWorld() == null) return;
 
-        for (int i = 0; i < spawner.getSpawnerDataCount(); i++) {
+        int spawnerBoost = spawner.getBoost();
+        for (int i = 0; i < spawner.getSpawnerDataCount() + spawnerBoost; i++) {
             for (String command : commands) {
                 String finalCommand = command;
                 String lowercaseCommand = finalCommand.toLowerCase();
