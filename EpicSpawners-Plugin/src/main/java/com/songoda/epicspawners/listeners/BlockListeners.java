@@ -138,7 +138,7 @@ public class BlockListeners implements Listener {
                 return;
             }
 
-            if (!player.hasPermission("epicspawners.place." + spawnerData.getIdentifyingName())) {
+            if (!player.hasPermission("epicspawners.place." + spawnerData.getIdentifyingName().replace(" ", "_"))) {
                 event.setCancelled(true);
                 return;
             }
