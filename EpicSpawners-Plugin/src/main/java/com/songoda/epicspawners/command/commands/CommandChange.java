@@ -8,12 +8,16 @@ import com.songoda.epicspawners.api.spawner.SpawnerStack;
 import com.songoda.epicspawners.command.AbstractCommand;
 import com.songoda.epicspawners.spawners.spawner.ESpawnerStack;
 import com.songoda.epicspawners.utils.Methods;
+import com.songoda.epicspawners.utils.SettingsManager;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class CommandChange extends AbstractCommand {
@@ -75,6 +79,13 @@ public class CommandChange extends AbstractCommand {
 
     @Override
     protected List<String> onTab(EpicSpawnersPlugin instance, CommandSender sender, String... args) {
+        if (args.length == 2) {
+            List<String> spawners = new ArrayList<>();
+            for (SpawnerData spawnerData : instance.getSpawnerManager().getAllSpawnerData()) {
+                spawners.add(spawnerData.getIdentifyingName());
+            }
+            return spawners;
+        }
         return null;
     }
 

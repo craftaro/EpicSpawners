@@ -2,16 +2,17 @@ package com.songoda.epicspawners.command.commands;
 
 import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.References;
+import com.songoda.epicspawners.api.spawner.SpawnerData;
 import com.songoda.epicspawners.boost.BoostData;
 import com.songoda.epicspawners.boost.BoostType;
 import com.songoda.epicspawners.command.AbstractCommand;
 import com.songoda.epicspawners.utils.Methods;
+import com.songoda.epicspawners.utils.SettingsManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class CommandBoost extends AbstractCommand {
 
@@ -126,9 +127,15 @@ public class CommandBoost extends AbstractCommand {
 
     @Override
     protected List<String> onTab(EpicSpawnersPlugin instance, CommandSender sender, String... args) {
+        if (args.length == 2) {
+            return Arrays.asList("p:", "f:", "t:", "i:");
+        } else if (args.length == 3) {
+            return Arrays.asList("1", "2", "3", "4", "5");
+        } else if (args.length == 4) {
+            return Arrays.asList("m:", "h:", "d:", "y:");
+        }
         return null;
     }
-
     @Override
     public String getPermissionNode() {
         return "epicspawners.admin";

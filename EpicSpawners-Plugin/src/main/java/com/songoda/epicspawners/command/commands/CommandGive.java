@@ -6,14 +6,13 @@ import com.songoda.epicspawners.References;
 import com.songoda.epicspawners.api.spawner.SpawnerData;
 import com.songoda.epicspawners.command.AbstractCommand;
 import com.songoda.epicspawners.utils.Methods;
+import com.songoda.epicspawners.utils.SettingsManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class CommandGive extends AbstractCommand {
 
@@ -102,6 +101,29 @@ public class CommandGive extends AbstractCommand {
 
     @Override
     protected List<String> onTab(EpicSpawnersPlugin instance, CommandSender sender, String... args) {
+        if (args.length == 2) {
+            List<String> players = new ArrayList<>();
+            players.add("All");
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                players.add(player.getName());
+            }
+            return players;
+        } else if (args.length == 3) {
+            List<String> spawners = new ArrayList<>();
+            spawners.add("Random");
+            for (SpawnerData spawnerData : instance.getSpawnerManager().getAllSpawnerData()) {
+                spawners.add(spawnerData.getIdentifyingName());
+            }
+            return spawners;
+        } else if (args.length == 4) {
+            List<String> values = new ArrayList<>();
+            for (int i = 1; i <= SettingsManager.Setting.SPAWNERS_MAX.getInt(); i ++) {
+                values.add(String.valueOf(i));
+            }
+            return values;
+        } else if (args.length == 5) {
+            return Arrays.asList("1", "2", "3", "4", "5");
+        }
         return null;
     }
 
