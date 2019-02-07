@@ -12,12 +12,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Random;
 
 public class CommandGive extends AbstractCommand {
 
     public CommandGive(AbstractCommand abstractCommand) {
-        super("give", abstractCommand, false);
+        super(abstractCommand, false, "give");
     }
 
     @Override
@@ -97,6 +98,11 @@ public class CommandGive extends AbstractCommand {
 
         }
         return ReturnType.SUCCESS;
+    }
+
+    @Override
+    protected List<String> onTab(EpicSpawnersPlugin instance, CommandSender sender, String... args) {
+        return null;
     }
 
     @Override

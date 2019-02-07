@@ -6,10 +6,12 @@ import com.songoda.epicspawners.command.AbstractCommand;
 import com.songoda.epicspawners.utils.Methods;
 import org.bukkit.command.CommandSender;
 
+import java.util.List;
+
 public class CommandEpicSpawners extends AbstractCommand {
 
     public CommandEpicSpawners() {
-        super("EpicSpawners", null, false);
+        super(null, false, "EpicSpawners");
     }
 
     @Override
@@ -25,6 +27,11 @@ public class CommandEpicSpawners extends AbstractCommand {
         sender.sendMessage("");
 
         return ReturnType.SUCCESS;
+    }
+
+    @Override
+    protected List<String> onTab(EpicSpawnersPlugin instance, CommandSender sender, String... args) {
+        return null;
     }
 
     @Override

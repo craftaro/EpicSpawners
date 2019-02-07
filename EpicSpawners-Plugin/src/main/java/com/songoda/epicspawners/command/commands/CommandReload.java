@@ -6,10 +6,12 @@ import com.songoda.epicspawners.command.AbstractCommand;
 import com.songoda.epicspawners.utils.Methods;
 import org.bukkit.command.CommandSender;
 
+import java.util.List;
+
 public class CommandReload extends AbstractCommand {
 
     public CommandReload(AbstractCommand parent) {
-        super("reload", parent, false);
+        super(parent, false, "reload");
     }
 
     @Override
@@ -17,6 +19,11 @@ public class CommandReload extends AbstractCommand {
         instance.reload();
         sender.sendMessage(Methods.formatText(References.getPrefix() + "&7Configuration and Language files reloaded."));
         return ReturnType.SUCCESS;
+    }
+
+    @Override
+    protected List<String> onTab(EpicSpawnersPlugin instance, CommandSender sender, String... args) {
+        return null;
     }
 
     @Override

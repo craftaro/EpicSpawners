@@ -11,11 +11,12 @@ import org.bukkit.command.CommandSender;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public class CommandBoost extends AbstractCommand {
 
     public CommandBoost(AbstractCommand parent) {
-        super("boost", parent, false);
+        super(parent, false, "boost");
     }
 
     @Override
@@ -121,6 +122,11 @@ public class CommandBoost extends AbstractCommand {
         sender.sendMessage(Methods.formatText(References.getPrefix() + start + response));
 
         return ReturnType.SUCCESS;
+    }
+
+    @Override
+    protected List<String> onTab(EpicSpawnersPlugin instance, CommandSender sender, String... args) {
+        return null;
     }
 
     @Override

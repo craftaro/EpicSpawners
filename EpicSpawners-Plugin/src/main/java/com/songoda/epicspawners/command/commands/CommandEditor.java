@@ -5,16 +5,23 @@ import com.songoda.epicspawners.command.AbstractCommand;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.List;
+
 public class CommandEditor extends AbstractCommand {
 
     public CommandEditor(AbstractCommand abstractCommand) {
-        super("editor", abstractCommand, true);
+        super(abstractCommand, true,"editor");
     }
 
     @Override
     protected ReturnType runCommand(EpicSpawnersPlugin instance, CommandSender sender, String... args) {
         instance.getSpawnerEditor().openSpawnerSelector((Player) sender, 1);
         return ReturnType.SUCCESS;
+    }
+
+    @Override
+    protected List<String> onTab(EpicSpawnersPlugin instance, CommandSender sender, String... args) {
+        return null;
     }
 
     @Override

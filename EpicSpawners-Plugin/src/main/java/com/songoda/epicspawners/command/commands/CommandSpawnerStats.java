@@ -7,10 +7,12 @@ import com.songoda.epicspawners.gui.GUISpawnerStats;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.List;
+
 public class CommandSpawnerStats extends AbstractCommand {
 
     public CommandSpawnerStats() {
-        super("spawnerstats", null, true);
+        super(null, true, "spawnerstats");
     }
 
     @Override
@@ -26,6 +28,11 @@ public class CommandSpawnerStats extends AbstractCommand {
         new GUISpawnerStats(instance, player);
 
         return ReturnType.SUCCESS;
+    }
+
+    @Override
+    protected List<String> onTab(EpicSpawnersPlugin instance, CommandSender sender, String... args) {
+        return null;
     }
 
     @Override

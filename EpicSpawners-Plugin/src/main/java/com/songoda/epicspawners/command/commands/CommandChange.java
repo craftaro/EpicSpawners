@@ -14,10 +14,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
+import java.util.List;
+
 public class CommandChange extends AbstractCommand {
 
     public CommandChange(AbstractCommand abstractCommand) {
-        super("change", abstractCommand, true);
+        super(abstractCommand, true, "change");
     }
 
     @Override
@@ -69,6 +71,11 @@ public class CommandChange extends AbstractCommand {
             sender.sendMessage(Methods.formatText(References.getPrefix() + "&7That entity does not exist."));
             return ReturnType.FAILURE;
         }
+    }
+
+    @Override
+    protected List<String> onTab(EpicSpawnersPlugin instance, CommandSender sender, String... args) {
+        return null;
     }
 
     @Override
