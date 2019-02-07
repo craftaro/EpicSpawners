@@ -37,7 +37,8 @@ public class TabManager implements TabCompleter {
                 for (String cmds : abstractCommand.getSubCommand()) {
                     if (cmd.equalsIgnoreCase(cmds) || (cmd2 != null && cmd2.equalsIgnoreCase(cmds))) {
                         List<String> list = abstractCommand.onTab(EpicSpawnersPlugin.getInstance(), sender, strings);
-                        if (list != null) list.removeIf(s -> !s.toLowerCase().startsWith(strings[strings.length - 1].toLowerCase()));
+                        String str = strings[strings.length - 1];
+                        if (list != null && str.length() >= 1) list.removeIf(s -> !s.toLowerCase().startsWith(str.toLowerCase()));
                         return list;
                     }
                 }
