@@ -73,7 +73,7 @@
         <dependency>
             <groupId>com</groupId>
             <artifactId>plotsquared</artifactId>
-            <version>BREAKING</version>
+            <version>4</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
