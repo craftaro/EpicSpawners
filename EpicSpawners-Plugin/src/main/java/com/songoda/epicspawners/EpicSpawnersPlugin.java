@@ -454,7 +454,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
             currentSection.set("Spawn-On-Fire", spawnerData.isSpawnOnFire());
             currentSection.set("Upgradable", spawnerData.isUpgradeable());
             currentSection.set("Convertible", spawnerData.isConvertible());
-            currentSection.set("Convert-Price", spawnerData.getConvertRatio());
+            currentSection.set("Convert-Ratio", spawnerData.getConvertRatio());
             currentSection.set("In-Shop", spawnerData.isInShop());
             currentSection.set("Shop-Price", spawnerData.getShopPrice());
             currentSection.set("CustomGoal", spawnerData.getKillGoal());
