@@ -297,6 +297,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         }
         if (hologram != null)
             hologram.loadHolograms();
+
         // Save data initially so that if the person reloads again fast they don't lose all their data.
         this.saveToFile();
     }
@@ -426,7 +427,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
     }
 
     private void saveToFile() {
-        this.storage.closeConnection();
+        //this.storage.closeConnection();
         checkStorage();
 
         //ToDO: If the defaults are set correctly this could do the initial config save.
@@ -498,40 +499,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
 
         this.spawnerFile.saveConfig();
 
-        // Save game data
-        for (Spawner spawner : spawnerManager.getSpawners()) {
-            if (spawner.getFirstStack() == null
-                    || spawner.getFirstStack().getSpawnerData() == null
-                    || spawner.getLocation() == null
-                    || spawner.getLocation().getWorld() == null) continue;
-
-            StorageItem location = new StorageItem("location", Methods.serializeLocation(spawner.getLocation()));
-
-            StringBuilder stacksStr = new StringBuilder();
-            for (SpawnerStack stack : spawner.getSpawnerStacks()) {
-                stacksStr.append(stack.getSpawnerData().getIdentifyingName()).append(":").append(stack.getStackSize()).append(";");
-            }
-            StorageItem stacks = new StorageItem("stacks", stacksStr.toString());
-
-            StorageItem placedBy = spawner.getPlacedBy() != null ? new StorageItem("placedby", spawner.getPlacedBy().getUniqueId().toString()) : null;
-
-            storage.prepareSaveItem("spawners", location, stacks, new StorageItem("spawns", spawner.getSpawnCount()), placedBy);
-        }
-
-        for (BoostData boostData : boostManager.getBoosts()) {
-            storage.prepareSaveItem("boosts", new StorageItem("endtime", String.valueOf(boostData.getEndTime())),
-                    new StorageItem("boosttype", boostData.getBoostType().name()),
-                    new StorageItem("data", boostData.getData()),
-                    new StorageItem("amount", boostData.getAmtBoosted()));
-        }
-
-        for (PlayerData playerData : playerActionManager.getRegisteredPlayers()) {
-            storage.prepareSaveItem("players", new StorageItem("uuid", playerData.getPlayer().getUniqueId().toString()),
-                    new StorageItem("entitykills", playerData.getEntityKills()));
-        }
-
         storage.doSave();
-
     }
 
     private <T extends Enum<T>> String[] getStrings(List<T> mats) {

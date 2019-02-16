@@ -5,6 +5,7 @@ import com.songoda.epicspawners.storage.Storage;
 import com.songoda.epicspawners.storage.StorageItem;
 import com.songoda.epicspawners.storage.StorageRow;
 import com.songoda.epicspawners.utils.MySQLDatabase;
+import org.bukkit.Bukkit;
 
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -17,7 +18,8 @@ import java.util.Map;
 
 public class StorageMysql extends Storage {
 
-    private static List<String> toSave = new ArrayList<>();
+    private static Map<String, StorageItem[]> toSave = new HashMap<>();
+    private static Map<String, StorageItem[]> lastSave = new HashMap<>();
     private MySQLDatabase database;
 
     public StorageMysql(EpicSpawnersPlugin instance) {
@@ -65,43 +67,106 @@ public class StorageMysql extends Storage {
 
     @Override
     public void prepareSaveItem(String group, StorageItem... items) {
-        StringBuilder sql = new StringBuilder(String.format("INSERT INTO `" + instance.getConfig().getString("Database.Prefix") + "%s`", group));
-
-        sql.append(" (");
-
-        for (StorageItem item : items) {
-            if (item == null || item.asObject() == null) continue;
-            sql.append(String.format("`%s`, ", item.getKey()));
-        }
-
-        sql = new StringBuilder(sql.substring(0, sql.length() - 2));
-
-        sql.append(") VALUES (");
-
-        for (StorageItem item : items) {
-            if (item == null || item.asObject() == null) continue;
-            sql.append(String.format("'%s', ", item.asObject().toString()));
-        }
-
-        sql = new StringBuilder(sql.substring(0, sql.length() - 2));
-
-        sql.append(");");
-
-        toSave.add(sql.toString());
+        toSave.put(group + "]" + items[0].asObject().toString(), items);
     }
 
     @Override
     public void doSave() {
-        try {
-            // Clear database
-            database.getConnection().createStatement().execute("TRUNCATE `" + instance.getConfig().getString("Database.Prefix") + "spawners`");
-            database.getConnection().createStatement().execute("TRUNCATE `" + instance.getConfig().getString("Database.Prefix") + "boosts`");
-            database.getConnection().createStatement().execute("TRUNCATE `" + instance.getConfig().getString("Database.Prefix") + "players`");
+        this.updateData(instance);
+        if (toSave.isEmpty()) return;
+        Map<String, StorageItem[]> nextSave = new HashMap<>(toSave);
 
+        if (lastSave.isEmpty())
+            lastSave.putAll(toSave);
+
+        this.makeBackup();
+        this.save();
+
+        toSave.clear();
+        lastSave.clear();
+        lastSave.putAll(nextSave);
+    }
+
+    @Override
+    public void save() {
+        try {
             Statement stmt = database.getConnection().createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 
-            for (String line : toSave) {
-                stmt.addBatch(line);
+            last:
+            for (Map.Entry<String, StorageItem[]> last : lastSave.entrySet()) {
+                String lastKey = last.getKey().split("]")[0];
+                String lastValue = last.getValue()[0].asObject().toString();
+
+                for (Map.Entry<String, StorageItem[]> to : toSave.entrySet()) {
+                    String toKey = to.getKey().split("]")[0];
+                    if (!toKey.equals(lastKey)
+                            || !to.getValue()[0].asObject().equals(lastValue)
+                            || to.getValue().length != last.getValue().length)
+                        continue;
+                    toSave.remove(toKey);
+                    for (int i = 0; i < to.getValue().length - 1; i ++) {
+                        if (!to.getValue()[i].asObject().toString()
+                                .equals(last.getValue()[i].asObject().toString())) {
+                            //Update
+                            StorageItem[] items = to.getValue();
+                            StringBuilder sql = new StringBuilder(String.format("UPDATE `" + instance.getConfig().getString("Database.Prefix") + "%s`", toKey));
+
+                            sql.append(" SET");
+
+                            for (StorageItem item : items) {
+                                if (item == null || item.asObject() == null) continue;
+                                String key = item.getKey().split("]")[0];
+                                sql.append(String.format("`%s` = '%s', ", key, item.asObject().toString()));
+                            }
+
+                            sql = new StringBuilder(sql.substring(0, sql.length() - 2));
+
+                            sql.append(String.format(" WHERE `%s`='%s'", last.getValue()[0].getKey(), last.getValue()[0].asObject().toString()));
+
+                            stmt.addBatch(sql.toString());
+
+                            continue last;
+                        }
+                    }
+                    // Already up to date.
+
+                    continue last;
+                }
+                //Was not found delete.
+                StringBuilder sql = new StringBuilder(String.format("DELETE FROM `" + instance.getConfig().getString("Database.Prefix") + "%s`", lastKey));
+                sql.append(String.format(" WHERE `%s`='%s'", last.getValue()[0].getKey(), last.getValue()[0].asObject().toString()));
+                stmt.addBatch(sql.toString());
+
+            }
+
+            for (Map.Entry<String, StorageItem[]> to : toSave.entrySet()) {
+                String toKey = to.getKey().split("]")[0];
+                //Add
+                StorageItem[] items = to.getValue();
+                StringBuilder sql = new StringBuilder(String.format("INSERT INTO `" + instance.getConfig().getString("Database.Prefix") + "%s`", toKey));
+
+                sql.append(" (");
+
+                for (StorageItem item : items) {
+                    if (item == null || item.asObject() == null) continue;
+                    String key = item.getKey().split("]")[0];
+                    sql.append(String.format("`%s`, ", key));
+                }
+
+                sql = new StringBuilder(sql.substring(0, sql.length() - 2));
+
+                sql.append(") VALUES (");
+
+                for (StorageItem item : items) {
+                    if (item == null || item.asObject() == null) continue;
+                    sql.append(String.format("'%s', ", item.asObject().toString()));
+                }
+
+                sql = new StringBuilder(sql.substring(0, sql.length() - 2));
+
+                sql.append(");");
+
+                stmt.addBatch(sql.toString());
             }
 
             stmt.executeBatch();
@@ -111,6 +176,11 @@ public class StorageMysql extends Storage {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void makeBackup() {
+
     }
 
     @Override

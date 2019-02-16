@@ -6,6 +6,7 @@ import com.songoda.epicspawners.storage.StorageItem;
 import com.songoda.epicspawners.storage.StorageRow;
 import com.songoda.epicspawners.utils.Debugger;
 import org.apache.commons.io.FileUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemorySection;
 
@@ -16,6 +17,7 @@ import java.util.*;
 public class StorageYaml extends Storage {
 
     private static final Map<String, Object> toSave = new HashMap<>();
+    private static final Map<String, Object> lastSave = new HashMap<>();
 
     public StorageYaml(EpicSpawnersPlugin instance) {
         super(instance);
@@ -64,24 +66,34 @@ public class StorageYaml extends Storage {
 
     @Override
     public void doSave() {
-        try {
-            dataFile.getConfig().set("data", null); // Clear file
+        this.updateData(instance);
+        if (toSave.isEmpty()) return;
+        Map<String, Object> nextSave = new HashMap<>(toSave);
 
-            File data = new File(instance.getDataFolder(), "data.yml");
-            File dataClone = new File(instance.getDataFolder(), "data-backup-" + System.currentTimeMillis() + ".yml");
-            try {
-                FileUtils.copyFile(data, dataClone);
-            } catch (IOException e) {
-                Debugger.runReport(e);
-            }
-            Deque<File> backups = new ArrayDeque<>();
-            for (File file : Objects.requireNonNull(instance.getDataFolder().listFiles())) {
-                if (file.getName().toLowerCase().contains("data-backup")) {
-                    backups.add(file);
+        if (lastSave.isEmpty())
+            lastSave.putAll(toSave);
+
+        this.makeBackup();
+        this.save();
+
+        toSave.clear();
+        lastSave.clear();
+        lastSave.putAll(nextSave);
+    }
+
+    @Override
+    public void save() {
+        try {
+            for (Map.Entry<String, Object> entry : lastSave.entrySet()) {
+                if (toSave.containsKey(entry.getKey())) {
+                    Object newValue = toSave.get(entry.getKey());
+                    if (!entry.getValue().equals(newValue)) {
+                        dataFile.getConfig().set(entry.getKey(), entry.getValue());
+                    }
+                    toSave.remove(newValue);
+                } else {
+                    dataFile.getConfig().set(entry.getKey(), null);
                 }
-            }
-            if (backups.size() > 5) {
-                backups.getFirst().delete();
             }
 
             for (Map.Entry<String, Object> entry : toSave.entrySet()) {
@@ -89,10 +101,28 @@ public class StorageYaml extends Storage {
             }
 
             dataFile.saveConfig();
-
-            toSave.clear();
         } catch (NullPointerException e) {
             Debugger.runReport(e);
+        }
+    }
+
+    @Override
+    public void makeBackup() {
+        File data = new File(instance.getDataFolder(), "data.yml");
+        File dataClone = new File(instance.getDataFolder(), "data-backup-" + System.currentTimeMillis() + ".yml");
+        try {
+            FileUtils.copyFile(data, dataClone);
+        } catch (IOException e) {
+            Debugger.runReport(e);
+        }
+        Deque<File> backups = new ArrayDeque<>();
+        for (File file : Objects.requireNonNull(instance.getDataFolder().listFiles())) {
+            if (file.getName().toLowerCase().contains("data-backup")) {
+                backups.add(file);
+            }
+        }
+        if (backups.size() > 3) {
+            backups.getFirst().delete();
         }
     }
 
