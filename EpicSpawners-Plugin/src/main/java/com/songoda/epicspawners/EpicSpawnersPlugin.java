@@ -427,7 +427,6 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
     }
 
     private void saveToFile() {
-        //this.storage.closeConnection();
         checkStorage();
 
         //ToDO: If the defaults are set correctly this could do the initial config save.

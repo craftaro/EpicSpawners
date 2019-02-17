@@ -83,8 +83,15 @@ public class CommandGive extends AbstractCommand {
             return ReturnType.FAILURE;
         }
         int amt = Integer.parseInt(args[3]);
+
         multi = Integer.parseInt(args[4]);
         ItemStack spawnerItem = data.toItemStack(amt, multi);
+
+        if (multi > SettingsManager.Setting.SPAWNERS_MAX.getInt()) {
+            sender.sendMessage(Methods.formatText(References.getPrefix() + "&7 The multiplier &6" + multi + "&7 is above this spawner types maximum stack size."));
+            return ReturnType.FAILURE;
+        }
+
         if (args[1].toLowerCase().equals("all")) {
             for (Player pl : Bukkit.getOnlinePlayers()) {
                 pl.getInventory().addItem(spawnerItem);

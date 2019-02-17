@@ -1,8 +1,6 @@
 package com.songoda.epicspawners.command;
 
 import com.songoda.epicspawners.EpicSpawnersPlugin;
-import com.songoda.epicspawners.api.EpicSpawners;
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
@@ -38,7 +36,11 @@ public class TabManager implements TabCompleter {
                     if (cmd.equalsIgnoreCase(cmds) || (cmd2 != null && cmd2.equalsIgnoreCase(cmds))) {
                         List<String> list = abstractCommand.onTab(EpicSpawnersPlugin.getInstance(), sender, strings);
                         String str = strings[strings.length - 1];
-                        if (list != null && str.length() >= 1) list.removeIf(s -> !s.toLowerCase().startsWith(str.toLowerCase()));
+                        if (list != null && str != null && str.length() >= 1) {
+                            try {
+                                list.removeIf(s -> !s.toLowerCase().startsWith(str.toLowerCase()));
+                            } catch (UnsupportedOperationException ignored) {}
+                        }
                         return list;
                     }
                 }
