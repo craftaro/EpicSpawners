@@ -340,7 +340,7 @@ public class ESpawner implements Spawner {
             upgradeFinal(player, currentStackSize);
 
             if (player.getGameMode() != GameMode.CREATIVE)
-                Methods.takeItem(player, amount);
+                Methods.takeItem(player, 1);
 
             return true;
         }
@@ -352,7 +352,7 @@ public class ESpawner implements Spawner {
         spawnerStacks.push(stack);
 
         if (player.getGameMode() != GameMode.CREATIVE)
-            Methods.takeItem(player, amount);
+            Methods.takeItem(player, 1);
 
         return true;
     }

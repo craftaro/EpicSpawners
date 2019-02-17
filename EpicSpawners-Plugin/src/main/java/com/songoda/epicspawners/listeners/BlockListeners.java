@@ -164,12 +164,6 @@ public class BlockListeners implements Listener {
                 return;
             }
 
-            if (spawnerData == null) {
-                player.sendMessage(instance.getLocale().getMessage("event.block.broken"));
-                event.setCancelled(true);
-                return;
-            }
-
             instance.getSpawnerManager().addSpawnerToWorld(location, spawner);
 
             if (instance.getConfig().getBoolean("Main.Alerts On Place And Break"))
