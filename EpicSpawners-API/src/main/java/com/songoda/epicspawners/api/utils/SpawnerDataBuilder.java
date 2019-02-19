@@ -1,6 +1,7 @@
 package com.songoda.epicspawners.api.utils;
 
 import java.util.Collection;
+import java.util.List;
 
 import com.songoda.epicspawners.api.particles.ParticleDensity;
 import com.songoda.epicspawners.api.particles.ParticleEffect;
@@ -27,6 +28,12 @@ public interface SpawnerDataBuilder {
      * @return this instance. Chained method calls
      */
     SpawnerDataBuilder displayName(String name);
+
+    SpawnerDataBuilder craftable(boolean craftable);
+
+    SpawnerDataBuilder recipe(String recipe);
+
+    SpawnerDataBuilder recipeIngredients(List<String> recipeIngredients);
 
     /**
      * Define the unique id for this spawner.

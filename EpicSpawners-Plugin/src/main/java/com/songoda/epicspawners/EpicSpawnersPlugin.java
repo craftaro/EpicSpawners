@@ -6,10 +6,8 @@ import com.songoda.epicspawners.api.EpicSpawnersAPI;
 import com.songoda.epicspawners.api.particles.ParticleDensity;
 import com.songoda.epicspawners.api.particles.ParticleEffect;
 import com.songoda.epicspawners.api.particles.ParticleType;
-import com.songoda.epicspawners.api.spawner.Spawner;
 import com.songoda.epicspawners.api.spawner.SpawnerData;
 import com.songoda.epicspawners.api.spawner.SpawnerManager;
-import com.songoda.epicspawners.api.spawner.SpawnerStack;
 import com.songoda.epicspawners.api.spawner.condition.SpawnCondition;
 import com.songoda.epicspawners.api.utils.ClaimableProtectionPluginHook;
 import com.songoda.epicspawners.api.utils.ProtectionPluginHook;
@@ -35,7 +33,6 @@ import com.songoda.epicspawners.spawners.spawner.ESpawner;
 import com.songoda.epicspawners.spawners.spawner.ESpawnerManager;
 import com.songoda.epicspawners.spawners.spawner.ESpawnerStack;
 import com.songoda.epicspawners.storage.Storage;
-import com.songoda.epicspawners.storage.StorageItem;
 import com.songoda.epicspawners.storage.StorageRow;
 import com.songoda.epicspawners.storage.types.StorageMysql;
 import com.songoda.epicspawners.storage.types.StorageYaml;
@@ -44,10 +41,7 @@ import com.songoda.epicspawners.tasks.SpawnerSpawnTask;
 import com.songoda.epicspawners.utils.*;
 import com.songoda.epicspawners.utils.gui.AbstractGUI;
 import org.apache.commons.lang.math.NumberUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.command.ConsoleCommandSender;
@@ -57,6 +51,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.PluginManager;
@@ -298,6 +293,10 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         if (hologram != null)
             hologram.loadHolograms();
 
+        //Register Crafting Recipe
+        System.out.println("[" + getDescription().getName() + "] Loading Crafting Recipes");
+        this.enabledRecipe();
+
         // Save data initially so that if the person reloads again fast they don't lose all their data.
         this.saveToFile();
     }
@@ -337,6 +336,9 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
                     .convertRatio(currentSection.getString("Convert-Ratio"))
                     .inShop(currentSection.getBoolean("In-Shop"))
                     .pickupCost(currentSection.getDouble("Pickup-Cost"))
+                    .craftable(currentSection.getBoolean("Craftable"))
+                    .recipe(currentSection.getString("Recipe-Layout"))
+                    .recipeIngredients(currentSection.getStringList("Recipe-Ingredients"))
                     .shopPrice(currentSection.getDouble("Shop-Price"))
                     .killGoal(currentSection.getInt("CustomGoal"))
                     .upgradeCostEconomy(currentSection.getInt("Custom-ECO-Cost"))
@@ -462,6 +464,9 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
             currentSection.set("Custom-XP-Cost", spawnerData.getUpgradeCostExperience());
             currentSection.set("Tick-Rate", spawnerData.getTickRate());
             currentSection.set("Pickup-cost", spawnerData.getPickupCost());
+            currentSection.set("Craftable", spawnerData.isCraftable());
+            currentSection.set("Recipe-Layout", spawnerData.getRecipe());
+            currentSection.set("Recipe-Ingredients", spawnerData.getRecipeIngredients());
 
             currentSection.set("Spawn-Effect", spawnerData.getParticleEffect().name());
             currentSection.set("Spawn-Effect-Particle", spawnerData.getSpawnEffectParticle().name());
@@ -554,6 +559,54 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         return this.registerProtectionHook(hookSupplier.get());
     }
 
+    private void enabledRecipe() {
+        top:
+        for (SpawnerData spawnerData : spawnerManager.getAllSpawnerData()) {
+            if (!spawnerData.isCraftable()) continue;
+
+            String recipe = spawnerData.getRecipe();
+
+            String type = spawnerData.getIdentifyingName().toUpperCase().replace(" ", "_").replace("MUSHROOM_COW", "MOOSHROOM");
+
+            ShapedRecipe spawnerRecipe = new ShapedRecipe(new NamespacedKey(this, "SPAWNER_RECIPE_" + type), newSpawnerItem(spawnerData, 1));
+
+            if (recipe.length() != 9) return;
+
+            String[] split = Methods.splitStringEvery(recipe, 3);
+            spawnerRecipe.shape(split[0], split[1], split[2]);
+
+            List<String> ingredients = spawnerData.getRecipeIngredients();
+
+            if (ingredients.isEmpty()) return;
+
+            for (String ingredient : ingredients) {
+                try {
+                    if (!ingredient.contains(",")) return;
+                    String[] s = ingredient.split(",");
+                    char letter = s[0].trim().toCharArray()[0];
+                    String materialStr = s[1].trim();
+
+                    Material material;
+
+                    if (materialStr.equals("SPAWN_EGG")) {
+                        try {
+                            material = Material.valueOf(type + "_SPAWN_EGG");
+                        } catch (Exception ignored) {
+                            continue top;
+                        }
+                    } else {
+                        material = Material.valueOf(materialStr);
+                    }
+
+                    spawnerRecipe.setIngredient(letter, material);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            getServer().addRecipe(spawnerRecipe);
+        }
+    }
+
     private void processDefault(String value) {
         FileConfiguration spawnerConfig = spawnerFile.getConfig();
 
@@ -621,6 +674,9 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         spawnerConfig.addDefault("Entities." + type + ".Spawner-Spawn-Particle", "FIRE");
         spawnerConfig.addDefault("Entities." + type + ".Particle-Amount", "NORMAL");
         spawnerConfig.addDefault("Entities." + type + ".Particle-Effect-Boosted-Only", true);
+        spawnerConfig.addDefault("Entities." + type + ".Craftable", false);
+        spawnerConfig.addDefault("Entities." + type + ".Recipe-Layout", "AAAABAAAA");
+        spawnerConfig.addDefault("Entities." + type + ".Recipe-Ingredients", Arrays.asList("A, IRON_BARS", "B, SPAWN_EGG"));
 
         if (entityType == EntityType.SLIME) {
             spawnerConfig.addDefault("Entities." + type + ".Conditions.Biomes", Biome.SWAMP);

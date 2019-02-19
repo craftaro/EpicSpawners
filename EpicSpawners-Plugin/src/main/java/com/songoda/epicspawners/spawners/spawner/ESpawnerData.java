@@ -34,6 +34,10 @@ public class ESpawnerData implements SpawnerData {
     private String displayName;
     private Material displayItem = null;
 
+    private boolean craftable = false;
+    private String recipe = "AAAABAAAA";
+    private List<String> recipeIngredients = Arrays.asList("A, IRON_BARS", "B, SPAWN_EGG");
+
     private String tickRate = "800:200";
 
     private ParticleEffect particleEffect = ParticleEffect.HALO;
@@ -420,6 +424,35 @@ public class ESpawnerData implements SpawnerData {
         return Collections.unmodifiableList(spawnConditions);
     }
 
+    @Override
+    public boolean isCraftable() {
+        return craftable;
+    }
+
+    @Override
+    public void setCraftable(boolean craftable) {
+        this.craftable = craftable;
+    }
+
+    @Override
+    public String getRecipe() {
+        return recipe;
+    }
+
+    @Override
+    public void setRecipe(String recipe) {
+        this.recipe = recipe;
+    }
+
+    @Override
+    public List<String> getRecipeIngredients() {
+        return recipeIngredients;
+    }
+
+    @Override
+    public void setRecipeIngredients(List<String> recipeIngredients) {
+        this.recipeIngredients = recipeIngredients;
+    }
 
     @Override
     public int hashCode() {

@@ -277,6 +277,10 @@ public class SettingsManager implements Listener {
             this.option = option;
         }
 
+        public List<String> getStringList() {
+            return EpicSpawnersPlugin.getInstance().getConfig().getStringList(setting);
+        }
+
         public boolean getBoolean() {
             return EpicSpawnersPlugin.getInstance().getConfig().getBoolean(setting);
         }

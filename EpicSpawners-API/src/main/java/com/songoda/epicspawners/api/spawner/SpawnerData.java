@@ -562,4 +562,15 @@ public interface SpawnerData {
      */
     List<SpawnCondition> getConditions();
 
+    boolean isCraftable();
+
+    void setCraftable(boolean craftable);
+
+    String getRecipe();
+
+    void setRecipe(String recipe);
+
+    List<String> getRecipeIngredients();
+
+    void setRecipeIngredients(List<String> recipeIngredients);
 }

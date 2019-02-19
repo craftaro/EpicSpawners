@@ -13,6 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 public final class ESpawnerDataBuilder implements SpawnerDataBuilder {
 
@@ -26,6 +27,24 @@ public final class ESpawnerDataBuilder implements SpawnerDataBuilder {
     @Override
     public SpawnerDataBuilder displayName(String name) {
         this.spawnerData.setDisplayName(name);
+        return this;
+    }
+
+    @Override
+    public SpawnerDataBuilder craftable(boolean craftable) {
+        this.spawnerData.setCraftable(craftable);
+        return this;
+    }
+
+    @Override
+    public SpawnerDataBuilder recipe(String recipe) {
+        this.spawnerData.setRecipe(recipe);
+        return this;
+    }
+
+    @Override
+    public SpawnerDataBuilder recipeIngredients(List<String> recipeIngredients) {
+        this.spawnerData.setRecipeIngredients(recipeIngredients);
         return this;
     }
 
