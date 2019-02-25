@@ -220,6 +220,7 @@ public class SettingsManager implements Listener {
         EXTRA_SPAWN_TICKS("Main.Extra Ticks Added To Each Spawn", 0),
         MAX_SPAWNERS("Main.Max Spawners Per Player", -1),
         AUTOSAVE("Main.Auto Save Interval In Seconds", 15),
+        NO_AI("Main.Nerf Spawner Mobs", false),
 
         COST_EQUATION_EXPERIANCE("Main.Equations.Calculate XP Upgrade Cost", "{XPCost} * {Level}"),
         COST_EQUATION_ECONOMY("Main.Equations.Calculate Economy Upgrade Cost", "{ECOCost} * {Level}"),

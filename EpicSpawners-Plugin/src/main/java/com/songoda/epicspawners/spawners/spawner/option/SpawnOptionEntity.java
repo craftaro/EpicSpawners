@@ -10,6 +10,7 @@ import com.songoda.epicspawners.api.spawner.condition.SpawnCondition;
 import com.songoda.epicspawners.spawners.condition.SpawnConditionNearbyEntities;
 import com.songoda.epicspawners.utils.Debugger;
 import com.songoda.epicspawners.utils.Methods;
+import com.songoda.epicspawners.utils.SettingsManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -197,6 +198,9 @@ public class SpawnOptionEntity implements SpawnOption {
                 if (data.isSpawnOnFire()) craftEntity.setFireTicks(160);
 
                 craftEntity.setMetadata("ES", new FixedMetadataValue(instance, data.getIdentifyingName()));
+                
+                if (SettingsManager.Setting.NO_AI.getBoolean())
+                    ((LivingEntity)craftEntity).setAI(false);
 
                 Object objBukkitEntity = methodEntityGetBukkitEntity.invoke(objEntity);
                 spot.setYaw(random.nextFloat() * 360.0F);
