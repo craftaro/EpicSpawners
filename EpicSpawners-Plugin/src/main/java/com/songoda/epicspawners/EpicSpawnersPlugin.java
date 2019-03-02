@@ -233,6 +233,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         if (storage.containsGroup("spawners")) {
             for (StorageRow row : storage.getRowsByGroup("spawners")) {
                 try {
+                    if (row.get("location") == null) continue;
                     Location location = Methods.unserializeLocation(row.getKey());
 
                     ESpawner spawner = new ESpawner(location);
