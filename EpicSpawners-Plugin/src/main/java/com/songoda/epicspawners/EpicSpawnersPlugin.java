@@ -207,6 +207,9 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         // Load Spawners
         Bukkit.getScheduler().runTaskLater(this, this::loadData, 10);
 
+        // Start Metrics
+        new Metrics(this);
+
         console.sendMessage(Methods.formatText("&a============================="));
 
     }
