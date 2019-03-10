@@ -126,7 +126,7 @@ public class BlockListeners implements Listener {
 
             Player player = event.getPlayer();
 
-            if (!instance.canBuild(player, location)) {
+            if (!instance.getHookManager().canBuild(player, location)) {
                 event.setCancelled(true);
                 return;
             }

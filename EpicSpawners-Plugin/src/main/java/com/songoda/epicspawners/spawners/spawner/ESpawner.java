@@ -462,13 +462,13 @@ public class ESpawner implements Spawner {
                     if (!placedBy.toString().equals(boostData.getData())) continue;
                     break;
                 case FACTION:
-                    if (!instance.isInClaim(HookType.FACTION, (String) boostData.getData(), location)) continue;
+                    if (!instance.getHookManager().isInClaim(HookType.FACTION, (String) boostData.getData(), location)) continue;
                     break;
                 case ISLAND:
-                    if (!instance.isInClaim(HookType.ISLAND, (String) boostData.getData(), location)) continue;
+                    if (!instance.getHookManager().isInClaim(HookType.ISLAND, (String) boostData.getData(), location)) continue;
                     break;
                 case TOWN:
-                    if (!instance.isInClaim(HookType.TOWN, (String) boostData.getData(), location)) continue;
+                    if (!instance.getHookManager().isInClaim(HookType.TOWN, (String) boostData.getData(), location)) continue;
                     break;
             }
             amountToBoost += boostData.getAmtBoosted();
@@ -498,13 +498,13 @@ public class ESpawner implements Spawner {
                     if (!placedBy.toString().equals(boostData.getData())) continue;
                     break;
                 case FACTION:
-                    if (!instance.isInClaim(HookType.FACTION, (String) boostData.getData(), location)) continue;
+                    if (!instance.getHookManager().isInClaim(HookType.FACTION, (String) boostData.getData(), location)) continue;
                     break;
                 case ISLAND:
-                    if (!instance.isInClaim(HookType.ISLAND, (String) boostData.getData(), location)) continue;
+                    if (!instance.getHookManager().isInClaim(HookType.ISLAND, (String) boostData.getData(), location)) continue;
                     break;
                 case TOWN:
-                    if (!instance.isInClaim(HookType.TOWN, (String) boostData.getData(), location)) continue;
+                    if (!instance.getHookManager().isInClaim(HookType.TOWN, (String) boostData.getData(), location)) continue;
                     break;
             }
 

@@ -162,7 +162,7 @@ public class InteractListeners implements Listener {
 
             if (event.getClickedBlock() == null
                     || event.getAction() != Action.RIGHT_CLICK_BLOCK
-                    || !EpicSpawnersPlugin.getInstance().canBuild(event.getPlayer(), event.getClickedBlock().getLocation())) {
+                    || !EpicSpawnersPlugin.getInstance().getHookManager().canBuild(event.getPlayer(), event.getClickedBlock().getLocation())) {
                 return;
             }
 

@@ -84,32 +84,32 @@ public class CommandBoost extends AbstractCommand {
                 boostObject = Bukkit.getOfflinePlayer(arr[1]).getUniqueId().toString();
             }
         } else if (arr[0].equalsIgnoreCase("f") || arr[0].equalsIgnoreCase("faction")) {
-            if (instance.getClaimId(HookType.FACTION, arr[1]) == null) {
+            if (instance.getHookManager().getClaimId(HookType.FACTION, arr[1]) == null) {
                 sender.sendMessage(Methods.formatText(References.getPrefix() + "&cThat faction does not exist..."));
                 return ReturnType.FAILURE;
             }
 
             start += "The faction";
             boostType = BoostType.FACTION;
-            boostObject = instance.getClaimId(HookType.FACTION, arr[1]);
+            boostObject = instance.getHookManager().getClaimId(HookType.FACTION, arr[1]);
         } else if (arr[0].equalsIgnoreCase("t") || arr[0].equalsIgnoreCase("town")) {
-            if (instance.getClaimId(HookType.TOWN, arr[1]) == null) {
+            if (instance.getHookManager().getClaimId(HookType.TOWN, arr[1]) == null) {
                 sender.sendMessage(Methods.formatText(References.getPrefix() + "&cThat town does not exist..."));
                 return ReturnType.FAILURE;
             }
 
             start += "The town";
             boostType = BoostType.TOWN;
-            boostObject = instance.getClaimId(HookType.TOWN, arr[1]);
+            boostObject = instance.getHookManager().getClaimId(HookType.TOWN, arr[1]);
         } else if (arr[0].equalsIgnoreCase("i") || arr[0].equalsIgnoreCase("island")) {
-            if (instance.getClaimId(HookType.ISLAND, arr[1]) == null) {
+            if (instance.getHookManager().getClaimId(HookType.ISLAND, arr[1]) == null) {
                 sender.sendMessage(Methods.formatText(References.getPrefix() + "&cThat island does not exist..."));
                 return ReturnType.FAILURE;
             }
 
             start += "The island";
             boostType = BoostType.ISLAND;
-            boostObject = instance.getClaimId(HookType.ISLAND, arr[1]);
+            boostObject = instance.getHookManager().getClaimId(HookType.ISLAND, arr[1]);
         }
 
         if (boostType == null || boostObject == null) {
