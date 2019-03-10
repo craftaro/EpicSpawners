@@ -1,6 +1,7 @@
 package com.songoda.epicspawners.hooks;
 
-import com.songoda.epicspawners.api.utils.ClaimableProtectionPluginHook;
+import com.songoda.epicspawners.api.utils.HookType;
+import com.songoda.epicspawners.api.utils.ProtectionPluginHook;
 import me.goodandevil.skyblock.SkyBlock;
 import me.goodandevil.skyblock.island.Island;
 import org.bukkit.Location;
@@ -11,7 +12,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-public class HookSkyBlockEarth implements ClaimableProtectionPluginHook {
+public class HookSkyBlockEarth implements ProtectionPluginHook {
 
     private final SkyBlock skyblock;
 
@@ -22,6 +23,11 @@ public class HookSkyBlockEarth implements ClaimableProtectionPluginHook {
     @Override
     public JavaPlugin getPlugin() {
         return SkyBlock.getInstance();
+    }
+
+    @Override
+    public HookType getHookType() {
+        return HookType.ISLAND;
     }
 
     @Override
@@ -44,6 +50,11 @@ public class HookSkyBlockEarth implements ClaimableProtectionPluginHook {
         }
 
         return false;
+    }
+
+    @Override
+    public boolean isInClaim(Location location) {
+        return skyblock.getIslandManager().getIslandAtLocation(location) != null;
     }
 
     @Override

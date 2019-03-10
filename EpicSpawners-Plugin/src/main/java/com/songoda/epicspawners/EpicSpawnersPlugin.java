@@ -9,8 +9,9 @@ import com.songoda.epicspawners.api.particles.ParticleType;
 import com.songoda.epicspawners.api.spawner.SpawnerData;
 import com.songoda.epicspawners.api.spawner.SpawnerManager;
 import com.songoda.epicspawners.api.spawner.condition.SpawnCondition;
-import com.songoda.epicspawners.api.utils.ClaimableProtectionPluginHook;
-import com.songoda.epicspawners.api.utils.ProtectionPluginHook;
+import com.songoda.epicspawners.hook.HookManager;
+import com.songoda.epicspawners.hook.HookType;
+import com.songoda.epicspawners.hook.ProtectionPluginHook;
 import com.songoda.epicspawners.api.utils.SpawnerDataBuilder;
 import com.songoda.epicspawners.boost.BoostData;
 import com.songoda.epicspawners.boost.BoostManager;
@@ -21,7 +22,7 @@ import com.songoda.epicspawners.handlers.BlacklistHandler;
 import com.songoda.epicspawners.hologram.Hologram;
 import com.songoda.epicspawners.hologram.HologramArconix;
 import com.songoda.epicspawners.hologram.HologramHolographicDisplays;
-import com.songoda.epicspawners.hooks.*;
+import com.songoda.epicspawners.hook.hooks.*;
 import com.songoda.epicspawners.listeners.*;
 import com.songoda.epicspawners.player.PlayerActionManager;
 import com.songoda.epicspawners.player.PlayerData;
@@ -66,6 +67,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.*;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
 
@@ -76,7 +78,6 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
     private ChatListeners chatListeners;
 
     private ConfigWrapper spawnerFile = new ConfigWrapper(this, "", "spawners.yml");
-    private ConfigWrapper hooksFile = new ConfigWrapper(this, "", "hooks.yml");
 
     private SpawnManager spawnManager;
     private PlayerActionManager playerActionManager;
@@ -84,6 +85,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
     private BoostManager boostManager;
     private SettingsManager settingsManager;
     private CommandManager commandManager;
+    private HookManager hookManager;
 
     private BlacklistHandler blacklistHandler;
     private AppearanceHandler appearanceHandler;
@@ -97,9 +99,6 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
     private Heads heads;
     private Shop shop;
     private Locale locale;
-
-    private List<ProtectionPluginHook> protectionHooks = new ArrayList<>();
-    private ClaimableProtectionPluginHook factionsHook, townyHook, aSkyblockHook, uSkyblockHook, skyBlockEarhHook;
 
     private Storage storage;
 
@@ -146,12 +145,11 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
 
         if (SettingsManager.Setting.DOWNLOAD_FILES.getBoolean()) this.update();
 
-        this.hooksFile.createNewFile("Loading Hooks File", "EpicSpawners Hooks File");
-
         this.references = new References();
         this.boostManager = new BoostManager();
         this.spawnManager = new SpawnManager();
         this.spawnerManager = new ESpawnerManager();
+        this.hookManager = new HookManager(this);
         this.commandManager = new CommandManager(this);
         this.blacklistHandler = new BlacklistHandler();
         this.playerActionManager = new PlayerActionManager();
@@ -184,18 +182,6 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
             else if (pluginManager.isPluginEnabled("Arconix")) hologram = new HologramArconix(this);
         }
 
-        // Register default hooks
-        if (pluginManager.isPluginEnabled("ASkyBlock")) aSkyblockHook = (ClaimableProtectionPluginHook) this.register(HookASkyBlock::new);
-        if (pluginManager.isPluginEnabled("FactionsFramework")) factionsHook = (ClaimableProtectionPluginHook) this.register(HookFactions::new);
-        if (pluginManager.isPluginEnabled("GriefPrevention")) this.register(HookGriefPrevention::new);
-        if (pluginManager.isPluginEnabled("Kingdoms")) this.register(HookKingdoms::new);
-        if (pluginManager.isPluginEnabled("PlotSquared")) this.register(HookPlotSquared::new);
-        if (pluginManager.isPluginEnabled("RedProtect")) this.register(HookRedProtect::new);
-        if (pluginManager.isPluginEnabled("Towny")) townyHook = (ClaimableProtectionPluginHook) this.register(HookTowny::new);
-        if (pluginManager.isPluginEnabled("USkyBlock")) uSkyblockHook = (ClaimableProtectionPluginHook) this.register(HookUSkyBlock::new);
-        if (pluginManager.isPluginEnabled("SkyBlock")) skyBlockEarhHook = (ClaimableProtectionPluginHook) this.register(HookSkyBlockEarth::new);
-        if (pluginManager.isPluginEnabled("WorldGuard")) this.register(HookWorldGuard::new);
-
 
         int timeout = SettingsManager.Setting.AUTOSAVE.getInt() * 60 * 20;
         Bukkit.getScheduler().runTaskTimerAsynchronously(this, this::saveToFile, timeout, timeout);
@@ -219,7 +205,6 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         this.saveToFile();
         this.storage.closeConnection();
         this.particleTask.cancel();
-        this.protectionHooks.clear();
         this.spawnerCustomSpawnTask.cancel();
         if (hologram != null)
         this.hologram.unloadHolograms();
@@ -559,10 +544,6 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         this.locale = Locale.getLocale(getConfig().getString("System.Language Mode", langMode));
     }
 
-    private ProtectionPluginHook register(Supplier<ProtectionPluginHook> hookSupplier) {
-        return this.registerProtectionHook(hookSupplier.get());
-    }
-
     private void enabledRecipe() {
         top:
         for (SpawnerData spawnerData : spawnerManager.getAllSpawnerData()) {
@@ -704,7 +685,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         this.locale = Locale.getLocale(getConfig().getString("System.Language Mode", langMode));
         this.locale.reloadMessages();
         this.spawnerFile.createNewFile("Loading Spawners File", "EpicSpawners Spawners File");
-        this.hooksFile.createNewFile("Loading hookHandler File", "EpicSpawners Hooks File");
+        this.hookManager = new HookManager(this);
         this.references = new References();
         this.blacklistHandler.reload();
         this.loadSpawnersFromFile();
@@ -767,41 +748,8 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         return chatListeners;
     }
 
-    public boolean canBuild(Player player, Location location) {
-        if (player.hasPermission(getDescription().getName() + ".bypass")) {
-            return true;
-        }
-
-        for (ProtectionPluginHook hook : protectionHooks)
-            if (!hook.canBuild(player, location)) return false;
-        return true;
-    }
-
-    public boolean isInFaction(String name, Location l) {
-        return factionsHook != null && factionsHook.isInClaim(l, name);
-    }
-
-    public String getFactionId(String name) {
-        return (factionsHook != null) ? factionsHook.getClaimID(name) : null;
-    }
-
-    public boolean isInTown(String name, Location l) {
-        return townyHook != null && townyHook.isInClaim(l, name);
-    }
-
-    public String getTownId(String name) {
-        return (townyHook != null) ? townyHook.getClaimID(name) : null;
-    }
-
-    public boolean isInIsland(String name, Location l) {
-        return aSkyblockHook != null && aSkyblockHook.isInClaim(l, name)
-                || uSkyblockHook != null && uSkyblockHook.isInClaim(l, name)
-                || skyBlockEarhHook != null && skyBlockEarhHook.isInClaim(l, name);
-    }
-
-    @SuppressWarnings("deprecation")
-    public String getIslandId(String name) {
-        return Bukkit.getOfflinePlayer(name).getUniqueId().toString();
+    public HookManager getHookManager() {
+        return hookManager;
     }
 
     @Override
@@ -871,27 +819,5 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
 
         String amount = name.replace(String.valueOf(ChatColor.COLOR_CHAR), "").replace(";", "").split(":")[1];
         return NumberUtils.toInt(amount, 1);
-    }
-
-    @Override
-    public ProtectionPluginHook registerProtectionHook(ProtectionPluginHook hook) {
-        Preconditions.checkNotNull(hook, "Cannot register null hook");
-        Preconditions.checkNotNull(hook.getPlugin(), "Protection plugin hook returns null plugin instance (#getPlugin())");
-
-        JavaPlugin hookPlugin = hook.getPlugin();
-        for (ProtectionPluginHook existingHook : protectionHooks) {
-            if (existingHook.getPlugin().equals(hookPlugin)) {
-                throw new IllegalArgumentException("Hook already registered");
-            }
-        }
-
-        this.hooksFile.getConfig().addDefault("hooks." + hookPlugin.getName(), true);
-        if (!hooksFile.getConfig().getBoolean("hooks." + hookPlugin.getName(), true)) return null;
-        this.hooksFile.getConfig().options().copyDefaults(true);
-        this.hooksFile.saveConfig();
-
-        this.protectionHooks.add(hook);
-        this.getLogger().info("Registered protection hook for plugin: " + hook.getPlugin().getName());
-        return hook;
     }
 }

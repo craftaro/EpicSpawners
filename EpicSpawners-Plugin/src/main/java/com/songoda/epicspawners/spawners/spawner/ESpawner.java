@@ -10,6 +10,7 @@ import com.songoda.epicspawners.api.spawner.Spawner;
 import com.songoda.epicspawners.api.spawner.SpawnerData;
 import com.songoda.epicspawners.api.spawner.SpawnerStack;
 import com.songoda.epicspawners.api.spawner.condition.SpawnCondition;
+import com.songoda.epicspawners.hook.HookType;
 import com.songoda.epicspawners.boost.BoostData;
 import com.songoda.epicspawners.gui.GUISpawnerOverview;
 import com.songoda.epicspawners.utils.Debugger;
@@ -461,13 +462,13 @@ public class ESpawner implements Spawner {
                     if (!placedBy.toString().equals(boostData.getData())) continue;
                     break;
                 case FACTION:
-                    if (!instance.isInFaction((String) boostData.getData(), location)) continue;
+                    if (!instance.isInClaim(HookType.FACTION, (String) boostData.getData(), location)) continue;
                     break;
                 case ISLAND:
-                    if (!instance.isInIsland((String) boostData.getData(), location)) continue;
+                    if (!instance.isInClaim(HookType.ISLAND, (String) boostData.getData(), location)) continue;
                     break;
                 case TOWN:
-                    if (!instance.isInTown((String) boostData.getData(), location)) continue;
+                    if (!instance.isInClaim(HookType.TOWN, (String) boostData.getData(), location)) continue;
                     break;
             }
             amountToBoost += boostData.getAmtBoosted();
@@ -497,13 +498,13 @@ public class ESpawner implements Spawner {
                     if (!placedBy.toString().equals(boostData.getData())) continue;
                     break;
                 case FACTION:
-                    if (!instance.isInFaction((String) boostData.getData(), location)) continue;
+                    if (!instance.isInClaim(HookType.FACTION, (String) boostData.getData(), location)) continue;
                     break;
                 case ISLAND:
-                    if (!instance.isInIsland((String) boostData.getData(), location)) continue;
+                    if (!instance.isInClaim(HookType.ISLAND, (String) boostData.getData(), location)) continue;
                     break;
                 case TOWN:
-                    if (!instance.isInTown((String) boostData.getData(), location)) continue;
+                    if (!instance.isInClaim(HookType.TOWN, (String) boostData.getData(), location)) continue;
                     break;
             }
 

@@ -2,15 +2,13 @@ package com.songoda.epicspawners.command.commands;
 
 import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.References;
-import com.songoda.epicspawners.api.spawner.SpawnerData;
+import com.songoda.epicspawners.hook.HookType;
 import com.songoda.epicspawners.boost.BoostData;
 import com.songoda.epicspawners.boost.BoostType;
 import com.songoda.epicspawners.command.AbstractCommand;
 import com.songoda.epicspawners.utils.Methods;
-import com.songoda.epicspawners.utils.SettingsManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import java.util.*;
 
@@ -86,32 +84,32 @@ public class CommandBoost extends AbstractCommand {
                 boostObject = Bukkit.getOfflinePlayer(arr[1]).getUniqueId().toString();
             }
         } else if (arr[0].equalsIgnoreCase("f") || arr[0].equalsIgnoreCase("faction")) {
-            if (instance.getFactionId(arr[1]) == null) {
+            if (instance.getClaimId(HookType.FACTION, arr[1]) == null) {
                 sender.sendMessage(Methods.formatText(References.getPrefix() + "&cThat faction does not exist..."));
                 return ReturnType.FAILURE;
             }
 
             start += "The faction";
             boostType = BoostType.FACTION;
-            boostObject = instance.getFactionId(arr[1]);
+            boostObject = instance.getClaimId(HookType.FACTION, arr[1]);
         } else if (arr[0].equalsIgnoreCase("t") || arr[0].equalsIgnoreCase("town")) {
-            if (instance.getTownId(arr[1]) == null) {
+            if (instance.getClaimId(HookType.TOWN, arr[1]) == null) {
                 sender.sendMessage(Methods.formatText(References.getPrefix() + "&cThat town does not exist..."));
                 return ReturnType.FAILURE;
             }
 
             start += "The town";
             boostType = BoostType.TOWN;
-            boostObject = instance.getTownId(arr[1]);
+            boostObject = instance.getClaimId(HookType.TOWN, arr[1]);
         } else if (arr[0].equalsIgnoreCase("i") || arr[0].equalsIgnoreCase("island")) {
-            if (instance.getIslandId(arr[1]) == null) {
+            if (instance.getClaimId(HookType.ISLAND, arr[1]) == null) {
                 sender.sendMessage(Methods.formatText(References.getPrefix() + "&cThat island does not exist..."));
                 return ReturnType.FAILURE;
             }
 
             start += "The island";
             boostType = BoostType.ISLAND;
-            boostObject = instance.getIslandId(arr[1]);
+            boostObject = instance.getClaimId(HookType.ISLAND, arr[1]);
         }
 
         if (boostType == null || boostObject == null) {
