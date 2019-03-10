@@ -1,7 +1,7 @@
-package com.songoda.epicspawners.hooks;
+package com.songoda.epicspawners.hook.hooks;
 
-import com.songoda.epicspawners.api.utils.HookType;
-import com.songoda.epicspawners.api.utils.ProtectionPluginHook;
+import com.songoda.epicspawners.hook.HookType;
+import com.songoda.epicspawners.hook.ProtectionPluginHook;
 import me.markeh.factionsframework.FactionsFramework;
 import me.markeh.factionsframework.entities.FPlayer;
 import me.markeh.factionsframework.entities.FPlayers;

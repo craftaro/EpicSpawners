@@ -1,11 +1,11 @@
-package com.songoda.epicspawners.hooks;
+package com.songoda.epicspawners.hook.hooks;
 
 import com.palmergames.bukkit.towny.Towny;
 import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.TownyUniverse;
-import com.songoda.epicspawners.api.utils.HookType;
-import com.songoda.epicspawners.api.utils.ProtectionPluginHook;
+import com.songoda.epicspawners.hook.HookType;
+import com.songoda.epicspawners.hook.ProtectionPluginHook;
 import com.songoda.epicspawners.utils.Debugger;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
