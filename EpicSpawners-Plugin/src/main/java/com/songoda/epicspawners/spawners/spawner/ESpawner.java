@@ -36,7 +36,9 @@ public class ESpawner implements Spawner {
     private static final ThreadLocalRandom rand = ThreadLocalRandom.current();
     //Holds the different types of spawners contained by this creatureSpawner.
     private final Deque<SpawnerStack> spawnerStacks = new ArrayDeque<>();
-    private final ScriptEngine engine;
+
+    private static ScriptEngine engine = null;
+
     private Location location;
     private int spawnCount;
     private String omniState = null;
@@ -49,8 +51,10 @@ public class ESpawner implements Spawner {
     public ESpawner(Location location) {
         this.location = location;
         this.creatureSpawner = (CreatureSpawner) location.getBlock().getState();
-        ScriptEngineManager mgr = new ScriptEngineManager();
-        this.engine = mgr.getEngineByName("JavaScript");
+        if (engine == null) {
+            ScriptEngineManager mgr = new ScriptEngineManager();
+            engine = mgr.getEngineByName("JavaScript");
+        }
     }
 
     @Override
