@@ -32,6 +32,8 @@ import com.songoda.epicspawners.spawners.spawner.ESpawnerManager;
 import com.songoda.epicspawners.spawners.spawner.ESpawnerStack;
 import com.songoda.epicspawners.storage.Storage;
 import com.songoda.epicspawners.storage.StorageRow;
+import com.songoda.epicspawners.storage.types.StorageMysql;
+import com.songoda.epicspawners.storage.types.StorageYaml;
 import com.songoda.epicspawners.tasks.SpawnerParticleTask;
 import com.songoda.epicspawners.tasks.SpawnerSpawnTask;
 import com.songoda.epicspawners.utils.*;
@@ -199,7 +201,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         this.particleTask.cancel();
         this.spawnerCustomSpawnTask.cancel();
         if (hologram != null)
-        this.hologram.unloadHolograms();
+            this.hologram.unloadHolograms();
 
         ConsoleCommandSender console = Bukkit.getConsoleSender();
         console.sendMessage(Methods.formatText("&a============================="));
