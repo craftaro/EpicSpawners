@@ -2,7 +2,7 @@ name: EpicSpawners
 description: EpicSpawners
 version: maven-version-number
 depend: [Vault]
-softdepend: [Arconix, SkyBlock, Towny, RedProtect Kingdoms, PlotSquared, GriefPrevention, USkyBlock, ASkyBlock, WorldGuard, Factions, PlaceholderAPI]
+softdepend: [Arconix, SkyBlock, Towny, RedProtect, Kingdoms, PlotSquared, GriefPrevention, USkyBlock, ASkyBlock, WorldGuard, Factions, PlaceholderAPI]
 main: com.songoda.epicspawners.EpicSpawnersPlugin
 author: songoda
 api-version: 1.13
