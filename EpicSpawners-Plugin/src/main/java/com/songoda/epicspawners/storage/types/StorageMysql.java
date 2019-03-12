@@ -5,7 +5,6 @@ import com.songoda.epicspawners.storage.Storage;
 import com.songoda.epicspawners.storage.StorageItem;
 import com.songoda.epicspawners.storage.StorageRow;
 import com.songoda.epicspawners.utils.MySQLDatabase;
-import org.bukkit.Bukkit;
 
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -15,11 +14,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class StorageMysql extends Storage {
 
     private static Map<String, StorageItem[]> toSave = new HashMap<>();
-    private static Map<String, StorageItem[]> lastSave = new HashMap<>();
+    private static Map<String, StorageItem[]> lastSave = null;
     private MySQLDatabase database;
 
     public StorageMysql(EpicSpawnersPlugin instance) {
@@ -73,11 +73,12 @@ public class StorageMysql extends Storage {
     @Override
     public void doSave() {
         this.updateData(instance);
+
+        if (lastSave == null)
+            lastSave = new HashMap<>(toSave);
+
         if (toSave.isEmpty()) return;
         Map<String, StorageItem[]> nextSave = new HashMap<>(toSave);
-
-        if (lastSave.isEmpty())
-            lastSave.putAll(toSave);
 
         this.makeBackup();
         this.save();
@@ -103,10 +104,9 @@ public class StorageMysql extends Storage {
                             || !to.getValue()[0].asObject().equals(lastValue)
                             || to.getValue().length != last.getValue().length)
                         continue;
-                    toSave.remove(toKey);
-                    for (int i = 0; i < to.getValue().length - 1; i ++) {
-                        if (to.getValue()[i].asObject() != null
-                                && !to.getValue()[i].asObject().toString()
+                    toSave.remove(to.getKey());
+                    for (int i = 0; i < to.getValue().length; i ++) {
+                        if (!to.getValue()[i].asObject().toString()
                                 .equals(last.getValue()[i].asObject().toString())) {
                             //Update
                             StorageItem[] items = to.getValue();

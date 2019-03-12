@@ -4,9 +4,7 @@ import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.storage.Storage;
 import com.songoda.epicspawners.storage.StorageItem;
 import com.songoda.epicspawners.storage.StorageRow;
-import com.songoda.epicspawners.utils.Debugger;
 import org.apache.commons.io.FileUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemorySection;
 
@@ -17,7 +15,7 @@ import java.util.*;
 public class StorageYaml extends Storage {
 
     private static final Map<String, Object> toSave = new HashMap<>();
-    private static final Map<String, Object> lastSave = new HashMap<>();
+    private static Map<String, Object> lastSave = null;
 
     public StorageYaml(EpicSpawnersPlugin instance) {
         super(instance);
@@ -67,11 +65,12 @@ public class StorageYaml extends Storage {
     @Override
     public void doSave() {
         this.updateData(instance);
+
+        if (lastSave == null)
+            lastSave = new HashMap<>(toSave);
+
         if (toSave.isEmpty()) return;
         Map<String, Object> nextSave = new HashMap<>(toSave);
-
-        if (lastSave.isEmpty())
-            lastSave.putAll(toSave);
 
         this.makeBackup();
         this.save();
@@ -88,9 +87,9 @@ public class StorageYaml extends Storage {
                 if (toSave.containsKey(entry.getKey())) {
                     Object newValue = toSave.get(entry.getKey());
                     if (!entry.getValue().equals(newValue)) {
-                        dataFile.getConfig().set(entry.getKey(), entry.getValue());
+                        dataFile.getConfig().set(entry.getKey(), newValue);
                     }
-                    toSave.remove(newValue);
+                    toSave.remove(entry.getKey());
                 } else {
                     dataFile.getConfig().set(entry.getKey(), null);
                 }
@@ -102,7 +101,7 @@ public class StorageYaml extends Storage {
 
             dataFile.saveConfig();
         } catch (NullPointerException e) {
-            Debugger.runReport(e);
+            e.printStackTrace();
         }
     }
 
@@ -113,7 +112,7 @@ public class StorageYaml extends Storage {
         try {
             FileUtils.copyFile(data, dataClone);
         } catch (IOException e) {
-            Debugger.runReport(e);
+            e.printStackTrace();
         }
         Deque<File> backups = new ArrayDeque<>();
         for (File file : Objects.requireNonNull(instance.getDataFolder().listFiles())) {
