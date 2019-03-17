@@ -10,9 +10,9 @@ import com.songoda.epicspawners.api.spawner.Spawner;
 import com.songoda.epicspawners.api.spawner.SpawnerData;
 import com.songoda.epicspawners.api.spawner.SpawnerStack;
 import com.songoda.epicspawners.api.spawner.condition.SpawnCondition;
-import com.songoda.epicspawners.hook.HookType;
 import com.songoda.epicspawners.boost.BoostData;
 import com.songoda.epicspawners.gui.GUISpawnerOverview;
+import com.songoda.epicspawners.hook.HookType;
 import com.songoda.epicspawners.utils.Debugger;
 import com.songoda.epicspawners.utils.Methods;
 import com.songoda.epicspawners.utils.SettingsManager;
@@ -34,11 +34,9 @@ import java.util.concurrent.ThreadLocalRandom;
 public class ESpawner implements Spawner {
 
     private static final ThreadLocalRandom rand = ThreadLocalRandom.current();
+    private static ScriptEngine engine = null;
     //Holds the different types of spawners contained by this creatureSpawner.
     private final Deque<SpawnerStack> spawnerStacks = new ArrayDeque<>();
-
-    private static ScriptEngine engine = null;
-
     private Location location;
     private int spawnCount;
     private String omniState = null;
@@ -259,22 +257,20 @@ public class ESpawner implements Spawner {
         ItemStack item = stack.getSpawnerData().toItemStack(1, stackSize);
 
 
-        if (SettingsManager.Setting.SPAWNERS_TO_INVENTORY.getBoolean()) {
-            Collection<ItemStack> leftOver = player.getInventory().addItem(item).values();
-            for (ItemStack itemStack : leftOver) {
-                player.getWorld().dropItemNaturally(player.getLocation(), itemStack);
-            }
-        } else if (!SettingsManager.Setting.ONLY_DROP_PLACED.getBoolean() || placedBy != null) {
-
-            ItemStack inHand = player.getInventory().getItemInMainHand();
-            if (SettingsManager.Setting.SILKTOUCH_SPAWNERS.getBoolean()
-                    && inHand != null
-                    && inHand.hasItemMeta()
-                    && inHand.getItemMeta().hasEnchant(Enchantment.SILK_TOUCH)
-                    && inHand.getEnchantmentLevel(Enchantment.SILK_TOUCH) >= SettingsManager.Setting.SILKTOUCH_MIN_LEVEL.getInt()
-                    && player.hasPermission("epicspawners.silkdrop." + stack.getSpawnerData().getIdentifyingName().replace(' ', '_'))
-                    || player.hasPermission("epicspawners.no-silk-drop")) {
-
+        ItemStack inHand = player.getInventory().getItemInHand();
+        if (SettingsManager.Setting.SILKTOUCH_SPAWNERS.getBoolean()
+                && inHand != null
+                && inHand.hasItemMeta()
+                && inHand.getItemMeta().hasEnchant(Enchantment.SILK_TOUCH)
+                && inHand.getEnchantmentLevel(Enchantment.SILK_TOUCH) >= SettingsManager.Setting.SILKTOUCH_MIN_LEVEL.getInt()
+                && player.hasPermission("epicspawners.silkdrop." + stack.getSpawnerData().getIdentifyingName().replace(' ', '_'))
+                || player.hasPermission("epicspawners.no-silk-drop")) {
+            if (SettingsManager.Setting.SPAWNERS_TO_INVENTORY.getBoolean()) {
+                Collection<ItemStack> leftOver = player.getInventory().addItem(item).values();
+                for (ItemStack itemStack : leftOver) {
+                    player.getWorld().dropItemNaturally(player.getLocation(), itemStack);
+                }
+            } else if (!SettingsManager.Setting.ONLY_DROP_PLACED.getBoolean() || placedBy != null) {
                 int ch = Integer.parseInt((placedBy != null
                         ? SettingsManager.Setting.SILKTOUCH_PLACED_SPAWNER_DROP_CHANCE.getString() : SettingsManager.Setting.SILKTOUCH_NATURAL_SPAWNER_DROP_CHANCE.getString()).replace("%", ""));
 
@@ -393,7 +389,7 @@ public class ESpawner implements Spawner {
                 Bukkit.getScheduler().scheduleSyncDelayedTask(EpicSpawnersPlugin.getInstance(), () -> player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 1.8F, 35.0F), 10L);
             }
             if (EpicSpawnersPlugin.getInstance().getHologram() != null)
-            EpicSpawnersPlugin.getInstance().getHologram().update(this);
+                EpicSpawnersPlugin.getInstance().getHologram().update(this);
         } catch (Exception e) {
             Debugger.runReport(e);
         }
@@ -466,13 +462,16 @@ public class ESpawner implements Spawner {
                     if (!placedBy.toString().equals(boostData.getData())) continue;
                     break;
                 case FACTION:
-                    if (!instance.getHookManager().isInClaim(HookType.FACTION, (String) boostData.getData(), location)) continue;
+                    if (!instance.getHookManager().isInClaim(HookType.FACTION, (String) boostData.getData(), location))
+                        continue;
                     break;
                 case ISLAND:
-                    if (!instance.getHookManager().isInClaim(HookType.ISLAND, (String) boostData.getData(), location)) continue;
+                    if (!instance.getHookManager().isInClaim(HookType.ISLAND, (String) boostData.getData(), location))
+                        continue;
                     break;
                 case TOWN:
-                    if (!instance.getHookManager().isInClaim(HookType.TOWN, (String) boostData.getData(), location)) continue;
+                    if (!instance.getHookManager().isInClaim(HookType.TOWN, (String) boostData.getData(), location))
+                        continue;
                     break;
             }
             amountToBoost += boostData.getAmtBoosted();
@@ -502,13 +501,16 @@ public class ESpawner implements Spawner {
                     if (!placedBy.toString().equals(boostData.getData())) continue;
                     break;
                 case FACTION:
-                    if (!instance.getHookManager().isInClaim(HookType.FACTION, (String) boostData.getData(), location)) continue;
+                    if (!instance.getHookManager().isInClaim(HookType.FACTION, (String) boostData.getData(), location))
+                        continue;
                     break;
                 case ISLAND:
-                    if (!instance.getHookManager().isInClaim(HookType.ISLAND, (String) boostData.getData(), location)) continue;
+                    if (!instance.getHookManager().isInClaim(HookType.ISLAND, (String) boostData.getData(), location))
+                        continue;
                     break;
                 case TOWN:
-                    if (!instance.getHookManager().isInClaim(HookType.TOWN, (String) boostData.getData(), location)) continue;
+                    if (!instance.getHookManager().isInClaim(HookType.TOWN, (String) boostData.getData(), location))
+                        continue;
                     break;
             }
 
