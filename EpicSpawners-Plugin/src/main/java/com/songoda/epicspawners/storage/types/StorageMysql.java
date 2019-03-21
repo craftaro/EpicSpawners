@@ -105,7 +105,7 @@ public class StorageMysql extends Storage {
                             || to.getValue().length != last.getValue().length)
                         continue;
                     toSave.remove(to.getKey());
-                    for (int i = 0; i < to.getValue().length; i ++) {
+                    for (int i = 0; i < to.getValue().length - 1; i ++) {
                         if (!to.getValue()[i].asObject().toString()
                                 .equals(last.getValue()[i].asObject().toString())) {
                             //Update
