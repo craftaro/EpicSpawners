@@ -1,7 +1,6 @@
 package com.songoda.epicspawners.gui;
 
 import com.songoda.epicspawners.EpicSpawnersPlugin;
-import com.songoda.epicspawners.api.spawner.Spawner;
 import com.songoda.epicspawners.api.spawner.SpawnerData;
 import com.songoda.epicspawners.spawners.spawner.ESpawner;
 import com.songoda.epicspawners.utils.Methods;
@@ -16,39 +15,35 @@ import org.bukkit.inventory.meta.SkullMeta;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GUISpawnerConvert extends AbstractGUI {
+public class GUISpawnerShop extends AbstractGUI {
 
     private final EpicSpawnersPlugin plugin;
-    private final Spawner spawner;
     private List<SpawnerData> entities;
     private int page = 1;
     private int max = 0;
     private int totalAmount = 0;
     private int slots = 0;
 
-    public GUISpawnerConvert(EpicSpawnersPlugin plugin, Spawner spawner, Player player) {
+    public GUISpawnerShop(EpicSpawnersPlugin plugin, Player player) {
         super(player);
         this.plugin = plugin;
-        this.spawner = spawner;
-
         setUp();
     }
-
-
+    
     private void setUp() {
         int show = 0;
         int start = (page - 1) * 32;
         entities = new ArrayList<>();
         totalAmount = 0;
         for (SpawnerData spawnerData : plugin.getSpawnerManager().getAllSpawnerData()) {
-            if (spawnerData.getIdentifyingName().equalsIgnoreCase("omni")
-                    || !spawnerData.isConvertible()
-                    || !player.hasPermission("epicspawners.convert." + spawnerData.getIdentifyingName().replace(" ", "_")))
-                continue;
-            if (totalAmount >= start) {
-                if (show <= 32) {
-                    entities.add(spawnerData);
-                    show++;
+            if (!spawnerData.isInShop() || !spawnerData.isActive()) continue;
+            if (!spawnerData.getIdentifyingName().toLowerCase().equals("omni")
+                    && player.hasPermission("epicspawners.shop." + Methods.getTypeFromString(spawnerData.getIdentifyingName()).replaceAll(" ", "_"))) {
+                if (totalAmount >= start) {
+                    if (show <= 32) {
+                        entities.add(spawnerData);
+                        show++;
+                    }
                 }
             }
             totalAmount++;
@@ -65,37 +60,36 @@ public class GUISpawnerConvert extends AbstractGUI {
             slots = 45;
         }
 
-        init(plugin.getLocale().getMessage("interface.convert.title"), slots);
+        init(plugin.getLocale().getMessage("interface.shop.title"), slots);
     }
 
     @Override
     protected void constructGUI() {
         inventory.clear();
+        resetClickables();
+        registerClickables();
+
         max = (int) Math.ceil((double) totalAmount / (double) 32);
 
         int place = 10;
         for (SpawnerData spawnerData : entities) {
-            if (place == 17)
-                place++;
-            if (place == (slots - 18))
-                place++;
-            ItemStack it = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
+            if (place == 17 || place == (slots - 18)) place++;
 
+            ItemStack it = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
             ItemStack item = plugin.getHeads().addTexture(it, spawnerData);
 
             if (spawnerData.getDisplayItem() != null) {
                 Material mat = spawnerData.getDisplayItem();
-                if (!mat.equals(Material.AIR))
+                if (mat != Material.AIR)
                     item = new ItemStack(mat, 1);
             }
 
             ItemMeta itemmeta = item.getItemMeta();
             String name = Methods.compileName(spawnerData, 1, true);
             ArrayList<String> lore = new ArrayList<>();
-            double price = spawnerData.getConvertPrice() * spawner.getSpawnerDataCount();
-
-            lore.add(plugin.getLocale().getMessage("interface.shop.buyprice", Methods.formatEconomy(price)));
-            String loreString = plugin.getLocale().getMessage("interface.convert.lore", Methods.getTypeFromString(spawnerData.getIdentifyingName()));
+            double price = spawnerData.getShopPrice();
+            lore.add(Methods.formatText(plugin.getLocale().getMessage("interface.shop.buyprice", Methods.formatEconomy(price))));
+            String loreString = plugin.getLocale().getMessage("interface.shop.lore", Methods.getTypeFromString(Methods.getTypeFromString(spawnerData.getDisplayName())));
             if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
                 loreString = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, loreString.replace(" ", "_")).replace("_", " ");
             }
@@ -106,17 +100,43 @@ public class GUISpawnerConvert extends AbstractGUI {
             inventory.setItem(place, item);
 
             registerClickable(place, (player, inventory, cursor, slot, type) ->
-                    ((ESpawner) spawner).convert(spawnerData, player));
+                    new GUIShopItem(plugin, this, spawnerData, player));
 
             place++;
         }
 
-        for (int i = 0; i < 9; i++) {
-            inventory.setItem(i, Methods.getGlass());
+        int max = (int) Math.ceil((double) totalAmount / (double) 36);
+        int num = 0;
+        while (num != 9) {
+            inventory.setItem(num, Methods.getGlass());
+            num++;
         }
-        for (int i = slots - 9; i < slots; i++) {
-            inventory.setItem(i, Methods.getGlass());
+        int num2 = slots - 9;
+        while (num2 != slots) {
+            inventory.setItem(num2, Methods.getGlass());
+            num2++;
         }
+
+        ItemStack exit = new ItemStack(Material.valueOf(plugin.getConfig().getString("Interfaces.Exit Icon")), 1);
+        ItemMeta exitmeta = exit.getItemMeta();
+        exitmeta.setDisplayName(plugin.getLocale().getMessage("general.nametag.exit"));
+        exit.setItemMeta(exitmeta);
+
+        ItemStack head = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
+        ItemStack skull = Methods.addTexture(head, "http://textures.minecraft.net/texture/1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b");
+        SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
+        skull.setDurability((short) 3);
+        skullMeta.setDisplayName(plugin.getLocale().getMessage("general.nametag.next"));
+        skull.setItemMeta(skullMeta);
+
+        ItemStack head2 = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
+        ItemStack skull2 = Methods.addTexture(head2, "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23");
+        SkullMeta skull2Meta = (SkullMeta) skull2.getItemMeta();
+        skull2.setDurability((short) 3);
+        skull2Meta.setDisplayName(plugin.getLocale().getMessage("general.nametag.back"));
+        skull2.setItemMeta(skull2Meta);
+
+        inventory.setItem(8, exit);
 
         inventory.setItem(0, Methods.getBackgroundGlass(true));
         inventory.setItem(1, Methods.getBackgroundGlass(true));
@@ -138,31 +158,16 @@ public class GUISpawnerConvert extends AbstractGUI {
         inventory.setItem(slots - 7, Methods.getBackgroundGlass(false));
         inventory.setItem(slots - 3, Methods.getBackgroundGlass(false));
 
-        createButton(8, Material.valueOf(plugin.getConfig().getString("Interfaces.Exit Icon")),
-                plugin.getLocale().getMessage("general.nametag.exit"));
-
-        ItemStack head = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
-        ItemStack skull = Methods.addTexture(head, "http://textures.minecraft.net/texture/1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b");
-        SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
-        skull.setDurability((short) 3);
-        skullMeta.setDisplayName(plugin.getLocale().getMessage("general.nametag.next"));
-        skull.setItemMeta(skullMeta);
-
-        ItemStack head2 = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
-        ItemStack skull2 = Methods.addTexture(head2, "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23");
-        SkullMeta skull2Meta = (SkullMeta) skull2.getItemMeta();
-        skull2.setDurability((short) 3);
-        skull2Meta.setDisplayName(plugin.getLocale().getMessage("general.nametag.back"));
-        skull2.setItemMeta(skull2Meta);
-
-        if (page != 1) inventory.setItem(slots - 8, skull2);
-        if (page != max) inventory.setItem(slots - 2, skull);
+        if (page != 1) {
+            inventory.setItem(slots - 8, skull2);
+        }
+        if (page != max) {
+            inventory.setItem(slots - 2, skull);
+        }
     }
 
     @Override
     protected void registerClickables() {
-        resetClickables();
-
         registerClickable(8, (player, inventory, cursor, slot, type) -> player.closeInventory());
 
         registerClickable(slots - 8, (player, inventory, cursor, slot, type) -> {
@@ -170,7 +175,6 @@ public class GUISpawnerConvert extends AbstractGUI {
             page--;
             setUp();
             constructGUI();
-            registerClickables();
         });
 
         registerClickable(slots - 2, (player, inventory, cursor, slot, type) -> {
@@ -178,7 +182,6 @@ public class GUISpawnerConvert extends AbstractGUI {
             page++;
             setUp();
             constructGUI();
-            registerClickables();
         });
     }
 

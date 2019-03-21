@@ -26,7 +26,6 @@ import com.songoda.epicspawners.player.PlayerData;
 import com.songoda.epicspawners.spawners.SpawnManager;
 import com.songoda.epicspawners.spawners.condition.*;
 import com.songoda.epicspawners.spawners.editor.SpawnerEditor;
-import com.songoda.epicspawners.spawners.shop.Shop;
 import com.songoda.epicspawners.spawners.spawner.ESpawner;
 import com.songoda.epicspawners.spawners.spawner.ESpawnerManager;
 import com.songoda.epicspawners.spawners.spawner.ESpawnerStack;
@@ -91,7 +90,6 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
 
     private SpawnerEditor spawnerEditor;
     private Heads heads;
-    private Shop shop;
     private Locale locale;
 
     private Storage storage;
@@ -152,7 +150,6 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         this.loadSpawnersFromFile();
         this.checkStorage();
 
-        this.shop = new Shop(this);
         this.spawnerEditor = new SpawnerEditor(this);
         this.appearanceHandler = new AppearanceHandler();
 
@@ -724,10 +721,6 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
 
     public SettingsManager getSettingsManager() {
         return settingsManager;
-    }
-
-    public Shop getShop() {
-        return shop;
     }
 
     public Heads getHeads() {

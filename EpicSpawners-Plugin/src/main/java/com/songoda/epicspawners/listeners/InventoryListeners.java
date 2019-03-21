@@ -6,6 +6,7 @@ import com.songoda.epicspawners.api.particles.ParticleDensity;
 import com.songoda.epicspawners.api.particles.ParticleEffect;
 import com.songoda.epicspawners.api.particles.ParticleType;
 import com.songoda.epicspawners.api.spawner.SpawnerData;
+import com.songoda.epicspawners.gui.GUISpawnerShop;
 import com.songoda.epicspawners.player.MenuType;
 import com.songoda.epicspawners.player.PlayerData;
 import com.songoda.epicspawners.spawners.editor.EditingData;
@@ -43,43 +44,7 @@ public class InventoryListeners implements Listener {
             Player player = (Player) event.getWhoClicked();
             PlayerData playerData = instance.getPlayerActionManager().getPlayerAction(player);
 
-            if (playerData.getInMenu() == MenuType.SHOP) {
-                event.setCancelled(true);
-                int amt = event.getInventory().getItem(22).getAmount();
-                if (event.getSlot() == 0) {
-                    int page = playerData.getCurrentPage();
-                    instance.getShop().open(player, page);
-                } else if (event.getSlot() == 8) {
-                    player.closeInventory();
-                } else if (event.getSlot() == 19) {
-                    if (amt != 1)
-                        amt = 1;
-                    instance.getShop().show(amt, player);
-                } else if (event.getSlot() == 29) {
-                    if ((amt - 10) <= 64 && (amt - 10) >= 1)
-                        amt = amt - 10;
-                    instance.getShop().show(amt, player);
-                } else if (event.getSlot() == 11) {
-                    if ((amt - 1) <= 64 && (amt - 1) >= 1)
-                        amt = amt - 1;
-                    instance.getShop().show(amt, player);
-                } else if (event.getSlot() == 15) {
-                    if ((amt + 1) <= 64 && (amt + 1) >= 1)
-                        amt = amt + 1;
-                    instance.getShop().show(amt, player);
-                } else if (event.getSlot() == 33) {
-                    if ((amt + 10) <= 64 && (amt + 10) >= 1)
-                        amt = amt + 10;
-                    instance.getShop().show(amt, player);
-                } else if (event.getSlot() == 25) {
-                    if (amt != 64)
-                        amt = 64;
-                    instance.getShop().show(amt, player);
-                } else if (event.getSlot() == 40) {
-                    instance.getShop().confirm(player, amt);
-                    player.closeInventory();
-                }
-            } else if (instance.getSpawnerEditor().getEditingData(player).getMenu() != EditingMenu.NOT_IN) {
+            if (instance.getSpawnerEditor().getEditingData(player).getMenu() != EditingMenu.NOT_IN) {
 
                 if (event.getRawSlot() >= event.getView().getTopInventory().getSize()) return;
 
@@ -287,26 +252,6 @@ public class InventoryListeners implements Listener {
                 } else if (!event.getCurrentItem().getType().name().contains("GLASS_PANE")) {
                     //if (e.getClick().isLeftClick())
                     instance.getSpawnerEditor().overview(player, instance.getSpawnerEditor().getType(event.getCurrentItem().getItemMeta().getDisplayName()));
-                }
-            } else if (event.getInventory().getTitle().equals(instance.getLocale().getMessage("interface.shop.title"))) {
-                event.setCancelled(true);
-                ItemStack clicked = event.getCurrentItem();
-
-                int page = playerData.getCurrentPage();
-
-                if (event.getInventory().getType() == InventoryType.CHEST) {
-                    if (event.getSlot() == 8) {
-                        player.closeInventory();
-                    } else if (event.getCurrentItem().getItemMeta().getDisplayName().equals(instance.getLocale().getMessage("general.nametag.back"))) {
-                        if (page != 1) {
-                            instance.getShop().open(player, page - 1);
-                        }
-                    } else if (event.getCurrentItem().getItemMeta().getDisplayName().equals(instance.getLocale().getMessage("general.nametag.next"))) {
-                        instance.getShop().open(player, page + 1);
-                    } else if (event.getSlot() >= 10 && event.getSlot() <= (event.getInventory().getSize() - 10) && event.getSlot() != 17 && event.getSlot() != (event.getInventory().getSize() - 18)) {
-                        playerData.setLastData(instance.getSpawnerDataFromItem(clicked));
-                        instance.getShop().show(1, player);
-                    }
                 }
             }
             if (event.getSlot() != 64537) {
