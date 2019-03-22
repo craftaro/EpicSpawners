@@ -41,14 +41,13 @@ public class ESpawner implements Spawner {
     private int spawnCount;
     private String omniState = null;
     private UUID placedBy = null;
-    private CreatureSpawner creatureSpawner;
+    private CreatureSpawner creatureSpawner = null;
     //ToDo: Use this for all spawner things (Like items, commands and what not) instead of the old shit
     //ToDO: There is a weird error that is triggered when a spawner is not found in the config.
     private Map<Location, Date> lastSpawns = new HashMap<>();
 
     public ESpawner(Location location) {
         this.location = location;
-        this.creatureSpawner = (CreatureSpawner) location.getBlock().getState();
         if (engine == null) {
             ScriptEngineManager mgr = new ScriptEngineManager();
             engine = mgr.getEngineByName("JavaScript");
@@ -120,6 +119,8 @@ public class ESpawner implements Spawner {
 
     @Override
     public CreatureSpawner getCreatureSpawner() {
+        if (creatureSpawner == null)
+            this.creatureSpawner = (CreatureSpawner) location.getBlock().getState();
         return creatureSpawner;
     }
 
