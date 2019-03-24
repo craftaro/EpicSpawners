@@ -64,7 +64,7 @@ public class GUISpawnerShop extends AbstractGUI {
     }
 
     @Override
-    protected void constructGUI() {
+    public void constructGUI() {
         inventory.clear();
         resetClickables();
         registerClickables();

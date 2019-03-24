@@ -25,7 +25,6 @@ import com.songoda.epicspawners.player.PlayerActionManager;
 import com.songoda.epicspawners.player.PlayerData;
 import com.songoda.epicspawners.spawners.SpawnManager;
 import com.songoda.epicspawners.spawners.condition.*;
-import com.songoda.epicspawners.spawners.editor.SpawnerEditor;
 import com.songoda.epicspawners.spawners.spawner.ESpawner;
 import com.songoda.epicspawners.spawners.spawner.ESpawnerManager;
 import com.songoda.epicspawners.spawners.spawner.ESpawnerStack;
@@ -68,7 +67,6 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
     private static EpicSpawnersPlugin INSTANCE;
     private References references;
 
-    private ChatListeners chatListeners;
 
     private ConfigWrapper spawnerFile = new ConfigWrapper(this, "", "spawners.yml");
 
@@ -88,7 +86,6 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
     private SpawnerParticleTask particleTask;
     private SpawnerSpawnTask spawnerCustomSpawnTask;
 
-    private SpawnerEditor spawnerEditor;
     private Heads heads;
     private Locale locale;
 
@@ -145,19 +142,16 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         this.commandManager = new CommandManager(this);
         this.blacklistHandler = new BlacklistHandler();
         this.playerActionManager = new PlayerActionManager();
-        this.chatListeners = new ChatListeners(this);
 
         this.loadSpawnersFromFile();
         this.checkStorage();
 
-        this.spawnerEditor = new SpawnerEditor(this);
         this.appearanceHandler = new AppearanceHandler();
 
         PluginManager pluginManager = Bukkit.getPluginManager();
 
         // Event registration
         pluginManager.registerEvents(new BlockListeners(this), this);
-        pluginManager.registerEvents(chatListeners, this);
         pluginManager.registerEvents(new EntityListeners(this), this);
         pluginManager.registerEvents(new InteractListeners(this), this);
         pluginManager.registerEvents(new InventoryListeners(this), this);
@@ -331,6 +325,12 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
                     .particleDensity(ParticleDensity.valueOf(currentSection.getString("Particle-Amount", "NORMAL")))
                     .particleEffectBoostedOnly(currentSection.getBoolean("Particle-Effect-Boosted-Only"));
 
+            if (currentSection.contains("custom")) {
+                dataBuilder.isCustom(currentSection.getBoolean("custom"));
+            } else {
+                dataBuilder.isCustom(key.toLowerCase().contains("custom"));
+            }
+
             if (currentSection.contains("Display-Name")) {
                 dataBuilder.displayName(currentSection.getString("Display-Name"));
             }
@@ -431,6 +431,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
             currentSection.set("items", spawnerData.getItems());
             currentSection.set("command", spawnerData.getCommands());
 
+            currentSection.set("custom", spawnerData.isCustom());
             currentSection.set("Spawn-Block", String.join(", ", getStrings(spawnerData.getSpawnBlocksList())));
             currentSection.set("Allowed", spawnerData.isActive());
             currentSection.set("Spawn-On-Fire", spawnerData.isSpawnOnFire());
@@ -632,6 +633,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
             }
         }
 
+        spawnerConfig.addDefault("Entities." + type + ".custom", false);
         spawnerConfig.addDefault("Entities." + type + ".Spawn-Block", spawnBlock);
         spawnerConfig.addDefault("Entities." + type + ".Allowed", true);
         spawnerConfig.addDefault("Entities." + type + ".Spawn-On-Fire", false);
@@ -711,10 +713,6 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         return appearanceHandler;
     }
 
-    public SpawnerEditor getSpawnerEditor() {
-        return spawnerEditor;
-    }
-
     public BlacklistHandler getBlacklistHandler() {
         return blacklistHandler;
     }
@@ -726,15 +724,6 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
     public Heads getHeads() {
         return heads;
     }
-
-    public References getReferences() {
-        return references;
-    }
-
-    public ChatListeners getChatListeners() {
-        return chatListeners;
-    }
-
     public HookManager getHookManager() {
         return hookManager;
     }

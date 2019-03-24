@@ -70,7 +70,7 @@ public class ESpawnerManager implements SpawnerManager {
 
     @Override
     public boolean isSpawnerData(String type) {
-        return spawners.containsKey(type);
+        return spawners.containsKey(type.toLowerCase());
     }
 
     @Override

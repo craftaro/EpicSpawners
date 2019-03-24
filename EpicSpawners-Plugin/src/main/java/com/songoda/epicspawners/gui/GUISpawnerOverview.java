@@ -51,7 +51,7 @@ public class GUISpawnerOverview extends AbstractGUI {
     }
 
     @Override
-    protected void constructGUI() {
+    public void constructGUI() {
         int showAmt = spawner.getSpawnerDataCount();
         if (showAmt > 64)
             showAmt = 1;

@@ -10,21 +10,10 @@ public class PlayerData {
 
     private final UUID playerUUID;
 
-    private MenuType inMenu = MenuType.NOT_IN;
     private Map<EntityType, Integer> entityKills = new EnumMap<>(EntityType.class);
-
-    private int currentPage = 0;
 
     PlayerData(UUID playerUUID) {
         this.playerUUID = playerUUID;
-    }
-
-    public MenuType getInMenu() {
-        return inMenu;
-    }
-
-    public void setInMenu(MenuType inMenu) {
-        this.inMenu = inMenu;
     }
 
     public OfflinePlayer getPlayer() {
@@ -46,14 +35,6 @@ public class PlayerData {
 
     public void setEntityKills(Map<EntityType, Integer> entityKills) {
         this.entityKills = entityKills;
-    }
-
-    public int getCurrentPage() {
-        return currentPage;
-    }
-
-    public void setCurrentPage(int currentPage) {
-        this.currentPage = currentPage;
     }
 
     @Override

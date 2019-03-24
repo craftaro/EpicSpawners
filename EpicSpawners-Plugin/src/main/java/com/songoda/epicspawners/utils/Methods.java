@@ -40,26 +40,6 @@ public class Methods {
         player.setItemInHand(result > 0 ? item : null);
     }
 
-    public static ItemStack createButton(ItemStack item, String name, String... lore) {
-        ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName(formatText(name));
-        if (lore != null && lore.length != 0) {
-            List<String> newLore = new ArrayList<>();
-            for (String line : lore) newLore.add(formatText(line));
-            meta.setLore(newLore);
-        }
-        item.setItemMeta(meta);
-        return item;
-    }
-
-    public static ItemStack createButton(Material material, String name, String... lore) {
-        return createButton(new ItemStack(material), name, lore);
-    }
-
-    public static ItemStack createButton(Material material, String name, ArrayList<String> lore) {
-        return createButton(material, name, lore.toArray(new String[0]));
-    }
-
     public static String getBoostCost(int time, int amount) {
         StringBuilder cost = new StringBuilder("&6&l");
         String[] parts = EpicSpawnersPlugin.getInstance().getConfig().getString("Spawner Boosting.Item Charged For A Boost").split(":");
@@ -292,6 +272,19 @@ public class Methods {
         }
         return true;
     }
+
+    /**
+     * Determines if the provided string is a valid number (int, double, float, or otherwise).
+     *
+     * @param s The string to check.
+     * @return <code>true</code> if the string is numeric, otherwise <code>false</code>
+     */
+    public static boolean isNumeric(String s) {
+        if (s == null || s.equals(""))
+            return false;
+        return s.matches("[-+]?\\d*\\.?\\d+");
+    }
+
 
     public static void removeFromInventory(Inventory inventory, ItemStack item) {
         int amt = item.getAmount();

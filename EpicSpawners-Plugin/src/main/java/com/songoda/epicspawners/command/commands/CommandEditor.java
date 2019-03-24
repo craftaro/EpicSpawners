@@ -2,6 +2,7 @@ package com.songoda.epicspawners.command.commands;
 
 import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.command.AbstractCommand;
+import com.songoda.epicspawners.gui.GUIEditorSelector;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -15,7 +16,7 @@ public class CommandEditor extends AbstractCommand {
 
     @Override
     protected ReturnType runCommand(EpicSpawnersPlugin instance, CommandSender sender, String... args) {
-        instance.getSpawnerEditor().openSpawnerSelector((Player) sender, 1);
+        new GUIEditorSelector(instance, (Player)sender);
         return ReturnType.SUCCESS;
     }
 

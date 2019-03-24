@@ -69,7 +69,7 @@ public class GUISpawnerConvert extends AbstractGUI {
     }
 
     @Override
-    protected void constructGUI() {
+    public void constructGUI() {
         inventory.clear();
         max = (int) Math.ceil((double) totalAmount / (double) 32);
 

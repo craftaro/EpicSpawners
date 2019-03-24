@@ -43,7 +43,7 @@ public class GUISpawnerStats extends AbstractGUI {
     }
 
     @Override
-    protected void constructGUI() {
+    public void constructGUI() {
 
         for (int i = 0; i < 9; i++) {
             inventory.setItem(i, Methods.getGlass());

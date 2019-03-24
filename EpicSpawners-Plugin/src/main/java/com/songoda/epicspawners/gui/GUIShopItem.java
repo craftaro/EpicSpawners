@@ -36,7 +36,7 @@ public class GUIShopItem extends AbstractGUI {
     }
 
     @Override
-    protected void constructGUI() {
+    public void constructGUI() {
         inventory.clear();
         resetClickables();
         registerClickables();

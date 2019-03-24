@@ -22,6 +22,9 @@ public class ESpawnerData implements SpawnerData {
 
     private final String name;
     private int uuid;
+    
+    private boolean custom = false;
+
     private double pickupCost = 0.0;
     private List<Material> spawnBlocks = Collections.singletonList(Material.DIRT);
     private boolean active = true, inShop = true;
@@ -101,7 +104,6 @@ public class ESpawnerData implements SpawnerData {
         }
     }
 
-    @Override
     public int getUUID() {
         return uuid;
     }
@@ -407,6 +409,16 @@ public class ESpawnerData implements SpawnerData {
     @Override
     public void setParticleEffectBoostedOnly(boolean particleEffectBoostedOnly) {
         this.particleEffectBoostedOnly = particleEffectBoostedOnly;
+    }
+
+    @Override
+    public boolean isCustom() {
+        return custom;
+    }
+
+    @Override
+    public void setCustom(boolean custom) {
+        this.custom = custom;
     }
 
     @Override

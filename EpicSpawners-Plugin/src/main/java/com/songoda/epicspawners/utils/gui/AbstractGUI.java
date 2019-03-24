@@ -127,7 +127,7 @@ public abstract class AbstractGUI implements Listener {
         player.openInventory(inventory);
     }
 
-    protected abstract void constructGUI();
+    public abstract void constructGUI();
 
     protected void addDraggable(Range range, boolean option) {
         this.draggableRanges.put(range, option);

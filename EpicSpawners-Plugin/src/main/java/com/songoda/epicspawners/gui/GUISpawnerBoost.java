@@ -48,7 +48,7 @@ public class GUISpawnerBoost extends AbstractGUI {
     }
 
     @Override
-    protected void constructGUI() {
+    public void constructGUI() {
         if (!player.hasPermission("epicspawners.canboost")) return;
 
         int num = 0;

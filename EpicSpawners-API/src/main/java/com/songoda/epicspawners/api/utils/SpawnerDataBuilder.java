@@ -355,6 +355,8 @@ public interface SpawnerDataBuilder {
      */
     SpawnerDataBuilder spawnEffectParticle(ParticleType particle);
 
+    SpawnerDataBuilder isCustom(boolean custom);
+
     /**
      * Set the particle type to be used when entities have been
      * spawned from this spawner

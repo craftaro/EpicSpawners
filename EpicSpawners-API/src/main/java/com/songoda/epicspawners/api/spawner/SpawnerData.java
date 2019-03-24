@@ -541,6 +541,10 @@ public interface SpawnerData {
      */
     void setParticleEffectBoostedOnly(boolean boostedOnly);
 
+    boolean isCustom();
+
+    void setCustom(boolean custom);
+
     /**
      *  Add spawner condiction.
      *

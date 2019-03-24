@@ -242,6 +242,12 @@ public final class ESpawnerDataBuilder implements SpawnerDataBuilder {
     }
 
     @Override
+    public SpawnerDataBuilder isCustom(boolean custom) {
+        this.spawnerData.setCustom(custom);
+        return this;
+    }
+
+    @Override
     public SpawnerDataBuilder entitySpawnParticle(ParticleType particle) {
         this.spawnerData.setEntitySpawnParticle(particle);
         return this;
