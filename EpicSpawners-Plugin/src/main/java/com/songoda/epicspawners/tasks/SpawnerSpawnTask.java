@@ -6,7 +6,11 @@ import com.songoda.epicspawners.api.spawner.SpawnerManager;
 import com.songoda.epicspawners.utils.SettingsManager;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.CreatureSpawner;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class SpawnerSpawnTask extends BukkitRunnable {
 
@@ -33,17 +37,19 @@ public class SpawnerSpawnTask extends BukkitRunnable {
 
     @Override
     public void run() {
-        for (Spawner spawner : manager.getSpawners()) {
-            if (spawner == null || spawner.getSpawnerDataCount() == 0) continue;
+        new ArrayList<>(manager.getSpawners()).forEach(spawner -> {
+            if (spawner == null || spawner.getSpawnerDataCount() == 0) return;
 
+            CreatureSpawner cSpawner = spawner.getCreatureSpawner();
+            if (cSpawner == null) return;
             int delay = spawner.getCreatureSpawner().getDelay();
             delay = delay - 30;
             spawner.getCreatureSpawner().setDelay(delay);
-            if (delay >= 0) continue;
+            if (delay >= 0) return;
 
             if (!spawner.getWorld().isChunkLoaded(spawner.getX() >> 4, spawner.getZ() >> 4) || !spawner.checkConditions()) {
                 spawner.getCreatureSpawner().setDelay(300);
-                continue;
+                return;
             }
 
             if (spawner.getLocation().getBlock().getType() != Material.SPAWNER) {
@@ -58,7 +64,7 @@ public class SpawnerSpawnTask extends BukkitRunnable {
             if (!spawner.spawn()) {
                 spawner.getCreatureSpawner().setDelay(300);
             }
-        }
+        });
     }
 
 }

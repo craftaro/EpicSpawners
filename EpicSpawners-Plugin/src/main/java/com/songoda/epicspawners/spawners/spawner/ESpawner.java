@@ -3,6 +3,7 @@ package com.songoda.epicspawners.spawners.spawner;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.References;
 import com.songoda.epicspawners.api.CostType;
+import com.songoda.epicspawners.api.EpicSpawners;
 import com.songoda.epicspawners.api.EpicSpawnersAPI;
 import com.songoda.epicspawners.api.events.SpawnerChangeEvent;
 import com.songoda.epicspawners.api.particles.ParticleType;
@@ -119,8 +120,13 @@ public class ESpawner implements Spawner {
 
     @Override
     public CreatureSpawner getCreatureSpawner() {
-        if (creatureSpawner == null)
+        if (creatureSpawner == null) {
+            if (location.getBlock().getType() == Material.SPAWNER) {
+                EpicSpawnersPlugin.getInstance().getSpawnerManager().removeSpawnerFromWorld(location);
+                return null;
+            }
             this.creatureSpawner = (CreatureSpawner) location.getBlock().getState();
+        }
         return creatureSpawner;
     }
 

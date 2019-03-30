@@ -37,7 +37,7 @@ public class AppearanceHandler {
             EpicSpawnersPlugin instance = EpicSpawnersPlugin.getInstance();
 
 
-            for (Spawner spawner : instance.getSpawnerManager().getSpawners()) {
+            for (Spawner spawner : new ArrayList<>(instance.getSpawnerManager().getSpawners())) {
                 Location location = spawner.getLocation();
                 if (location == null || location.getWorld() == null) continue;
                 int destx = location.getBlockX() >> 4;
