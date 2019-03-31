@@ -15,6 +15,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.CreatureSpawner;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -155,7 +156,10 @@ public class InteractListeners implements Listener {
                 if (!instance.getSpawnerManager().isSpawner(location)) {
                     ESpawner spawner = new ESpawner(location);
 
-                    spawner.addSpawnerStack(new ESpawnerStack(instance.getSpawnerManager().getSpawnerData(spawner.getCreatureSpawner().getSpawnedType()), 1));
+                    CreatureSpawner creatureSpawner = spawner.getCreatureSpawner();
+                    if (creatureSpawner == null) return;
+
+                    spawner.addSpawnerStack(new ESpawnerStack(instance.getSpawnerManager().getSpawnerData(creatureSpawner.getSpawnedType()), 1));
                     instance.getSpawnerManager().addSpawnerToWorld(location, spawner);
                 }
             }
