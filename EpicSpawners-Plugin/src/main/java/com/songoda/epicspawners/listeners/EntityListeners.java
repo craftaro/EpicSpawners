@@ -37,10 +37,9 @@ public class EntityListeners implements Listener {
         this.instance = instance;
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onBlow(EntityExplodeEvent e) {
         try {
-            if (e.isCancelled()) return;
             List<Block> destroyed = e.blockList();
             Iterator<Block> it = destroyed.iterator();
             List<Block> toCancel = new ArrayList<>();
