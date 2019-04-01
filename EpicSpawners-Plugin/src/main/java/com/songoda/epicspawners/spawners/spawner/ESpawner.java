@@ -121,7 +121,7 @@ public class ESpawner implements Spawner {
     @Override
     public CreatureSpawner getCreatureSpawner() {
         if (creatureSpawner == null) {
-            if (location.getBlock().getType() == Material.SPAWNER) {
+            if (location.getBlock().getType() != Material.SPAWNER) {
                 EpicSpawnersPlugin.getInstance().getSpawnerManager().removeSpawnerFromWorld(location);
                 return null;
             }

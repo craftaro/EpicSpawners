@@ -169,13 +169,16 @@ public class BlockListeners implements Listener {
             if (instance.getConfig().getBoolean("Main.Alerts On Place And Break"))
                 player.sendMessage(References.getPrefix() + instance.getLocale().getMessage("event.block.place", Methods.compileName(spawnerData, spawner.getFirstStack().getStackSize(), false)));
 
+            CreatureSpawner creatureSpawner = spawner.getCreatureSpawner();
+            if (creatureSpawner == null) return;
+
             try {
-                spawner.getCreatureSpawner().setSpawnedType(EntityType.valueOf(spawnerData.getIdentifyingName().toUpperCase().replace(" ", "_")));
+                creatureSpawner.setSpawnedType(EntityType.valueOf(spawnerData.getIdentifyingName().toUpperCase().replace(" ", "_")));
             } catch (Exception ex) {
-                spawner.getCreatureSpawner().setSpawnedType(EntityType.DROPPED_ITEM);
+                creatureSpawner.setSpawnedType(EntityType.DROPPED_ITEM);
             }
-            spawner.getCreatureSpawner().setDelay(1);
-            spawner.getCreatureSpawner().update();
+            creatureSpawner.setDelay(1);
+            creatureSpawner.update();
 
             spawner.setPlacedBy(player);
 
@@ -215,7 +218,10 @@ public class BlockListeners implements Listener {
             if (!instance.getSpawnerManager().isSpawner(location)) {
                 ESpawner spawner = new ESpawner(location);
 
-                spawner.addSpawnerStack(new ESpawnerStack(instance.getSpawnerManager().getSpawnerData(spawner.getCreatureSpawner().getSpawnedType())));
+                CreatureSpawner creatureSpawner = spawner.getCreatureSpawner();
+                if (creatureSpawner == null) return;
+
+                spawner.addSpawnerStack(new ESpawnerStack(instance.getSpawnerManager().getSpawnerData(creatureSpawner.getSpawnedType())));
                 instance.getSpawnerManager().addSpawnerToWorld(location, spawner);
             }
 

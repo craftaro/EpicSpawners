@@ -11,6 +11,7 @@ import com.songoda.epicspawners.utils.SettingsManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.CreatureSpawner;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -69,8 +70,11 @@ public class AppearanceHandler {
                 }
                 updateDisplayItem(spawner, next);
                 ((ESpawner) spawner).setOmniState(next.getIdentifyingName());
-                spawner.getCreatureSpawner().update();
 
+                CreatureSpawner creatureSpawner = spawner.getCreatureSpawner();
+                if (creatureSpawner == null) continue;
+
+                creatureSpawner.update();
             }
         } catch (Exception e) {
             Debugger.runReport(e);
