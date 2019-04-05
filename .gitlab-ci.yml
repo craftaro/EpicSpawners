@@ -3,7 +3,7 @@ stages:
 
 variables:
     name: "EpicSpawners"
-    path: "/builds/Songoda/$name"
+    path: "/builds/$CI_PROJECT_PATH"
     version: "5.8.4"
 
 build:
