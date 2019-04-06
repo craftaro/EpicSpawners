@@ -75,10 +75,8 @@ public class GUISpawnerConvert extends AbstractGUI {
 
         int place = 10;
         for (SpawnerData spawnerData : entities) {
-            if (place == 17)
-                place++;
-            if (place == (slots - 18))
-                place++;
+            if (place == 17 || place == (slots - 18)) place++;
+            if (place == 18 && slots == 36) place++;
             ItemStack it = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
 
             ItemStack item = plugin.getHeads().addTexture(it, spawnerData);

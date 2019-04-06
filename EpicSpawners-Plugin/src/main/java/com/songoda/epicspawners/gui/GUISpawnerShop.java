@@ -50,8 +50,6 @@ public class GUISpawnerShop extends AbstractGUI {
             totalAmount++;
         }
 
-        entities = entities.stream().limit(10).collect(Collectors.toList());
-
         int size = entities.size();
         if (size == 24 || size == 25) size = 26;
         slots = 54;
