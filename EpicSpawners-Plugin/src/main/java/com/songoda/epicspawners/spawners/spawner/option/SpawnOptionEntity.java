@@ -93,7 +93,6 @@ public class SpawnOptionEntity implements SpawnOption {
         } catch (Exception t) {
             Debugger.runReport(t);
         }
-
     }
 
     @Override

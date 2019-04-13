@@ -95,7 +95,7 @@ public class InteractListeners implements Listener {
 
             int bmulti = spawner.getSpawnerDataCount();
             int amt = p.getInventory().getItemInHand().getAmount();
-            EntityType itype = EntityType.valueOf(i.getType().name().replace("_SPAWN_EGG", ""));
+            EntityType itype = EntityType.valueOf(i.getType().name().replace("_SPAWN_EGG", "").replace("MOOSHROOM", "MUSHROOM_COW"));
 
             SpawnerData itemType = instance.getSpawnerManager().getSpawnerData(itype);
 
