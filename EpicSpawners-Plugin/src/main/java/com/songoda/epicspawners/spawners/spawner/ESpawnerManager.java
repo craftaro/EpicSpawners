@@ -59,7 +59,7 @@ public class ESpawnerManager implements SpawnerManager {
     @Override
     public Collection<SpawnerData> getAllEnabledSpawnerData() {
         Collection<SpawnerData> spawners = new ArrayList<>(getAllSpawnerData());
-        spawners.removeIf(spawnerData -> !spawnerData.isActive() && spawnerData.getIdentifyingName().equals("Omni"));
+        spawners.removeIf(spawnerData -> !spawnerData.isActive() || spawnerData.getIdentifyingName().equals("Omni"));
         return Collections.unmodifiableCollection(spawners);
     }
 
