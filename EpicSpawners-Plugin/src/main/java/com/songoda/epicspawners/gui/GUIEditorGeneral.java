@@ -145,7 +145,7 @@ public class GUIEditorGeneral extends AbstractGUI {
                 }
             });
 
-            gui.setOnClose((player1, inventory1) -> init(inventory.getTitle(), inventory.getSize()));
+            gui.setOnClose((player1, inventory1) -> init(setTitle, inventory.getSize()));
 
             ItemStack item = new ItemStack(Material.PAPER);
             ItemMeta meta = item.getItemMeta();
@@ -168,7 +168,7 @@ public class GUIEditorGeneral extends AbstractGUI {
                 }
             });
 
-            gui.setOnClose((player1, inventory1) -> init(inventory.getTitle(), inventory.getSize()));
+            gui.setOnClose((player1, inventory1) -> init(setTitle, inventory.getSize()));
 
             ItemStack item = new ItemStack(Material.PAPER);
             ItemMeta meta = item.getItemMeta();
@@ -192,7 +192,7 @@ public class GUIEditorGeneral extends AbstractGUI {
                 }
             });
 
-            gui.setOnClose((player1, inventory1) -> init(inventory.getTitle(), inventory.getSize()));
+            gui.setOnClose((player1, inventory1) -> init(setTitle, inventory.getSize()));
 
             ItemStack item = new ItemStack(Material.PAPER);
             ItemMeta meta = item.getItemMeta();
@@ -216,7 +216,7 @@ public class GUIEditorGeneral extends AbstractGUI {
                 }
             });
 
-            gui.setOnClose((player1, inventory1) -> init(inventory.getTitle(), inventory.getSize()));
+            gui.setOnClose((player1, inventory1) -> init(setTitle, inventory.getSize()));
 
             ItemStack item = new ItemStack(Material.PAPER);
             ItemMeta meta = item.getItemMeta();
@@ -240,7 +240,7 @@ public class GUIEditorGeneral extends AbstractGUI {
                 }
             });
 
-            gui.setOnClose((player1, inventory1) -> init(inventory.getTitle(), inventory.getSize()));
+            gui.setOnClose((player1, inventory1) -> init(setTitle, inventory.getSize()));
 
             ItemStack item = new ItemStack(Material.PAPER);
             ItemMeta meta = item.getItemMeta();
@@ -260,7 +260,7 @@ public class GUIEditorGeneral extends AbstractGUI {
             AbstractAnvilGUI gui = new AbstractAnvilGUI(player, event ->
                     spawnerData.setTickRate(event.getName().trim()));
 
-            gui.setOnClose((player1, inventory1) -> init(inventory.getTitle(), inventory.getSize()));
+            gui.setOnClose((player1, inventory1) -> init(setTitle, inventory.getSize()));
 
             ItemStack item = new ItemStack(Material.PAPER);
             ItemMeta meta = item.getItemMeta();
@@ -275,7 +275,7 @@ public class GUIEditorGeneral extends AbstractGUI {
         });
 
         registerClickable(0, (player, inventory, cursor, slot, type) -> {
-            back.init(back.getInventory().getTitle(), back.getInventory().getSize());
+            back.init(back.getSetTitle(), back.getInventory().getSize());
             back.constructGUI();
         });
     }

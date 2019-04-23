@@ -50,14 +50,14 @@ public class SettingsManager implements Listener {
             return;
         }
 
-        if (event.getInventory().getTitle().equals(pluginName + " Settings Manager")) {
+        if (event.getView().getTitle().equals(pluginName + " Settings Manager")) {
             event.setCancelled(true);
             if (clickedItem.getType().name().contains("STAINED_GLASS")) return;
 
             String type = ChatColor.stripColor(clickedItem.getItemMeta().getDisplayName());
             this.cat.put((Player) event.getWhoClicked(), type);
             this.openEditor((Player) event.getWhoClicked());
-        } else if (event.getInventory().getTitle().equals(pluginName + " Settings Editor")) {
+        } else if (event.getView().equals(pluginName + " Settings Editor")) {
             event.setCancelled(true);
             if (clickedItem.getType().name().contains("STAINED_GLASS")) return;
 

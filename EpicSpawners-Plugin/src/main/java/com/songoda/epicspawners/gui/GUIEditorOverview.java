@@ -163,7 +163,7 @@ public class GUIEditorOverview extends AbstractGUI {
                 });
 
                 gui.setOnClose((player, inventory) -> {
-                    back.init(back.getInventory().getTitle(), back.getInventory().getSize());
+                    back.init(back.getSetTitle(), back.getInventory().getSize());
                     back.constructGUI();
                 });
 
@@ -199,7 +199,7 @@ public class GUIEditorOverview extends AbstractGUI {
                 new GUIEditorParticle(plugin, this, spawnerData, player)));
 
         registerClickable(8, (player, inventory, cursor, slot, type) -> {
-            back.init(back.getInventory().getTitle(), back.getInventory().getSize());
+            back.init(back.getSetTitle(), back.getInventory().getSize());
             back.constructGUI();
         });
 

@@ -194,7 +194,7 @@ public class GUIShopItem extends AbstractGUI {
     @Override
     protected void registerClickables() {
         registerClickable(0, (player, inventory, cursor, slot, type) ->
-                back.init(back.getInventory().getTitle(), back.getInventory().getSize()));
+                back.init(back.getSetTitle(), back.getInventory().getSize()));
 
         registerClickable(8, (player, inventory, cursor, slot, type) ->
                 player.closeInventory());

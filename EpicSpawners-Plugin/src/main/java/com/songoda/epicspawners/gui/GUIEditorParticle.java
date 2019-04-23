@@ -169,7 +169,7 @@ public class GUIEditorParticle extends AbstractGUI {
         });
 
         registerClickable(0, (player, inventory, cursor, slot, type) -> {
-            back.init(back.getInventory().getTitle(), back.getInventory().getSize());
+            back.init(back.getSetTitle(), back.getInventory().getSize());
             back.constructGUI();
         });
     }

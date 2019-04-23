@@ -28,6 +28,7 @@ public abstract class AbstractGUI implements Listener {
     private static boolean listenersInitialized = false;
     protected Player player;
     protected Inventory inventory = null;
+    protected String setTitle = null;
     protected boolean cancelBottom = false;
     private Map<Range, Clickable> clickables = new HashMap<>();
     private List<OnClose> onCloses = new ArrayList<>();
@@ -115,8 +116,9 @@ public abstract class AbstractGUI implements Listener {
     public void init(String title, int slots) {
         if (inventory == null
                 || inventory.getSize() != slots
-                || ChatColor.translateAlternateColorCodes('&', title) != inventory.getTitle()) {
+                || ChatColor.translateAlternateColorCodes('&', title) != player.getOpenInventory().getTitle()) {
             this.inventory = Bukkit.getServer().createInventory(new GUIHolder(), slots, Methods.formatText(title));
+            this.setTitle = Methods.formatText(title);
             if (this.clickables.size() == 0)
                 registerClickables();
             if (this.onCloses.size() == 0)
@@ -216,5 +218,9 @@ public abstract class AbstractGUI implements Listener {
         public AbstractGUI getGUI() {
             return AbstractGUI.this;
         }
+    }
+
+    public String getSetTitle() {
+        return setTitle;
     }
 }

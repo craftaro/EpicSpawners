@@ -152,7 +152,7 @@ public class GUIEditorEdit extends AbstractGUI {
                 });
 
                 abstractChatConfirm.setOnClose(() ->
-                        init(inventory.getTitle(), inventory.getSize()));
+                        init(setTitle, inventory.getSize()));
             });
         } else {
             registerClickable(39, (player, inventory, cursor, slot, type) -> {
@@ -168,7 +168,7 @@ public class GUIEditorEdit extends AbstractGUI {
                     }
                 });
 
-                gui.setOnClose((player1, inventory1) -> init(inventory.getTitle(), inventory.getSize()));
+                gui.setOnClose((player1, inventory1) -> init(setTitle, inventory.getSize()));
 
                 ItemStack item = new ItemStack(Material.PAPER);
                 ItemMeta meta = item.getItemMeta();
@@ -181,7 +181,7 @@ public class GUIEditorEdit extends AbstractGUI {
         }
 
         registerClickable(0, (player, inventory, cursor, slot, type) -> {
-            back.init(back.getInventory().getTitle(), back.getInventory().getSize());
+            back.init(back.getSetTitle(), back.getInventory().getSize());
             back.constructGUI();
         });
     }
