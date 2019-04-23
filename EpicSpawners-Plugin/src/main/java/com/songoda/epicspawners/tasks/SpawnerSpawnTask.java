@@ -49,7 +49,6 @@ public class SpawnerSpawnTask extends BukkitRunnable {
             if (delay >= 0) return;
 
             if (!spawner.getWorld().isChunkLoaded(spawner.getX() >> 4, spawner.getZ() >> 4) || !spawner.checkConditions()) {
-                Bukkit.broadcastMessage("Conditons failed");
                 spawner.getCreatureSpawner().setDelay(300);
                 return;
             }
