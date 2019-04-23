@@ -75,6 +75,7 @@ public class SpawnOptionEntity implements SpawnOption {
             clazzAxisAlignedBB = Class.forName("net.minecraft.server." + ver + ".AxisAlignedBB");
             clazzEntityTypes = Class.forName("net.minecraft.server." + ver + ".EntityTypes");
             clazzIWorldReader = Class.forName("net.minecraft.server." + ver + ".IWorldReader");
+            clazzGeneratorAccess = Class.forName("net.minecraft.server." + ver + ".GeneratorAccess");
 
             methodB = clazzMobSpawnerData.getDeclaredMethod("b");
             methodSetString = clazzNBTTagCompound.getDeclaredMethod("setString", String.class, String.class);
@@ -88,6 +89,7 @@ public class SpawnOptionEntity implements SpawnOption {
                 methodEntityInsentientPrepare = clazzEntityInsentient.getDeclaredMethod("prepare", clazzDifficultyDamageScaler, clazzGroupDataEntity, clazzNBTTagCompound);
                 methodChunkRegionLoaderA2 = clazzChunkRegionLoader.getDeclaredMethod("a", clazzEntity, clazzGeneratorAccess, Class.forName("org.bukkit.event.entity.CreatureSpawnEvent$SpawnReason"));
             } catch (NoSuchMethodException e) {
+                e.printStackTrace();
                 methodA = clazzEntityTypes.getDeclaredMethod("a", clazzNBTTagCompound, clazzWorld);
 
                 clazzEnumMobSpawn = Class.forName("net.minecraft.server." + ver + ".EnumMobSpawn");
@@ -100,7 +102,6 @@ public class SpawnOptionEntity implements SpawnOption {
                 }
 
                 clazzWorldServer = Class.forName("net.minecraft.server." + ver + ".WorldServer");
-                clazzGeneratorAccess = Class.forName("net.minecraft.server." + ver + ".GeneratorAccess");
 
                 methodEntityInsentientPrepare = clazzEntityInsentient.getDeclaredMethod("prepare", clazzGeneratorAccess, clazzDifficultyDamageScaler, clazzEnumMobSpawn, clazzGroupDataEntity, clazzNBTTagCompound);
                 methodAddEntity = clazzWorldServer.getDeclaredMethod("addEntity", clazzEntity, Class.forName("org.bukkit.event.entity.CreatureSpawnEvent$SpawnReason"));
