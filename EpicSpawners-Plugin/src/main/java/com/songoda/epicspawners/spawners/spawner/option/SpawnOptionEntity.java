@@ -39,9 +39,11 @@ public class SpawnOptionEntity implements SpawnOption {
 
     private EpicSpawnersPlugin instance = EpicSpawnersPlugin.getInstance();
 
+    private Enum<?> SpawnerEnum;
+
     private Map<String, Integer> cache = new HashMap<>();
-    private Class<?> clazzMobSpawnerData, clazzNBTTagCompound, clazzNBTTagList, clazzCraftWorld, clazzWorld, clazzChunkRegionLoader, clazzEntity, clazzCraftEntity, clazzEntityInsentient, clazzGroupDataEntity, clazzDifficultyDamageScaler, clazzBlockPosition, clazzIWorldReader, clazzAxisAlignedBB;
-    private Method methodB, methodSetString, methodGetHandle, methodChunkRegionLoaderA, methodEntityGetBukkitEntity, methodCraftEntityTeleport, methodEntityInsentientCanSpawn, methodEntityInsentientPrepare, methodChunkRegionLoaderA2, methodGetDamageScaler, methodGetCubes, methodGetBoundingBox;
+    private Class<?> clazzMobSpawnerData, clazzEnumMobSpawn, clazzWorldServer, clazzGeneratorAccess, clazzEntityTypes, clazzNBTTagCompound, clazzCraftWorld, clazzWorld, clazzChunkRegionLoader, clazzEntity, clazzCraftEntity, clazzEntityInsentient, clazzGroupDataEntity, clazzDifficultyDamageScaler, clazzBlockPosition, clazzIWorldReader, clazzAxisAlignedBB;
+    private Method methodB, methodSetString, methodSetPosition, methodA, methodAddEntity, methodGetHandle, methodChunkRegionLoaderA, methodEntityGetBukkitEntity, methodCraftEntityTeleport, methodEntityInsentientPrepare, methodChunkRegionLoaderA2, methodGetDamageScaler, methodGetCubes, methodGetBoundingBox;
     private Field fieldWorldRandom;
 
     public SpawnOptionEntity(EntityType... types) {
@@ -60,7 +62,6 @@ public class SpawnOptionEntity implements SpawnOption {
             String ver = Bukkit.getServer().getClass().getPackage().getName().substring(23);
             clazzMobSpawnerData = Class.forName("net.minecraft.server." + ver + ".MobSpawnerData");
             clazzNBTTagCompound = Class.forName("net.minecraft.server." + ver + ".NBTTagCompound");
-            clazzNBTTagList = Class.forName("net.minecraft.server." + ver + ".NBTTagList");
             clazzCraftWorld = Class.forName("org.bukkit.craftbukkit." + ver + ".CraftWorld");
             clazzWorld = Class.forName("net.minecraft.server." + ver + ".World");
             clazzChunkRegionLoader = Class.forName("net.minecraft.server." + ver + ".ChunkRegionLoader");
@@ -72,19 +73,41 @@ public class SpawnOptionEntity implements SpawnOption {
             clazzBlockPosition = Class.forName("net.minecraft.server." + ver + ".BlockPosition");
             clazzIWorldReader = Class.forName("net.minecraft.server." + ver + ".IWorldReader");
             clazzAxisAlignedBB = Class.forName("net.minecraft.server." + ver + ".AxisAlignedBB");
+            clazzEntityTypes = Class.forName("net.minecraft.server." + ver + ".EntityTypes");
+            clazzIWorldReader = Class.forName("net.minecraft.server." + ver + ".IWorldReader");
 
             methodB = clazzMobSpawnerData.getDeclaredMethod("b");
             methodSetString = clazzNBTTagCompound.getDeclaredMethod("setString", String.class, String.class);
 
             methodGetBoundingBox = clazzEntity.getDeclaredMethod("getBoundingBox");
+            methodSetPosition = clazzEntity.getDeclaredMethod("setPosition", double.class, double.class, double.class);
             methodGetCubes = clazzIWorldReader.getDeclaredMethod("getCubes", clazzEntity, clazzAxisAlignedBB);
             methodGetHandle = clazzCraftWorld.getDeclaredMethod("getHandle");
-            methodChunkRegionLoaderA = clazzChunkRegionLoader.getDeclaredMethod("a", clazzNBTTagCompound, clazzWorld, double.class, double.class, double.class, boolean.class);
+            try {
+                methodChunkRegionLoaderA = clazzChunkRegionLoader.getDeclaredMethod("a", clazzNBTTagCompound, clazzWorld, double.class, double.class, double.class, boolean.class);
+                methodEntityInsentientPrepare = clazzEntityInsentient.getDeclaredMethod("prepare", clazzDifficultyDamageScaler, clazzGroupDataEntity, clazzNBTTagCompound);
+                methodChunkRegionLoaderA2 = clazzChunkRegionLoader.getDeclaredMethod("a", clazzEntity, clazzGeneratorAccess, Class.forName("org.bukkit.event.entity.CreatureSpawnEvent$SpawnReason"));
+            } catch (NoSuchMethodException e) {
+                methodA = clazzEntityTypes.getDeclaredMethod("a", clazzNBTTagCompound, clazzWorld);
+
+                clazzEnumMobSpawn = Class.forName("net.minecraft.server." + ver + ".EnumMobSpawn");
+                for (Object enumValue : clazzEnumMobSpawn.getEnumConstants()) {
+                    Enum<?> mobSpawnEnum = (Enum<?>) enumValue;
+                    if (mobSpawnEnum.name().equals("SPAWNER")) {
+                        this.SpawnerEnum = mobSpawnEnum;
+                        break;
+                    }
+                }
+
+                clazzWorldServer = Class.forName("net.minecraft.server." + ver + ".WorldServer");
+                clazzGeneratorAccess = Class.forName("net.minecraft.server." + ver + ".GeneratorAccess");
+
+                methodEntityInsentientPrepare = clazzEntityInsentient.getDeclaredMethod("prepare", clazzGeneratorAccess, clazzDifficultyDamageScaler, clazzEnumMobSpawn, clazzGroupDataEntity, clazzNBTTagCompound);
+                methodAddEntity = clazzWorldServer.getDeclaredMethod("addEntity", clazzEntity, Class.forName("org.bukkit.event.entity.CreatureSpawnEvent$SpawnReason"));
+            }
+
             methodEntityGetBukkitEntity = clazzEntity.getDeclaredMethod("getBukkitEntity");
             methodCraftEntityTeleport = clazzCraftEntity.getDeclaredMethod("teleport", Location.class);
-            methodEntityInsentientCanSpawn = clazzEntityInsentient.getDeclaredMethod("canSpawn");
-            methodEntityInsentientPrepare = clazzEntityInsentient.getDeclaredMethod("prepare", clazzDifficultyDamageScaler, clazzGroupDataEntity, clazzNBTTagCompound);
-            methodChunkRegionLoaderA2 = clazzChunkRegionLoader.getDeclaredMethod("a", clazzEntity, Class.forName("net.minecraft.server." + ver + ".GeneratorAccess"), Class.forName("org.bukkit.event.entity.CreatureSpawnEvent$SpawnReason"));
             methodGetDamageScaler = clazzWorld.getDeclaredMethod("getDamageScaler", clazzBlockPosition);
 
             fieldWorldRandom = clazzWorld.getDeclaredField("random");
@@ -165,11 +188,27 @@ public class SpawnOptionEntity implements SpawnOption {
                 double y = (double) (spawner.getY() + random.nextInt(3) - 1);
                 double z = (double) spawner.getZ() + (random.nextDouble() - random.nextDouble()) * (double) spawnRange + 0.5D;
 
-                Object objEntity = methodChunkRegionLoaderA.invoke(null, objNBTTagCompound, objWorld, x, y, z, false);
+                Object objEntity;
+                if (methodChunkRegionLoaderA != null) {
+                    objEntity = methodChunkRegionLoaderA.invoke(null, objNBTTagCompound, objWorld, x, y, z, false);
+                } else {
+                    Optional optional = (Optional)methodA.invoke(null, objNBTTagCompound, objWorld);
+
+                    if (!optional.isPresent()) continue;
+
+                    objEntity = optional.get();
+
+                    methodSetPosition.invoke(objEntity, x, y, z);
+                }
+
                 Object objBlockPosition = clazzBlockPosition.getConstructor(clazzEntity).newInstance(objEntity);
                 Object objDamageScaler = methodGetDamageScaler.invoke(objWorld, objBlockPosition);
 
-                methodEntityInsentientPrepare.invoke(objEntity, objDamageScaler, null, null);
+                if (methodChunkRegionLoaderA != null) {
+                    methodEntityInsentientPrepare.invoke(objEntity, objDamageScaler, null, null);
+                } else {
+                    methodEntityInsentientPrepare.invoke(objEntity, objWorld, objDamageScaler, SpawnerEnum, null, null);
+                }
 
                 Object objEntityInsentient = clazzEntityInsentient.isInstance(objEntity) ? clazzEntityInsentient.cast(objEntity) : null;
 
@@ -192,7 +231,11 @@ public class SpawnOptionEntity implements SpawnOption {
                 Bukkit.getPluginManager().callEvent(event);
                 if (event.isCancelled()) return;
 
-                methodChunkRegionLoaderA2.invoke(null, objEntity, objWorld, CreatureSpawnEvent.SpawnReason.SPAWNER);
+                if (methodChunkRegionLoaderA != null) {
+                    methodChunkRegionLoaderA2.invoke(null, objEntity, objWorld, CreatureSpawnEvent.SpawnReason.SPAWNER);
+                } else {
+                    methodAddEntity.invoke(clazzWorldServer.cast(objWorld), objEntity, CreatureSpawnEvent.SpawnReason.SPAWNER);
+                }
 
                 if (data.isSpawnOnFire()) craftEntity.setFireTicks(160);
 
@@ -220,10 +263,9 @@ public class SpawnOptionEntity implements SpawnOption {
             if (!(Boolean) methodGetCubes.invoke(objIWR, objEntityInsentient, methodGetBoundingBox.invoke(objEntityInsentient)))
                 return false;
 
+            Material[] spawnBlocks = data.getSpawnBlocks();
 
-            List<Material> spawnBlocks = Arrays.asList(data.getSpawnBlocks());
-
-            if (!Methods.isAir(location.getBlock().getType()) && (!isWater(location.getBlock().getType()) && !spawnBlocks.contains("WATER"))) {
+            if (!Methods.isAir(location.getBlock().getType()) && !isWater(location.getBlock().getType())) {
                 return false;
             }
 
@@ -235,7 +277,7 @@ public class SpawnOptionEntity implements SpawnOption {
                 if (material == null) continue;
                 if (down.toString().equalsIgnoreCase(material.name())
                         || (material.toString().equals("GRASS") && down == Material.GRASS)
-                        || isWater(down) && spawnBlocks.contains("WATER")) {
+                        || isWater(down)) {
                     return true;
                 }
             }

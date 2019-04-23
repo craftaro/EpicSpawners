@@ -4,6 +4,7 @@ import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.api.spawner.Spawner;
 import com.songoda.epicspawners.api.spawner.SpawnerManager;
 import com.songoda.epicspawners.utils.SettingsManager;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.CreatureSpawner;
@@ -48,6 +49,7 @@ public class SpawnerSpawnTask extends BukkitRunnable {
             if (delay >= 0) return;
 
             if (!spawner.getWorld().isChunkLoaded(spawner.getX() >> 4, spawner.getZ() >> 4) || !spawner.checkConditions()) {
+                Bukkit.broadcastMessage("Conditons failed");
                 spawner.getCreatureSpawner().setDelay(300);
                 return;
             }
