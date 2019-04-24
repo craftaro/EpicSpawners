@@ -35,12 +35,6 @@
             <version>2.1.0</version>
         </dependency>
         <dependency>
-            <groupId>com.songoda</groupId>
-            <artifactId>arconix</artifactId>
-            <version>2.0.0</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>org</groupId>
             <artifactId>kingdoms</artifactId>
             <version>13.0.9</version>

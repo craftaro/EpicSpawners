@@ -18,7 +18,6 @@ import com.songoda.epicspawners.command.CommandManager;
 import com.songoda.epicspawners.handlers.AppearanceHandler;
 import com.songoda.epicspawners.handlers.BlacklistHandler;
 import com.songoda.epicspawners.hologram.Hologram;
-import com.songoda.epicspawners.hologram.HologramArconix;
 import com.songoda.epicspawners.hologram.HologramHolographicDisplays;
 import com.songoda.epicspawners.listeners.*;
 import com.songoda.epicspawners.player.PlayerActionManager;
@@ -161,12 +160,9 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         AbstractGUI.initializeListeners(this);
 
         // Register Hologram Plugin
-        if (SettingsManager.Setting.SPAWNER_HOLOGRAMS.getBoolean()) {
-            if (pluginManager.isPluginEnabled("HolographicDisplays"))
+        if (SettingsManager.Setting.SPAWNER_HOLOGRAMS.getBoolean()
+                && pluginManager.isPluginEnabled("HolographicDisplays"))
                 hologram = new HologramHolographicDisplays(this);
-            else if (pluginManager.isPluginEnabled("Arconix")) hologram = new HologramArconix(this);
-        }
-
 
         int timeout = SettingsManager.Setting.AUTOSAVE.getInt() * 60 * 20;
         Bukkit.getScheduler().runTaskTimerAsynchronously(this, this::saveToFile, timeout, timeout);
