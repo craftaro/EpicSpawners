@@ -89,7 +89,9 @@ public class SettingsManager implements Listener {
             config.set(value, event.getMessage());
         }
 
-        this.finishEditing(player);
+        Bukkit.getScheduler().scheduleSyncDelayedTask(EpicSpawnersPlugin.getInstance(), () ->
+                this.finishEditing(player), 0L);
+
         event.setCancelled(true);
     }
 
