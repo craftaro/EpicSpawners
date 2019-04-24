@@ -89,7 +89,6 @@ public class SpawnOptionEntity implements SpawnOption {
                 methodEntityInsentientPrepare = clazzEntityInsentient.getDeclaredMethod("prepare", clazzDifficultyDamageScaler, clazzGroupDataEntity, clazzNBTTagCompound);
                 methodChunkRegionLoaderA2 = clazzChunkRegionLoader.getDeclaredMethod("a", clazzEntity, clazzGeneratorAccess, Class.forName("org.bukkit.event.entity.CreatureSpawnEvent$SpawnReason"));
             } catch (NoSuchMethodException e) {
-                e.printStackTrace();
                 methodA = clazzEntityTypes.getDeclaredMethod("a", clazzNBTTagCompound, clazzWorld);
 
                 clazzEnumMobSpawn = Class.forName("net.minecraft.server." + ver + ".EnumMobSpawn");
