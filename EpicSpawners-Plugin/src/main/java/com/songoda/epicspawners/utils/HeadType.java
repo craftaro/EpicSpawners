@@ -63,7 +63,14 @@ public enum HeadType {
     COD("http://textures.minecraft.net/texture/a5eef52a468f681fab6a56bf5cc9986c1868ff0795d115c6ab0009d8faf972a4"),
     TROPICAL_FISH("http://textures.minecraft.net/texture/b80f5955825e822eff416182925c7d650a7e0947ec9f855a75450e03175e8338"),
     DROWNED("http://textures.minecraft.net/texture/71f2469f9b4bd92aa6a8ba3415f1ab76fd746041400062dc40fe13b646c0cc5d"),
-    DROPPED_ITEM("http://textures.minecraft.net/texture/452fe4ce1f1d53a12ed443eeba7297e81da581e0c7a39954d9d7bba7de59c46");
+    DROPPED_ITEM("http://textures.minecraft.net/texture/452fe4ce1f1d53a12ed443eeba7297e81da581e0c7a39954d9d7bba7de59c46"),
+    WANDERING_TRADER("http://textures.minecraft.net/texture/4e8882cb316875e867b8d90c197f3ab57ff809fe8dd4a88368354afada48cdb4"),
+    PANDA("http://textures.minecraft.net/texture/3cddc208575aadfdc47c1c707f8230b4775f70cec7531a9a355774f59e6bffa7"),
+    CAT("http://textures.minecraft.net/texture/ff1b549341ad53b2bcd851b224ec56dbadb54887eaa0f771ba8eb39f58cf1d59"),
+    FOX("http://textures.minecraft.net/texture/1528ee714d3fca31655feae1cd3c14d346f9bcae3e457b7658c9f915e21"),
+    PILLAGER("http://textures.minecraft.net/texture/63550f89aea88665804c2fd1b6682930c23233184fdc060991305718ed660597"),
+    RAVAGER("http://textures.minecraft.net/texture/d91a9d864e36fbec19b584bcb71292530755b10c4e60784fec92b51f8189363c"),
+    TRADER_LLAMA("http://textures.minecraft.net/texture/6bc438fc1fbbaea2289aabecedd3fdf269ddc979bf8b5c6a8fc4bb8dcd4e1fe");
 
     private final String url;
 
