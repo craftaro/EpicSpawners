@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -23,15 +24,20 @@ import java.util.Map;
 
 public class AbstractAnvilGUI {
 
-    private static Class<?> BlockPosition;
-    private static Class<?> PacketPlayOutOpenWindow;
-    private static Class<?> ContainerAnvil;
-    private static Class<?> ChatMessage;
-    private static Class<?> EntityHuman;
-    private static boolean loadedClasses = false;
+    private static Class<?> BlockPositionClass;
+    private static Class<?> PacketPlayOutOpenWindowClass;
+    private static Class<?> IChatBaseComponentClass;
+    private static Class<?> ICraftingClass;
+    private static Class<?> ContainerAnvilClass;
+    private static Class<?> ChatMessageClass;
+    private static Class<?> EntityHumanClass;
+    private static Class<?> ContainerClass;
+    private static Class<?> ContainerAccessClass;
+    private static Class<?> WorldClass;
+    private static Class<?> PlayerInventoryClass;
+    private static Class<?> ContainersClass;
+
     private Player player;
-    @SuppressWarnings("unused")
-    private AnvilClickEventHandler handler;
     private Map<AnvilSlot, ItemStack> items = new HashMap<>();
     private OnClose onClose = null;
     private Inventory inv;
@@ -39,79 +45,91 @@ public class AbstractAnvilGUI {
 
     private Sound closeSound = Sound.ENTITY_PLAYER_LEVELUP;
 
+    static {
+        BlockPositionClass = NMSUtil.getNMSClass("BlockPosition");
+        PacketPlayOutOpenWindowClass = NMSUtil.getNMSClass("PacketPlayOutOpenWindow");
+        IChatBaseComponentClass = NMSUtil.getNMSClass("IChatBaseComponent");
+        ICraftingClass = NMSUtil.getNMSClass("ICrafting");
+        ContainerAnvilClass = NMSUtil.getNMSClass("ContainerAnvil");
+        EntityHumanClass = NMSUtil.getNMSClass("EntityHuman");
+        ChatMessageClass = NMSUtil.getNMSClass("ChatMessage");
+        ContainerClass = NMSUtil.getNMSClass("Container");
+        WorldClass = NMSUtil.getNMSClass("World");
+        PlayerInventoryClass = NMSUtil.getNMSClass("PlayerInventory");
+
+        if (NMSUtil.getVersionNumber() > 13) {
+            ContainerAccessClass = NMSUtil.getNMSClass("ContainerAccess");
+            ContainersClass = NMSUtil.getNMSClass("Containers");
+        }
+    }
+
     public AbstractAnvilGUI(final Player player, final AnvilClickEventHandler handler) {
-        loadClasses();
         this.player = player;
-        this.handler = handler;
 
         this.listener = new Listener() {
-            @EventHandler
+            @EventHandler(priority = EventPriority.LOWEST)
             public void onInventoryClick(InventoryClickEvent event) {
-                if (!(event.getWhoClicked() instanceof Player) || !event.getInventory().equals(inv)) return;
+                if (event.getWhoClicked() instanceof Player) {
 
-                event.setCancelled(true);
+                    if (event.getInventory().equals(inv)) {
+                        event.setCancelled(true);
 
-                ItemStack item = event.getCurrentItem();
-                int slot = event.getRawSlot();
-                String name = "";
+                        ItemStack item = event.getCurrentItem();
+                        int slot = event.getRawSlot();
+                        String name = "";
 
-                if (item != null) {
-                    if (item.hasItemMeta()) {
-                        ItemMeta meta = item.getItemMeta();
+                        if (item != null) {
+                            if (item.hasItemMeta()) {
+                                ItemMeta meta = item.getItemMeta();
 
-                        if (meta.hasDisplayName()) {
-                            name = meta.getDisplayName();
+                                if (meta != null && meta.hasDisplayName()) {
+                                    name = meta.getDisplayName();
+                                }
+                            }
+                        }
+
+                        AnvilClickEvent clickEvent = new AnvilClickEvent(AnvilSlot.bySlot(slot), name);
+
+                        handler.onAnvilClick(clickEvent);
+
+                        if (clickEvent.getWillClose()) {
+                            event.getWhoClicked().closeInventory();
+                        }
+
+                        if (clickEvent.getWillDestroy()) {
+                            destroy();
                         }
                     }
                 }
-
-                AnvilClickEvent clickEvent = new AnvilClickEvent(AnvilSlot.bySlot(slot), name);
-
-                handler.onAnvilClick(clickEvent);
-
-                if (clickEvent.getWillClose()) {
-                    event.getWhoClicked().closeInventory();
-                }
-
-                if (clickEvent.getWillDestroy()) {
-                    destroy();
-                }
             }
 
-            @EventHandler
+            @EventHandler(priority = EventPriority.LOWEST)
             public void onInventoryClose(InventoryCloseEvent event) {
-                if (!(event.getPlayer() instanceof Player)) return;
-                Inventory inv = event.getInventory();
-                player.setLevel(player.getLevel() - 1);
-                if (!inv.equals(AbstractAnvilGUI.this.inv)) return;
-                inv.clear();
-                OnClose onClose = getOnClose();
-                player.playSound(player.getLocation(), closeSound, 1F, 1F);
-                Bukkit.getScheduler().scheduleSyncDelayedTask(EpicSpawnersPlugin.getInstance(), () -> {
-                    if (onClose != null) onClose.OnClose(player, inv);
-                    destroy();
-                }, 1L);
+                if (event.getPlayer() instanceof Player) {
+                    Inventory inv = event.getInventory();
+                    player.setLevel(player.getLevel() - 1);
+                    if (inv.equals(inv)) {
+                        inv.clear();
+                        player.playSound(player.getLocation(), closeSound, 1F, 1F);
+                        Bukkit.getScheduler().scheduleSyncDelayedTask(EpicSpawnersPlugin.getInstance(), () -> {
+                            if (onClose != null) onClose.OnClose(player, inv);
+                            destroy();
+                        }, 1L);
+
+                    }
+                }
             }
 
-            @EventHandler
+            @EventHandler(priority = EventPriority.LOWEST)
             public void onPlayerQuit(PlayerQuitEvent event) {
-                if (!event.getPlayer().equals(getPlayer())) return;
-                player.setLevel(player.getLevel() - 1);
-                destroy();
+                if (event.getPlayer().equals(getPlayer())) {
+                    player.setLevel(player.getLevel() - 1);
+                    destroy();
+                }
             }
         };
 
         Bukkit.getPluginManager().registerEvents(listener, EpicSpawnersPlugin.getInstance());
-    }
-
-    private void loadClasses() {
-        if (loadedClasses) return;
-        BlockPosition = NMSUtil.getNMSClass("BlockPosition");
-        PacketPlayOutOpenWindow = NMSUtil.getNMSClass("PacketPlayOutOpenWindow");
-        ContainerAnvil = NMSUtil.getNMSClass("ContainerAnvil");
-        EntityHuman = NMSUtil.getNMSClass("EntityHuman");
-        ChatMessage = NMSUtil.getNMSClass("ChatMessage");
-        loadedClasses = true;
     }
 
     public Player getPlayer() {
@@ -127,49 +145,59 @@ public class AbstractAnvilGUI {
 
         try {
             Object craftPlayer = NMSUtil.getCraftClass("entity.CraftPlayer").cast(player);
-            Method getHandleMethod = craftPlayer.getClass().getMethod("getHandle", new Class<?>[0]);
-            Object entityPlayer = getHandleMethod.invoke(craftPlayer, new Object[0]);
+            Method getHandleMethod = craftPlayer.getClass().getMethod("getHandle");
+            Object entityPlayer = getHandleMethod.invoke(craftPlayer);
+            Object playerInventory = NMSUtil.getFieldObject(entityPlayer, NMSUtil.getField(entityPlayer.getClass(), "inventory", false));
+            Object world = NMSUtil.getFieldObject(entityPlayer, NMSUtil.getField(entityPlayer.getClass(), "world", false));
+            Object blockPosition = BlockPositionClass.getConstructor(int.class, int.class, int.class).newInstance(0, 0, 0);
 
             Object container;
 
-            if (NMSUtil.getVersionNumber() == 7) {
-                container = ContainerAnvil.getConstructor(new Class[]{NMSUtil.getNMSClass("PlayerInventory"), NMSUtil.getNMSClass("World"), Integer.TYPE, Integer.TYPE, Integer.TYPE, EntityHuman}).newInstance(new Object[]{NMSUtil.getFieldObject(entityPlayer, NMSUtil.getField(entityPlayer.getClass(), "inventory", false)), NMSUtil.getFieldObject(entityPlayer, NMSUtil.getField(entityPlayer.getClass(), "world", false)), Integer.valueOf(0), Integer.valueOf(0), Integer.valueOf(0), entityPlayer});
+            if (NMSUtil.getVersionNumber() > 13) {
+                container = ContainerAnvilClass
+                        .getConstructor(int.class, PlayerInventoryClass, ContainerAccessClass)
+                        .newInstance(7, playerInventory, ContainerAccessClass.getMethod("at", WorldClass, BlockPositionClass).invoke(null, world, blockPosition));
             } else {
-                container = ContainerAnvil.getConstructor(NMSUtil.getNMSClass("PlayerInventory"), NMSUtil.getNMSClass("World"), BlockPosition, EntityHuman).newInstance(NMSUtil.getFieldObject(entityPlayer, NMSUtil.getField(entityPlayer.getClass(), "inventory", false)), NMSUtil.getFieldObject(entityPlayer, NMSUtil.getField(entityPlayer.getClass(), "world", false)), BlockPosition.getConstructor(int.class, int.class, int.class).newInstance(0, 0, 0), entityPlayer);
+                container = ContainerAnvilClass
+                        .getConstructor(PlayerInventoryClass, WorldClass, BlockPositionClass, EntityHumanClass)
+                        .newInstance(playerInventory, world, blockPosition, entityPlayer);
             }
 
-            NMSUtil.getField(NMSUtil.getNMSClass("Container"), "checkReachable", true).set(container, false);
+            NMSUtil.getField(ContainerClass, "checkReachable", true).set(container, false);
 
-            Method getBukkitViewMethod = container.getClass().getMethod("getBukkitView", new Class<?>[0]);
+            Method getBukkitViewMethod = container.getClass().getMethod("getBukkitView");
             Object bukkitView = getBukkitViewMethod.invoke(container);
-            Method getTopInventoryMethod = bukkitView.getClass().getMethod("getTopInventory", new Class<?>[0]);
+            Method getTopInventoryMethod = bukkitView.getClass().getMethod("getTopInventory");
             inv = (Inventory) getTopInventoryMethod.invoke(bukkitView);
 
             for (AnvilSlot slot : items.keySet()) {
                 inv.setItem(slot.getSlot(), items.get(slot));
             }
 
-            Method nextContainerCounterMethod = entityPlayer.getClass().getMethod("nextContainerCounter", new Class<?>[0]);
+            Method nextContainerCounterMethod = entityPlayer.getClass().getMethod("nextContainerCounter");
             int c = (int) nextContainerCounterMethod.invoke(entityPlayer);
 
-            Constructor<?> chatMessageConstructor = ChatMessage.getConstructor(String.class, Object[].class);
+            Constructor<?> chatMessageConstructor = ChatMessageClass.getConstructor(String.class, Object[].class);
             Object packet;
 
-            if (NMSUtil.getVersionNumber() == 7) {
-                packet = PacketPlayOutOpenWindow.getConstructor(new Class[]{Integer.TYPE, Integer.TYPE, String.class, Integer.TYPE, Boolean.TYPE, Integer.TYPE}).newInstance(new Object[]{Integer.valueOf(c), Integer.valueOf(8), "Repairing", Integer.valueOf(0), Boolean.valueOf(true), Integer.valueOf(0)});
+            if (NMSUtil.getVersionNumber() > 13) {
+                packet = PacketPlayOutOpenWindowClass
+                        .getConstructor(int.class, ContainersClass, IChatBaseComponentClass)
+                        .newInstance(c, ContainersClass.getField("ANVIL").get(null), chatMessageConstructor.newInstance("Repairing", new Object[]{}));
             } else {
-                packet = PacketPlayOutOpenWindow.getConstructor(int.class, String.class, NMSUtil.getNMSClass("IChatBaseComponent"), int.class).newInstance(c, "minecraft:anvil", chatMessageConstructor.newInstance("Repairing", new Object[]{}), 0);
+                packet = PacketPlayOutOpenWindowClass
+                        .getConstructor(int.class, String.class, IChatBaseComponentClass, int.class)
+                        .newInstance(c, "minecraft:anvil", chatMessageConstructor.newInstance("Repairing", new Object[]{}), 0);
             }
 
             NMSUtil.sendPacket(player, packet);
 
-            Field activeContainerField = NMSUtil.getField(EntityHuman, "activeContainer", true);
+            Field activeContainerField = NMSUtil.getField(EntityHumanClass, "activeContainer", true);
 
             if (activeContainerField != null) {
                 activeContainerField.set(entityPlayer, container);
-                NMSUtil.getField(NMSUtil.getNMSClass("Container"), "windowId", true).set(activeContainerField.get(entityPlayer), c);
-
-                Method addSlotListenerMethod = activeContainerField.get(entityPlayer).getClass().getMethod("addSlotListener", NMSUtil.getNMSClass("ICrafting"));
+                NMSUtil.getField(ContainerClass, "windowId", true).set(activeContainerField.get(entityPlayer), c);
+                Method addSlotListenerMethod = activeContainerField.get(entityPlayer).getClass().getMethod("addSlotListener", ICraftingClass);
                 addSlotListenerMethod.invoke(activeContainerField.get(entityPlayer), entityPlayer);
             }
         } catch (Exception e) {
@@ -178,9 +206,7 @@ public class AbstractAnvilGUI {
     }
 
     public void destroy() {
-        onClose = null;
         player = null;
-        handler = null;
         items = null;
 
         HandlerList.unregisterAll(listener);
@@ -207,7 +233,7 @@ public class AbstractAnvilGUI {
 
         private int slot;
 
-        private AnvilSlot(int slot) {
+        AnvilSlot(int slot) {
             this.slot = slot;
         }
 
@@ -226,6 +252,7 @@ public class AbstractAnvilGUI {
         }
     }
 
+    @FunctionalInterface
     public interface AnvilClickEventHandler {
         void onAnvilClick(AnvilClickEvent event);
     }
@@ -267,4 +294,5 @@ public class AbstractAnvilGUI {
             this.destroy = destroy;
         }
     }
+
 }
