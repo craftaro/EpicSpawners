@@ -178,16 +178,18 @@ public class AbstractAnvilGUI {
             int c = (int) nextContainerCounterMethod.invoke(entityPlayer);
 
             Constructor<?> chatMessageConstructor = ChatMessageClass.getConstructor(String.class, Object[].class);
+            Object inventoryTitle = chatMessageConstructor.newInstance("Repairing", new Object[]{});
+
             Object packet;
 
             if (NMSUtil.getVersionNumber() > 13) {
                 packet = PacketPlayOutOpenWindowClass
                         .getConstructor(int.class, ContainersClass, IChatBaseComponentClass)
-                        .newInstance(c, ContainersClass.getField("ANVIL").get(null), chatMessageConstructor.newInstance("Repairing", new Object[]{}));
+                        .newInstance(c, ContainersClass.getField("ANVIL").get(null), inventoryTitle);
             } else {
                 packet = PacketPlayOutOpenWindowClass
                         .getConstructor(int.class, String.class, IChatBaseComponentClass, int.class)
-                        .newInstance(c, "minecraft:anvil", chatMessageConstructor.newInstance("Repairing", new Object[]{}), 0);
+                        .newInstance(c, "minecraft:anvil", inventoryTitle, 0);
             }
 
             NMSUtil.sendPacket(player, packet);
@@ -199,6 +201,10 @@ public class AbstractAnvilGUI {
                 NMSUtil.getField(ContainerClass, "windowId", true).set(activeContainerField.get(entityPlayer), c);
                 Method addSlotListenerMethod = activeContainerField.get(entityPlayer).getClass().getMethod("addSlotListener", ICraftingClass);
                 addSlotListenerMethod.invoke(activeContainerField.get(entityPlayer), entityPlayer);
+
+                if (NMSUtil.getVersionNumber() > 13) {
+                    ContainerClass.getMethod("setTitle", IChatBaseComponentClass).invoke(container, inventoryTitle);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
