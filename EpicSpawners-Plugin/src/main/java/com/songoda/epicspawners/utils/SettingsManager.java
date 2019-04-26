@@ -268,7 +268,6 @@ public class SettingsManager implements Listener {
         DATABASE_USERNAME("Database.Username", "PUT_USERNAME_HERE"),
         DATABASE_PASSWORD("Database.Password", "PUT_PASSWORD_HERE"),
 
-        DOWNLOAD_FILES("System.Download Needed Data Files", true),
         LANGUGE_MODE("System.Language Mode", "en_US"),
         DEBUG_MODE("System.Debugger Enabled", false);
 

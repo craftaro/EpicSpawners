@@ -35,6 +35,9 @@ import com.songoda.epicspawners.tasks.SpawnerParticleTask;
 import com.songoda.epicspawners.tasks.SpawnerSpawnTask;
 import com.songoda.epicspawners.utils.*;
 import com.songoda.epicspawners.utils.gui.AbstractGUI;
+import com.songoda.epicspawners.utils.updateModules.LocaleModule;
+import com.songoda.update.Plugin;
+import com.songoda.update.SongodaUpdate;
 import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
@@ -131,7 +134,10 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         this.setupSpawners();
         this.setupLanguage();
 
-        if (SettingsManager.Setting.DOWNLOAD_FILES.getBoolean()) this.update();
+        //Running Songoda Updater
+        Plugin plugin = new Plugin(this, 13);
+        plugin.addModule(new LocaleModule());
+        SongodaUpdate.load(plugin);
 
         this.references = new References();
         this.boostManager = new BoostManager();
@@ -360,39 +366,6 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
             }
 
             this.spawnerManager.addSpawnerData(key, data);
-        }
-    }
-
-    private void update() {
-        try {
-            URL url = new URL("http://update.songoda.com/index.php?plugin=" + getDescription().getName() + "&version=" + getDescription().getVersion());
-            URLConnection urlConnection = url.openConnection();
-            InputStream is = urlConnection.getInputStream();
-            InputStreamReader isr = new InputStreamReader(is);
-
-            int numCharsRead;
-            char[] charArray = new char[1024];
-            StringBuffer sb = new StringBuffer();
-            while ((numCharsRead = isr.read(charArray)) > 0) {
-                sb.append(charArray, 0, numCharsRead);
-            }
-            String jsonString = sb.toString();
-            JSONObject json = (JSONObject) new JSONParser().parse(jsonString);
-
-            JSONArray files = (JSONArray) json.get("neededFiles");
-            for (Object o : files) {
-                JSONObject file = (JSONObject) o;
-
-                switch ((String) file.get("type")) {
-                    case "locale":
-                        InputStream in = new URL((String) file.get("link")).openStream();
-                        Locale.saveDefaultLocale(in, (String) file.get("name"));
-                        break;
-                }
-            }
-        } catch (Exception e) {
-            System.out.println("Failed to update.");
-            //e.printStackTrace();
         }
     }
 
