@@ -331,6 +331,9 @@ public class ESpawner implements Spawner {
             return false;
         }
 
+        if (!SettingsManager.Setting.OMNI_SPAWNERS.getBoolean() || !player.hasPermission("epicspawners.omni"))
+            return false;
+
         if ((getSpawnerDataCount() + amount) > max) {
             ItemStack item = data.toItemStack(1, (getSpawnerDataCount() + amount) - max);
             if (player.getInventory().firstEmpty() == -1)
@@ -352,9 +355,6 @@ public class ESpawner implements Spawner {
 
             return true;
         }
-
-        if (!SettingsManager.Setting.OMNI_SPAWNERS.getBoolean() || !player.hasPermission("epicspawners.omni"))
-            return false;
 
         ESpawnerStack stack = new ESpawnerStack(data, amount);
         spawnerStacks.push(stack);
