@@ -160,7 +160,6 @@ public class SpawnOptionEntity implements SpawnOption {
         Collection<Entity> amt = location.getWorld().getNearbyEntities(location, Integer.parseInt(arr[0]), Integer.parseInt(arr[1]), Integer.parseInt(arr[2]));
         amt.removeIf(entity -> !(entity instanceof LivingEntity) || entity.getType() == EntityType.PLAYER || entity.getType() == EntityType.ARMOR_STAND);
 
-        Bukkit.broadcastMessage(spawnCount + "");
 
         if (amt.size() == limit && spawnerBoost == 0) return;
         spawnCount = (stackPlugin ? spawnCount : Math.min(limit - amt.size(), spawnCount)) + spawner.getBoost();
