@@ -202,7 +202,7 @@ public class SettingsManager implements Listener {
         ONLY_DROP_PLACED("Main.Only Drop Placed Spawner", false),
         ONLY_CHARGE_NATURAL("Main.Only Charge Natural Spawners", false),
         CUSTOM_SPAWNER_TICK_RATE("Main.Custom Spawner Tick Rate", 10),
-        RANDOM_LOW_HIGH("Main.Random Amount Added To Each Spawn", "1:3"),
+        RANDOM_LOW_HIGH("Main.Random Amount Added To Each Spawn", "1:4"),
         SOUNDS_ENABLED("Main.Sounds Enabled", true),
         DISPLAY_LEVEL_ONE("Main.Display Level In Spawner Title If Level 1", false),
         OMNI_SPAWNERS("Main.OmniSpawners Enabled", true),
@@ -226,7 +226,7 @@ public class SettingsManager implements Listener {
 
         COST_EQUATION_EXPERIANCE("Main.Equations.Calculate XP Upgrade Cost", "{XPCost} * {Level}"),
         COST_EQUATION_ECONOMY("Main.Equations.Calculate Economy Upgrade Cost", "{ECOCost} * {Level}"),
-        SPAWNER_EQUATION_SPAWNS("Main.Equations.Mobs Spawned Per Spawn", "{MULTI} + {RAND}"),
+        SPAWNER_EQUATION_SPAWNS("Main.Equations.Mobs Spawned Per Spawn", "{MULTI} * {RAND}"),
 
         NAMED_SPAWNER_TIERS("Main.Named Spawners Tiers", false),
         TIER_NAMES("Main.Tier Names", Arrays.asList("&7Common", "&6Uncommon", "&4Rare", "&5Mythic")),

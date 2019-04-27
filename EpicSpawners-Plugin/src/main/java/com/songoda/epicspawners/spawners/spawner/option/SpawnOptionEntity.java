@@ -41,6 +41,8 @@ public class SpawnOptionEntity implements SpawnOption {
 
     private Enum<?> SpawnerEnum;
 
+    private boolean stackPlugin;
+
     private Map<String, Integer> cache = new HashMap<>();
     private Class<?> clazzMobSpawnerData, clazzEnumMobSpawn, clazzWorldServer, clazzGeneratorAccess, clazzEntityTypes, clazzNBTTagCompound, clazzCraftWorld, clazzWorld, clazzChunkRegionLoader, clazzEntity, clazzCraftEntity, clazzEntityInsentient, clazzGroupDataEntity, clazzDifficultyDamageScaler, clazzBlockPosition, clazzIWorldReader, clazzAxisAlignedBB;
     private Method methodB, methodSetString, methodSetPosition, methodA, methodAddEntity, methodGetHandle, methodChunkRegionLoaderA, methodEntityGetBukkitEntity, methodCraftEntityTeleport, methodEntityInsentientPrepare, methodChunkRegionLoaderA2, methodGetDamageScaler, methodGetCubes, methodGetBoundingBox;
@@ -50,6 +52,7 @@ public class SpawnOptionEntity implements SpawnOption {
         this.types = types;
         this.mgr = new ScriptEngineManager();
         this.engine = mgr.getEngineByName("JavaScript");
+        this.stackPlugin = Bukkit.getPluginManager().isPluginEnabled("UltimateStacker") || Bukkit.getPluginManager().isPluginEnabled("StackMob");
         init();
     }
 
@@ -157,8 +160,10 @@ public class SpawnOptionEntity implements SpawnOption {
         Collection<Entity> amt = location.getWorld().getNearbyEntities(location, Integer.parseInt(arr[0]), Integer.parseInt(arr[1]), Integer.parseInt(arr[2]));
         amt.removeIf(entity -> !(entity instanceof LivingEntity) || entity.getType() == EntityType.PLAYER || entity.getType() == EntityType.ARMOR_STAND);
 
+        Bukkit.broadcastMessage(spawnCount + "");
+
         if (amt.size() == limit && spawnerBoost == 0) return;
-        spawnCount = Math.min(limit - amt.size(), spawnCount) + spawner.getBoost();
+        spawnCount = (stackPlugin ? spawnCount : Math.min(limit - amt.size(), spawnCount)) + spawner.getBoost();
 
         while (spawnCount-- > 0) {
             EntityType type = types[ThreadLocalRandom.current().nextInt(types.length)];
