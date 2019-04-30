@@ -131,7 +131,7 @@ public class GUIEditorOverview extends AbstractGUI {
         lore.add(Methods.formatText("&6---------------------------"));
         lore.add(Methods.formatText(spawnerData.isActive() ? "&6Currently:&a Enabled." : "&6Currently:&c Disabled."));
 
-        createButton(29, Material.TNT, "&7Left-Click to: &cDisable Spawner", lore);
+        createButton(29, Material.TNT, "&7Left-Click to: " + (!spawnerData.isActive() ? "&cDisable" : "&aEnable") + " Spawner", lore);
 
         createButton(23, Material.LEVER, "&9&lGeneral Settings");
         createButton(24, Material.BONE, "&e&lDrop Settings");
