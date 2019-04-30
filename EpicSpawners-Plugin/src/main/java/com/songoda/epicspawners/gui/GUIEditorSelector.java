@@ -49,7 +49,7 @@ public class GUIEditorSelector extends AbstractGUI {
         slots = 54;
         if (size <= 7) {
             slots = 27;
-        } else if (size <= 15) {
+        } else if (size <= 14) {
             slots = 36;
         } else if (size <= 25) {
             slots = 45;
