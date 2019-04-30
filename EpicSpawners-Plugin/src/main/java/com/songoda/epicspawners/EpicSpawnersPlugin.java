@@ -235,7 +235,7 @@ public class EpicSpawnersPlugin extends JavaPlugin implements EpicSpawners {
         // Adding in Boosts
         if (storage.containsGroup("boosts")) {
             for (StorageRow row : storage.getRowsByGroup("boosts")) {
-                if (row.get("boosttype").asObject() != null)
+                if (row.get("boosttype").asObject() == null)
                     continue;
 
                 BoostData boostData = new BoostData(
