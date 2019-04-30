@@ -19,7 +19,7 @@ import java.util.List;
 public class GUISpawnerConvert extends AbstractGUI {
 
     private final EpicSpawnersPlugin plugin;
-    private final Spawner spawner;
+    private final ESpawner spawner;
     private List<SpawnerData> entities;
     private int page = 1;
     private int max = 0;
@@ -29,7 +29,7 @@ public class GUISpawnerConvert extends AbstractGUI {
     public GUISpawnerConvert(EpicSpawnersPlugin plugin, Spawner spawner, Player player) {
         super(player);
         this.plugin = plugin;
-        this.spawner = spawner;
+        this.spawner = (ESpawner)spawner;
 
         setUp();
     }
@@ -137,7 +137,7 @@ public class GUISpawnerConvert extends AbstractGUI {
         inventory.setItem(slots - 3, Methods.getBackgroundGlass(false));
 
         createButton(8, Material.valueOf(plugin.getConfig().getString("Interfaces.Exit Icon")),
-                plugin.getLocale().getMessage("general.nametag.exit"));
+                plugin.getLocale().getMessage("general.nametag.back"));
 
         ItemStack head = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
         ItemStack skull = Methods.addTexture(head, "http://textures.minecraft.net/texture/1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b");
@@ -161,7 +161,7 @@ public class GUISpawnerConvert extends AbstractGUI {
     protected void registerClickables() {
         resetClickables();
 
-        registerClickable(8, (player, inventory, cursor, slot, type) -> player.closeInventory());
+        registerClickable(8, (player, inventory, cursor, slot, type) -> spawner.overview(player));
 
         registerClickable(slots - 8, (player, inventory, cursor, slot, type) -> {
             if (page == 1) return;

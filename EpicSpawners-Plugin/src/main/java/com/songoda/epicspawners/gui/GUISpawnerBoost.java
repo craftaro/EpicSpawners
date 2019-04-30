@@ -5,6 +5,7 @@ import com.songoda.epicspawners.References;
 import com.songoda.epicspawners.api.spawner.Spawner;
 import com.songoda.epicspawners.boost.BoostData;
 import com.songoda.epicspawners.boost.BoostType;
+import com.songoda.epicspawners.spawners.spawner.ESpawner;
 import com.songoda.epicspawners.utils.Debugger;
 import com.songoda.epicspawners.utils.Methods;
 import com.songoda.epicspawners.utils.SettingsManager;
@@ -27,13 +28,13 @@ import java.util.Date;
 public class GUISpawnerBoost extends AbstractGUI {
 
     private final EpicSpawnersPlugin plugin;
-    private final Spawner spawner;
+    private final ESpawner spawner;
     private int amount = 1;
 
     public GUISpawnerBoost(EpicSpawnersPlugin plugin, Spawner spawner, Player player) {
         super(player);
         this.plugin = plugin;
-        this.spawner = spawner;
+        this.spawner = (ESpawner)spawner;
         setUp();
     }
 
@@ -109,6 +110,13 @@ public class GUISpawnerBoost extends AbstractGUI {
         inventory.setItem(25, Methods.getBackgroundGlass(true));
         inventory.setItem(26, Methods.getBackgroundGlass(true));
 
+        createButton(4, Material.valueOf(plugin.getConfig().getString("Interfaces.Exit Icon")),
+                plugin.getLocale().getMessage("general.nametag.back"));
+
+        createButton(8, Methods.addTexture(new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3),
+                "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23"),
+                plugin.getLocale().getMessage("general.nametag.back"));
+
         ItemStack head = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
         ItemStack skull = Methods.addTexture(head, "http://textures.minecraft.net/texture/1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b");
         SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
@@ -134,6 +142,11 @@ public class GUISpawnerBoost extends AbstractGUI {
     @Override
     protected void registerClickables() {
         resetClickables();
+
+
+        registerClickable(4, (player, inventory, cursor, slot, type) -> spawner.overview(player));
+
+
         registerClickable(0, (player, inventory, cursor, slot, type) -> {
             amount--;
             setUp();
