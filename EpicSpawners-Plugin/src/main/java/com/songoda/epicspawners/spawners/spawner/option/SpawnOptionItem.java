@@ -4,6 +4,7 @@ import com.songoda.epicspawners.api.spawner.Spawner;
 import com.songoda.epicspawners.api.spawner.SpawnerData;
 import com.songoda.epicspawners.api.spawner.SpawnerStack;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.entity.Item;
@@ -40,6 +41,7 @@ public class SpawnOptionItem implements SpawnOption {
         int spawnerBoost = spawner.getBoost();
         for (int i = 0; i < spawner.getSpawnerDataCount() + spawnerBoost; i++) {
             for (ItemStack item : items) {
+                if (item == null || item.getType() == Material.AIR) continue;
                 Item droppedItem = world.dropItem(spawnLocation, item);
                 spawner.setSpawnCount(spawner.getSpawnCount() + 1);
 
