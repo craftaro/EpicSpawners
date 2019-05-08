@@ -3,6 +3,7 @@ package com.songoda.epicspawners.listeners;
 import com.songoda.epicspawners.EpicSpawnersPlugin;
 import com.songoda.epicspawners.References;
 import com.songoda.epicspawners.api.events.SpawnerBreakEvent;
+import com.songoda.epicspawners.api.events.SpawnerChangeEvent;
 import com.songoda.epicspawners.api.events.SpawnerPlaceEvent;
 import com.songoda.epicspawners.api.spawner.Spawner;
 import com.songoda.epicspawners.api.spawner.SpawnerData;
@@ -11,6 +12,7 @@ import com.songoda.epicspawners.spawners.spawner.ESpawnerManager;
 import com.songoda.epicspawners.spawners.spawner.ESpawnerStack;
 import com.songoda.epicspawners.utils.Debugger;
 import com.songoda.epicspawners.utils.Methods;
+import com.songoda.epicspawners.utils.SettingsManager;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -227,14 +229,6 @@ public class BlockListeners implements Listener {
 
             Spawner spawner = instance.getSpawnerManager().getSpawnerFromWorld(location);
 
-            SpawnerBreakEvent breakEvent = new SpawnerBreakEvent(player, spawner);
-            Bukkit.getPluginManager().callEvent(breakEvent);
-            if (breakEvent.isCancelled()) {
-                return;
-            }
-
-            int currentStackSize = spawner.getSpawnerDataCount();
-
             if (spawner.getFirstStack().getSpawnerData() == null) {
                 event.getBlock().setType(Material.AIR);
                 System.out.println("A corrupted spawner has been removed as its Type no longer exists.");
@@ -243,6 +237,22 @@ public class BlockListeners implements Listener {
                     instance.getHologram().update(spawner);
                 instance.getAppearanceHandler().removeDisplayItem(spawner);
                 return;
+            }
+
+            int currentStackSize = spawner.getSpawnerDataCount();
+            boolean destroyWholeStack = player.isSneaking() && SettingsManager.Setting.SNEAK_FOR_STACK.getBoolean() || SettingsManager.Setting.ONLY_DROP_STACKED.getBoolean();
+            if (currentStackSize - 1 == 0 || destroyWholeStack) {
+                SpawnerBreakEvent breakEvent = new SpawnerBreakEvent(player, spawner);
+                Bukkit.getPluginManager().callEvent(breakEvent);
+                if (breakEvent.isCancelled()) {
+                    return;
+                }
+            } else {
+                SpawnerChangeEvent changeEvent = new SpawnerChangeEvent(player, spawner, currentStackSize - 1, currentStackSize);
+                Bukkit.getPluginManager().callEvent(changeEvent);
+                if (changeEvent.isCancelled()) {
+                    return;
+                }
             }
 
             boolean naturalOnly = instance.getConfig().getBoolean("Main.Only Charge Natural Spawners");

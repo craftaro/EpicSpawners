@@ -370,20 +370,23 @@ public class ESpawner implements Spawner {
         try {
             int currentStackSize = getSpawnerDataCount();
 
+            SpawnerChangeEvent event = new SpawnerChangeEvent(player, this, currentStackSize, oldStackSize);
+            Bukkit.getPluginManager().callEvent(event);
+            if (event.isCancelled()) return;
+
             if (getSpawnerDataCount() != SettingsManager.Setting.SPAWNERS_MAX.getInt())
                 player.sendMessage(References.getPrefix() + EpicSpawnersPlugin.getInstance().getLocale().getMessage("event.upgrade.success", currentStackSize));
             else
                 player.sendMessage(References.getPrefix() + EpicSpawnersPlugin.getInstance().getLocale().getMessage("event.upgrade.successmaxed", currentStackSize));
-
-            SpawnerChangeEvent event = new SpawnerChangeEvent(player, this, currentStackSize, oldStackSize);
-            Bukkit.getPluginManager().callEvent(event);
-            if (event.isCancelled()) return;
 
             Location loc = location.clone();
             loc.setX(loc.getX() + .5);
             loc.setY(loc.getY() + .5);
             loc.setZ(loc.getZ() + .5);
             player.getWorld().spawnParticle(org.bukkit.Particle.valueOf(SettingsManager.Setting.UPGRADE_PARTICLE_TYPE.getString()), loc, 100, .5, .5, .5);
+
+            if (EpicSpawnersPlugin.getInstance().getHologram() != null)
+                EpicSpawnersPlugin.getInstance().getHologram().update(this);
 
             if (!SettingsManager.Setting.SOUNDS_ENABLED.getBoolean()) {
                 return;
@@ -396,8 +399,6 @@ public class ESpawner implements Spawner {
                 Bukkit.getScheduler().scheduleSyncDelayedTask(EpicSpawnersPlugin.getInstance(), () -> player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 1.2F, 35.0F), 5L);
                 Bukkit.getScheduler().scheduleSyncDelayedTask(EpicSpawnersPlugin.getInstance(), () -> player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 1.8F, 35.0F), 10L);
             }
-            if (EpicSpawnersPlugin.getInstance().getHologram() != null)
-                EpicSpawnersPlugin.getInstance().getHologram().update(this);
         } catch (Exception e) {
             Debugger.runReport(e);
         }
