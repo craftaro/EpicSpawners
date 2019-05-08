@@ -331,7 +331,8 @@ public class ESpawner implements Spawner {
             return false;
         }
 
-        if (!SettingsManager.Setting.OMNI_SPAWNERS.getBoolean() || !player.hasPermission("epicspawners.omni"))
+        if (data != getIdentifyingData()
+                && (!SettingsManager.Setting.OMNI_SPAWNERS.getBoolean() || !player.hasPermission("epicspawners.omni")))
             return false;
 
         if ((getSpawnerDataCount() + amount) > max) {
