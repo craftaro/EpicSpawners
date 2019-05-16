@@ -45,7 +45,7 @@ public class SpawnOptionEntity implements SpawnOption {
 
     private Map<String, Integer> cache = new HashMap<>();
     private Class<?> clazzMobSpawnerData, clazzEnumMobSpawn, clazzWorldServer, clazzGeneratorAccess, clazzEntityTypes, clazzNBTTagCompound, clazzCraftWorld, clazzWorld, clazzChunkRegionLoader, clazzEntity, clazzCraftEntity, clazzEntityInsentient, clazzGroupDataEntity, clazzDifficultyDamageScaler, clazzBlockPosition, clazzIWorldReader, clazzAxisAlignedBB;
-    private Method methodB, methodSetString, methodSetPosition, methodA, methodAddEntity, methodGetHandle, methodChunkRegionLoaderA, methodEntityGetBukkitEntity, methodCraftEntityTeleport, methodEntityInsentientPrepare, methodChunkRegionLoaderA2, methodGetDamageScaler, methodGetCubes, methodGetBoundingBox;
+    private Method methodGetEntity, methodSetString, methodSetPosition, methodA, methodAddEntity, methodGetHandle, methodChunkRegionLoaderA, methodEntityGetBukkitEntity, methodCraftEntityTeleport, methodEntityInsentientPrepare, methodChunkRegionLoaderA2, methodGetDamageScaler, methodGetCubes, methodGetBoundingBox;
     private Field fieldWorldRandom;
 
     public SpawnOptionEntity(EntityType... types) {
@@ -80,7 +80,11 @@ public class SpawnOptionEntity implements SpawnOption {
             clazzIWorldReader = Class.forName("net.minecraft.server." + ver + ".IWorldReader");
             clazzGeneratorAccess = Class.forName("net.minecraft.server." + ver + ".GeneratorAccess");
 
-            methodB = clazzMobSpawnerData.getDeclaredMethod("b");
+            try {
+                methodGetEntity = clazzMobSpawnerData.getDeclaredMethod("getEntity");
+            } catch (NoSuchMethodException e) {
+                methodGetEntity = clazzMobSpawnerData.getDeclaredMethod("b");
+            }
             methodSetString = clazzNBTTagCompound.getDeclaredMethod("setString", String.class, String.class);
 
             methodGetBoundingBox = clazzEntity.getDeclaredMethod("getBoundingBox");
@@ -175,14 +179,14 @@ public class SpawnOptionEntity implements SpawnOption {
     private void spawnEntity(EntityType type, Spawner spawner, SpawnerData data) {
         try {
             Object objMobSpawnerData = clazzMobSpawnerData.newInstance();
-            Object objNTBTagCompound = methodB.invoke(objMobSpawnerData);
+            Object objNTBTagCompound = methodGetEntity.invoke(objMobSpawnerData);
 
             String name = type.name().toLowerCase().replace("pig_zombie", "zombie_pigman").replace("snowman", "snow_golem").replace("mushroom_cow", "mooshroom");
             methodSetString.invoke(objNTBTagCompound, "id", "minecraft:" + name);
 
             short spawnRange = 4;
             for (int i = 0; i < 25; i++) {
-                Object objNBTTagCompound = methodB.invoke(objMobSpawnerData);
+                Object objNBTTagCompound = methodGetEntity.invoke(objMobSpawnerData);
                 Object objCraftWorld = clazzCraftWorld.cast(spawner.getWorld());
                 objCraftWorld = methodGetHandle.invoke(objCraftWorld);
                 Object objWorld = clazzWorld.cast(objCraftWorld);
