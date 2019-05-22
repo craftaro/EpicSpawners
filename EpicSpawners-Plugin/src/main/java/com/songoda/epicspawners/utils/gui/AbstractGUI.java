@@ -98,7 +98,7 @@ public abstract class AbstractGUI implements Listener {
                 if (gui == null || gui.inventory == null) return;
 
                 for (OnClose onClose : gui.onCloses) {
-                    onClose.OnClose((Player) event.getPlayer(), inventory);
+                    onClose.onClose((Player) event.getPlayer(), inventory);
                 }
             }
 

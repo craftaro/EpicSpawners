@@ -5,6 +5,6 @@ import org.bukkit.inventory.Inventory;
 
 public interface OnClose {
 
-    void OnClose(Player player, Inventory inventory);
+    void onClose(Player player, Inventory inventory);
 
 }
