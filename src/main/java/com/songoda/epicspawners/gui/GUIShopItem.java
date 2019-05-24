@@ -6,13 +6,11 @@ import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.utils.Methods;
 import com.songoda.epicspawners.utils.ServerVersion;
 import com.songoda.epicspawners.utils.gui.AbstractGUI;
-import net.milkbowl.vault.economy.Economy;
+import com.songoda.epicspawners.utils.settings.Setting;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.plugin.RegisteredServiceProvider;
 
 import java.util.ArrayList;
 
@@ -166,26 +164,15 @@ public class GUIShopItem extends AbstractGUI {
             });
         }
 
-        ItemStack exit = new ItemStack(Material.valueOf(EpicSpawners.getInstance().getConfig().getString("Interfaces.Exit Icon")), 1);
-        ItemMeta exitmeta = exit.getItemMeta();
-        exitmeta.setDisplayName(plugin.getLocale().getMessage("general.nametag.exit"));
-        exit.setItemMeta(exitmeta);
-        inventory.setItem(8, exit);
+        createButton(8, Material.valueOf(Setting.EXIT_ICON.getString()), plugin.getLocale().getMessage("general.nametag.exit"));
 
-        ItemStack head2 = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3);
-        ItemStack skull2 = Methods.addTexture(head2, "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23");
-        SkullMeta skull2Meta = (SkullMeta) skull2.getItemMeta();
-        skull2.setDurability((short) 3);
-        skull2Meta.setDisplayName(plugin.getLocale().getMessage("general.nametag.back"));
-        skull2.setItemMeta(skull2Meta);
+        ItemStack skull = Methods.addTexture(new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13)
+                        ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3),
+                "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23");
 
-        inventory.setItem(0, skull2);
+        createButton(0, skull, plugin.getLocale().getMessage("general.nametag.back"));
 
-        ItemStack buy = new ItemStack(Material.valueOf(EpicSpawners.getInstance().getConfig().getString("Interfaces.Buy Icon")), 1);
-        ItemMeta buymeta = buy.getItemMeta();
-        buymeta.setDisplayName(plugin.getLocale().getMessage("general.nametag.confirm"));
-        buy.setItemMeta(buymeta);
-        inventory.setItem(40, buy);
+        createButton(40, Material.valueOf(Setting.BUY_ICON.getString()), plugin.getLocale().getMessage("general.nametag.confirm"));
     }
 
     @Override
@@ -203,26 +190,21 @@ public class GUIShopItem extends AbstractGUI {
     }
 
     private void confirm(Player player, int amount) {
-        if (EpicSpawners.getInstance().getServer().getPluginManager().getPlugin("Vault") == null) {
-                player.sendMessage("Vault is not installed.");
-                return;
-            }
-        RegisteredServiceProvider<Economy> rsp = EpicSpawners.getInstance().getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
-            net.milkbowl.vault.economy.Economy econ = rsp.getProvider();
-            double price = spawnerData.getShopPrice() * amount;
-            if (!player.isOp() && !econ.has(player, price)) {
-                player.sendMessage(References.getPrefix() + plugin.getLocale().getMessage("event.shop.cannotafford"));
-                return;
-            }
-            ItemStack item = spawnerData.toItemStack(amount);
+        if (plugin.getEconomy() == null) {
+            player.sendMessage("Economy not enabled.");
+            return;
+        }
 
-            player.getInventory().addItem(item);
+        double price = spawnerData.getShopPrice() * amount;
+        if (!plugin.getEconomy().hasBalance(player, price)) {
+            player.sendMessage(References.getPrefix() + plugin.getLocale().getMessage("event.shop.cannotafford"));
+            return;
+        }
 
-            player.sendMessage(References.getPrefix() + plugin.getLocale().getMessage("event.shop.purchasesuccess"));
-
-            if (!player.isOp()) {
-                econ.withdrawPlayer(player, price);
-            }
+        ItemStack item = spawnerData.toItemStack(amount);
+        player.getInventory().addItem(item);
+        player.sendMessage(References.getPrefix() + plugin.getLocale().getMessage("event.shop.purchasesuccess"));
+        plugin.getEconomy().withdrawBalance(player, price);
     }
 
     @Override

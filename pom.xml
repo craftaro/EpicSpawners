@@ -85,5 +85,10 @@
             <artifactId>holographicdisplays-api</artifactId>
             <version>2.3.2</version>
         </dependency>
+        <dependency>
+            <groupId>org.black_ixx</groupId>
+            <artifactId>playerpoints</artifactId>
+            <version>2.1.4</version>
+        </dependency>
     </dependencies>
 </project>

@@ -191,6 +191,12 @@ public enum Setting {
     SILKTOUCH_PLACED_SPAWNER_DROP_CHANCE("Spawner Drops.Chance On Placed Silktouch", "100%",
             "Chance of a placed spawner dropping with silk touch."),
 
+    VAULT_ECONOMY("Economy.Use Vault Economy", true,
+            "Should Vault be used?"),
+
+    PLAYER_POINTS_ECONOMY("Economy.Use Player Points Economy", false,
+            "Should PlayerPoints be used?"),
+
     EXIT_ICON("Interfaces.Exit Icon", EpicSpawners.getInstance().isServerVersionAtLeast(ServerVersion.V1_13) ? "OAK_DOOR" : "WOOD_DOOR",
             "Item to be displayed as the icon for exiting the interface."),
 

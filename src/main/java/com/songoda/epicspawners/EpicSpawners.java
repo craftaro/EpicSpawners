@@ -5,6 +5,9 @@ import com.songoda.epicspawners.boost.BoostData;
 import com.songoda.epicspawners.boost.BoostManager;
 import com.songoda.epicspawners.boost.BoostType;
 import com.songoda.epicspawners.command.CommandManager;
+import com.songoda.epicspawners.economy.Economy;
+import com.songoda.epicspawners.economy.PlayerPointsEconomy;
+import com.songoda.epicspawners.economy.VaultEconomy;
 import com.songoda.epicspawners.handlers.AppearanceHandler;
 import com.songoda.epicspawners.handlers.BlacklistHandler;
 import com.songoda.epicspawners.hologram.Hologram;
@@ -58,8 +61,6 @@ public class EpicSpawners extends JavaPlugin {
     private static final Set<Biome> BIOMES = EnumSet.allOf(Biome.class);
     private static EpicSpawners INSTANCE;
 
-    private ConfigWrapper spawnerFile = new ConfigWrapper(this, "", "spawners.yml");
-
     private ServerVersion serverVersion = ServerVersion.fromPackageName(Bukkit.getServer().getClass().getPackage().getName());
 
     private SpawnManager spawnManager;
@@ -68,6 +69,8 @@ public class EpicSpawners extends JavaPlugin {
     private BoostManager boostManager;
     private SettingsManager settingsManager;
     private CommandManager commandManager;
+
+    private Economy economy;
 
     private BlacklistHandler blacklistHandler;
     private AppearanceHandler appearanceHandler;
@@ -99,7 +102,6 @@ public class EpicSpawners extends JavaPlugin {
         this.settingsManager = new SettingsManager(this);
         this.settingsManager.setupConfig();
 
-        this.setupSpawners();
         this.setupLanguage();
 
         //Running Songoda Updater
@@ -143,6 +145,14 @@ public class EpicSpawners extends JavaPlugin {
         if (isServerVersionAtLeast(ServerVersion.V1_12))
             this.particleTask = SpawnerParticleTask.startTask(this);
         this.spawnerCustomSpawnTask = SpawnerSpawnTask.startTask(this);
+
+        // Setup Economy
+        if (Setting.VAULT_ECONOMY.getBoolean()
+                && getServer().getPluginManager().getPlugin("Vault") != null)
+            this.economy = new VaultEconomy(this);
+        else if (Setting.PLAYER_POINTS_ECONOMY.getBoolean()
+                && getServer().getPluginManager().getPlugin("PlayerPoints") != null)
+            this.economy = new PlayerPointsEconomy(this);
 
         // Load Spawners
         Bukkit.getScheduler().runTaskLater(this, this::loadData, 10);
@@ -248,7 +258,7 @@ public class EpicSpawners extends JavaPlugin {
     @SuppressWarnings("unchecked")
     private void loadSpawnersFromFile() {
         // Register spawner data into SpawnerRegistry from configuration.
-        FileConfiguration spawnerConfig = spawnerFile.getConfig();
+        FileConfiguration spawnerConfig = spawnerManager.getSpawnerFile().getConfig();
         if (!spawnerConfig.contains("Entities")) return;
         for (String key : spawnerConfig.getConfigurationSection("Entities").getKeys(false)) {
             ConfigurationSection currentSection = spawnerConfig.getConfigurationSection("Entities." + key);
@@ -352,7 +362,7 @@ public class EpicSpawners extends JavaPlugin {
 
         // Save spawner settings
 
-        FileConfiguration spawnerConfig = spawnerFile.getConfig();
+        FileConfiguration spawnerConfig = spawnerManager.getSpawnerFile().getConfig();
         spawnerConfig.set("Entities", null);
 
         ConfigurationSection entitiesSection = spawnerConfig.createSection("Entities");
@@ -419,7 +429,7 @@ public class EpicSpawners extends JavaPlugin {
             }
         }
 
-        this.spawnerFile.saveConfig();
+        this.spawnerManager.getSpawnerFile().saveConfig();
 
         storage.doSave();
     }
@@ -462,18 +472,6 @@ public class EpicSpawners extends JavaPlugin {
 
     public boolean isServerVersionAtLeast(ServerVersion version) {
         return serverVersion.ordinal() >= version.ordinal();
-    }
-
-    private void setupSpawners() {
-        for (EntityType value : EntityType.values()) {
-            if (value.isSpawnable() && value.isAlive() && !value.toString().toLowerCase().contains("armor")) {
-                processDefault(value.name());
-            }
-        }
-
-        this.processDefault("Omni");
-        this.spawnerFile.getConfig().options().copyDefaults(true);
-        this.spawnerFile.saveConfig();
     }
 
     private void setupLanguage() {
@@ -531,101 +529,10 @@ public class EpicSpawners extends JavaPlugin {
         }
     }
 
-    private void processDefault(String value) {
-        FileConfiguration spawnerConfig = spawnerFile.getConfig();
-
-        String type = Methods.getTypeFromString(value);
-        Random rn = new Random();
-        int uuid = rn.nextInt(9999);
-        spawnerConfig.addDefault("Entities." + type + ".uuid", uuid);
-
-        if (!spawnerConfig.contains("Entities." + type + ".Display-Name")) {
-            spawnerConfig.set("Entities." + type + ".Display-Name", type);
-        }
-        if (!spawnerConfig.contains("Entities." + type + ".Pickup-cost")) {
-            spawnerConfig.addDefault("Entities." + type + ".Pickup-cost", 0);
-        }
-
-        String spawnBlock = "AIR";
-        if (value.equalsIgnoreCase("pig") || value.equalsIgnoreCase("sheep") || value.equalsIgnoreCase("chicken") ||
-                value.equalsIgnoreCase("cow") || value.equalsIgnoreCase("rabbit") || value.equalsIgnoreCase("llamma") ||
-                value.equalsIgnoreCase("horse") || value.equalsIgnoreCase("OCELOT")) {
-            spawnBlock = "GRASS_BLOCK";
-        }
-
-        if (value.equalsIgnoreCase("MUSHROOM_COW")) {
-            spawnBlock = "MYCELIUM";
-        }
-
-        if (value.equalsIgnoreCase("SQUID") || value.equalsIgnoreCase("ELDER_GUARDIAN") || value.equalsIgnoreCase("COD") ||
-                value.equalsIgnoreCase("SALMON") || value.toUpperCase().contains("FISH")) {
-            spawnBlock = "WATER";
-        }
-
-        if (value.equalsIgnoreCase("OCELOT")) {
-            spawnBlock += ", LEAVES";
-        }
-
-        EntityType entityType = null;
-
-        for (EntityType val : EntityType.values()) {
-            if (val.isSpawnable() && val.isAlive()) {
-                if (val.name().equals(value)) {
-                    entityType = val;
-                    List<String> list = new ArrayList<>();
-                    list.add(value);
-                    if (!spawnerConfig.contains("Entities." + type + ".entities"))
-                        spawnerConfig.addDefault("Entities." + type + ".entities", list);
-                }
-            }
-        }
-
-        spawnerConfig.addDefault("Entities." + type + ".custom", false);
-        spawnerConfig.addDefault("Entities." + type + ".Spawn-Block", spawnBlock);
-        spawnerConfig.addDefault("Entities." + type + ".Allowed", true);
-        spawnerConfig.addDefault("Entities." + type + ".Spawn-On-Fire", false);
-        spawnerConfig.addDefault("Entities." + type + ".Upgradable", true);
-        spawnerConfig.addDefault("Entities." + type + ".Convertible", true);
-        spawnerConfig.addDefault("Entities." + type + ".Convert-Ratio", "45%");
-        spawnerConfig.addDefault("Entities." + type + ".In-Shop", true);
-        spawnerConfig.addDefault("Entities." + type + ".Shop-Price", 1000.00);
-        spawnerConfig.addDefault("Entities." + type + ".CustomGoal", 0);
-        spawnerConfig.addDefault("Entities." + type + ".Custom-ECO-Cost", 0);
-        spawnerConfig.addDefault("Entities." + type + ".Custom-XP-Cost", 0);
-        spawnerConfig.addDefault("Entities." + type + ".Tick-Rate", "800:200");
-        spawnerConfig.addDefault("Entities." + type + ".Spawn-Effect", "NONE");
-        spawnerConfig.addDefault("Entities." + type + ".Spawn-Effect-Particle", "REDSTONE");
-        spawnerConfig.addDefault("Entities." + type + ".Entity-Spawn-Particle", "SMOKE");
-        spawnerConfig.addDefault("Entities." + type + ".Spawner-Spawn-Particle", "FIRE");
-        spawnerConfig.addDefault("Entities." + type + ".Particle-Amount", "NORMAL");
-        spawnerConfig.addDefault("Entities." + type + ".Particle-Effect-Boosted-Only", true);
-        spawnerConfig.addDefault("Entities." + type + ".Craftable", false);
-        spawnerConfig.addDefault("Entities." + type + ".Recipe-Layout", "AAAABAAAA");
-        spawnerConfig.addDefault("Entities." + type + ".Recipe-Ingredients", Arrays.asList("A, IRON_BARS", "B, SPAWN_EGG"));
-
-        if (entityType == EntityType.SLIME) {
-            spawnerConfig.addDefault("Entities." + type + ".Conditions.Biomes",
-                    isServerVersionAtLeast(ServerVersion.V1_13) ? Biome.SWAMP.name() : Biome.valueOf("SWAMPLAND").name());
-            spawnerConfig.addDefault("Entities." + type + ".Conditions.Height", "50:70");
-        } else {
-            spawnerConfig.addDefault("Entities." + type + ".Conditions.Biomes", "ALL");
-            spawnerConfig.addDefault("Entities." + type + ".Conditions.Height", "0:256");
-        }
-        if (entityType != null && Monster.class.isAssignableFrom(entityType.getEntityClass())) {
-            spawnerConfig.addDefault("Entities." + type + ".Conditions.Light", "DARK");
-        } else {
-            spawnerConfig.addDefault("Entities." + type + ".Conditions.Light", "BOTH");
-        }
-        spawnerConfig.addDefault("Entities." + type + ".Conditions.Storm Only", false);
-        spawnerConfig.addDefault("Entities." + type + ".Conditions.Max Entities Around Spawner", 6);
-        spawnerConfig.addDefault("Entities." + type + ".Conditions.Required Player Distance And Amount", 16 + ":" + 1);
-    }
-
     public void reload() {
         String langMode = getConfig().getString("System.Language Mode");
         this.locale = Locale.getLocale(getConfig().getString("System.Language Mode", langMode));
         this.locale.reloadMessages();
-        this.spawnerFile.createNewFile("Loading Spawners File", "EpicSpawners Spawners File");
         this.blacklistHandler.reload();
         this.loadSpawnersFromFile();
         this.settingsManager.reloadConfig();
@@ -673,6 +580,10 @@ public class EpicSpawners extends JavaPlugin {
 
     public SpawnerManager getSpawnerManager() {
         return spawnerManager;
+    }
+
+    public Economy getEconomy() {
+        return economy;
     }
 
     public ItemStack newSpawnerItem(SpawnerData data, int amount) {

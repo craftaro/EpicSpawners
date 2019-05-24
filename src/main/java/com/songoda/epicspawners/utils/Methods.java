@@ -4,6 +4,7 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
+import com.songoda.epicspawners.utils.settings.Setting;
 import org.apache.commons.lang.WordUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.*;
@@ -31,7 +32,6 @@ public class Methods {
         if (player.getGameMode() == GameMode.CREATIVE) return;
 
         ItemStack item = player.getInventory().getItemInHand();
-        if (item == null) return;
 
         int result = item.getAmount() - amount;
         item.setAmount(result);
@@ -41,7 +41,7 @@ public class Methods {
 
     public static String getBoostCost(int time, int amount) {
         StringBuilder cost = new StringBuilder("&6&l");
-        String[] parts = EpicSpawners.getInstance().getConfig().getString("Spawner Boosting.Item Charged For A Boost").split(":");
+        String[] parts = Setting.BOOST_COST.getString().split(":");
 
         String type = parts[0];
         String multi = parts[1];
@@ -67,16 +67,14 @@ public class Methods {
     }
 
     public static String compileName(SpawnerData data, int multi, boolean full) {
-        EpicSpawners plugin = EpicSpawners.getInstance();
-
-        String nameFormat = plugin.getConfig().getString("Main.Spawner Name Format");
+        String nameFormat = Setting.NAME_FORMAT.getString();
         String displayName = data.getDisplayName();
 
         nameFormat = nameFormat.replace("{TYPE}", displayName);
 
-        if ((multi > 1 || plugin.getConfig().getBoolean("Main.Display Level In Spawner Title If Level 1") || plugin.getConfig().getBoolean("Main.Named Spawners Tiers")) && multi >= 0) {
-            if (plugin.getConfig().getBoolean("Main.Named Spawners Tiers") && plugin.getConfig().getStringList("Main.Tier Names").size() >= multi) {
-                nameFormat = nameFormat.replace("{AMT}", plugin.getConfig().getStringList("Main.Tier Names").get(multi - 1));
+        if ((multi > 1 || Setting.DISPLAY_LEVEL_ONE.getBoolean() || Setting.NAMED_SPAWNER_TIERS.getBoolean()) && multi >= 0) {
+            if (Setting.NAMED_SPAWNER_TIERS.getBoolean() && Setting.TIER_NAMES.getStringList().size() >= multi) {
+                nameFormat = nameFormat.replace("{AMT}", Setting.TIER_NAMES.getStringList().get(multi - 1));
             } else {
                 nameFormat = nameFormat.replace("{AMT}", Integer.toString(multi));
             }

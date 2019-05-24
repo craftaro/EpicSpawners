@@ -194,17 +194,15 @@ public class GUISpawnerBoost extends AbstractGUI {
                     return;
                 }
             } else if (type.equals("ECO")) {
-                if (plugin.getServer().getPluginManager().getPlugin("Vault") != null) {
-                    RegisteredServiceProvider<Economy> rsp = plugin.getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
-                    net.milkbowl.vault.economy.Economy econ = rsp.getProvider();
-                    if (econ.has(player, cost)) {
-                        econ.withdrawPlayer(player, cost);
+                if (plugin.getEconomy() != null) {
+                    if (plugin.getEconomy().hasBalance(player, cost)) {
+                        plugin.getEconomy().withdrawBalance(player, cost);
                     } else {
                         player.sendMessage(References.getPrefix() + plugin.getLocale().getMessage("event.upgrade.cannotafford"));
                         return;
                     }
                 } else {
-                    player.sendMessage("Vault is not installed.");
+                    player.sendMessage("Economy not enabled.");
                     return;
                 }
             } else if (type.equals("XP")) {

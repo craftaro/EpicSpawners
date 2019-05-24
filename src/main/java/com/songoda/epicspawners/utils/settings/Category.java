@@ -2,6 +2,9 @@ package com.songoda.epicspawners.utils.settings;
 
 public enum Category {
 
+    ECONOMY("Settings regarding economy.",
+            "Only one economy option can be used at a time. If you enable more than",
+            "one of these the first one will be used."),
     SPAWNER_BOOSTING("These are settings regarding the boosting of spawners."),
     SPAWNER_DROPS("These are settings regarding spawner drops."),
     ENTITY("These are settings regarding entities."),

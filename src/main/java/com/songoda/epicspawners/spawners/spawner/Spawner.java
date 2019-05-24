@@ -2,8 +2,8 @@ package com.songoda.epicspawners.spawners.spawner;
 
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.References;
-import com.songoda.epicspawners.boost.BoostData;
 import com.songoda.epicspawners.api.events.SpawnerChangeEvent;
+import com.songoda.epicspawners.boost.BoostData;
 import com.songoda.epicspawners.gui.GUISpawnerOverview;
 import com.songoda.epicspawners.particles.ParticleType;
 import com.songoda.epicspawners.spawners.condition.SpawnCondition;
@@ -11,14 +11,12 @@ import com.songoda.epicspawners.utils.CostType;
 import com.songoda.epicspawners.utils.Methods;
 import com.songoda.epicspawners.utils.ServerVersion;
 import com.songoda.epicspawners.utils.settings.Setting;
-import net.milkbowl.vault.economy.Economy;
 import org.bukkit.*;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.RegisteredServiceProvider;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -162,17 +160,13 @@ public class Spawner {
 
     public void convert(SpawnerData type, Player player) {
         EpicSpawners instance = EpicSpawners.getInstance();
-        if (!Bukkit.getPluginManager().isPluginEnabled("Vault")) {
-            player.sendMessage("Vault is not installed.");
+        if (instance.getEconomy() == null) {
+            player.sendMessage("Economy not enabled.");
             return;
         }
-
-        RegisteredServiceProvider<net.milkbowl.vault.economy.Economy> rsp = EpicSpawners.getInstance().getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
-        net.milkbowl.vault.economy.Economy econ = rsp.getProvider();
-
         double price = type.getConvertPrice() * getSpawnerDataCount();
 
-        if (!(econ.has(player, price) || player.isOp())) {
+        if (!instance.getEconomy().hasBalance(player, price)) {
             player.sendMessage(References.getPrefix() + EpicSpawners.getInstance().getLocale().getMessage("event.upgrade.cannotafford"));
             return;
         }
@@ -195,9 +189,7 @@ public class Spawner {
         if (instance.getHologram() != null)
             instance.getHologram().update(this);
         player.closeInventory();
-        if (!player.isOp()) {
-            econ.withdrawPlayer(player, price);
-        }
+        instance.getEconomy().withdrawBalance(player, price);
     }
 
     public int getUpgradeCost(CostType type) {
@@ -378,6 +370,7 @@ public class Spawner {
     }
 
     public void upgrade(Player player, CostType type) {
+        EpicSpawners plugin = EpicSpawners.getInstance();
         int cost = getUpgradeCost(type);
 
         boolean maxed = getSpawnerDataCount() == Setting.SPAWNERS_MAX.getInt();
@@ -387,20 +380,18 @@ public class Spawner {
             return;
         }
         if (type == CostType.ECONOMY) {
-            if (EpicSpawners.getInstance().getServer().getPluginManager().getPlugin("Vault") != null) {
-                RegisteredServiceProvider<Economy> rsp = EpicSpawners.getInstance().getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
-                net.milkbowl.vault.economy.Economy econ = rsp.getProvider();
-                if (econ.has(player, cost)) {
-                    econ.withdrawPlayer(player, cost);
-                    int oldMultiplier = getSpawnerDataCount();
-                    spawnerStacks.getFirst().setStackSize(spawnerStacks.getFirst().getStackSize() + 1);
-                    upgradeFinal(player, oldMultiplier);
-                } else {
-                    player.sendMessage(References.getPrefix() + EpicSpawners.getInstance().getLocale().getMessage("event.upgrade.cannotafford"));
-                }
-            } else {
-                player.sendMessage("Vault is not installed.");
+            if (plugin.getEconomy() == null) {
+                player.sendMessage("Economy not enabled.");
+                return;
             }
+            if (!plugin.getEconomy().hasBalance(player, cost)) {
+                player.sendMessage(References.getPrefix() + EpicSpawners.getInstance().getLocale().getMessage("event.upgrade.cannotafford"));
+                return;
+            }
+            plugin.getEconomy().withdrawBalance(player, cost);
+            int oldMultiplier = getSpawnerDataCount();
+            spawnerStacks.getFirst().setStackSize(spawnerStacks.getFirst().getStackSize() + 1);
+            upgradeFinal(player, oldMultiplier);
         } else if (type == CostType.EXPERIENCE) {
             if (player.getLevel() >= cost || player.getGameMode() == GameMode.CREATIVE) {
                 if (player.getGameMode() != GameMode.CREATIVE) {
