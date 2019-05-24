@@ -134,7 +134,6 @@ public enum Setting {
     SPAWNER_EQUATION_SPAWNS("Main.Equations.Mobs Spawned Per Spawn", "{MULTI} * {RAND}",
             "The equation that defines the amount of mobs a spawner will spawn each time it is triggered."),
 
-
     NAMED_SPAWNER_TIERS("Main.Named Spawners Tiers", false,
             "Whether or not spawners will have names rather than numbers."),
 
@@ -146,7 +145,9 @@ public enum Setting {
             "The highest multiplier a spawner can be boosted to."),
 
     BOOST_COST("Spawner Boosting.Item Charged For A Boost", "DIAMOND:2",
-            "The cost required when a player boosts their own spawner."),
+            "The cost required when a player boosts their own spawner.",
+            "If you would rather charge experience or economy then enter respectively",
+            "ECO or XP in place of the default DIAMOND."),
 
     HOSTILE_MOBS_ATTACK_SECOND("entity.Hostile Mobs Attack Second", false,
             "Should hostile mobs attack only if attacked first?"),
