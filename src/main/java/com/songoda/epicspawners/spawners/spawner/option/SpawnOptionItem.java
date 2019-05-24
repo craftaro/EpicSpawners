@@ -1,8 +1,8 @@
 package com.songoda.epicspawners.spawners.spawner.option;
 
-import com.songoda.epicspawners.api.spawner.Spawner;
-import com.songoda.epicspawners.api.spawner.SpawnerData;
-import com.songoda.epicspawners.api.spawner.SpawnerStack;
+import com.songoda.epicspawners.spawners.spawner.Spawner;
+import com.songoda.epicspawners.spawners.spawner.SpawnerData;
+import com.songoda.epicspawners.spawners.spawner.SpawnerStack;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -29,7 +29,7 @@ public class SpawnOptionItem implements SpawnOption {
         this(items.toArray(new ItemStack[items.size()]));
     }
 
-    @Override
+
     public void spawn(SpawnerData data, SpawnerStack stack, Spawner spawner) {
         Location location = spawner.getLocation();
         if (location == null || location.getWorld() == null) return;
@@ -54,17 +54,17 @@ public class SpawnOptionItem implements SpawnOption {
         }
     }
 
-    @Override
+
     public SpawnOptionType getType() {
         return SpawnOptionType.ITEM;
     }
 
-    @Override
+
     public int hashCode() {
         return 31 * (items != null ? items.hashCode() : 0);
     }
 
-    @Override
+
     public boolean equals(Object object) {
         if (object == this) return true;
         if (!(object instanceof SpawnOptionItem)) return false;

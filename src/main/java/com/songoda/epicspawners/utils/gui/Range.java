@@ -1,5 +1,7 @@
 package com.songoda.epicspawners.utils.gui;
 
+import com.songoda.epicspawners.EpicSpawners;
+import com.songoda.epicspawners.utils.ServerVersion;
 import org.bukkit.Sound;
 import org.bukkit.event.inventory.ClickType;
 
@@ -9,13 +11,14 @@ public class Range {
     private int max;
     private ClickType clickType;
     private boolean bottom;
-    private Sound onClickSound = Sound.UI_BUTTON_CLICK;
+    private Sound onClickSound;
 
     public Range(int min, int max, ClickType clickType, boolean bottom) {
         this.min = min;
         this.max = max;
         this.clickType = clickType;
         this.bottom = bottom;
+        if (EpicSpawners.getInstance().isServerVersionAtLeast(ServerVersion.V1_9)) onClickSound = Sound.UI_BUTTON_CLICK;
     }
 
     public Range(int min, int max, Sound onClickSound, ClickType clickType, boolean bottom) {

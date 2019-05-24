@@ -1,7 +1,5 @@
 package com.songoda.epicspawners.particles;
 
-import org.bukkit.Particle;
-
 /**
  * All possible types of particles supported by EpicSpawners
  */
@@ -12,38 +10,39 @@ public enum ParticleType {
      * effect. This is a poorly named constant. This constant's true particle
      * represents that of "EXPLOSION_NORMAL"
      */
-    SMOKE(Particle.EXPLOSION_NORMAL),
+    SMOKE("EXPLOSION_NORMAL"),
 
     /**
      * A spell effect used frequently by potions
      */
-    SPELL(Particle.SPELL),
+    SPELL("SPELL"),
 
     /**
      * A redstone dust effect
      */
-    REDSTONE(Particle.REDSTONE),
+    REDSTONE("REDSTONE"),
 
     /**
      * A little flame effect
      */
-    FIRE(Particle.FLAME),
+    FIRE("FLAME"),
 
     NONE(null);
 
-    private final Particle effect;
+    private final String effect;
 
-    private ParticleType(Particle effect) {
+    private ParticleType(String effect) {
         this.effect = effect;
     }
 
     /**
      * Get the name of the particle effect displayed by this type
-     * 
+     *
      * @return the particle name
      */
-    public Particle getEffect() {
+    public String getEffect() {
         return effect;
     }
 
 }
+

@@ -1,15 +1,14 @@
 package com.songoda.epicspawners.gui;
 
-import com.songoda.epicspawners.EpicSpawnersPlugin;
+import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.References;
-import com.songoda.epicspawners.api.spawner.Spawner;
 import com.songoda.epicspawners.boost.BoostData;
 import com.songoda.epicspawners.boost.BoostType;
-import com.songoda.epicspawners.spawners.spawner.ESpawner;
-import com.songoda.epicspawners.utils.Debugger;
+import com.songoda.epicspawners.spawners.spawner.Spawner;
 import com.songoda.epicspawners.utils.Methods;
-import com.songoda.epicspawners.utils.SettingsManager;
+import com.songoda.epicspawners.utils.ServerVersion;
 import com.songoda.epicspawners.utils.gui.AbstractGUI;
+import com.songoda.epicspawners.utils.settings.Setting;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -27,20 +26,20 @@ import java.util.Date;
 
 public class GUISpawnerBoost extends AbstractGUI {
 
-    private final EpicSpawnersPlugin plugin;
-    private final ESpawner spawner;
+    private final EpicSpawners plugin;
+    private final Spawner spawner;
     private int amount = 1;
 
-    public GUISpawnerBoost(EpicSpawnersPlugin plugin, Spawner spawner, Player player) {
+    GUISpawnerBoost(EpicSpawners plugin, Spawner spawner, Player player) {
         super(player);
         this.plugin = plugin;
-        this.spawner = (ESpawner)spawner;
+        this.spawner = spawner;
         setUp();
     }
 
     private void setUp() {
-        if (amount > SettingsManager.Setting.MAX_PLAYER_BOOST.getInt()) {
-            amount = SettingsManager.Setting.MAX_PLAYER_BOOST.getInt();
+        if (amount > Setting.MAX_PLAYER_BOOST.getInt()) {
+            amount = Setting.MAX_PLAYER_BOOST.getInt();
             return;
         } else if (amount < 1) {
             amount = 1;
@@ -60,7 +59,7 @@ public class GUISpawnerBoost extends AbstractGUI {
 
         ItemStack coal = new ItemStack(Material.COAL);
         ItemMeta coalMeta = coal.getItemMeta();
-        coalMeta.setDisplayName(EpicSpawnersPlugin.getInstance().getLocale().getMessage("interface.boost.boostfor", "5"));
+        coalMeta.setDisplayName(EpicSpawners.getInstance().getLocale().getMessage("interface.boost.boostfor", "5"));
         ArrayList<String> coalLore = new ArrayList<>();
         coalLore.add(Methods.formatText("&7Costs &6&l" + Methods.getBoostCost(5, amount) + "."));
         coalMeta.setLore(coalLore);
@@ -68,7 +67,7 @@ public class GUISpawnerBoost extends AbstractGUI {
 
         ItemStack iron = new ItemStack(Material.IRON_INGOT);
         ItemMeta ironMeta = iron.getItemMeta();
-        ironMeta.setDisplayName(EpicSpawnersPlugin.getInstance().getLocale().getMessage("interface.boost.boostfor", "15"));
+        ironMeta.setDisplayName(EpicSpawners.getInstance().getLocale().getMessage("interface.boost.boostfor", "15"));
         ArrayList<String> ironLore = new ArrayList<>();
         ironLore.add(Methods.formatText("&7Costs &6&l" + Methods.getBoostCost(15, amount) + "."));
         ironMeta.setLore(ironLore);
@@ -76,7 +75,7 @@ public class GUISpawnerBoost extends AbstractGUI {
 
         ItemStack diamond = new ItemStack(Material.DIAMOND);
         ItemMeta diamondMeta = diamond.getItemMeta();
-        diamondMeta.setDisplayName(EpicSpawnersPlugin.getInstance().getLocale().getMessage("interface.boost.boostfor", "30"));
+        diamondMeta.setDisplayName(EpicSpawners.getInstance().getLocale().getMessage("interface.boost.boostfor", "30"));
         ArrayList<String> diamondLore = new ArrayList<>();
         diamondLore.add(Methods.formatText("&7Costs &6&l" + Methods.getBoostCost(30, amount) + "."));
         diamondMeta.setLore(diamondLore);
@@ -84,7 +83,7 @@ public class GUISpawnerBoost extends AbstractGUI {
 
         ItemStack emerald = new ItemStack(Material.EMERALD);
         ItemMeta emeraldMeta = emerald.getItemMeta();
-        emeraldMeta.setDisplayName(EpicSpawnersPlugin.getInstance().getLocale().getMessage("interface.boost.boostfor", "60"));
+        emeraldMeta.setDisplayName(EpicSpawners.getInstance().getLocale().getMessage("interface.boost.boostfor", "60"));
         ArrayList<String> emeraldLore = new ArrayList<>();
         emeraldLore.add(Methods.formatText("&7Costs &6&l" + Methods.getBoostCost(60, amount) + "."));
         emeraldMeta.setLore(emeraldLore);
@@ -113,18 +112,18 @@ public class GUISpawnerBoost extends AbstractGUI {
         createButton(4, Material.valueOf(plugin.getConfig().getString("Interfaces.Exit Icon")),
                 plugin.getLocale().getMessage("general.nametag.back"));
 
-        createButton(8, Methods.addTexture(new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3),
+        createButton(8, Methods.addTexture(new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3),
                 "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23"),
                 plugin.getLocale().getMessage("general.nametag.back"));
 
-        ItemStack head = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
+        ItemStack head = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3);
         ItemStack skull = Methods.addTexture(head, "http://textures.minecraft.net/texture/1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b");
         SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
         skull.setDurability((short) 3);
         skullMeta.setDisplayName(Methods.formatText("&6&l+1"));
         skull.setItemMeta(skullMeta);
 
-        ItemStack head2 = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
+        ItemStack head2 = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3);
         ItemStack skull2 = Methods.addTexture(head2, "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23");
         SkullMeta skull2Meta = (SkullMeta) skull2.getItemMeta();
         skull2.setDurability((short) 3);
@@ -134,7 +133,7 @@ public class GUISpawnerBoost extends AbstractGUI {
         if (amount != 1) {
             inventory.setItem(0, skull2);
         }
-        if (amount < EpicSpawnersPlugin.getInstance().getConfig().getInt("Spawner Boosting.Max Multiplier For A Spawner Boost")) {
+        if (amount < EpicSpawners.getInstance().getConfig().getInt("Spawner Boosting.Max Multiplier For A Spawner Boost")) {
             inventory.setItem(8, skull);
         }
     }
@@ -172,13 +171,12 @@ public class GUISpawnerBoost extends AbstractGUI {
                 purchaseBoost(player, 60, amount));
     }
 
-    public void purchaseBoost(Player player, int time, int amt) {
-        try {
+    private void purchaseBoost(Player player, int time, int amt) {
             Location location = spawner.getLocation();
             player.closeInventory();
-            EpicSpawnersPlugin instance = EpicSpawnersPlugin.getInstance();
+        EpicSpawners instance = EpicSpawners.getInstance();
 
-            String un = EpicSpawnersPlugin.getInstance().getConfig().getString("Spawner Boosting.Item Charged For A Boost");
+        String un = EpicSpawners.getInstance().getConfig().getString("Spawner Boosting.Item Charged For A Boost");
 
             String[] parts = un.split(":");
 
@@ -192,17 +190,17 @@ public class GUISpawnerBoost extends AbstractGUI {
                     stack.setAmount(cost);
                     Methods.removeFromInventory(player.getInventory(), stack);
                 } else {
-                    player.sendMessage(References.getPrefix() + EpicSpawnersPlugin.getInstance().getLocale().getMessage("event.upgrade.cannotafford"));
+                    player.sendMessage(References.getPrefix() + EpicSpawners.getInstance().getLocale().getMessage("event.upgrade.cannotafford"));
                     return;
                 }
             } else if (type.equals("ECO")) {
-                if (EpicSpawnersPlugin.getInstance().getServer().getPluginManager().getPlugin("Vault") != null) {
-                    RegisteredServiceProvider<Economy> rsp = EpicSpawnersPlugin.getInstance().getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
+                if (EpicSpawners.getInstance().getServer().getPluginManager().getPlugin("Vault") != null) {
+                    RegisteredServiceProvider<Economy> rsp = EpicSpawners.getInstance().getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
                     net.milkbowl.vault.economy.Economy econ = rsp.getProvider();
                     if (econ.has(player, cost)) {
                         econ.withdrawPlayer(player, cost);
                     } else {
-                        player.sendMessage(References.getPrefix() + EpicSpawnersPlugin.getInstance().getLocale().getMessage("event.upgrade.cannotafford"));
+                        player.sendMessage(References.getPrefix() + EpicSpawners.getInstance().getLocale().getMessage("event.upgrade.cannotafford"));
                         return;
                     }
                 } else {
@@ -215,7 +213,7 @@ public class GUISpawnerBoost extends AbstractGUI {
                         player.setLevel(player.getLevel() - cost);
                     }
                 } else {
-                    player.sendMessage(References.getPrefix() + EpicSpawnersPlugin.getInstance().getLocale().getMessage("event.upgrade.cannotafford"));
+                    player.sendMessage(References.getPrefix() + EpicSpawners.getInstance().getLocale().getMessage("event.upgrade.cannotafford"));
                     return;
                 }
             }
@@ -229,9 +227,6 @@ public class GUISpawnerBoost extends AbstractGUI {
             instance.getBoostManager().addBoostToSpawner(boostData);
             player.sendMessage(References.getPrefix() + plugin.getLocale().getMessage("event.boost.applied"));
             player.playSound(location, Sound.ENTITY_VILLAGER_YES, 1, 1);
-        } catch (Exception e) {
-            Debugger.runReport(e);
-        }
     }
 
     @Override

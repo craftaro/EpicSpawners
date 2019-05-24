@@ -1,10 +1,10 @@
 package com.songoda.epicspawners.gui;
 
-import com.songoda.epicspawners.EpicSpawnersPlugin;
-import com.songoda.epicspawners.api.spawner.Spawner;
-import com.songoda.epicspawners.api.spawner.SpawnerData;
-import com.songoda.epicspawners.spawners.spawner.ESpawner;
+import com.songoda.epicspawners.EpicSpawners;
+import com.songoda.epicspawners.spawners.spawner.Spawner;
+import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.utils.Methods;
+import com.songoda.epicspawners.utils.ServerVersion;
 import com.songoda.epicspawners.utils.gui.AbstractGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -18,18 +18,18 @@ import java.util.List;
 
 public class GUISpawnerConvert extends AbstractGUI {
 
-    private final EpicSpawnersPlugin plugin;
-    private final ESpawner spawner;
+    private final EpicSpawners plugin;
+    private final Spawner spawner;
     private List<SpawnerData> entities;
     private int page = 1;
     private int max = 0;
     private int totalAmount = 0;
     private int slots = 0;
 
-    public GUISpawnerConvert(EpicSpawnersPlugin plugin, Spawner spawner, Player player) {
+    public GUISpawnerConvert(EpicSpawners plugin, Spawner spawner, Player player) {
         super(player);
         this.plugin = plugin;
-        this.spawner = (ESpawner)spawner;
+        this.spawner = spawner;
 
         setUp();
     }
@@ -77,7 +77,7 @@ public class GUISpawnerConvert extends AbstractGUI {
         for (SpawnerData spawnerData : entities) {
             if (place == 17 || place == (slots - 18)) place++;
             if (place == 18 && slots == 36) place++;
-            ItemStack it = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
+            ItemStack it = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3);
 
             ItemStack item = plugin.getHeads().addTexture(it, spawnerData);
 
@@ -104,7 +104,7 @@ public class GUISpawnerConvert extends AbstractGUI {
             inventory.setItem(place, item);
 
             registerClickable(place, (player, inventory, cursor, slot, type) ->
-                    ((ESpawner) spawner).convert(spawnerData, player));
+                    spawner.convert(spawnerData, player));
 
             place++;
         }
@@ -139,14 +139,14 @@ public class GUISpawnerConvert extends AbstractGUI {
         createButton(8, Material.valueOf(plugin.getConfig().getString("Interfaces.Exit Icon")),
                 plugin.getLocale().getMessage("general.nametag.back"));
 
-        ItemStack head = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
+        ItemStack head = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3);
         ItemStack skull = Methods.addTexture(head, "http://textures.minecraft.net/texture/1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b");
         SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
         skull.setDurability((short) 3);
         skullMeta.setDisplayName(plugin.getLocale().getMessage("general.nametag.next"));
         skull.setItemMeta(skullMeta);
 
-        ItemStack head2 = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
+        ItemStack head2 = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3);
         ItemStack skull2 = Methods.addTexture(head2, "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23");
         SkullMeta skull2Meta = (SkullMeta) skull2.getItemMeta();
         skull2.setDurability((short) 3);

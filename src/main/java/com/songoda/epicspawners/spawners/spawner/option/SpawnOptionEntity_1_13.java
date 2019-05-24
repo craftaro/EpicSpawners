@@ -13,6 +13,7 @@ import com.songoda.epicspawners.utils.settings.Setting;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -29,7 +30,7 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class SpawnOptionEntity implements SpawnOption {
+public class SpawnOptionEntity_1_13 implements SpawnOption {
 
     private final EntityType[] types;
 
@@ -48,7 +49,7 @@ public class SpawnOptionEntity implements SpawnOption {
     private Method methodGetEntity, methodSetString, methodSetPosition, methodA, methodAddEntity, methodGetHandle, methodChunkRegionLoaderA, methodEntityGetBukkitEntity, methodCraftEntityTeleport, methodEntityInsentientPrepare, methodChunkRegionLoaderA2, methodGetDamageScaler, methodGetCubes, methodGetBoundingBox;
     private Field fieldWorldRandom;
 
-    public SpawnOptionEntity(EntityType... types) {
+    public SpawnOptionEntity_1_13(EntityType... types) {
         this.types = types;
         this.mgr = new ScriptEngineManager();
         this.engine = mgr.getEngineByName("JavaScript");
@@ -56,7 +57,7 @@ public class SpawnOptionEntity implements SpawnOption {
         init();
     }
 
-    public SpawnOptionEntity(Collection<EntityType> entities) {
+    public SpawnOptionEntity_1_13(Collection<EntityType> entities) {
         this(entities.toArray(new EntityType[entities.size()]));
     }
 
@@ -230,7 +231,7 @@ public class SpawnOptionEntity implements SpawnOption {
                     float xx = (float) (0 + (Math.random() * 1));
                     float yy = (float) (0 + (Math.random() * 2));
                     float zz = (float) (0 + (Math.random() * 1));
-                    spot.getWorld().spawnParticle(particleType.getEffect(), spot, 5, xx, yy, zz, 0);
+                    spot.getWorld().spawnParticle(Particle.valueOf(particleType.getEffect()), spot, 5, xx, yy, zz, 0);
                 }
 
                 Entity craftEntity = (Entity) methodEntityGetBukkitEntity.invoke(objEntity);
@@ -314,9 +315,9 @@ public class SpawnOptionEntity implements SpawnOption {
     @Override
     public boolean equals(Object object) {
         if (object == this) return true;
-        if (!(object instanceof SpawnOptionEntity)) return false;
+        if (!(object instanceof SpawnOptionEntity_1_13)) return false;
 
-        SpawnOptionEntity other = (SpawnOptionEntity) object;
+        SpawnOptionEntity_1_13 other = (SpawnOptionEntity_1_13) object;
         return Arrays.equals(types, other.types);
     }
 

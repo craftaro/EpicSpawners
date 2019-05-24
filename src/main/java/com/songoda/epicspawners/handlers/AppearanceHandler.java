@@ -1,13 +1,12 @@
 package com.songoda.epicspawners.handlers;
 
-import com.songoda.epicspawners.EpicSpawnersPlugin;
-import com.songoda.epicspawners.api.spawner.Spawner;
-import com.songoda.epicspawners.api.spawner.SpawnerData;
-import com.songoda.epicspawners.api.spawner.SpawnerStack;
-import com.songoda.epicspawners.spawners.spawner.ESpawner;
-import com.songoda.epicspawners.utils.Debugger;
+import com.songoda.epicspawners.EpicSpawners;
+import com.songoda.epicspawners.spawners.spawner.Spawner;
+import com.songoda.epicspawners.spawners.spawner.SpawnerData;
+import com.songoda.epicspawners.spawners.spawner.SpawnerStack;
 import com.songoda.epicspawners.utils.Methods;
-import com.songoda.epicspawners.utils.SettingsManager;
+import com.songoda.epicspawners.utils.ServerVersion;
+import com.songoda.epicspawners.utils.settings.Setting;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -26,16 +25,11 @@ import java.util.List;
 public class AppearanceHandler {
 
     public AppearanceHandler() {
-        try {
-            Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(EpicSpawnersPlugin.getInstance(), this::displayItems, 100L, 60L);
-        } catch (Exception e) {
-            Debugger.runReport(e);
-        }
+        Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(EpicSpawners.getInstance(), this::displayItems, 100L, 60L);
     }
 
     private void displayItems() {
-        try {
-            EpicSpawnersPlugin instance = EpicSpawnersPlugin.getInstance();
+        EpicSpawners instance = EpicSpawners.getInstance();
 
 
             for (Spawner spawner : new ArrayList<>(instance.getSpawnerManager().getSpawners())) {
@@ -46,20 +40,21 @@ public class AppearanceHandler {
                 if (!location.getWorld().isChunkLoaded(destx, destz)) {
                     continue;
                 }
-                if (location.getBlock().getType() != Material.SPAWNER) continue;
+                if (location.getBlock().getType() != (instance.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER")))
+                    continue;
 
                 if (spawner.getSpawnerStacks().size() <= 1) {
                     updateDisplayItem(spawner, spawner.getFirstStack().getSpawnerData());
                     continue;
                 }
 
-                if (!SettingsManager.Setting.OMNI_SPAWNERS.getBoolean()) continue;
+                if (!Setting.OMNI_SPAWNERS.getBoolean()) continue;
 
                 String last = null;
                 SpawnerData next = null;
                 List<SpawnerStack> list = new ArrayList<>(spawner.getSpawnerStacks());
                 for (SpawnerStack stack : list) {
-                    if (stack.getSpawnerData().getIdentifyingName().equals(((ESpawner) spawner).getOmniState())) {
+                    if (stack.getSpawnerData().getIdentifyingName().equals(spawner.getOmniState())) {
                         last = stack.getSpawnerData().getIdentifyingName();
                     } else if (last != null && next == null) {
                         next = stack.getSpawnerData();
@@ -69,21 +64,17 @@ public class AppearanceHandler {
                     next = list.get(0).getSpawnerData();
                 }
                 updateDisplayItem(spawner, next);
-                ((ESpawner) spawner).setOmniState(next.getIdentifyingName());
+                spawner.setOmniState(next.getIdentifyingName());
 
                 CreatureSpawner creatureSpawner = spawner.getCreatureSpawner();
                 if (creatureSpawner == null) continue;
 
                 creatureSpawner.update();
             }
-        } catch (Exception e) {
-            Debugger.runReport(e);
-        }
     }
 
 
     public void updateDisplayItem(Spawner spawner, SpawnerData spawnerData) {
-        try {
             Location location = spawner.getLocation();
             location.add(.5, -.4, .5);
 
@@ -107,7 +98,7 @@ public class AppearanceHandler {
             try {
                 EntityType next = EntityType.valueOf(Methods.restoreType(spawnerData.getIdentifyingName()));
                 spawner.getCreatureSpawner().setSpawnedType(next);
-            } catch (Exception ex) {
+            } catch (Exception failure) {
                 spawner.getCreatureSpawner().setSpawnedType(EntityType.DROPPED_ITEM);
 
                 if (itemStack.getType() == Material.AIR) return;
@@ -122,9 +113,6 @@ public class AppearanceHandler {
                 as.setBasePlate(true);
                 as.setHelmet(itemStack);
             }
-        } catch (Exception e) {
-            Debugger.runReport(e);
-        }
     }
 
     public void removeDisplayItem(Spawner spawner) {
@@ -143,9 +131,6 @@ public class AppearanceHandler {
         if (near == null) return null;
         near.removeIf(entity -> entity == null || entity.getType() != EntityType.ARMOR_STAND || entity.getCustomName() == null || !entity.getCustomName().equalsIgnoreCase("EpicSpawners-Display"));
         if (near.size() != 0) {
-            if (Debugger.isDebug()) {
-                Bukkit.getLogger().info("Songoda-Debug: ArmorStand present");
-            }
             return near;
         }
         return null;

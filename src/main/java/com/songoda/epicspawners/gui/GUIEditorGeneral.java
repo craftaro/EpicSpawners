@@ -1,8 +1,9 @@
 package com.songoda.epicspawners.gui;
 
-import com.songoda.epicspawners.EpicSpawnersPlugin;
-import com.songoda.epicspawners.api.spawner.SpawnerData;
+import com.songoda.epicspawners.EpicSpawners;
+import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.utils.Methods;
+import com.songoda.epicspawners.utils.ServerVersion;
 import com.songoda.epicspawners.utils.gui.AbstractAnvilGUI;
 import com.songoda.epicspawners.utils.gui.AbstractGUI;
 import org.bukkit.Material;
@@ -12,11 +13,11 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class GUIEditorGeneral extends AbstractGUI {
 
-    private final EpicSpawnersPlugin plugin;
+    private final EpicSpawners plugin;
     private final AbstractGUI back;
     private SpawnerData spawnerData;
 
-    public GUIEditorGeneral(EpicSpawnersPlugin plugin, AbstractGUI abstractGUI, SpawnerData spawnerData, Player player) {
+    public GUIEditorGeneral(EpicSpawners plugin, AbstractGUI abstractGUI, SpawnerData spawnerData, Player player) {
         super(player);
         this.plugin = plugin;
         this.back = abstractGUI;
@@ -37,7 +38,7 @@ public class GUIEditorGeneral extends AbstractGUI {
             num++;
         }
 
-        createButton(0, Methods.addTexture(new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3),
+        createButton(0, Methods.addTexture(new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3),
                 "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23"),
                 plugin.getLocale().getMessage("general.nametag.back"));
 
@@ -61,7 +62,7 @@ public class GUIEditorGeneral extends AbstractGUI {
         inventory.setItem(43, Methods.getBackgroundGlass(true));
         inventory.setItem(44, Methods.getBackgroundGlass(true));
 
-        createButton(19, Material.SUNFLOWER, "&6&lShop Price",
+        createButton(19, plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SUNFLOWER : Material.valueOf("DOUBLE_PLANT"), "&6&lShop Price",
                 "&7Currently: &a" + spawnerData.getShopPrice(),
                 "&7This is the price of the",
                 "&7spawner in the shop.");
@@ -71,7 +72,7 @@ public class GUIEditorGeneral extends AbstractGUI {
                 "&7If this is true this spawner",
                 "&7will show up in the shop GUI.");
 
-        createButton(22, Material.FIRE_CHARGE, "&c&lSpawn On Fire",
+        createButton(22, plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.FIRE_CHARGE : Material.valueOf("FIREWORK_CHARGE"), "&c&lSpawn On Fire",
                 "&7Currently: &a" + spawnerData.isSpawnOnFire(),
                 "&7If this is true this spawner",
                 "&7will spawn entities on fire.");
@@ -81,17 +82,17 @@ public class GUIEditorGeneral extends AbstractGUI {
                 "&7Setting this to true will define",
                 "&7upgradable.");
 
-        createButton(24, Material.SUNFLOWER, "&6&lCustom Economy cost",
+        createButton(24, plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SUNFLOWER : Material.valueOf("DOUBLE_PLANT"), "&6&lCustom Economy cost",
                 "&7Currently: &a" + spawnerData.getUpgradeCostEconomy(),
                 "&7This is the custom economy cost",
                 "&7to upgrade this spawner.");
 
-        createButton(25, Material.EXPERIENCE_BOTTLE, "&5&lCustom Experience cost",
+        createButton(25, plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.EXPERIENCE_BOTTLE : Material.valueOf("EXP_BOTTLE"), "&5&lCustom Experience cost",
                 "&7Currently: &a" + spawnerData.getUpgradeCostExperience(),
                 "&7This is the custom XP cost",
                 "&7to upgrade this spawner.");
 
-        createButton(30, Material.EXPERIENCE_BOTTLE, "&5&lCustom Goal",
+        createButton(30, plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.EXPERIENCE_BOTTLE : Material.valueOf("EXP_BOTTLE"), "&5&lCustom Goal",
                 "&7Currently: &a" + spawnerData.getKillGoal(),
                 "&7If this is set to anything",
                 "&7but 0 the default kill goal",
@@ -103,7 +104,7 @@ public class GUIEditorGeneral extends AbstractGUI {
                 "&7will allow you to charge players",
                 "&7for breaking this type of spawner.");
 
-        createButton(40, Material.CLOCK, "&6&lTick Rate",
+        createButton(40, plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.CLOCK : Material.valueOf("WATCH"), "&6&lTick Rate",
                 "&7Currently: &a" + spawnerData.getTickRate(),
                 "&7This is the default tick rate",
                 "&7that your spawner will use",

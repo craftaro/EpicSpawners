@@ -1,15 +1,13 @@
 package com.songoda.epicspawners.command.commands;
 
-import com.songoda.epicspawners.EpicSpawnersPlugin;
+import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.References;
-import com.songoda.epicspawners.api.spawner.Spawner;
-import com.songoda.epicspawners.api.spawner.SpawnerData;
-import com.songoda.epicspawners.api.spawner.SpawnerStack;
 import com.songoda.epicspawners.command.AbstractCommand;
-import com.songoda.epicspawners.spawners.spawner.ESpawnerStack;
+import com.songoda.epicspawners.spawners.spawner.Spawner;
+import com.songoda.epicspawners.spawners.spawner.SpawnerData;
+import com.songoda.epicspawners.spawners.spawner.SpawnerStack;
 import com.songoda.epicspawners.utils.Methods;
-import com.songoda.epicspawners.utils.SettingsManager;
-import org.bukkit.Bukkit;
+import com.songoda.epicspawners.utils.ServerVersion;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
@@ -17,7 +15,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class CommandChange extends AbstractCommand {
@@ -27,7 +24,7 @@ public class CommandChange extends AbstractCommand {
     }
 
     @Override
-    protected ReturnType runCommand(EpicSpawnersPlugin instance, CommandSender sender, String... args) {
+    protected ReturnType runCommand(EpicSpawners instance, CommandSender sender, String... args) {
         if (args.length != 2) return ReturnType.SYNTAX_ERROR;
         if (!sender.hasPermission("epicspawners.admin") && !sender.hasPermission("epicspawners.change.*") && !sender.hasPermission("epicspawners.change." + args[1].toUpperCase())) {
             sender.sendMessage(References.getPrefix() + instance.getLocale().getMessage("event.general.nopermission"));
@@ -36,7 +33,7 @@ public class CommandChange extends AbstractCommand {
         Player player = (Player) sender;
         Block block = player.getTargetBlock(null, 200);
 
-        if (block.getType() != Material.SPAWNER) {
+        if (block.getType() != (instance.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER"))) {
             sender.sendMessage(Methods.formatText(References.getPrefix() + "&cThis is not a spawner."));
             return ReturnType.FAILURE;
         }
@@ -57,7 +54,7 @@ public class CommandChange extends AbstractCommand {
         }
 
         try {
-            SpawnerStack stack = new ESpawnerStack(data, spawner.getSpawnerDataCount());
+            SpawnerStack stack = new SpawnerStack(data, spawner.getSpawnerDataCount());
             spawner.clearSpawnerStacks();
             spawner.addSpawnerStack(stack);
             spawner.getSpawnerStacks();
@@ -78,7 +75,7 @@ public class CommandChange extends AbstractCommand {
     }
 
     @Override
-    protected List<String> onTab(EpicSpawnersPlugin instance, CommandSender sender, String... args) {
+    protected List<String> onTab(EpicSpawners instance, CommandSender sender, String... args) {
         if (args.length == 2) {
             List<String> spawners = new ArrayList<>();
             for (SpawnerData spawnerData : instance.getSpawnerManager().getAllSpawnerData()) {

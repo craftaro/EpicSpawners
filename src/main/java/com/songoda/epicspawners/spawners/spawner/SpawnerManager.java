@@ -1,15 +1,12 @@
 package com.songoda.epicspawners.spawners.spawner;
 
-import com.songoda.epicspawners.api.spawner.Spawner;
-import com.songoda.epicspawners.api.spawner.SpawnerData;
-import com.songoda.epicspawners.api.spawner.SpawnerManager;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 import java.util.*;
 
-public class ESpawnerManager implements SpawnerManager {
+public class SpawnerManager {
 
     // These are the spawner types loaded into memory.
     private static final Map<String, SpawnerData> spawners = new LinkedHashMap<>();
@@ -20,17 +17,17 @@ public class ESpawnerManager implements SpawnerManager {
     // This is the map that holds the cooldowns for picking up stuffs
     private static final List<Spawner> pickingUp = new ArrayList<>();
 
-    @Override
+
     public SpawnerData getSpawnerData(String name) {
         return spawners.get(name.toLowerCase());
     }
 
-    @Override
+
     public SpawnerData getSpawnerData(EntityType type) {
         return getSpawnerData(type.name().replaceAll("_", " "));
     }
 
-    @Override
+
     public void addSpawnerData(String name, SpawnerData spawnerData) {
         spawners.put(name.toLowerCase(), spawnerData);
         spawnerData.reloadSpawnMethods();
@@ -40,61 +37,61 @@ public class ESpawnerManager implements SpawnerManager {
         spawners.put(spawnerData.getIdentifyingName().toLowerCase(), spawnerData);
     }
 
-    @Override
+
     public void removeSpawnerData(String name) {
         spawners.remove(name.toLowerCase());
     }
 
-    @Override
+
     @Deprecated
     public Map<String, SpawnerData> getRegisteredSpawnerData() {
         return Collections.unmodifiableMap(spawners);
     }
 
-    @Override
+
     public Collection<SpawnerData> getAllSpawnerData() {
         return Collections.unmodifiableCollection(spawners.values());
     }
 
-    @Override
+
     public Collection<SpawnerData> getAllEnabledSpawnerData() {
         Collection<SpawnerData> spawners = new ArrayList<>(getAllSpawnerData());
         spawners.removeIf(spawnerData -> !spawnerData.isActive() || spawnerData.getIdentifyingName().equals("Omni"));
         return Collections.unmodifiableCollection(spawners);
     }
 
-    @Override
+
     public boolean isSpawner(Location location) {
         return spawnersInWorld.containsKey(roundLocation(location));
     }
 
-    @Override
+
     public boolean isSpawnerData(String type) {
         return spawners.containsKey(type.toLowerCase());
     }
 
-    @Override
+
     public Spawner getSpawnerFromWorld(Location location) {
         return spawnersInWorld.get(roundLocation(location));
     }
 
-    @Override
+
     public void addSpawnerToWorld(Location location, Spawner spawner) {
         spawnersInWorld.put(roundLocation(location), spawner);
     }
 
-    @Override
+
     public Spawner removeSpawnerFromWorld(Location location) {
         return spawnersInWorld.remove(roundLocation(location));
     }
 
-    @Override
+
     @Deprecated
     public Map<Location, Spawner> getSpawnersInWorld() {
         return Collections.unmodifiableMap(spawnersInWorld);
     }
 
-    @Override
+
     public Collection<Spawner> getSpawners() {
         return Collections.unmodifiableCollection(spawnersInWorld.values());
     }
@@ -111,7 +108,7 @@ public class ESpawnerManager implements SpawnerManager {
         return pickingUp.contains(spawner);
     }
 
-    @Override
+
     public int getAmountPlaced(Player player) {
         int amount = 0;
         for (Spawner spawner : spawnersInWorld.values()) {

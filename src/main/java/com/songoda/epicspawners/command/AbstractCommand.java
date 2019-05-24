@@ -1,6 +1,6 @@
 package com.songoda.epicspawners.command;
 
-import com.songoda.epicspawners.EpicSpawnersPlugin;
+import com.songoda.epicspawners.EpicSpawners;
 import org.bukkit.command.CommandSender;
 
 import java.util.ArrayList;
@@ -41,9 +41,9 @@ public abstract class AbstractCommand {
         subCommand.add(command);
     }
 
-    protected abstract ReturnType runCommand(EpicSpawnersPlugin instance, CommandSender sender, String... args);
+    protected abstract ReturnType runCommand(EpicSpawners instance, CommandSender sender, String... args);
 
-    protected abstract List<String> onTab(EpicSpawnersPlugin instance, CommandSender sender, String... args);
+    protected abstract List<String> onTab(EpicSpawners instance, CommandSender sender, String... args);
 
     public abstract String getPermissionNode();
 

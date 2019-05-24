@@ -1,8 +1,7 @@
 package com.songoda.epicspawners.command.commands;
 
-import com.songoda.epicspawners.EpicSpawnersPlugin;
+import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.References;
-import com.songoda.epicspawners.hook.HookType;
 import com.songoda.epicspawners.boost.BoostData;
 import com.songoda.epicspawners.boost.BoostType;
 import com.songoda.epicspawners.command.AbstractCommand;
@@ -10,7 +9,10 @@ import com.songoda.epicspawners.utils.Methods;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 public class CommandBoost extends AbstractCommand {
 
@@ -19,7 +21,7 @@ public class CommandBoost extends AbstractCommand {
     }
 
     @Override
-    protected ReturnType runCommand(EpicSpawnersPlugin instance, CommandSender sender, String... args) {
+    protected ReturnType runCommand(EpicSpawners instance, CommandSender sender, String... args) {
         if (args.length < 3) {
             sender.sendMessage(References.getPrefix() + Methods.formatText("&7Syntax error..."));
             return ReturnType.SYNTAX_ERROR;
@@ -83,33 +85,6 @@ public class CommandBoost extends AbstractCommand {
                 boostType = BoostType.PLAYER;
                 boostObject = Bukkit.getOfflinePlayer(arr[1]).getUniqueId().toString();
             }
-        } else if (arr[0].equalsIgnoreCase("f") || arr[0].equalsIgnoreCase("faction")) {
-            if (instance.getHookManager().getClaimId(HookType.FACTION, arr[1]) == null) {
-                sender.sendMessage(Methods.formatText(References.getPrefix() + "&cThat faction does not exist..."));
-                return ReturnType.FAILURE;
-            }
-
-            start += "The faction";
-            boostType = BoostType.FACTION;
-            boostObject = instance.getHookManager().getClaimId(HookType.FACTION, arr[1]);
-        } else if (arr[0].equalsIgnoreCase("t") || arr[0].equalsIgnoreCase("town")) {
-            if (instance.getHookManager().getClaimId(HookType.TOWN, arr[1]) == null) {
-                sender.sendMessage(Methods.formatText(References.getPrefix() + "&cThat town does not exist..."));
-                return ReturnType.FAILURE;
-            }
-
-            start += "The town";
-            boostType = BoostType.TOWN;
-            boostObject = instance.getHookManager().getClaimId(HookType.TOWN, arr[1]);
-        } else if (arr[0].equalsIgnoreCase("i") || arr[0].equalsIgnoreCase("island")) {
-            if (instance.getHookManager().getClaimId(HookType.ISLAND, arr[1]) == null) {
-                sender.sendMessage(Methods.formatText(References.getPrefix() + "&cThat island does not exist..."));
-                return ReturnType.FAILURE;
-            }
-
-            start += "The island";
-            boostType = BoostType.ISLAND;
-            boostObject = instance.getHookManager().getClaimId(HookType.ISLAND, arr[1]);
         }
 
         if (boostType == null || boostObject == null) {
@@ -124,7 +99,7 @@ public class CommandBoost extends AbstractCommand {
     }
 
     @Override
-    protected List<String> onTab(EpicSpawnersPlugin instance, CommandSender sender, String... args) {
+    protected List<String> onTab(EpicSpawners instance, CommandSender sender, String... args) {
         if (args.length == 2) {
             return Arrays.asList("p:", "f:", "t:", "i:");
         } else if (args.length == 3) {

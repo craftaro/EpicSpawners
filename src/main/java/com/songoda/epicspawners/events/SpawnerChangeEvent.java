@@ -1,9 +1,9 @@
 package com.songoda.epicspawners.events;
 
-import com.songoda.epicspawners.api.EpicSpawnersAPI;
-import com.songoda.epicspawners.api.spawner.Spawner;
-import com.songoda.epicspawners.api.spawner.SpawnerData;
-import com.songoda.epicspawners.api.spawner.SpawnerManager;
+import com.songoda.epicspawners.EpicSpawners;
+import com.songoda.epicspawners.spawners.spawner.Spawner;
+import com.songoda.epicspawners.spawners.spawner.SpawnerData;
+import com.songoda.epicspawners.spawners.spawner.SpawnerManager;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -47,19 +47,19 @@ public class SpawnerChangeEvent extends SpawnerEvent implements Cancellable {
 
     @Deprecated
     public SpawnerChangeEvent(Location location, Player player, int stackSize, int oldStackSize) {
-        this(player, EpicSpawnersAPI.getSpawnerManager().getSpawnerFromWorld(location), stackSize, oldStackSize);
+        this(player, EpicSpawners.getInstance().getSpawnerManager().getSpawnerFromWorld(location), stackSize, oldStackSize);
     }
 
     @Deprecated
     public SpawnerChangeEvent(Location location, Player player, SpawnerData data, SpawnerData oldSpawnerData) {
-        this(player, EpicSpawnersAPI.getSpawnerManager().getSpawnerFromWorld(location), data, oldSpawnerData);
+        this(player, EpicSpawners.getInstance().getSpawnerManager().getSpawnerFromWorld(location), data, oldSpawnerData);
     }
 
     @Deprecated
     public SpawnerChangeEvent(Location location, Player player, String type, String oldType) {
-        super(player, EpicSpawnersAPI.getSpawnerManager().getSpawnerFromWorld(location));
+        super(player, EpicSpawners.getInstance().getSpawnerManager().getSpawnerFromWorld(location));
 
-        SpawnerManager spawnerManager = EpicSpawnersAPI.getSpawnerManager();
+        SpawnerManager spawnerManager = EpicSpawners.getInstance().getSpawnerManager();
         this.spawnerData = spawnerManager.getSpawnerData(type);
         this.oldSpawnerData = spawnerManager.getSpawnerData(oldType);
         this.stackSize = oldStackSize = spawner.getSpawnerDataCount();

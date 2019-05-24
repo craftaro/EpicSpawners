@@ -1,6 +1,6 @@
 package com.songoda.epicspawners.command;
 
-import com.songoda.epicspawners.EpicSpawnersPlugin;
+import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.References;
 import com.songoda.epicspawners.command.commands.*;
 import com.songoda.epicspawners.utils.Methods;
@@ -16,16 +16,16 @@ import java.util.List;
 public class CommandManager implements CommandExecutor {
 
     private static final List<AbstractCommand> commands = new ArrayList<>();
-    private EpicSpawnersPlugin instance;
+    private EpicSpawners plugin;
     private TabManager tabManager;
 
-    public CommandManager(EpicSpawnersPlugin instance) {
-        this.instance = instance;
+    public CommandManager(EpicSpawners plugin) {
+        this.plugin = plugin;
         this.tabManager = new TabManager(this);
 
-        instance.getCommand("EpicSpawners").setExecutor(this);
-        instance.getCommand("SpawnerStats").setExecutor(this);
-        instance.getCommand("SpawnerShop").setExecutor(this);
+        plugin.getCommand("EpicSpawners").setExecutor(this);
+        plugin.getCommand("SpawnerStats").setExecutor(this);
+        plugin.getCommand("SpawnerShop").setExecutor(this);
 
         AbstractCommand commandEpicSpawners = addCommand(new CommandEpicSpawners());
 
@@ -40,7 +40,7 @@ public class CommandManager implements CommandExecutor {
 
         for (AbstractCommand abstractCommand : commands) {
             if (abstractCommand.getParent() != null) continue;
-            instance.getCommand(abstractCommand.getCommand()).setTabCompleter(tabManager);
+            plugin.getCommand(abstractCommand.getCommand()).setTabCompleter(tabManager);
         }
     }
 
@@ -78,14 +78,14 @@ public class CommandManager implements CommandExecutor {
             return;
         }
         if (command.getPermissionNode() == null || sender.hasPermission(command.getPermissionNode())) {
-            AbstractCommand.ReturnType returnType = command.runCommand(instance, sender, strings);
+            AbstractCommand.ReturnType returnType = command.runCommand(plugin, sender, strings);
             if (returnType == AbstractCommand.ReturnType.SYNTAX_ERROR) {
                 sender.sendMessage(References.getPrefix() + Methods.formatText("&cInvalid Syntax!"));
                 sender.sendMessage(References.getPrefix() + Methods.formatText("&7The valid syntax is: &6" + command.getSyntax() + "&7."));
             }
             return;
         }
-        sender.sendMessage(References.getPrefix() + instance.getLocale().getMessage("event.general.nopermission"));
+        sender.sendMessage(References.getPrefix() + plugin.getLocale().getMessage("event.general.nopermission"));
     }
 
     public List<AbstractCommand> getCommands() {

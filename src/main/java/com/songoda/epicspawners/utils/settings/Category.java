@@ -1,4 +1,4 @@
-package com.songoda.epiclevels.utils.settings;
+package com.songoda.epicspawners.utils.settings;
 
 public enum Category {
 

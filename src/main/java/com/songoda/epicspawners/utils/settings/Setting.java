@@ -1,6 +1,7 @@
-package com.songoda.epiclevels.utils.settings;
+package com.songoda.epicspawners.utils.settings;
 
-import com.songoda.epiclevels.EpicLevels;
+import com.songoda.epicspawners.EpicSpawners;
+import com.songoda.epicspawners.utils.ServerVersion;
 
 import java.util.Arrays;
 import java.util.List;
@@ -8,125 +9,96 @@ import java.util.stream.Collectors;
 
 public enum Setting {
 
-    AUTOSAVE("Main.Auto Save Interval In Seconds", 15,
-            "The amount of time in between saving to file.",
-            "This is purely a safety function to prevent against unplanned crashes or",
-            "restarts. With that said it is advised to keep this enabled.",
-            "If however you enjoy living on the edge, feel free to turn it off."),
+    SPAWNERS_MAX("Main.Spawner Max Upgrade", 5),
+    NAME_FORMAT("Main.Spawner Name Format", "&e{TYPE} &fSpawner [&c{AMT}x]"),
+    FORCE_COMBINE_RADIUS("Main.Force Combine Radius", 0),
+    FORCE_COMBINE_DENY("Main.Deny Place On Force Combine", false),
+    SEARCH_RADIUS("Main.Radius To Search Around Spawners", "8x4x8"),
+    ALTER_DELAY("Main.Default Minecraft Spawner Cooldowns", true),
+    ALERT_PLACE_BREAK("Main.Alerts On Place And Break", true),
+    SNEAK_FOR_STACK("Main.Sneak To Receive A Stacked Spawner", true),
+    SPAWNER_HOLOGRAMS("Main.Spawners Have Holograms", true),
+    ONLY_DROP_PLACED("Main.Only Drop Placed Spawner", false),
+    ONLY_CHARGE_NATURAL("Main.Only Charge Natural Spawners", false),
+    CUSTOM_SPAWNER_TICK_RATE("Main.Custom Spawner Tick Rate", 10),
+    RANDOM_LOW_HIGH("Main.Random Amount Added To Each Spawn", "1:4"),
+    SOUNDS_ENABLED("Main.Sounds Enabled", true),
+    DISPLAY_LEVEL_ONE("Main.Display Level In Spawner Title If Level 1", false),
+    OMNI_SPAWNERS("Main.OmniSpawners Enabled", true),
+    EGGS_CONVERT_SPAWNERS("Main.Convert Spawners With Eggs", true),
+    HELPFUL_TIPS_ENABLED("Main.Display Helpful Tips For Operators", true),
+    UPGRADE_WITH_ECO_ENABLED("Main.Upgrade With Economy", true),
+    UPGRADE_WITH_XP_ENABLED("Main.Upgrade With XP", true),
+    UPGRADE_COST_ECONOMY("Main.Cost To Upgrade With Economy", 10000),
+    UPGRADE_COST_EXPERIANCE("Main.Cost To Upgrade With XP", 50),
+    USE_CUSTOM_UPGRADE_EQUATION("Main.Use Custom Equations for Upgrade Costs", false),
+    LIQUID_REPEL_RADIUS("Main.Spawner Repel Liquid Radius", 1),
+    REDSTONE_ACTIVATE("Main.Redstone Power Deactivates Spawners", true),
+    DISPLAY_HELP_BUTTON("Main.Display Help Button In Spawner Overview", true),
+    SPAWNERS_DONT_EXPLODE("Main.Prevent Spawners From Exploding", false),
+    SPAWNERS_TO_INVENTORY("Main.Add Spawners To Inventory On Drop", false),
+    UPGRADE_PARTICLE_TYPE("Main.Upgrade Particle Type", "SPELL_WITCH"),
+    EXTRA_SPAWN_TICKS("Main.Extra Ticks Added To Each Spawn", 0),
+    MAX_SPAWNERS("Main.Max Spawners Per Player", -1),
+    AUTOSAVE("Main.Auto Save Interval In Seconds", 15),
+    NO_AI("Main.Nerf Spawner Mobs", false),
 
-    EXP_MOB("Main.Experience Gained Per Mob Kill", 2L,
-            "The amount of experience gained per monster kill."),
+    COST_EQUATION_EXPERIANCE("Main.Equations.Calculate XP Upgrade Cost", "{XPCost} * {Level}"),
+    COST_EQUATION_ECONOMY("Main.Equations.Calculate Economy Upgrade Cost", "{ECOCost} * {Level}"),
+    SPAWNER_EQUATION_SPAWNS("Main.Equations.Mobs Spawned Per Spawn", "{MULTI} * {RAND}"),
 
-    EXP_PLAYER("Main.Experience Gained Per Player Kill", 250L,
-            "The amount of experience gained per player kill."),
+    NAMED_SPAWNER_TIERS("Main.Named Spawners Tiers", false),
+    TIER_NAMES("Main.Tier Names", Arrays.asList("&7Common", "&6Uncommon", "&4Rare", "&5Mythic")),
 
-    EXP_DEATH("Main.Experience lost On Death", 200L,
-            "The amount of experience lost when a player is killed",
-            "by another player."),
+    BOOST_MULTIPLIER("Spawner Boosting.Boost Multiplier", "0.5"),
+    MAX_PLAYER_BOOST("Spawner Boosting.Max Multiplier For A Spawner Boost", 5),
+    BOOST_COST("Spawner Boosting.Item Charged For A Boost", "DIAMOND:2"),
 
-    ALLOW_NEGATIVE("Main.Allow Negative Experience", false,
-            "Allow players to lose experience into negative?"),
+    HOSTILE_MOBS_ATTACK_SECOND("entity.Hostile Mobs Attack Second", false),
 
-    SEND_KILL_MESSAGE("Main.Send Message On Kill", true,
-            "Should Players be notified when they kill another player?"),
+    ONLY_DROP_STACKED("Spawner Drops.Only Drop Stacked Spawners", false),
+    MOB_KILLING_COUNT("Spawner Drops.Allow Killing Mobs To Drop Spawners", true),
+    COUNT_UNNATURAL_KILLS("Spawner Drops.Count Unnatural Kills Towards Spawner Drop", false),
+    KILL_GOAL("Spawner Drops.Kills Needed for Drop", 100),
+    ALERT_INTERVAL("Spawner Drops.Alert Every X Before Drop", 10),
+    DROP_ON_CREEPER_EXPLOSION("Spawner Drops.Drop On Creeper Explosion", true),
+    DROP_ON_TNT_EXPLOSION("Spawner Drops.Drop On TNT Explosion", true),
+    EXPLOSION_DROP_CHANCE_TNT("Spawner Drops.Chance On TNT Explosion", "100%"),
+    EXPLOSION_DROP_CHANCE_CREEPER("Spawner Drops.Chance On Creeper Explosion", "100%"),
+    SILKTOUCH_SPAWNERS("Spawner Drops.Drop On SilkTouch", true),
+    SILKTOUCH_MIN_LEVEL("Spawner Drops.Minimum Required Silktouch Level", 1),
+    SILKTOUCH_NATURAL_SPAWNER_DROP_CHANCE("Spawner Drops.Chance On Natural Silktouch", "100%"),
+    SILKTOUCH_PLACED_SPAWNER_DROP_CHANCE("Spawner Drops.Chance On Placed Silktouch", "100%"),
 
-    SEND_DEATH_MESSAGE("Main.Send Message On Death", true,
-            "Should players be notified when killed?"),
-
-    SEND_BROADCAST_DEATH_MESSAGE("Main.Send Broadcast On Death", true,
-            "Broadcasts a players death to the whole server."),
-
-    SEND_BROADCAST_LEVELUP_MESSAGE("Main.Send Broadcast On Levelup", true,
-            "Broadcasts a players level up to the whole server."),
-
-    BROADCAST_LEVELUP_EVERY("Main.Broadcast Levelup Every", 5,
-            "How often should a level up be announced?",
-            "If you enter 5 every 5 levels players will be notified."),
-
-    MAX_LEVEL("Main.Max Level", 99,
-            "The maximum allowed level.",
-            "Note that once reached players will still earn experience beyond",
-            "the the maximum level without the ability to level up."),
-
-    MAX_EXP("Main.Max Experience", 200000000L,
-            "The maximum allowed experience."),
-
-    START_EXP("Main.Starting Experience", 0L,
-            "The amount of experience players start with."),
-
-    START_PVP_LEVEL("Main.Level Required For PVP", 0,
-            "The minimum level required to engage or be engaged with in combat."),
-
-    BLACKLISTED_WORLDS("Main.Blacklisted Worlds", Arrays.asList("World1", "World2", "World3"),
-            "Worlds that kills are not counted in."),
-
-    MAX_EXTRA_HEALTH("Main.Max Extra Health", 10,
-            "The maximum amount of health a player can gain through levels."),
-
-    EXTRA_HEALTH_PER_LEVEL("Main.Extra Health Per Level", 0.2,
-            "The amount of health a player will gain per level.",
-            "1 would be half a heart and 20 would be a 10 hearts."),
-
-    MAX_EXTRA_DAMAGE("Main.Max Extra Damage", 2.0,
-            "The maximum amount of extra damage applied to a players attack",
-            "per level."),
-
-    EXTRA_DAMAGE_PER_LEVEL("Main.Extra Damage Per Level", 0.05,
-            "The amount of additional experience applied to a player per",
-            "level."),
-
-    RUN_KILLSTREAK_EVERY("Main.Run Killstreaks Reward Every", 3,
-            "A player must achieve a multiple of the following number in order for the reward",
-            "script to run.",
-            "You can set this to 1 if you would like the script to be ran with every kill."),
-
-    KILLSTREAK_BONUS_EXP("Main.Killstreak Bonus Experience", 0.2,
-            "For each kill in a killstreak the following number will be used to boost your",
-            "experience gain (streak * exp)."),
-
-    PROGRESS_BAR_LENGTH("Main.Progress Bar Length", 36,
-            "The length of the progress bar in the levels GUI."),
-
-    PROGRESS_BAR_LENGTH_PLACEHOLDER("Main.Progress Bar Length Placeholder", 20,
-            "The length of the progress bar in placeholders."),
-
-    ANTI_GRINDER("Anti Grinder.Enabled", true,
-            "Enabling this will enable the anti grinder timeout.",
-            "In its default configuration it will prevent a player from killing the same player",
-            "more than 3 times in 15 minutes."),
-
-    GRINDER_INTERVAL("Anti Grinder.Interval", 900,
-            "How long in seconds should a player have to wait once triggered?"),
-
-    GRINDER_MAX("Anti Grinder.Max Kills Before Trigger", 3,
-            "How many kills before trigger?"),
-
-    GRINDER_ALERT("Anti Grinder.Alert When Triggered", true,
-            "Should we alert the killer when they have reached the threshold?"),
-
-    LEVELING_FORMULA("Formula.Leveling", "EXPONENTIAL",
-            "This is the formula used when calculating a players level",
-            "", "LINEAR: All levels require the same amount of experience to reach the next level.",
-            "EXPONENTIAL: Levels will increasingly require more experience the higher level you are.",
-            "CUSTOM: You can enter a custom JavaScript equation here to finely tune your experience gain."),
-
-    LINEAR_INCREMENT("Formula.Linear Increment", 500,
-            "The stagnant amount of experience required to level up."),
-
-    EXPONENTIAL_BASE("Formula.Exponential Base", 500,
-            "You need to know what you're doing to mess with this, feel",
-            "free to put in random values and test around however."),
-
-    EXPONENTIAL_DIVISOR("Formula.Exponential Divisor", 7,
-            "You need to know what you're doing to mess with this, feel",
-            "free to put in random values and test around however."),
-
-    CUSTOM_FORMULA("Formula.Custom", "Math.pow(1.5, level) * Math.sqrt(level) * 2;",
-            "This is the custom formula. You can use any JavaScript math functions here."),
-
+    EXIT_ICON("Interfaces.Exit Icon", EpicSpawners.getInstance().isServerVersionAtLeast(ServerVersion.V1_13) ? "OAK_DOOR" : "WOOD_DOOR"),
+    BUY_ICON("Interfaces.Buy Icon", "EMERALD"),
+    ECO_ICON("Interfaces.Economy Icon",  EpicSpawners.getInstance().isServerVersionAtLeast(ServerVersion.V1_13) ? "SUNFLOWER" : "DOUBLE_PLANT"),
+    XP_ICON("Interfaces.XP Icon",  EpicSpawners.getInstance().isServerVersionAtLeast(ServerVersion.V1_13) ? "EXPERIENCE_BOTTLE" : "EXP_BOTTLE"),
     GLASS_TYPE_1("Interfaces.Glass Type 1", 7),
     GLASS_TYPE_2("Interfaces.Glass Type 2", 11),
     GLASS_TYPE_3("Interfaces.Glass Type 3", 3),
+    RAINBOW_GLASS("Interfaces.Replace Glass Type 1 With Rainbow Glass", false),
+
+    DATABASE_SUPPORT("Database.Activate Mysql Support", false,
+            "Should MySQL be used for data storage?"),
+
+    DATABASE_IP("Database.IP", "127.0.0.1",
+            "MySQL IP"),
+
+    DATABASE_PORT("Database.Port", 3306,
+            "MySQL Port"),
+
+    DATABASE_NAME("Database.Database Name", "EpicSpawners",
+            "The database you are inserting data into."),
+
+    DATABASE_PREFIX("Database.Prefix", "ES-",
+            "The prefix for tables inserted into the database."),
+
+    DATABASE_USERNAME("Database.Username", "PUT_USERNAME_HERE",
+            "MySQL Username"),
+
+    DATABASE_PASSWORD("Database.Password", "PUT_PASSWORD_HERE",
+            "MySQL Password"),
 
     LANGUGE_MODE("System.Language Mode", "en_US",
             "The enabled language file.",
@@ -167,28 +139,30 @@ public enum Setting {
     }
 
     public List<String> getStringList() {
-        return EpicLevels.getInstance().getConfig().getStringList(setting);
+        return EpicSpawners.getInstance().getConfig().getStringList(setting);
     }
 
     public boolean getBoolean() {
-        return EpicLevels.getInstance().getConfig().getBoolean(setting);
+        return EpicSpawners.getInstance().getConfig().getBoolean(setting);
     }
 
     public int getInt() {
-        return EpicLevels.getInstance().getConfig().getInt(setting);
+        return EpicSpawners.getInstance().getConfig().getInt(setting);
     }
 
     public long getLong() {
-        return EpicLevels.getInstance().getConfig().getLong(setting);
+        return EpicSpawners.getInstance().getConfig().getLong(setting);
     }
 
     public String getString() {
-        return EpicLevels.getInstance().getConfig().getString(setting);
+        return EpicSpawners.getInstance().getConfig().getString(setting);
     }
 
-    public char getChar() { return EpicLevels.getInstance().getConfig().getString(setting).charAt(0); }
+    public char getChar() {
+        return EpicSpawners.getInstance().getConfig().getString(setting).charAt(0);
+    }
 
     public double getDouble() {
-        return EpicLevels.getInstance().getConfig().getDouble(setting);
+        return EpicSpawners.getInstance().getConfig().getDouble(setting);
     }
 }

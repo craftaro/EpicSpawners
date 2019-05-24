@@ -1,9 +1,9 @@
 package com.songoda.epicspawners.spawners.spawner.option;
 
-import com.songoda.epicspawners.EpicSpawnersPlugin;
-import com.songoda.epicspawners.api.spawner.Spawner;
-import com.songoda.epicspawners.api.spawner.SpawnerData;
-import com.songoda.epicspawners.api.spawner.SpawnerStack;
+import com.songoda.epicspawners.EpicSpawners;
+import com.songoda.epicspawners.spawners.spawner.Spawner;
+import com.songoda.epicspawners.spawners.spawner.SpawnerData;
+import com.songoda.epicspawners.spawners.spawner.SpawnerStack;
 import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -86,7 +86,7 @@ public class SpawnOptionCommand implements SpawnOption {
 
     private Player getNearestPlayer(Location location) {
 
-        String[] playerRadius = EpicSpawnersPlugin.getInstance().getConfig().getString("Main.Radius To Search Around Spawners").split("x");
+        String[] playerRadius = EpicSpawners.getInstance().getConfig().getString("Main.Radius To Search Around Spawners").split("x");
         if (playerRadius.length != 3) return null;
 
         double xRadius = NumberUtils.toDouble(playerRadius[0], 8);

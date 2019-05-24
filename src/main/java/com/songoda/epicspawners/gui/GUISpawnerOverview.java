@@ -1,14 +1,14 @@
 package com.songoda.epicspawners.gui;
 
-import com.songoda.epicspawners.EpicSpawnersPlugin;
+import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.Locale;
-import com.songoda.epicspawners.api.CostType;
-import com.songoda.epicspawners.api.spawner.SpawnerStack;
-import com.songoda.epicspawners.spawners.spawner.ESpawner;
-import com.songoda.epicspawners.utils.Debugger;
+import com.songoda.epicspawners.spawners.spawner.Spawner;
+import com.songoda.epicspawners.spawners.spawner.SpawnerStack;
+import com.songoda.epicspawners.utils.CostType;
 import com.songoda.epicspawners.utils.Methods;
-import com.songoda.epicspawners.utils.SettingsManager;
+import com.songoda.epicspawners.utils.ServerVersion;
 import com.songoda.epicspawners.utils.gui.AbstractGUI;
+import com.songoda.epicspawners.utils.settings.Setting;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -30,16 +30,16 @@ public class GUISpawnerOverview extends AbstractGUI {
     private static final ItemStack BACKGROUND_GLASS_TYPE_2 = Methods.getBackgroundGlass(true);
     private static final ItemStack BACKGROUND_GLASS_TYPE_3 = Methods.getBackgroundGlass(false);
 
-    private final ESpawner spawner;
+    private final Spawner spawner;
     private final Player player;
-    private final EpicSpawnersPlugin plugin;
+    private final EpicSpawners plugin;
 
     private final FileConfiguration config;
     private final Locale locale;
 
     private int infoPage = 1;
 
-    public GUISpawnerOverview(EpicSpawnersPlugin plugin, ESpawner spawner, Player player) {
+    public GUISpawnerOverview(EpicSpawners plugin, Spawner spawner, Player player) {
         super(player);
         this.spawner = spawner;
         this.player = player;
@@ -58,7 +58,7 @@ public class GUISpawnerOverview extends AbstractGUI {
         else if (showAmt == 0)
             showAmt = 1;
 
-        ItemStack item = new ItemStack(Material.PLAYER_HEAD, showAmt, (byte) 3);
+        ItemStack item = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), showAmt, (byte) 3);
 
         if (spawner.getSpawnerStacks().size() != 1) {
             item = plugin.getHeads().addTexture(item, plugin.getSpawnerManager().getSpawnerData("omni"));
@@ -70,7 +70,7 @@ public class GUISpawnerOverview extends AbstractGUI {
                 try {
                     item = plugin.getHeads().addTexture(item, spawner.getIdentifyingData());
                 } catch (Exception e) {
-                    item = new ItemStack(Material.SPAWNER, showAmt);
+                    item = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER"), showAmt);
                 }
             }
         }
@@ -179,7 +179,7 @@ public class GUISpawnerOverview extends AbstractGUI {
         inventory.setItem(25, BACKGROUND_GLASS_TYPE_2);
         inventory.setItem(26, BACKGROUND_GLASS_TYPE_2);
 
-        if (SettingsManager.Setting.DISPLAY_HELP_BUTTON.getBoolean()) {
+        if (Setting.DISPLAY_HELP_BUTTON.getBoolean()) {
             ItemStack itemO = new ItemStack(Material.PAPER, 1);
             ItemMeta itemmetaO = itemO.getItemMeta();
             itemmetaO.setDisplayName(plugin.getLocale().getMessage("interface.spawner.howtotitle"));
@@ -317,7 +317,6 @@ public class GUISpawnerOverview extends AbstractGUI {
     }
 
     private String compileHow(Player p, String text) {
-        try {
             Matcher m = Pattern.compile("\\{(.*?)}").matcher(text);
             while (m.find()) {
                 Matcher mi = Pattern.compile("\\[(.*?)]").matcher(text);
@@ -417,20 +416,12 @@ public class GUISpawnerOverview extends AbstractGUI {
             }
             text = text.replaceAll("[\\[\\]\\{\\}]", ""); // [, ], { or }
             return text;
-        } catch (Exception e) {
-            Debugger.runReport(e);
-        }
-        return null;
     }
 
     private String a(int a, String text) {
-        try {
             if (a != 0) {
                 text = ", " + text;
             }
-        } catch (Exception e) {
-            Debugger.runReport(e);
-        }
         return text;
     }
 

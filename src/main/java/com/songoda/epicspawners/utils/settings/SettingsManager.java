@@ -1,8 +1,8 @@
-package com.songoda.epiclevels.utils.settings;
+package com.songoda.epicspawners.utils.settings;
 
-import com.songoda.epiclevels.EpicLevels;
-import com.songoda.epiclevels.utils.Methods;
-import com.songoda.epiclevels.utils.ServerVersion;
+import com.songoda.epicspawners.EpicSpawners;
+import com.songoda.epicspawners.utils.Methods;
+import com.songoda.epicspawners.utils.ServerVersion;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -24,13 +24,32 @@ import java.util.*;
  */
 public class SettingsManager implements Listener {
 
-    private final EpicLevels plugin;
+    private final EpicSpawners plugin;
     private Map<Player, String> cat = new HashMap<>();
     private Map<Player, String> current = new HashMap<>();
 
-    public SettingsManager(EpicLevels plugin) {
+    public SettingsManager(EpicSpawners plugin) {
         this.plugin = plugin;
         Bukkit.getPluginManager().registerEvents(this, plugin);
+    }
+
+    public static <K, V> void add(LinkedHashMap<K, V> map, int index, K key, V value) {
+        assert (map != null);
+        assert !map.containsKey(key);
+        assert (index >= 0) && (index < map.size());
+
+        int i = 0;
+        List<Map.Entry<K, V>> rest = new ArrayList<>();
+        for (Map.Entry<K, V> entry : map.entrySet()) {
+            if (i++ >= index) {
+                rest.add(entry);
+            }
+        }
+        map.put(key, value);
+        for (Map.Entry<K, V> entry : rest) {
+            map.remove(entry.getKey());
+            map.put(entry.getKey(), entry.getValue());
+        }
     }
 
     @EventHandler
@@ -84,7 +103,7 @@ public class SettingsManager implements Listener {
             config.set(value, event.getMessage());
         }
 
-        Bukkit.getScheduler().scheduleSyncDelayedTask(EpicLevels.getInstance(), () ->
+        Bukkit.getScheduler().scheduleSyncDelayedTask(EpicSpawners.getInstance(), () ->
                 this.finishEditing(player), 0L);
 
         event.setCancelled(true);
@@ -302,25 +321,6 @@ public class SettingsManager implements Listener {
 
         } catch (IOException e) {
             e.printStackTrace();
-        }
-    }
-
-    public static <K, V> void add(LinkedHashMap<K, V> map, int index, K key, V value) {
-        assert (map != null);
-        assert !map.containsKey(key);
-        assert (index >= 0) && (index < map.size());
-
-        int i = 0;
-        List<Map.Entry<K, V>> rest = new ArrayList<>();
-        for (Map.Entry<K, V> entry : map.entrySet()) {
-            if (i++ >= index) {
-                rest.add(entry);
-            }
-        }
-        map.put(key, value);
-        for (Map.Entry<K, V> entry : rest) {
-            map.remove(entry.getKey());
-            map.put(entry.getKey(), entry.getValue());
         }
     }
 }

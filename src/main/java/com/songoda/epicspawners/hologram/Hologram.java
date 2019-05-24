@@ -1,8 +1,9 @@
 package com.songoda.epicspawners.hologram;
 
-import com.songoda.epicspawners.EpicSpawnersPlugin;
-import com.songoda.epicspawners.api.spawner.Spawner;
+import com.songoda.epicspawners.EpicSpawners;
+import com.songoda.epicspawners.spawners.spawner.Spawner;
 import com.songoda.epicspawners.utils.Methods;
+import com.songoda.epicspawners.utils.ServerVersion;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -12,14 +13,14 @@ import java.util.Collection;
 
 public abstract class Hologram {
 
-    protected final EpicSpawnersPlugin instance;
+    protected final EpicSpawners plugin;
 
-    Hologram(EpicSpawnersPlugin instance) {
-        this.instance = instance;
+    Hologram(EpicSpawners plugin) {
+        this.plugin = plugin;
     }
 
     public void loadHolograms() {
-        Collection<Spawner> spawners = instance.getSpawnerManager().getSpawners();
+        Collection<Spawner> spawners = plugin.getSpawnerManager().getSpawners();
         if (spawners.size() == 0) return;
 
         for (Spawner spawner : spawners) {
@@ -29,7 +30,7 @@ public abstract class Hologram {
     }
 
     public void unloadHolograms() {
-        Collection<Spawner> spawners = instance.getSpawnerManager().getSpawners();
+        Collection<Spawner> spawners = plugin.getSpawnerManager().getSpawners();
         if (spawners.size() == 0) return;
         for (Spawner spawner : spawners) {
             if (spawner.getWorld() == null) continue;
@@ -41,7 +42,7 @@ public abstract class Hologram {
     public void add(Spawner spawner) {
         int multi = spawner.getSpawnerDataCount();
         if (spawner.getSpawnerStacks().size() == 0) return;
-        String name = Methods.compileName(instance.getSpawnerManager().getSpawnerData(spawner.getIdentifyingName()), multi, false).trim();
+        String name = Methods.compileName(plugin.getSpawnerManager().getSpawnerData(spawner.getIdentifyingName()), multi, false).trim();
 
         add(spawner.getLocation(), name);
     }
@@ -53,7 +54,7 @@ public abstract class Hologram {
     public void update(Spawner spawner) {
         int multi = spawner.getSpawnerDataCount();
         if (spawner.getSpawnerStacks().size() == 0) return;
-        String name = Methods.compileName(instance.getSpawnerManager().getSpawnerData(spawner.getIdentifyingName()), multi, false).trim();
+        String name = Methods.compileName(plugin.getSpawnerManager().getSpawnerData(spawner.getIdentifyingName()), multi, false).trim();
 
         update(spawner.getLocation(), name);
     }
@@ -65,9 +66,10 @@ public abstract class Hologram {
     protected abstract void update(Location location, String line);
 
     public void processChange(Block block) {
-            if (block.getType() != Material.SPAWNER) return;
-            Spawner spawner = instance.getSpawnerManager().getSpawnerFromWorld(block.getLocation());
-            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(instance, () ->
-                    instance.getHologram().update(spawner), 1L);
+        if (block.getType() != (plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER")))
+            return;
+        Spawner spawner = plugin.getSpawnerManager().getSpawnerFromWorld(block.getLocation());
+        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () ->
+                plugin.getHologram().update(spawner), 1L);
     }
 }

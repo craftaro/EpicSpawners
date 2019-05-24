@@ -1,15 +1,12 @@
 package com.songoda.epicspawners.spawners.spawner;
 
-import com.songoda.epicspawners.api.spawner.SpawnerData;
-import com.songoda.epicspawners.api.spawner.SpawnerStack;
-
 import java.util.Objects;
 
 /*
  * This is object that will contain SpawnerData
  * and the amount of that SpawnerData.
  */
-public class ESpawnerStack implements SpawnerStack {
+public class SpawnerStack {
 
     // This is the instance of SpawnerData that
     // This SpawnerStack utilizes.
@@ -20,41 +17,41 @@ public class ESpawnerStack implements SpawnerStack {
     private int stackSize;
 
     //Construct the class and define values.
-    public ESpawnerStack(SpawnerData spawnerData) {
+    public SpawnerStack(SpawnerData spawnerData) {
         this(spawnerData, 1);
     }
 
-    public ESpawnerStack(SpawnerData spawnerData, int stackSize) {
+    public SpawnerStack(SpawnerData spawnerData, int stackSize) {
         this.spawnerData = spawnerData;
         this.stackSize = stackSize;
     }
 
-    @Override
+
     public SpawnerData getSpawnerData() {
         return spawnerData;
     }
 
-    @Override
+
     public void setSpawnerData(SpawnerData spawnerData) {
         this.spawnerData = spawnerData;
     }
 
-    @Override
+
     public boolean hasSpawnerData() {
         return spawnerData != null;
     }
 
-    @Override
+
     public int getStackSize() {
         return stackSize;
     }
 
-    @Override
+
     public void setStackSize(int stackSize) {
         this.stackSize = stackSize;
     }
 
-    @Override
+
     public int hashCode() {
         int result = 31 * (spawnerData == null ? 0 : spawnerData.hashCode());
         result = 31 * result + this.stackSize;
@@ -62,16 +59,16 @@ public class ESpawnerStack implements SpawnerStack {
         return result;
     }
 
-    @Override
+
     public boolean equals(Object obj) {
         if (this == obj) return true;
-        if (!(obj instanceof ESpawnerStack)) return false;
+        if (!(obj instanceof SpawnerStack)) return false;
 
-        ESpawnerStack other = (ESpawnerStack) obj;
+        SpawnerStack other = (SpawnerStack) obj;
         return stackSize == other.stackSize && Objects.equals(spawnerData, other.spawnerData);
     }
 
-    @Override
+
     public String toString() {
         return "ESpawnerStack:{"
                 + "Size:" + stackSize + ","

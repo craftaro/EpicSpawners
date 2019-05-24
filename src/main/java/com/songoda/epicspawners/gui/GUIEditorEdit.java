@@ -1,11 +1,11 @@
 package com.songoda.epicspawners.gui;
 
-import com.songoda.epicspawners.EpicSpawnersPlugin;
+import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.References;
-import com.songoda.epicspawners.api.spawner.SpawnerData;
+import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.utils.AbstractChatConfirm;
-import com.songoda.epicspawners.utils.Debugger;
 import com.songoda.epicspawners.utils.Methods;
+import com.songoda.epicspawners.utils.ServerVersion;
 import com.songoda.epicspawners.utils.gui.AbstractAnvilGUI;
 import com.songoda.epicspawners.utils.gui.AbstractGUI;
 import com.songoda.epicspawners.utils.gui.Range;
@@ -21,13 +21,13 @@ import java.util.List;
 
 public class GUIEditorEdit extends AbstractGUI {
 
-    private final EpicSpawnersPlugin plugin;
+    private final EpicSpawners plugin;
     private final EditType editType;
 
     private final AbstractGUI back;
     private SpawnerData spawnerData;
 
-    public GUIEditorEdit(EpicSpawnersPlugin plugin, AbstractGUI abstractGUI, SpawnerData spawnerData, EditType editType, Player player) {
+    public GUIEditorEdit(EpicSpawners plugin, AbstractGUI abstractGUI, SpawnerData spawnerData, EditType editType, Player player) {
         super(player);
         this.plugin = plugin;
         this.back = abstractGUI;
@@ -62,7 +62,7 @@ public class GUIEditorEdit extends AbstractGUI {
             } else if (spawnerData.getBlocks().size() >= spot + 1 && editType == EditType.BLOCK) {
                 inventory.setItem(num, new ItemStack(spawnerData.getBlocks().get(spot)));
             } else if (spawnerData.getEntities().size() >= spot + 1 && editType == EditType.ENTITY && spawnerData.getEntities().get(spot) != EntityType.GIANT) {
-                ItemStack it = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
+                ItemStack it = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3);
                 ItemStack item = plugin.getHeads().addTexture(it,
                         plugin.getSpawnerManager().getSpawnerData(spawnerData.getEntities().get(spot)));
                 ItemMeta meta = item.getItemMeta();
@@ -104,7 +104,7 @@ public class GUIEditorEdit extends AbstractGUI {
         inventory.setItem(52, Methods.getBackgroundGlass(true));
         inventory.setItem(53, Methods.getBackgroundGlass(true));
 
-        createButton(0, Methods.addTexture(new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3),
+        createButton(0, Methods.addTexture(new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3),
                 "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23"),
                 plugin.getLocale().getMessage("general.nametag.back"));
 
@@ -116,7 +116,7 @@ public class GUIEditorEdit extends AbstractGUI {
                 add = new ItemStack(Material.PAPER);
                 addName = "&6Add Command";
             } else {
-                add = new ItemStack(Material.SHEEP_SPAWN_EGG);
+                add = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SHEEP_SPAWN_EGG : Material.valueOf("MONSTER_EGG"));
                 addName = "&6Add entity";
             }
 
@@ -192,7 +192,6 @@ public class GUIEditorEdit extends AbstractGUI {
     }
 
     private List<ItemStack> getItems(Player p) {
-        try {
             ItemStack[] items2 = p.getOpenInventory().getTopInventory().getContents();
             //items2 = Arrays.copyOf(items2, items2.length - 9);
 
@@ -206,14 +205,9 @@ public class GUIEditorEdit extends AbstractGUI {
                 num++;
             }
             return items;
-        } catch (Exception e) {
-            Debugger.runReport(e);
-        }
-        return null;
     }
 
     private void save(Player p, List<ItemStack> items) {
-        try {
             if (editType == EditType.ITEM) {
                 spawnerData.setItems(items);
             } else if (editType == EditType.DROPS) {
@@ -242,9 +236,6 @@ public class GUIEditorEdit extends AbstractGUI {
             }
             p.sendMessage(Methods.formatText(References.getPrefix() + "&7Spawner Saved."));
             spawnerData.reloadSpawnMethods();
-        } catch (Exception e) {
-            Debugger.runReport(e);
-        }
     }
 
     public enum EditType {

@@ -1,6 +1,6 @@
 package com.songoda.epicspawners.command.commands;
 
-import com.songoda.epicspawners.EpicSpawnersPlugin;
+import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.References;
 import com.songoda.epicspawners.command.AbstractCommand;
 import com.songoda.epicspawners.utils.Methods;
@@ -15,7 +15,7 @@ public class CommandEpicSpawners extends AbstractCommand {
     }
 
     @Override
-    protected ReturnType runCommand(EpicSpawnersPlugin instance, CommandSender sender, String... args) {
+    protected ReturnType runCommand(EpicSpawners instance, CommandSender sender, String... args) {
         sender.sendMessage("");
         sender.sendMessage(Methods.formatText(References.getPrefix() + "&7Version " + instance.getDescription().getVersion() + " Created with <3 by &5&l&oSongoda"));
 
@@ -30,7 +30,7 @@ public class CommandEpicSpawners extends AbstractCommand {
     }
 
     @Override
-    protected List<String> onTab(EpicSpawnersPlugin instance, CommandSender sender, String... args) {
+    protected List<String> onTab(EpicSpawners instance, CommandSender sender, String... args) {
         return null;
     }
 

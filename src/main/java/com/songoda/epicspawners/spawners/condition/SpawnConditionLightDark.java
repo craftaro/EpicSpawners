@@ -1,7 +1,6 @@
 package com.songoda.epicspawners.spawners.condition;
 
-import com.songoda.epicspawners.api.spawner.Spawner;
-import com.songoda.epicspawners.api.spawner.condition.SpawnCondition;
+import com.songoda.epicspawners.spawners.spawner.Spawner;
 import org.bukkit.Location;
 
 public class SpawnConditionLightDark implements SpawnCondition {

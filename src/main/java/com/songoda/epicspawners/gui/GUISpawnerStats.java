@@ -1,8 +1,9 @@
 package com.songoda.epicspawners.gui;
 
-import com.songoda.epicspawners.EpicSpawnersPlugin;
-import com.songoda.epicspawners.api.spawner.SpawnerData;
+import com.songoda.epicspawners.EpicSpawners;
+import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.utils.Methods;
+import com.songoda.epicspawners.utils.ServerVersion;
 import com.songoda.epicspawners.utils.gui.AbstractGUI;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
@@ -15,9 +16,9 @@ import java.util.Map;
 
 public class GUISpawnerStats extends AbstractGUI {
 
-    private final EpicSpawnersPlugin plugin;
+    private final EpicSpawners plugin;
 
-    public GUISpawnerStats(EpicSpawnersPlugin plugin, Player player) {
+    public GUISpawnerStats(EpicSpawners plugin, Player player) {
         super(player);
         this.plugin = plugin;
 
@@ -63,7 +64,7 @@ public class GUISpawnerStats extends AbstractGUI {
             int customGoal = spawnerData.getKillGoal();
             if (customGoal != 0) goal = customGoal;
 
-            ItemStack it = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
+            ItemStack it = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3);
 
             ItemStack item = plugin.getHeads().addTexture(it, spawnerData);
 

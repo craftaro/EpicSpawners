@@ -1,8 +1,7 @@
 package com.songoda.epicspawners.spawners.condition;
 
 import com.google.common.collect.Iterables;
-import com.songoda.epicspawners.api.spawner.Spawner;
-import com.songoda.epicspawners.api.spawner.condition.SpawnCondition;
+import com.songoda.epicspawners.spawners.spawner.Spawner;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.block.Biome;
 

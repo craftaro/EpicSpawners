@@ -1,6 +1,6 @@
 package com.songoda.epicspawners.command.commands;
 
-import com.songoda.epicspawners.EpicSpawnersPlugin;
+import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.command.AbstractCommand;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -14,13 +14,13 @@ public class CommandSettings extends AbstractCommand {
     }
 
     @Override
-    protected ReturnType runCommand(EpicSpawnersPlugin instance, CommandSender sender, String... args) {
+    protected ReturnType runCommand(EpicSpawners instance, CommandSender sender, String... args) {
         instance.getSettingsManager().openSettingsManager((Player) sender);
         return ReturnType.SUCCESS;
     }
 
     @Override
-    protected List<String> onTab(EpicSpawnersPlugin instance, CommandSender sender, String... args) {
+    protected List<String> onTab(EpicSpawners instance, CommandSender sender, String... args) {
         return null;
     }
 

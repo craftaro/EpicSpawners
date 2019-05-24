@@ -1,17 +1,14 @@
 package com.songoda.epicspawners.gui;
 
-import com.songoda.epicspawners.EpicSpawnersPlugin;
+import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.References;
-import com.songoda.epicspawners.api.spawner.SpawnerData;
-import com.songoda.epicspawners.player.PlayerData;
-import com.songoda.epicspawners.utils.Debugger;
+import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.utils.Methods;
+import com.songoda.epicspawners.utils.ServerVersion;
 import com.songoda.epicspawners.utils.gui.AbstractGUI;
 import net.milkbowl.vault.economy.Economy;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -21,12 +18,12 @@ import java.util.ArrayList;
 
 public class GUIShopItem extends AbstractGUI {
 
-    private final EpicSpawnersPlugin plugin;
+    private final EpicSpawners plugin;
     private final AbstractGUI back;
     private final SpawnerData spawnerData;
     private int amount = 1;
 
-    public GUIShopItem(EpicSpawnersPlugin plugin, AbstractGUI abstractGUI, SpawnerData spawnerData, Player player) {
+    public GUIShopItem(EpicSpawners plugin, AbstractGUI abstractGUI, SpawnerData spawnerData, Player player) {
         super(player);
         this.plugin = plugin;
         this.back = abstractGUI;
@@ -74,9 +71,9 @@ public class GUIShopItem extends AbstractGUI {
 
         double price = spawnerData.getShopPrice() * amount;
 
-        ItemStack it = new ItemStack(Material.PLAYER_HEAD, amount, (byte) 3);
+        ItemStack it = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), amount, (byte) 3);
 
-        ItemStack item = EpicSpawnersPlugin.getInstance().getHeads().addTexture(it, spawnerData);
+        ItemStack item = EpicSpawners.getInstance().getHeads().addTexture(it, spawnerData);
 
         if (spawnerData.getDisplayItem() != null) {
             Material mat = spawnerData.getDisplayItem();
@@ -95,7 +92,7 @@ public class GUIShopItem extends AbstractGUI {
         inventory.setItem(22, item);
 
 
-        ItemStack plus = new ItemStack(Material.LIME_STAINED_GLASS_PANE, 1, (short) 5);
+        ItemStack plus = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.LIME_STAINED_GLASS_PANE : Material.valueOf("STAINED_GLASS_PANE"), 1, (short) 5);
         ItemMeta plusmeta = plus.getItemMeta();
         plusmeta.setDisplayName(plugin.getLocale().getMessage("interface.shop.add1"));
         plus.setItemMeta(plusmeta);
@@ -108,7 +105,7 @@ public class GUIShopItem extends AbstractGUI {
             });
         }
 
-        plus = new ItemStack(Material.LIME_STAINED_GLASS_PANE, 10, (short) 5);
+        plus = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.LIME_STAINED_GLASS_PANE : Material.valueOf("STAINED_GLASS_PANE"), 10, (short) 5);
         plusmeta.setDisplayName(plugin.getLocale().getMessage("interface.shop.add10"));
         plus.setItemMeta(plusmeta);
         if (item.getAmount() + 10 <= 64) {
@@ -120,7 +117,7 @@ public class GUIShopItem extends AbstractGUI {
             });
         }
 
-        plus = new ItemStack(Material.LIME_STAINED_GLASS_PANE, 64, (short) 5);
+        plus = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.LIME_STAINED_GLASS_PANE : Material.valueOf("STAINED_GLASS_PANE"), 64, (short) 5);
         plusmeta.setDisplayName(plugin.getLocale().getMessage("interface.shop.set64"));
         plus.setItemMeta(plusmeta);
         if (item.getAmount() != 64) {
@@ -132,7 +129,7 @@ public class GUIShopItem extends AbstractGUI {
             });
         }
 
-        ItemStack minus = new ItemStack(Material.RED_STAINED_GLASS_PANE, 1, (short) 14);
+        ItemStack minus = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.RED_STAINED_GLASS_PANE : Material.valueOf("STAINED_GLASS_PANE"), 1, (short) 14);
         ItemMeta minusmeta = minus.getItemMeta();
         minusmeta.setDisplayName(plugin.getLocale().getMessage("interface.shop.remove1"));
         minus.setItemMeta(minusmeta);
@@ -145,7 +142,7 @@ public class GUIShopItem extends AbstractGUI {
             });
         }
 
-        minus = new ItemStack(Material.RED_STAINED_GLASS_PANE, 10, (short) 14);
+        minus = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.RED_STAINED_GLASS_PANE : Material.valueOf("STAINED_GLASS_PANE"), 10, (short) 14);
         minusmeta.setDisplayName(plugin.getLocale().getMessage("interface.shop.remove10"));
         minus.setItemMeta(minusmeta);
         if (item.getAmount() - 10 >= 0) {
@@ -157,7 +154,7 @@ public class GUIShopItem extends AbstractGUI {
             });
         }
 
-        minus = new ItemStack(Material.RED_STAINED_GLASS_PANE, 1, (short) 14);
+        minus = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.RED_STAINED_GLASS_PANE : Material.valueOf("STAINED_GLASS_PANE"), 1, (short) 14);
         minusmeta.setDisplayName(plugin.getLocale().getMessage("interface.shop.set1"));
         minus.setItemMeta(minusmeta);
         if (item.getAmount() != 1) {
@@ -169,13 +166,13 @@ public class GUIShopItem extends AbstractGUI {
             });
         }
 
-        ItemStack exit = new ItemStack(Material.valueOf(EpicSpawnersPlugin.getInstance().getConfig().getString("Interfaces.Exit Icon")), 1);
+        ItemStack exit = new ItemStack(Material.valueOf(EpicSpawners.getInstance().getConfig().getString("Interfaces.Exit Icon")), 1);
         ItemMeta exitmeta = exit.getItemMeta();
         exitmeta.setDisplayName(plugin.getLocale().getMessage("general.nametag.exit"));
         exit.setItemMeta(exitmeta);
         inventory.setItem(8, exit);
 
-        ItemStack head2 = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
+        ItemStack head2 = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3);
         ItemStack skull2 = Methods.addTexture(head2, "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23");
         SkullMeta skull2Meta = (SkullMeta) skull2.getItemMeta();
         skull2.setDurability((short) 3);
@@ -184,7 +181,7 @@ public class GUIShopItem extends AbstractGUI {
 
         inventory.setItem(0, skull2);
 
-        ItemStack buy = new ItemStack(Material.valueOf(EpicSpawnersPlugin.getInstance().getConfig().getString("Interfaces.Buy Icon")), 1);
+        ItemStack buy = new ItemStack(Material.valueOf(EpicSpawners.getInstance().getConfig().getString("Interfaces.Buy Icon")), 1);
         ItemMeta buymeta = buy.getItemMeta();
         buymeta.setDisplayName(plugin.getLocale().getMessage("general.nametag.confirm"));
         buy.setItemMeta(buymeta);
@@ -206,12 +203,11 @@ public class GUIShopItem extends AbstractGUI {
     }
 
     private void confirm(Player player, int amount) {
-        try {
-            if (EpicSpawnersPlugin.getInstance().getServer().getPluginManager().getPlugin("Vault") == null) {
+        if (EpicSpawners.getInstance().getServer().getPluginManager().getPlugin("Vault") == null) {
                 player.sendMessage("Vault is not installed.");
                 return;
             }
-            RegisteredServiceProvider<Economy> rsp = EpicSpawnersPlugin.getInstance().getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
+        RegisteredServiceProvider<Economy> rsp = EpicSpawners.getInstance().getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
             net.milkbowl.vault.economy.Economy econ = rsp.getProvider();
             double price = spawnerData.getShopPrice() * amount;
             if (!player.isOp() && !econ.has(player, price)) {
@@ -227,9 +223,6 @@ public class GUIShopItem extends AbstractGUI {
             if (!player.isOp()) {
                 econ.withdrawPlayer(player, price);
             }
-        } catch (Exception e) {
-            Debugger.runReport(e);
-        }
     }
 
     @Override

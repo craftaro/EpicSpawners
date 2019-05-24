@@ -1,6 +1,6 @@
 package com.songoda.epicspawners.command.commands;
 
-import com.songoda.epicspawners.EpicSpawnersPlugin;
+import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.References;
 import com.songoda.epicspawners.command.AbstractCommand;
 import com.songoda.epicspawners.gui.GUISpawnerStats;
@@ -16,7 +16,7 @@ public class CommandSpawnerStats extends AbstractCommand {
     }
 
     @Override
-    protected ReturnType runCommand(EpicSpawnersPlugin instance, CommandSender sender, String... args) {
+    protected ReturnType runCommand(EpicSpawners instance, CommandSender sender, String... args) {
         Player player = (Player) sender;
 
         if (instance.getPlayerActionManager().getPlayerAction(player).getEntityKills().size() == 0) {
@@ -31,7 +31,7 @@ public class CommandSpawnerStats extends AbstractCommand {
     }
 
     @Override
-    protected List<String> onTab(EpicSpawnersPlugin instance, CommandSender sender, String... args) {
+    protected List<String> onTab(EpicSpawners instance, CommandSender sender, String... args) {
         return null;
     }
 

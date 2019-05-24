@@ -1,6 +1,6 @@
 package com.songoda.epicspawners.utils.gui;
 
-import com.songoda.epicspawners.EpicSpawnersPlugin;
+import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.utils.version.NMSUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -63,7 +63,7 @@ public class AbstractAnvilGUI {
     }
 
     public AbstractAnvilGUI(Player player, AnvilClickEventHandler handler) {
-        EpicSpawnersPlugin instance = EpicSpawnersPlugin.getInstance();
+        EpicSpawners instance = EpicSpawners.getInstance();
         this.player = player;
 
         this.listener = new Listener() {

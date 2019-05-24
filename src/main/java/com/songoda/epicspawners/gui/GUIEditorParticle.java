@@ -1,11 +1,12 @@
 package com.songoda.epicspawners.gui;
 
-import com.songoda.epicspawners.EpicSpawnersPlugin;
-import com.songoda.epicspawners.api.particles.ParticleDensity;
-import com.songoda.epicspawners.api.particles.ParticleEffect;
-import com.songoda.epicspawners.api.particles.ParticleType;
-import com.songoda.epicspawners.api.spawner.SpawnerData;
+import com.songoda.epicspawners.EpicSpawners;
+import com.songoda.epicspawners.particles.ParticleDensity;
+import com.songoda.epicspawners.particles.ParticleEffect;
+import com.songoda.epicspawners.particles.ParticleType;
+import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.utils.Methods;
+import com.songoda.epicspawners.utils.ServerVersion;
 import com.songoda.epicspawners.utils.gui.AbstractGUI;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -14,11 +15,11 @@ import org.bukkit.inventory.ItemStack;
 
 public class GUIEditorParticle extends AbstractGUI {
 
-    private final EpicSpawnersPlugin plugin;
+    private final EpicSpawners plugin;
     private final AbstractGUI back;
     private SpawnerData spawnerData;
 
-    public GUIEditorParticle(EpicSpawnersPlugin plugin, AbstractGUI abstractGUI, SpawnerData spawnerData, Player player) {
+    public GUIEditorParticle(EpicSpawners plugin, AbstractGUI abstractGUI, SpawnerData spawnerData, Player player) {
         super(player);
         this.plugin = plugin;
         this.back = abstractGUI;
@@ -39,7 +40,7 @@ public class GUIEditorParticle extends AbstractGUI {
             num++;
         }
 
-        createButton(0, Methods.addTexture(new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3),
+        createButton(0, Methods.addTexture(new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3),
                 "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23"),
                 plugin.getLocale().getMessage("general.nametag.back"));
 
@@ -71,13 +72,13 @@ public class GUIEditorParticle extends AbstractGUI {
                 "&7Effect Particle: &a" + spawnerData.getSpawnEffectParticle().name(),
                 "&cRight-Click to change.");
 
-        createButton(22, Material.FIREWORK_ROCKET, "&6&lSpawner Effect",
+        createButton(22, plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.FIREWORK_ROCKET : Material.valueOf("FIREWORK"), "&6&lSpawner Effect",
                 "&7Particle Effect: &a" + spawnerData.getParticleEffect().name(),
                 "&cLeft-Click to change.",
                 "&7Particle Effect For Boosted Only: &a" + spawnerData.isParticleEffectBoostedOnly(),
                 "&cRight-Click to change.");
 
-        createButton(24, Material.COMPARATOR, "&6&lPerformance",
+        createButton(24, plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.COMPARATOR : Material.valueOf("REDSTONE_COMPARATOR"), "&6&lPerformance",
                 "&7Currently: &a" + spawnerData.getParticleDensity().name() + " &cClick to change.");
 
     }

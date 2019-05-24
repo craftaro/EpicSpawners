@@ -1,12 +1,12 @@
 package com.songoda.epicspawners.command.commands;
 
 import com.google.common.collect.Iterables;
-import com.songoda.epicspawners.EpicSpawnersPlugin;
+import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.References;
-import com.songoda.epicspawners.api.spawner.SpawnerData;
 import com.songoda.epicspawners.command.AbstractCommand;
+import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.utils.Methods;
-import com.songoda.epicspawners.utils.SettingsManager;
+import com.songoda.epicspawners.utils.settings.Setting;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -21,7 +21,7 @@ public class CommandGive extends AbstractCommand {
     }
 
     @Override
-    protected ReturnType runCommand(EpicSpawnersPlugin instance, CommandSender sender, String... args) {
+    protected ReturnType runCommand(EpicSpawners instance, CommandSender sender, String... args) {
         if (args.length <= 3 && args.length != 6) {
             return ReturnType.SYNTAX_ERROR;
         }
@@ -87,7 +87,7 @@ public class CommandGive extends AbstractCommand {
         multi = Integer.parseInt(args[4]);
         ItemStack spawnerItem = data.toItemStack(amt, multi);
 
-        if (multi > SettingsManager.Setting.SPAWNERS_MAX.getInt()) {
+        if (multi > Setting.SPAWNERS_MAX.getInt()) {
             sender.sendMessage(Methods.formatText(References.getPrefix() + "&7 The multiplier &6" + multi + "&7 is above this spawner types maximum stack size."));
             return ReturnType.FAILURE;
         }
@@ -107,7 +107,7 @@ public class CommandGive extends AbstractCommand {
     }
 
     @Override
-    protected List<String> onTab(EpicSpawnersPlugin instance, CommandSender sender, String... args) {
+    protected List<String> onTab(EpicSpawners instance, CommandSender sender, String... args) {
         if (args.length == 2) {
             List<String> players = new ArrayList<>();
             players.add("All");
@@ -124,7 +124,7 @@ public class CommandGive extends AbstractCommand {
             return spawners;
         } else if (args.length == 4) {
             List<String> values = new ArrayList<>();
-            for (int i = 1; i <= SettingsManager.Setting.SPAWNERS_MAX.getInt(); i ++) {
+            for (int i = 1; i <= Setting.SPAWNERS_MAX.getInt(); i++) {
                 values.add(String.valueOf(i));
             }
             return values;

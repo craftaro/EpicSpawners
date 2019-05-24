@@ -1,10 +1,10 @@
 package com.songoda.epicspawners.gui;
 
-import com.songoda.epicspawners.EpicSpawnersPlugin;
+import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.References;
-import com.songoda.epicspawners.api.spawner.SpawnerData;
-import com.songoda.epicspawners.spawners.spawner.ESpawnerData;
+import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.utils.Methods;
+import com.songoda.epicspawners.utils.ServerVersion;
 import com.songoda.epicspawners.utils.gui.AbstractAnvilGUI;
 import com.songoda.epicspawners.utils.gui.AbstractGUI;
 import org.bukkit.Material;
@@ -17,11 +17,11 @@ import java.util.ArrayList;
 
 public class GUIEditorOverview extends AbstractGUI {
 
-    private final EpicSpawnersPlugin plugin;
+    private final EpicSpawners plugin;
     private final AbstractGUI back;
     private SpawnerData spawnerData;
 
-    public GUIEditorOverview(EpicSpawnersPlugin plugin, AbstractGUI abstractGUI, SpawnerData spawnerData, Player player) {
+    public GUIEditorOverview(EpicSpawners plugin, AbstractGUI abstractGUI, SpawnerData spawnerData, Player player) {
         super(player);
         this.plugin = plugin;
         this.back = abstractGUI;
@@ -37,9 +37,9 @@ public class GUIEditorOverview extends AbstractGUI {
                 }
             }
 
-            this.spawnerData = new ESpawnerData(0, type, new ArrayList<>(), new ArrayList<>(),
+            this.spawnerData = new SpawnerData(0, type, new ArrayList<>(), new ArrayList<>(),
                     new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
-            ((ESpawnerData) this.spawnerData).addDefaultConditions();
+            this.spawnerData.addDefaultConditions();
             this.spawnerData.setCustom(true);
             plugin.getSpawnerManager().addSpawnerData(type, this.spawnerData);
         }
@@ -93,11 +93,11 @@ public class GUIEditorOverview extends AbstractGUI {
         inventory.setItem(52, Methods.getBackgroundGlass(false));
         inventory.setItem(53, Methods.getBackgroundGlass(false));
 
-        createButton(8, Methods.addTexture(new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3),
+        createButton(8, Methods.addTexture(new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3),
                 "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23"),
                 plugin.getLocale().getMessage("general.nametag.back"));
 
-        ItemStack it = new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3);
+        ItemStack it = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3);
 
         ItemStack item = plugin.getHeads().addTexture(it, spawnerData);
         if (spawnerData.getDisplayItem() != null && spawnerData.getDisplayItem() != Material.AIR) {
@@ -136,11 +136,11 @@ public class GUIEditorOverview extends AbstractGUI {
         createButton(23, Material.LEVER, "&9&lGeneral Settings");
         createButton(24, Material.BONE, "&e&lDrop Settings");
 
-        createButton(25, plugin.getHeads().addTexture(new ItemStack(Material.PLAYER_HEAD, 1, (byte) 3), plugin.getSpawnerManager().getSpawnerData("omni")), "&a&lEntity Settings");
+        createButton(25, plugin.getHeads().addTexture(new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3), plugin.getSpawnerManager().getSpawnerData("omni")), "&a&lEntity Settings");
 
         createButton(41, Material.CHEST, "&5&lItem Settings");
         createButton(32, Material.GOLD_BLOCK, "&c&lBlock Settings");
-        createButton(34, Material.FIREWORK_ROCKET, "&b&lParticle Settings");
+        createButton(34, plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.FIREWORK_ROCKET : Material.valueOf("FIREWORK"), "&b&lParticle Settings");
         createButton(43, Material.PAPER, "&6&lCommand Settings");
     }
 
