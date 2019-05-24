@@ -8,10 +8,10 @@ import com.songoda.epicspawners.command.AbstractCommand;
 import com.songoda.epicspawners.utils.Methods;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 public class CommandBoost extends AbstractCommand {
@@ -26,74 +26,31 @@ public class CommandBoost extends AbstractCommand {
             sender.sendMessage(References.getPrefix() + Methods.formatText("&7Syntax error..."));
             return ReturnType.SYNTAX_ERROR;
         }
-        if (!args[1].contains("p:") && !args[1].contains("player:") &&
-                !args[1].contains("f:") && !args[1].contains("faction:") &&
-                !args[1].contains("t:") && !args[1].contains("town:") &&
-                !args[1].contains("i:") && !args[1].contains("island:")) {
-            sender.sendMessage(Methods.formatText(References.getPrefix() + "&6" + args[1] + " &7this is incorrect"));
-            return ReturnType.SYNTAX_ERROR;
-        }
-        String[] arr = (args[1]).split(":");
         if (!Methods.isInt(args[2])) {
             sender.sendMessage(Methods.formatText(References.getPrefix() + "&6" + args[2] + " &7is not a number..."));
             return ReturnType.SYNTAX_ERROR;
         }
 
-        Calendar c = Calendar.getInstance();
-        Date currentDate = new Date();
-        c.setTime(currentDate);
-
-        String response = " &6" + arr[1] + "&7 has been given a spawner boost of &6" + args[2];
+        long duration = 0L;
 
         if (args.length > 3) {
-            if (args[3].contains("m:")) {
-                String[] arr2 = (args[3]).split(":");
-                c.add(Calendar.MINUTE, Integer.parseInt(arr2[1]));
-                response += " &7for &6" + arr2[1] + " minutes&7.";
-            } else if (args[3].contains("h:")) {
-                String[] arr2 = (args[3]).split(":");
-                c.add(Calendar.HOUR, Integer.parseInt(arr2[1]));
-                response += " &7for &6" + arr2[1] + " hours&7.";
-            } else if (args[3].contains("d:")) {
-                String[] arr2 = (args[3]).split(":");
-                c.add(Calendar.HOUR, Integer.parseInt(arr2[1]) * 24);
-                response += " &7for &6" + arr2[1] + " days&7.";
-            } else if (args[3].contains("y:")) {
-                String[] arr2 = (args[3]).split(":");
-                c.add(Calendar.YEAR, Integer.parseInt(arr2[1]));
-                response += " &7for &6" + arr2[1] + " years&7.";
-            } else {
-                sender.sendMessage(Methods.formatText(References.getPrefix() + "&7" + args[3] + " &7is invalid."));
-                return ReturnType.SYNTAX_ERROR;
-            }
-        } else {
-            c.add(Calendar.YEAR, 10);
-            response += "&6.";
-        }
+            for (int i = 1; i < args.length; i++) {
+                String line = args[i];
+                long time = Methods.parseTime(line);
+                duration += time;
 
-        String start = "&7";
-
-        BoostType boostType = null;
-
-        Object boostObject = null;
-
-        if (arr[0].equalsIgnoreCase("p") || arr[0].equalsIgnoreCase("player")) {
-            if (Bukkit.getOfflinePlayer(arr[1]) == null) {
-                sender.sendMessage(Methods.formatText(References.getPrefix() + "&cThat player does not exist..."));
-            } else {
-                start += "The player";
-                boostType = BoostType.PLAYER;
-                boostObject = Bukkit.getOfflinePlayer(arr[1]).getUniqueId().toString();
             }
         }
 
-        if (boostType == null || boostObject == null) {
-            return ReturnType.SYNTAX_ERROR;
+        Player player = Bukkit.getPlayer(args[1]);
+        if (player == null) {
+            sender.sendMessage(Methods.formatText(References.getPrefix() + "&cThat player does not exist or is not online..."));
+            return ReturnType.FAILURE;
         }
 
-        BoostData boostData = new BoostData(boostType, Integer.parseInt(args[2]), c.getTime().getTime(), boostObject);
+        BoostData boostData = new BoostData(BoostType.PLAYER, Integer.parseInt(args[2]), duration == 0L ? Long.MAX_VALUE : System.currentTimeMillis() + duration, player.getUniqueId());
         instance.getBoostManager().addBoostToSpawner(boostData);
-        sender.sendMessage(Methods.formatText(References.getPrefix() + start + response));
+        sender.sendMessage(Methods.formatText(References.getPrefix() + player.getName() + "&7 has been given a spawner boost of &6" + args[2] + "&7 for " + Methods.makeReadable(duration) + "&7."));
 
         return ReturnType.SUCCESS;
     }
@@ -101,11 +58,15 @@ public class CommandBoost extends AbstractCommand {
     @Override
     protected List<String> onTab(EpicSpawners instance, CommandSender sender, String... args) {
         if (args.length == 2) {
-            return Arrays.asList("p:", "f:", "t:", "i:");
+            List<String> players = new ArrayList<>();
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                players.add(player.getName());
+            }
+            return players;
         } else if (args.length == 3) {
             return Arrays.asList("1", "2", "3", "4", "5");
         } else if (args.length == 4) {
-            return Arrays.asList("m:", "h:", "d:", "y:");
+            return Arrays.asList("1m", "2h", "3d", "4d");
         }
         return null;
     }
@@ -116,7 +77,7 @@ public class CommandBoost extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "/es boost <p:player, f:faction, t:town, i:islandOwner> <amount> [m:minute, h:hour, d:day, y:year]";
+        return "/es boost <player> <amount> [duration]";
     }
 
     @Override

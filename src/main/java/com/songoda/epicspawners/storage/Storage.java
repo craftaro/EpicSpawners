@@ -53,7 +53,7 @@ public abstract class Storage {
         for (BoostData boostData : plugin.getBoostManager().getBoosts()) {
             prepareSaveItem("boosts", new StorageItem("endtime", String.valueOf(boostData.getEndTime())),
                     new StorageItem("boosttype", boostData.getBoostType().name()),
-                    new StorageItem("data", boostData.getData()),
+                    new StorageItem("data", boostData.getData().toString()),
                     new StorageItem("amount", boostData.getAmtBoosted()));
         }
 

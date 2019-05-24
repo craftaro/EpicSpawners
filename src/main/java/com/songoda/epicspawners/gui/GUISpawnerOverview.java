@@ -9,6 +9,7 @@ import com.songoda.epicspawners.utils.Methods;
 import com.songoda.epicspawners.utils.ServerVersion;
 import com.songoda.epicspawners.utils.gui.AbstractGUI;
 import com.songoda.epicspawners.utils.settings.Setting;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -39,6 +40,8 @@ public class GUISpawnerOverview extends AbstractGUI {
 
     private int infoPage = 1;
 
+    private int task;
+
     public GUISpawnerOverview(EpicSpawners plugin, Spawner spawner, Player player) {
         super(player);
         this.spawner = spawner;
@@ -48,6 +51,7 @@ public class GUISpawnerOverview extends AbstractGUI {
         this.config = plugin.getConfig();
         this.locale = plugin.getLocale();
         init(Methods.compileName(spawner.getIdentifyingData(), spawner.getSpawnerDataCount(), false), 27);
+        runTask();
     }
 
     @Override
@@ -234,6 +238,10 @@ public class GUISpawnerOverview extends AbstractGUI {
                     inventory.setItem(15, itemECO);
             }
         }
+    }
+
+    private void runTask() {
+        task = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, this::constructGUI, 5L, 5L);
     }
 
     @Override
@@ -428,6 +436,6 @@ public class GUISpawnerOverview extends AbstractGUI {
 
     @Override
     protected void registerOnCloses() {
-
+        registerOnClose(((player1, inventory1) -> Bukkit.getScheduler().cancelTask(task)));
     }
 }
