@@ -26,6 +26,18 @@ public class SpawnerManager {
 
     private ConfigWrapper spawnerFile = new ConfigWrapper(EpicSpawners.getInstance(), "", "spawners.yml");
 
+    public SpawnerManager() {
+        for (EntityType value : EntityType.values()) {
+            if (value.isSpawnable() && value.isAlive() && !value.toString().toLowerCase().contains("armor")) {
+                processDefaultSpawner(value.name());
+            }
+        }
+
+        this.processDefaultSpawner("Omni");
+        this.spawnerFile.getConfig().options().copyDefaults(true);
+        this.spawnerFile.saveConfig();
+    }
+
     public SpawnerData getSpawnerData(String name) {
         return spawners.get(name.toLowerCase());
     }
@@ -126,32 +138,22 @@ public class SpawnerManager {
         return amount;
     }
 
-
-    private void setupSpawners() {
-        for (EntityType value : EntityType.values()) {
-            if (value.isSpawnable() && value.isAlive() && !value.toString().toLowerCase().contains("armor")) {
-                processDefault(value.name());
-            }
-        }
-
-        this.processDefault("Omni");
-        this.spawnerFile.getConfig().options().copyDefaults(true);
-        this.spawnerFile.saveConfig();
-    }
-
-    private void processDefault(String value) {
+    private void processDefaultSpawner(String value) {
         FileConfiguration spawnerConfig = spawnerFile.getConfig();
 
         String type = Methods.getTypeFromString(value);
         Random rn = new Random();
         int uuid = rn.nextInt(9999);
-        spawnerConfig.addDefault("Entities." + type + ".uuid", uuid);
+        
+        String section = "Entities." + type;
+        
+        spawnerConfig.addDefault(section + ".uuid", uuid);
 
-        if (!spawnerConfig.contains("Entities." + type + ".Display-Name")) {
-            spawnerConfig.set("Entities." + type + ".Display-Name", type);
+        if (!spawnerConfig.contains(section + ".Display-Name")) {
+            spawnerConfig.set(section + ".Display-Name", type);
         }
-        if (!spawnerConfig.contains("Entities." + type + ".Pickup-cost")) {
-            spawnerConfig.addDefault("Entities." + type + ".Pickup-cost", 0);
+        if (!spawnerConfig.contains(section + ".Pickup-cost")) {
+            spawnerConfig.addDefault(section + ".Pickup-cost", 0);
         }
 
         String spawnBlock = "AIR";
@@ -182,51 +184,51 @@ public class SpawnerManager {
                     entityType = val;
                     List<String> list = new ArrayList<>();
                     list.add(value);
-                    if (!spawnerConfig.contains("Entities." + type + ".entities"))
-                        spawnerConfig.addDefault("Entities." + type + ".entities", list);
+                    if (!spawnerConfig.contains(section + ".entities"))
+                        spawnerConfig.addDefault(section + ".entities", list);
                 }
             }
         }
 
-        spawnerConfig.addDefault("Entities." + type + ".custom", false);
-        spawnerConfig.addDefault("Entities." + type + ".Spawn-Block", spawnBlock);
-        spawnerConfig.addDefault("Entities." + type + ".Allowed", true);
-        spawnerConfig.addDefault("Entities." + type + ".Spawn-On-Fire", false);
-        spawnerConfig.addDefault("Entities." + type + ".Upgradable", true);
-        spawnerConfig.addDefault("Entities." + type + ".Convertible", true);
-        spawnerConfig.addDefault("Entities." + type + ".Convert-Ratio", "45%");
-        spawnerConfig.addDefault("Entities." + type + ".In-Shop", true);
-        spawnerConfig.addDefault("Entities." + type + ".Shop-Price", 1000.00);
-        spawnerConfig.addDefault("Entities." + type + ".CustomGoal", 0);
-        spawnerConfig.addDefault("Entities." + type + ".Custom-ECO-Cost", 0);
-        spawnerConfig.addDefault("Entities." + type + ".Custom-XP-Cost", 0);
-        spawnerConfig.addDefault("Entities." + type + ".Tick-Rate", "800:200");
-        spawnerConfig.addDefault("Entities." + type + ".Spawn-Effect", "NONE");
-        spawnerConfig.addDefault("Entities." + type + ".Spawn-Effect-Particle", "REDSTONE");
-        spawnerConfig.addDefault("Entities." + type + ".Entity-Spawn-Particle", "SMOKE");
-        spawnerConfig.addDefault("Entities." + type + ".Spawner-Spawn-Particle", "FIRE");
-        spawnerConfig.addDefault("Entities." + type + ".Particle-Amount", "NORMAL");
-        spawnerConfig.addDefault("Entities." + type + ".Particle-Effect-Boosted-Only", true);
-        spawnerConfig.addDefault("Entities." + type + ".Craftable", false);
-        spawnerConfig.addDefault("Entities." + type + ".Recipe-Layout", "AAAABAAAA");
-        spawnerConfig.addDefault("Entities." + type + ".Recipe-Ingredients", Arrays.asList("A, IRON_BARS", "B, SPAWN_EGG"));
+        spawnerConfig.addDefault(section + ".custom", false);
+        spawnerConfig.addDefault(section + ".Spawn-Block", spawnBlock);
+        spawnerConfig.addDefault(section + ".Allowed", true);
+        spawnerConfig.addDefault(section + ".Spawn-On-Fire", false);
+        spawnerConfig.addDefault(section + ".Upgradable", true);
+        spawnerConfig.addDefault(section + ".Convertible", true);
+        spawnerConfig.addDefault(section + ".Convert-Ratio", "45%");
+        spawnerConfig.addDefault(section + ".In-Shop", true);
+        spawnerConfig.addDefault(section + ".Shop-Price", 1000.00);
+        spawnerConfig.addDefault(section + ".CustomGoal", 0);
+        spawnerConfig.addDefault(section + ".Custom-ECO-Cost", 0);
+        spawnerConfig.addDefault(section + ".Custom-XP-Cost", 0);
+        spawnerConfig.addDefault(section + ".Tick-Rate", "800:200");
+        spawnerConfig.addDefault(section + ".Spawn-Effect", "NONE");
+        spawnerConfig.addDefault(section + ".Spawn-Effect-Particle", "REDSTONE");
+        spawnerConfig.addDefault(section + ".Entity-Spawn-Particle", "SMOKE");
+        spawnerConfig.addDefault(section + ".Spawner-Spawn-Particle", "FIRE");
+        spawnerConfig.addDefault(section + ".Particle-Amount", "NORMAL");
+        spawnerConfig.addDefault(section + ".Particle-Effect-Boosted-Only", true);
+        spawnerConfig.addDefault(section + ".Craftable", false);
+        spawnerConfig.addDefault(section + ".Recipe-Layout", "AAAABAAAA");
+        spawnerConfig.addDefault(section + ".Recipe-Ingredients", Arrays.asList("A, IRON_BARS", "B, SPAWN_EGG"));
 
         if (entityType == EntityType.SLIME) {
-            spawnerConfig.addDefault("Entities." + type + ".Conditions.Biomes",
+            spawnerConfig.addDefault(section + ".Conditions.Biomes",
                     EpicSpawners.getInstance().isServerVersionAtLeast(ServerVersion.V1_13) ? Biome.SWAMP.name() : Biome.valueOf("SWAMPLAND").name());
-            spawnerConfig.addDefault("Entities." + type + ".Conditions.Height", "50:70");
+            spawnerConfig.addDefault(section + ".Conditions.Height", "50:70");
         } else {
-            spawnerConfig.addDefault("Entities." + type + ".Conditions.Biomes", "ALL");
-            spawnerConfig.addDefault("Entities." + type + ".Conditions.Height", "0:256");
+            spawnerConfig.addDefault(section + ".Conditions.Biomes", "ALL");
+            spawnerConfig.addDefault(section + ".Conditions.Height", "0:256");
         }
         if (entityType != null && Monster.class.isAssignableFrom(entityType.getEntityClass())) {
-            spawnerConfig.addDefault("Entities." + type + ".Conditions.Light", "DARK");
+            spawnerConfig.addDefault(section + ".Conditions.Light", "DARK");
         } else {
-            spawnerConfig.addDefault("Entities." + type + ".Conditions.Light", "BOTH");
+            spawnerConfig.addDefault(section + ".Conditions.Light", "BOTH");
         }
-        spawnerConfig.addDefault("Entities." + type + ".Conditions.Storm Only", false);
-        spawnerConfig.addDefault("Entities." + type + ".Conditions.Max Entities Around Spawner", 6);
-        spawnerConfig.addDefault("Entities." + type + ".Conditions.Required Player Distance And Amount", 16 + ":" + 1);
+        spawnerConfig.addDefault(section + ".Conditions.Storm Only", false);
+        spawnerConfig.addDefault(section + ".Conditions.Max Entities Around Spawner", 6);
+        spawnerConfig.addDefault(section + ".Conditions.Required Player Distance And Amount", 16 + ":" + 1);
     }
 
     public ConfigWrapper getSpawnerFile() {
