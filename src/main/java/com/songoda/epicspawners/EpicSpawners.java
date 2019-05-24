@@ -264,7 +264,6 @@ public class EpicSpawners extends JavaPlugin {
         //ToDO: If the defaults are set correctly this could do the initial config save.
 
         // Save spawner settings
-
         FileConfiguration spawnerConfig = spawnerManager.getSpawnerFile().getConfig();
         spawnerConfig.set("Entities", null);
 

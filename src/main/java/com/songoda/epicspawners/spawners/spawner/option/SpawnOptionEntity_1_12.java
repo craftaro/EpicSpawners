@@ -266,28 +266,25 @@ public class SpawnOptionEntity_1_12 implements SpawnOption {
 
     private boolean canSpawn(Object objEntityInsentient, SpawnerData data, Location location) {
         try {
-
             if (!(boolean) methodEntityInsentientCanSpawn.invoke(objEntityInsentient))
                 return false;
 
+            Material[] spawnBlocks = data.getSpawnBlocks();
 
-            List<Material> spawnBlocks = Arrays.asList(data.getSpawnBlocks());
+            Material spawnedIn = location.getBlock().getType();
+            Material spawnedOn = location.getBlock().getRelative(BlockFace.DOWN).getType();
 
-            if (!Methods.isAir(location.getBlock().getType()) && !isWater(location.getBlock().getType())) {
+            if (!Methods.isAir(spawnedIn)
+                    && !isWater(spawnedIn)
+                    && !spawnedIn.name().contains("PRESSURE")
+                    && !spawnedIn.name().contains("SLAB")) {
                 return false;
             }
 
             for (Material material : spawnBlocks) {
-                Material down = location.getBlock().getRelative(BlockFace.DOWN).getType();
-                String str = location.getBlock().getType().name().toLowerCase();
-                if ((location.getBlock().getType() == Material.AIR || str.contains("pressure") || str.contains("slab")) && material == Material.AIR)
-                    return true;
                 if (material == null) continue;
-                if (down.toString().equalsIgnoreCase(material.name())
-                        || (material.toString().equals("GRASS") && down == Material.GRASS)
-                        || isWater(down)) {
+                if (spawnedOn == material)
                     return true;
-                }
             }
         } catch (InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
