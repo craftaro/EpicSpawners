@@ -46,7 +46,6 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Monster;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.BlockStateMeta;
@@ -611,17 +610,20 @@ public class EpicSpawners extends JavaPlugin {
     }
 
     public SpawnerData getSpawnerDataFromItem(ItemStack item) {
-        if (item == null || !item.hasItemMeta()) return null;
+        if (item == null) return null;
 
-        String name = item.getItemMeta().getDisplayName();
-        if (name == null) return null;
+        String name = item.hasItemMeta() && item.getItemMeta().hasDisplayName() ? item.getItemMeta().getDisplayName() : null;
 
-        if (name.contains(":")) {
-            String value = name.replace(String.valueOf(ChatColor.COLOR_CHAR), "").replace(";", "").split(":")[0];
-            if (Methods.isInt(value)) {
+        if (name != null && name.contains(":")) {
+            String[] raw = name.replace(";", "").split(":");
+            String value = raw[0].replace(String.valueOf(ChatColor.COLOR_CHAR), "");
+            if (Methods.isInt(value) && identifySpawner(value) != null) {
                 return identifySpawner(value);
             }
-            return spawnerManager.getSpawnerData(value.toLowerCase().replace("_", " "));
+
+            SpawnerData spawnerData = spawnerManager.getSpawnerData(ChatColor.stripColor(raw[raw.length - 1]).split(" ")[0]);
+            if (spawnerData != null)
+                return spawnerData;
         }
 
         BlockStateMeta bsm = (BlockStateMeta) item.getItemMeta();

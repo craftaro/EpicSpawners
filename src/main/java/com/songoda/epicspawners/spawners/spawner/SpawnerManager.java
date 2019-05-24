@@ -39,7 +39,8 @@ public class SpawnerManager {
     }
 
     public SpawnerData getSpawnerData(String name) {
-        return spawners.get(name.toLowerCase());
+        return spawners.values().stream().filter(spawnerData -> spawnerData.getIdentifyingName()
+                .equalsIgnoreCase(name)).findFirst().orElse(null);
     }
 
 
