@@ -243,7 +243,7 @@ public class BlockListeners implements Listener {
                 }
             }
 
-            boolean naturalOnly = plugin.getConfig().getBoolean("Main.Only Charge Natural Spawners");
+            boolean naturalOnly = Setting.ONLY_CHARGE_NATURAL.getBoolean();
 
             if (spawner.getFirstStack().getSpawnerData().getPickupCost() != 0 && (!naturalOnly || spawner.getPlacedBy() == null)) {
                 if (!plugin.getSpawnerManager().hasCooldown(spawner)) {
