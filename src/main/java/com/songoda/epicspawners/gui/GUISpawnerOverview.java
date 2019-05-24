@@ -234,7 +234,7 @@ public class GUISpawnerOverview extends AbstractGUI {
             if (spawner.getFirstStack().getSpawnerData().isUpgradeable()) {
                 if (Setting.UPGRADE_WITH_XP_ENABLED.getBoolean())
                     inventory.setItem(11, itemXP);
-                if (Setting.UPGRADE_COST_ECONOMY.getBoolean())
+                if (Setting.UPGRADE_WITH_ECO_ENABLED.getBoolean())
                     inventory.setItem(15, itemECO);
             }
         }
@@ -268,7 +268,7 @@ public class GUISpawnerOverview extends AbstractGUI {
         });
 
         registerClickable(15, (player, inventory, cursor, slot, type) -> {
-            if (Setting.UPGRADE_COST_ECONOMY.getBoolean()
+            if (Setting.UPGRADE_WITH_ECO_ENABLED.getBoolean()
                     && !inventory.getItem(slot).getItemMeta().getDisplayName().equals(ChatColor.COLOR_CHAR + "l")) {
                 this.spawner.upgrade(player, CostType.ECONOMY);
             }
