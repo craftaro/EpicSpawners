@@ -273,7 +273,7 @@ public class SpawnOptionEntity_1_12 implements SpawnOption {
 
             List<Material> spawnBlocks = Arrays.asList(data.getSpawnBlocks());
 
-            if (!Methods.isAir(location.getBlock().getType()) && (!isWater(location.getBlock().getType()) && !spawnBlocks.contains("WATER"))) {
+            if (!Methods.isAir(location.getBlock().getType()) && !isWater(location.getBlock().getType())) {
                 return false;
             }
 
@@ -285,7 +285,7 @@ public class SpawnOptionEntity_1_12 implements SpawnOption {
                 if (material == null) continue;
                 if (down.toString().equalsIgnoreCase(material.name())
                         || (material.toString().equals("GRASS") && down == Material.GRASS)
-                        || isWater(down) && spawnBlocks.contains("WATER")) {
+                        || isWater(down)) {
                     return true;
                 }
             }
@@ -296,7 +296,7 @@ public class SpawnOptionEntity_1_12 implements SpawnOption {
     }
 
     private boolean isWater(Material type) {
-        return type == Material.WATER;
+        return type == Material.WATER || type == Material.valueOf("STATIONARY_WATER");
     }
 
     public enum TypeTranslations {

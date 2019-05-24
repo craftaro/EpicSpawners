@@ -13,9 +13,6 @@ import com.songoda.epicspawners.handlers.BlacklistHandler;
 import com.songoda.epicspawners.hologram.Hologram;
 import com.songoda.epicspawners.hologram.HologramHolographicDisplays;
 import com.songoda.epicspawners.listeners.*;
-import com.songoda.epicspawners.particles.ParticleDensity;
-import com.songoda.epicspawners.particles.ParticleEffect;
-import com.songoda.epicspawners.particles.ParticleType;
 import com.songoda.epicspawners.player.PlayerActionManager;
 import com.songoda.epicspawners.player.PlayerData;
 import com.songoda.epicspawners.spawners.SpawnManager;
@@ -57,7 +54,6 @@ import java.util.*;
 
 public class EpicSpawners extends JavaPlugin {
 
-    private static final Set<Biome> BIOMES = EnumSet.allOf(Biome.class);
     private static EpicSpawners INSTANCE;
 
     private ServerVersion serverVersion = ServerVersion.fromPackageName(Bukkit.getServer().getClass().getPackage().getName());
@@ -110,12 +106,11 @@ public class EpicSpawners extends JavaPlugin {
 
         this.boostManager = new BoostManager();
         this.spawnManager = new SpawnManager();
-        this.spawnerManager = new SpawnerManager();
+        this.spawnerManager = new SpawnerManager(this);
         this.commandManager = new CommandManager(this);
         this.blacklistHandler = new BlacklistHandler();
         this.playerActionManager = new PlayerActionManager();
 
-        this.loadSpawnersFromFile();
         this.checkStorage();
 
         this.appearanceHandler = new AppearanceHandler();
@@ -254,98 +249,6 @@ public class EpicSpawners extends JavaPlugin {
         this.saveToFile();
     }
 
-    @SuppressWarnings("unchecked")
-    private void loadSpawnersFromFile() {
-        // Register spawner data into SpawnerRegistry from configuration.
-        FileConfiguration spawnerConfig = spawnerManager.getSpawnerFile().getConfig();
-        if (!spawnerConfig.contains("Entities")) return;
-        for (String key : spawnerConfig.getConfigurationSection("Entities").getKeys(false)) {
-            ConfigurationSection currentSection = spawnerConfig.getConfigurationSection("Entities." + key);
-
-            List<EntityType> entities = new ArrayList<>();
-            List<Material> blocks = new ArrayList<>();
-            List<Material> spawnBlocks = new ArrayList<>();
-            List<ItemStack> itemDrops = (List<ItemStack>) currentSection.getList("itemDrops", new ArrayList<>());
-            List<ItemStack> items = (List<ItemStack>) currentSection.getList("items", new ArrayList<>());
-            List<String> commands = currentSection.getStringList("command");
-
-            for (String block : currentSection.getStringList("blocks")) {
-                blocks.add(Material.matchMaterial(block.toUpperCase()));
-            }
-            for (String block : currentSection.getString("Spawn-Block").split(",")) {
-                spawnBlocks.add(Material.matchMaterial(block.toUpperCase()));
-            }
-            for (String entity : currentSection.getStringList("entities")) {
-                entities.add(EntityType.valueOf(entity));
-            }
-
-            SpawnerDataBuilder dataBuilder = new SpawnerDataBuilder(key).uuid(currentSection.getInt("uuid"))
-                    .entities(entities).blocks(blocks).items(items).entityDroppedItems(itemDrops).commands(commands)
-                    .spawnBlocks(spawnBlocks)
-                    .active(currentSection.getBoolean("Allowed"))
-                    .spawnOnFire(currentSection.getBoolean("Spawn-On-Fire"))
-                    .upgradeable(currentSection.getBoolean("Upgradable"))
-                    .convertible(currentSection.getBoolean("Convertible"))
-                    .convertRatio(currentSection.getString("Convert-Ratio"))
-                    .inShop(currentSection.getBoolean("In-Shop"))
-                    .pickupCost(currentSection.getDouble("Pickup-Cost"))
-                    .craftable(currentSection.getBoolean("Craftable"))
-                    .recipe(currentSection.getString("Recipe-Layout"))
-                    .recipeIngredients(currentSection.getStringList("Recipe-Ingredients"))
-                    .shopPrice(currentSection.getDouble("Shop-Price"))
-                    .killGoal(currentSection.getInt("CustomGoal"))
-                    .upgradeCostEconomy(currentSection.getInt("Custom-ECO-Cost"))
-                    .upgradeCostExperience(currentSection.getInt("Custom-XP-Cost"))
-                    .tickRate(currentSection.getString("Tick-Rate"))
-                    .particleEffect(ParticleEffect.valueOf(currentSection.getString("Spawn-Effect", "HALO")))
-                    .spawnEffectParticle(ParticleType.valueOf(currentSection.getString("Spawn-Effect-Particle", "REDSTONE")))
-                    .entitySpawnParticle(ParticleType.valueOf(currentSection.getString("Entity-Spawn-Particle", "SMOKE")))
-                    .spawnerSpawnParticle(ParticleType.valueOf(currentSection.getString("Spawner-Spawn-Particle", "FIRE")))
-                    .particleDensity(ParticleDensity.valueOf(currentSection.getString("Particle-Amount", "NORMAL")))
-                    .particleEffectBoostedOnly(currentSection.getBoolean("Particle-Effect-Boosted-Only"));
-
-            if (currentSection.contains("custom")) {
-                dataBuilder.isCustom(currentSection.getBoolean("custom"));
-            } else {
-                dataBuilder.isCustom(key.toLowerCase().contains("custom"));
-            }
-
-            if (currentSection.contains("Display-Name")) {
-                dataBuilder.displayName(currentSection.getString("Display-Name"));
-            }
-            if (currentSection.contains("Display-Item")) {
-                dataBuilder.displayItem(Material.valueOf(currentSection.getString("Display-Item")));
-            }
-
-            SpawnerData data = dataBuilder.build();
-
-            if (currentSection.contains("Conditions")) {
-                String biomeString = currentSection.getString("Conditions.Biomes");
-                Set<Biome> biomes;
-                if (biomeString.toLowerCase().equals("all"))
-                    biomes = EnumSet.copyOf(BIOMES);
-                else {
-                    biomes = new HashSet<>();
-                    for (String string : biomeString.split(", ")) {
-                        biomes.add(Biome.valueOf(string));
-                    }
-                }
-
-                String[] heightString = currentSection.getString("Conditions.Height").split(":");
-                String[] playerString = currentSection.getString("Conditions.Required Player Distance And Amount").split(":");
-
-                data.addCondition(new SpawnConditionNearbyPlayers(Integer.parseInt(playerString[0]), Integer.parseInt(playerString[1])));
-                data.addCondition(new SpawnConditionNearbyEntities(currentSection.getInt("Conditions.Max Entities Around Spawner")));
-                data.addCondition(new SpawnConditionBiome(biomes));
-                data.addCondition(new SpawnConditionHeight(Integer.parseInt(heightString[0]), Integer.parseInt(heightString[1])));
-                data.addCondition(new SpawnConditionLightDark(SpawnConditionLightDark.Type.valueOf(currentSection.getString("Conditions.Light"))));
-                data.addCondition(new SpawnConditionStorm(currentSection.getBoolean("Conditions.Storm Only")));
-            }
-
-            this.spawnerManager.addSpawnerData(key, data);
-        }
-    }
-
     private void checkStorage() {
         if (getConfig().getBoolean("Database.Activate Mysql Support")) {
             this.storage = new StorageMysql(this);
@@ -355,6 +258,7 @@ public class EpicSpawners extends JavaPlugin {
     }
 
     private void saveToFile() {
+        Set<Biome> BIOMES = EnumSet.allOf(Biome.class);
         checkStorage();
 
         //ToDO: If the defaults are set correctly this could do the initial config save.
@@ -533,7 +437,7 @@ public class EpicSpawners extends JavaPlugin {
         this.locale = Locale.getLocale(getConfig().getString("System.Language Mode", langMode));
         this.locale.reloadMessages();
         this.blacklistHandler.reload();
-        this.loadSpawnersFromFile();
+        //this.loadSpawnersFromFile(); ToDO: This needs to work.
         this.settingsManager.reloadConfig();
     }
 
