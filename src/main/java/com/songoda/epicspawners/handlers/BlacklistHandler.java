@@ -47,7 +47,7 @@ public class BlacklistHandler {
     }
 
     public void reload() {
-            blackFile.createNewFile("Loading blacklist file", "EpicSpawners blacklist file");
+            blackFile.reloadConfig();
             loadBlacklistFile();
     }
 }
