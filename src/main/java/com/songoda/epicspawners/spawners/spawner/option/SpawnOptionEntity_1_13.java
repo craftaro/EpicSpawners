@@ -186,7 +186,7 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
             methodSetString.invoke(objNTBTagCompound, "id", "minecraft:" + name);
 
             short spawnRange = 4;
-            for (int i = 0; i < 25; i++) {
+            for (int i = 0; i < 50; i++) {
                 Object objNBTTagCompound = methodGetEntity.invoke(objMobSpawnerData);
                 Object objCraftWorld = clazzCraftWorld.cast(spawner.getWorld());
                 objCraftWorld = methodGetHandle.invoke(objCraftWorld);
@@ -213,17 +213,17 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
                 Object objBlockPosition = clazzBlockPosition.getConstructor(clazzEntity).newInstance(objEntity);
                 Object objDamageScaler = methodGetDamageScaler.invoke(objWorld, objBlockPosition);
 
-                if (methodChunkRegionLoaderA != null) {
-                    methodEntityInsentientPrepare.invoke(objEntity, objDamageScaler, null, null);
-                } else {
-                    methodEntityInsentientPrepare.invoke(objEntity, objWorld, objDamageScaler, SpawnerEnum, null, null);
-                }
-
                 Object objEntityInsentient = clazzEntityInsentient.isInstance(objEntity) ? clazzEntityInsentient.cast(objEntity) : null;
 
                 Location spot = new Location(spawner.getWorld(), x, y, z);
                 if (!canSpawn(objWorld, objEntityInsentient, data, spot))
                     continue;
+
+                if (methodChunkRegionLoaderA != null) {
+                    methodEntityInsentientPrepare.invoke(objEntity, objDamageScaler, null, null);
+                } else {
+                    methodEntityInsentientPrepare.invoke(objEntity, objWorld, objDamageScaler, SpawnerEnum, null, null);
+                }
 
                 ParticleType particleType = data.getEntitySpawnParticle();
 
