@@ -1,33 +1,11 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    
+<project xmlns="http://maven.apache.org/POM/4.0.0">
     <groupId>com.songoda</groupId>
-    <artifactId>EpicSpawners-Parent</artifactId>
-    <packaging>pom</packaging>
+    <artifactId>EpicSpawners</artifactId>
+    <modelVersion>4.0.0</modelVersion>
     <version>maven-version-number</version>
-    
-    <modules>
-        <module>EpicSpawners-API</module>
-        <module>EpicSpawners-Plugin</module>
-    </modules>
-    
-    <dependencies>
-        <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot</artifactId>
-            <version>1.14.1</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.songoda</groupId>
-            <artifactId>songodaupdater</artifactId>
-            <version>1</version>
-        </dependency>
-    </dependencies>
-    
     <build>
         <defaultGoal>clean install</defaultGoal>
+        <finalName>EpicSpawners-${project.version}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -79,4 +57,33 @@
             <url>http://repo.songoda.com/artifactory/private/</url>
         </repository>
     </repositories>
+    <dependencies>
+        <dependency>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot</artifactId>
+            <version>1.14.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.songoda</groupId>
+            <artifactId>songodaupdater</artifactId>
+            <version>1</version>
+        </dependency>
+        <dependency>
+            <groupId>net.milkbowl</groupId>
+            <artifactId>vault</artifactId>
+            <version>1.7.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>me.clip</groupId>
+            <artifactId>placeholderapi</artifactId>
+            <version>2.9.2</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.gmail.filoghost.holographicdisplays</groupId>
+            <artifactId>holographicdisplays-api</artifactId>
+            <version>2.3.2</version>
+        </dependency>
+    </dependencies>
 </project>
