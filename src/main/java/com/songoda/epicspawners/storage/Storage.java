@@ -18,7 +18,7 @@ public abstract class Storage {
     public Storage(EpicSpawners plugin) {
         this.plugin = plugin;
         this.dataFile = new ConfigWrapper(plugin, "", "data.yml");
-        this.dataFile.createNewFile(null, "EpicHeads Data File");
+        this.dataFile.createNewFile(null, "EpicSpawners Data File");
         this.dataFile.getConfig().options().copyDefaults(true);
         this.dataFile.saveConfig();
     }

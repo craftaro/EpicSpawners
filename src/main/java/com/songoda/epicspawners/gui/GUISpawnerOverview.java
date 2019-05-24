@@ -18,6 +18,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -103,11 +104,25 @@ public class GUISpawnerOverview extends AbstractGUI {
         int num = 1;
         for (Material block : blocks) {
             if (num != 1)
-                only.append("&8, &6").append(Methods.getTypeFromString(block.name()));
+                only.append("&8, &6").append(block.name());
             num++;
         }
 
-        lore.add(plugin.getLocale().getMessage("interface.spawner.onlyspawnson", only.toString()));
+        String onlyStr = plugin.getLocale().getMessage("interface.spawner.onlyspawnson", only.toString());
+
+        int lastIndex = 0;
+        for (int n = 0; n < onlyStr.length(); n++) {
+            if (n - lastIndex < 30)
+                continue;
+
+            if (onlyStr.charAt(n) == ' ') {
+                lore.add(Methods.formatText(onlyStr.substring(lastIndex, n).trim()));
+                lastIndex = n;
+            }
+        }
+
+        if (lastIndex - onlyStr.length() < 30)
+            lore.add(Methods.formatText(onlyStr.substring(lastIndex).trim()));
 
         lore.add(plugin.getLocale().getMessage("interface.spawner.stats", spawner.getSpawnCount()));
         if (player.hasPermission("epicspawners.convert") && spawner.getSpawnerStacks().size() == 1) {
