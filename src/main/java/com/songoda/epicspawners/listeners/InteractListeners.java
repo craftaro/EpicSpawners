@@ -1,7 +1,7 @@
 package com.songoda.epicspawners.listeners;
 
 import com.songoda.epicspawners.EpicSpawners;
-import com.songoda.epicspawners.events.SpawnerChangeEvent;
+import com.songoda.epicspawners.api.events.SpawnerChangeEvent;
 import com.songoda.epicspawners.spawners.spawner.Spawner;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.spawners.spawner.SpawnerManager;

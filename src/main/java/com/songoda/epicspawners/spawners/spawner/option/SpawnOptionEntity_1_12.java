@@ -1,7 +1,7 @@
 package com.songoda.epicspawners.spawners.spawner.option;
 
 import com.songoda.epicspawners.EpicSpawners;
-import com.songoda.epicspawners.events.SpawnerSpawnEvent;
+import com.songoda.epicspawners.api.events.SpawnerSpawnEvent;
 import com.songoda.epicspawners.particles.ParticleType;
 import com.songoda.epicspawners.spawners.condition.SpawnCondition;
 import com.songoda.epicspawners.spawners.condition.SpawnConditionNearbyEntities;

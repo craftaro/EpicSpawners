@@ -1,4 +1,4 @@
-package com.songoda.epicspawners.events;
+package com.songoda.epicspawners.api.events;
 
 import com.songoda.epicspawners.spawners.spawner.Spawner;
 import org.bukkit.entity.Player;

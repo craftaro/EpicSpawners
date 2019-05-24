@@ -1,31 +1,31 @@
-package com.songoda.epicspawners.events;
+package com.songoda.epicspawners.api.events;
 
+import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.spawners.spawner.Spawner;
-import org.bukkit.entity.Entity;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
-import org.bukkit.event.entity.EntityEvent;
 
 /**
- * Called when a spawner spawns an entity.
+ * Called when a spawner has been dropped in the world after being broken
  */
-public class SpawnerSpawnEvent extends EntityEvent implements Cancellable {
+public class SpawnerDropEvent extends SpawnerEvent implements Cancellable {
 
     private static final HandlerList HANDLERS = new HandlerList();
 
     private boolean canceled = false;
 
-    private Spawner spawner;
-
-    public SpawnerSpawnEvent(Entity entity, Spawner spawner) {
-        super(entity);
-        this.spawner = spawner;
+    public SpawnerDropEvent(Player player, Spawner spawner) {
+        super(player, spawner);
     }
 
-    public Spawner getSpawner() {
-        return spawner;
+    @Deprecated
+    public SpawnerDropEvent(Location location, Player player) {
+        this(player, EpicSpawners.getInstance().getSpawnerManager().getSpawnerFromWorld(location));
     }
 
+    @Override
     public HandlerList getHandlers() {
         return HANDLERS;
     }

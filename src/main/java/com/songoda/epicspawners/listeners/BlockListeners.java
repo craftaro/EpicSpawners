@@ -2,9 +2,9 @@ package com.songoda.epicspawners.listeners;
 
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.References;
-import com.songoda.epicspawners.events.SpawnerBreakEvent;
-import com.songoda.epicspawners.events.SpawnerChangeEvent;
-import com.songoda.epicspawners.events.SpawnerPlaceEvent;
+import com.songoda.epicspawners.api.events.SpawnerBreakEvent;
+import com.songoda.epicspawners.api.events.SpawnerChangeEvent;
+import com.songoda.epicspawners.api.events.SpawnerPlaceEvent;
 import com.songoda.epicspawners.spawners.spawner.Spawner;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.spawners.spawner.SpawnerStack;

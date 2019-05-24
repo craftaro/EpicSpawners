@@ -3,7 +3,7 @@ package com.songoda.epicspawners.spawners.spawner;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.References;
 import com.songoda.epicspawners.boost.BoostData;
-import com.songoda.epicspawners.events.SpawnerChangeEvent;
+import com.songoda.epicspawners.api.events.SpawnerChangeEvent;
 import com.songoda.epicspawners.gui.GUISpawnerOverview;
 import com.songoda.epicspawners.particles.ParticleType;
 import com.songoda.epicspawners.spawners.condition.SpawnCondition;

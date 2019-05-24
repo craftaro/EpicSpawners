@@ -1,4 +1,4 @@
-package com.songoda.epicspawners.events;
+package com.songoda.epicspawners.api.events;
 
 import com.songoda.epicspawners.spawners.spawner.Spawner;
 import org.bukkit.entity.Player;
@@ -6,15 +6,15 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 
 /**
- * Called when a spawner has been broken in the world
+ * Called when a spawner has been placed in the world
  */
-public class SpawnerBreakEvent extends SpawnerEvent implements Cancellable {
+public class SpawnerPlaceEvent extends SpawnerEvent implements Cancellable {
 
     private static final HandlerList HANDLERS = new HandlerList();
 
-    private boolean cancelled = false;
+    private boolean canceled = false;
 
-    public SpawnerBreakEvent(Player player, Spawner spawner) {
+    public SpawnerPlaceEvent(Player player, Spawner spawner) {
         super(player, spawner);
     }
 
@@ -29,12 +29,11 @@ public class SpawnerBreakEvent extends SpawnerEvent implements Cancellable {
 
     @Override
     public boolean isCancelled() {
-        return cancelled;
+        return canceled;
     }
 
     @Override
     public void setCancelled(boolean canceled) {
-        this.cancelled = canceled;
+        this.canceled = canceled;
     }
-
 }
