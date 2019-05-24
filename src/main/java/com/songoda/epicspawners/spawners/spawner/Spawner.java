@@ -283,7 +283,7 @@ public class Spawner {
     }
 
     public boolean preStack(Player player, ItemStack itemStack) {
-        return stack(player, EpicSpawners.getInstance().getSpawnerDataFromItem(itemStack), EpicSpawners.getInstance().getStackSizeFromItem(itemStack));
+        return stack(player, Methods.getSpawnerDataFromItem(itemStack), Methods.getStackSizeFromItem(itemStack));
     }
 
     public boolean stack(Player player, SpawnerData data, int amount) {

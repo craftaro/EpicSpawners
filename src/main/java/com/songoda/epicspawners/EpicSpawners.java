@@ -1,6 +1,5 @@
 package com.songoda.epicspawners;
 
-import com.google.common.base.Preconditions;
 import com.songoda.epicspawners.boost.BoostData;
 import com.songoda.epicspawners.boost.BoostManager;
 import com.songoda.epicspawners.boost.BoostType;
@@ -8,7 +7,6 @@ import com.songoda.epicspawners.command.CommandManager;
 import com.songoda.epicspawners.economy.Economy;
 import com.songoda.epicspawners.economy.PlayerPointsEconomy;
 import com.songoda.epicspawners.economy.VaultEconomy;
-import com.songoda.epicspawners.handlers.AppearanceHandler;
 import com.songoda.epicspawners.handlers.BlacklistHandler;
 import com.songoda.epicspawners.hologram.Hologram;
 import com.songoda.epicspawners.hologram.HologramHolographicDisplays;
@@ -24,9 +22,13 @@ import com.songoda.epicspawners.storage.Storage;
 import com.songoda.epicspawners.storage.StorageRow;
 import com.songoda.epicspawners.storage.types.StorageMysql;
 import com.songoda.epicspawners.storage.types.StorageYaml;
+import com.songoda.epicspawners.tasks.AppearanceTask;
 import com.songoda.epicspawners.tasks.SpawnerParticleTask;
 import com.songoda.epicspawners.tasks.SpawnerSpawnTask;
-import com.songoda.epicspawners.utils.*;
+import com.songoda.epicspawners.utils.Heads;
+import com.songoda.epicspawners.utils.Methods;
+import com.songoda.epicspawners.utils.Metrics;
+import com.songoda.epicspawners.utils.ServerVersion;
 import com.songoda.epicspawners.utils.gui.AbstractGUI;
 import com.songoda.epicspawners.utils.settings.Setting;
 import com.songoda.epicspawners.utils.settings.SettingsManager;
@@ -34,20 +36,20 @@ import com.songoda.epicspawners.utils.updateModules.LocaleModule;
 import com.songoda.update.Plugin;
 import com.songoda.update.SongodaUpdate;
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.math.NumberUtils;
-import org.bukkit.*;
-import org.bukkit.block.Biome;
-import org.bukkit.block.CreatureSpawner;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.EntityType;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
-import org.bukkit.inventory.meta.BlockStateMeta;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class EpicSpawners extends JavaPlugin {
 
@@ -65,10 +67,10 @@ public class EpicSpawners extends JavaPlugin {
     private Economy economy;
 
     private BlacklistHandler blacklistHandler;
-    private AppearanceHandler appearanceHandler;
 
     private Hologram hologram;
 
+    private AppearanceTask appearanceTask;
     private SpawnerParticleTask particleTask;
     private SpawnerSpawnTask spawnerCustomSpawnTask;
 
@@ -110,8 +112,6 @@ public class EpicSpawners extends JavaPlugin {
 
         this.checkStorage();
 
-        this.appearanceHandler = new AppearanceHandler();
-
         PluginManager pluginManager = Bukkit.getPluginManager();
 
         // Event registration
@@ -136,6 +136,7 @@ public class EpicSpawners extends JavaPlugin {
         if (isServerVersionAtLeast(ServerVersion.V1_12))
             this.particleTask = SpawnerParticleTask.startTask(this);
         this.spawnerCustomSpawnTask = SpawnerSpawnTask.startTask(this);
+        this.appearanceTask = AppearanceTask.startTask(this);
 
         // Setup Economy
         if (Setting.VAULT_ECONOMY.getBoolean()
@@ -152,7 +153,6 @@ public class EpicSpawners extends JavaPlugin {
         new Metrics(this);
 
         console.sendMessage(Methods.formatText("&a============================="));
-
     }
 
 
@@ -294,7 +294,7 @@ public class EpicSpawners extends JavaPlugin {
 
             String type = spawnerData.getIdentifyingName().toUpperCase().replace(" ", "_").replace("MUSHROOM_COW", "MOOSHROOM");
 
-            ShapedRecipe spawnerRecipe = new ShapedRecipe(new NamespacedKey(this, "SPAWNER_RECIPE_" + type), newSpawnerItem(spawnerData, 1));
+            ShapedRecipe spawnerRecipe = new ShapedRecipe(new NamespacedKey(this, "SPAWNER_RECIPE_" + type), Methods.newSpawnerItem(spawnerData, 1));
 
             if (recipe.length() != 9) return;
 
@@ -338,8 +338,8 @@ public class EpicSpawners extends JavaPlugin {
         this.locale = Locale.getLocale(getConfig().getString("System.Language Mode", langMode));
         this.locale.reloadMessages();
         this.blacklistHandler.reload();
-        //this.loadSpawnersFromFile(); ToDO: This needs to work.
         this.settingsManager.reloadConfig();
+        this.spawnerManager.getSpawnerFile().reloadConfig();
     }
 
     public Locale getLocale() {
@@ -366,10 +366,6 @@ public class EpicSpawners extends JavaPlugin {
         return hologram;
     }
 
-    public AppearanceHandler getAppearanceHandler() {
-        return appearanceHandler;
-    }
-
     public BlacklistHandler getBlacklistHandler() {
         return blacklistHandler;
     }
@@ -390,66 +386,7 @@ public class EpicSpawners extends JavaPlugin {
         return economy;
     }
 
-    public ItemStack newSpawnerItem(SpawnerData data, int amount) {
-        return newSpawnerItem(data, amount, 1);
-    }
-
-    public ItemStack newSpawnerItem(SpawnerData data, int amount, int stackSize) {
-        Preconditions.checkArgument(stackSize > 0, "Stack size must be greater than or equal to 0");
-
-        ItemStack item = new ItemStack(isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER"), amount);
-        ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName(Methods.compileName(data, stackSize, true));
-        item.setItemMeta(meta);
-
-        return item;
-    }
-
-    public SpawnerData identifySpawner(String sid) {
-        int id = Integer.parseInt(sid.replace(";", ""));
-        for (SpawnerData data : spawnerManager.getAllSpawnerData()) {
-            if (data.getUUID() == id)
-                return data;
-        }
-        return null;
-    }
-
-    public SpawnerData getSpawnerDataFromItem(ItemStack item) {
-        if (item == null) return null;
-
-        String name = item.hasItemMeta() && item.getItemMeta().hasDisplayName() ? item.getItemMeta().getDisplayName() : null;
-
-        if (name != null && name.contains(":")) {
-            String[] raw = name.replace(";", "").split(":");
-            String value = raw[0].replace(String.valueOf(ChatColor.COLOR_CHAR), "");
-            if (Methods.isInt(value) && identifySpawner(value) != null) {
-                return identifySpawner(value);
-            }
-
-            SpawnerData spawnerData = spawnerManager.getSpawnerData(ChatColor.stripColor(raw[raw.length - 1]).split(" ")[0]);
-            if (spawnerData != null)
-                return spawnerData;
-        }
-
-        BlockStateMeta bsm = (BlockStateMeta) item.getItemMeta();
-        CreatureSpawner cs = (CreatureSpawner) bsm.getBlockState();
-        return spawnerManager.getSpawnerData(cs.getSpawnedType());
-    }
-
-
-    public SpawnerDataBuilder createSpawnerData(String identifier) {
-        return new SpawnerDataBuilder(identifier);
-    }
-
-
-    public int getStackSizeFromItem(ItemStack item) {
-        Preconditions.checkNotNull(item, "Cannot get stack size of null item");
-        if (!item.hasItemMeta()) return 1;
-
-        String name = item.getItemMeta().getDisplayName();
-        if (name == null || !name.contains(":")) return 1;
-
-        String amount = name.replace(String.valueOf(ChatColor.COLOR_CHAR), "").replace(";", "").split(":")[1];
-        return NumberUtils.toInt(amount, 1);
+    public AppearanceTask getAppearanceTask() {
+        return appearanceTask;
     }
 }

@@ -72,7 +72,7 @@ public class EntityListeners implements Listener {
             plugin.getSpawnerManager().removeSpawnerFromWorld(spawnLocation);
             if (plugin.getHologram() != null)
                 plugin.getHologram().remove(spawner);
-            if (spawner != null) plugin.getAppearanceHandler().removeDisplayItem(spawner);
+            if (spawner != null) plugin.getAppearanceTask().removeDisplayItem(spawner);
 
             Location nloc = spawnLocation.clone();
             nloc.add(.5, -.4, .5);

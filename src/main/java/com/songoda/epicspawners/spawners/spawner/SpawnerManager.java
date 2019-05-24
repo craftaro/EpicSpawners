@@ -403,4 +403,8 @@ public class SpawnerManager {
         }
         spawnerFile.saveConfig();
     }
+
+    public ConfigWrapper getSpawnerFile() {
+        return spawnerFile;
+    }
 }

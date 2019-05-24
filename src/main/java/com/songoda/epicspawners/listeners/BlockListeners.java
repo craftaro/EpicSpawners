@@ -115,8 +115,8 @@ public class BlockListeners implements Listener {
             Location location = event.getBlock().getLocation();
             Spawner spawner = new Spawner(event.getBlock().getLocation());
 
-            SpawnerData spawnerData = plugin.getSpawnerDataFromItem(event.getItemInHand());
-            int spawnerStackSize = plugin.getStackSizeFromItem(event.getItemInHand());
+            SpawnerData spawnerData = Methods.getSpawnerDataFromItem(event.getItemInHand());
+            int spawnerStackSize = Methods.getStackSizeFromItem(event.getItemInHand());
             spawner.addSpawnerStack(new SpawnerStack(spawnerData, spawnerStackSize));
 
             Player player = event.getPlayer();
@@ -176,7 +176,7 @@ public class BlockListeners implements Listener {
                 plugin.getHologram().processChange(event.getBlock());
                 plugin.getHologram().add(spawner);
             }
-            plugin.getAppearanceHandler().updateDisplayItem(spawner, spawnerData);
+            plugin.getAppearanceTask().updateDisplayItem(spawner, spawnerData);
 
             return;
         }
@@ -223,7 +223,7 @@ public class BlockListeners implements Listener {
                 plugin.getSpawnerManager().removeSpawnerFromWorld(location);
                 if (plugin.getHologram() != null)
                     plugin.getHologram().update(spawner);
-                plugin.getAppearanceHandler().removeDisplayItem(spawner);
+                plugin.getAppearanceTask().removeDisplayItem(spawner);
                 return;
             }
 
@@ -283,7 +283,7 @@ public class BlockListeners implements Listener {
             if (plugin.getHologram() != null)
                 plugin.getHologram().update(spawner);
 
-            plugin.getAppearanceHandler().removeDisplayItem(spawner);
+            plugin.getAppearanceTask().removeDisplayItem(spawner);
 
             return;
         }

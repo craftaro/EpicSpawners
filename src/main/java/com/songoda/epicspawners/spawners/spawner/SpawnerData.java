@@ -7,6 +7,7 @@ import com.songoda.epicspawners.particles.ParticleEffect;
 import com.songoda.epicspawners.particles.ParticleType;
 import com.songoda.epicspawners.spawners.condition.*;
 import com.songoda.epicspawners.spawners.spawner.option.*;
+import com.songoda.epicspawners.utils.Methods;
 import com.songoda.epicspawners.utils.ServerVersion;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
@@ -126,7 +127,7 @@ public class SpawnerData {
 
 
     public ItemStack toItemStack(int amount, int stackSize) {
-        return EpicSpawners.getInstance().newSpawnerItem(this, amount, stackSize);
+        return Methods.newSpawnerItem(this, amount, stackSize);
     }
 
 

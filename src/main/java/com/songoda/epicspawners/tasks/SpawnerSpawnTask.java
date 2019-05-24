@@ -53,7 +53,7 @@ public class SpawnerSpawnTask extends BukkitRunnable {
 
             if (spawner.getLocation().getBlock().getType() != (plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER"))) {
                 Location location = spawner.getLocation();
-                plugin.getAppearanceHandler().removeDisplayItem(spawner);
+                plugin.getAppearanceTask().removeDisplayItem(spawner);
                 plugin.getSpawnerManager().removeSpawnerFromWorld(location);
                 plugin.getHologram().remove(spawner);
                 return;

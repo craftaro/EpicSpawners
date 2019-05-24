@@ -174,7 +174,7 @@ public class InteractListeners implements Listener {
 
             Spawner spawner = plugin.getSpawnerManager().getSpawnerFromWorld(location);
             if (!player.isSneaking()) {
-                SpawnerData spawnerData = plugin.getSpawnerDataFromItem(item);
+                SpawnerData spawnerData = Methods.getSpawnerDataFromItem(item);
                 if (player.hasPermission("epicspawners.stack." + spawnerData.getIdentifyingName()) || player.hasPermission("epicspawners.stack.*")) {
                     spawner.preStack(player, item);
                     if (plugin.getHologram() != null)
