@@ -232,9 +232,9 @@ public class GUISpawnerOverview extends AbstractGUI {
         }
         if (spawner.getSpawnerStacks().size() == 1) {
             if (spawner.getFirstStack().getSpawnerData().isUpgradeable()) {
-                if (plugin.getConfig().getBoolean("Main.Upgrade With XP"))
+                if (Setting.UPGRADE_WITH_XP_ENABLED.getBoolean())
                     inventory.setItem(11, itemXP);
-                if (plugin.getConfig().getBoolean("Main.Upgrade With Economy"))
+                if (Setting.UPGRADE_COST_ECONOMY.getBoolean())
                     inventory.setItem(15, itemECO);
             }
         }
@@ -260,7 +260,7 @@ public class GUISpawnerOverview extends AbstractGUI {
         });
 
         registerClickable(11, (player, inventory, cursor, slot, type) -> {
-            if (config.getBoolean("Main.Upgrade With XP")
+            if (Setting.UPGRADE_WITH_XP_ENABLED.getBoolean()
                     && !inventory.getItem(slot).getItemMeta().getDisplayName().equals(ChatColor.COLOR_CHAR + "l")) {
                 this.spawner.upgrade(player, CostType.EXPERIENCE);
             }
@@ -268,7 +268,7 @@ public class GUISpawnerOverview extends AbstractGUI {
         });
 
         registerClickable(15, (player, inventory, cursor, slot, type) -> {
-            if (config.getBoolean("Main.Upgrade With Economy")
+            if (Setting.UPGRADE_COST_ECONOMY.getBoolean()
                     && !inventory.getItem(slot).getItemMeta().getDisplayName().equals(ChatColor.COLOR_CHAR + "l")) {
                 this.spawner.upgrade(player, CostType.ECONOMY);
             }
@@ -346,14 +346,14 @@ public class GUISpawnerOverview extends AbstractGUI {
                                         a++;
                                     }
                                 } else if (nu == 2) {
-                                    if (!config.getBoolean("Main.Upgrade With XP")) {
+                                    if (!Setting.UPGRADE_WITH_XP_ENABLED.getBoolean()) {
                                         text = text.replace(mi.group(), "");
                                     } else {
                                         text = text.replace(mi.group(), a(a, mi.group()));
                                         a++;
                                     }
                                 } else if (nu == 3) {
-                                    if (!config.getBoolean("Main.Upgrade With Economy")) {
+                                    if (!Setting.UPGRADE_WITH_ECO_ENABLED.getBoolean()) {
                                         text = text.replace(mi.group(), "");
                                     } else {
                                         text = text.replace(mi.group(), a(a, mi.group()));
@@ -363,16 +363,7 @@ public class GUISpawnerOverview extends AbstractGUI {
                                 break;
                             case "WATER":
                                 if (nu == 1) {
-                                    if (!config.getBoolean("settings.Spawners-repel-liquid")) {
-                                        text = text.replace(mi.group(), "");
-                                    } else {
-                                        text = text.replace(mi.group(), a(a, mi.group()));
-                                    }
-                                }
-                                break;
-                            case "INVSTACK":
-                                if (nu == 1) {
-                                    if (!config.getBoolean("Main.Allow Stacking Spawners In Survival Inventories")) {
+                                    if (!Setting.LIQUID_REPEL_RADIUS.getBoolean()) {
                                         text = text.replace(mi.group(), "");
                                     } else {
                                         text = text.replace(mi.group(), a(a, mi.group()));
@@ -381,7 +372,7 @@ public class GUISpawnerOverview extends AbstractGUI {
                                 break;
                             case "REDSTONE":
                                 if (nu == 1) {
-                                    if (!config.getBoolean("Main.Redstone Power Deactivates Spawners")) {
+                                    if (!Setting.REDSTONE_ACTIVATE.getBoolean()) {
                                         text = text.replace(mi.group(), "");
                                     } else {
                                         text = text.replace(mi.group(), a(a, mi.group()));
@@ -390,7 +381,7 @@ public class GUISpawnerOverview extends AbstractGUI {
                                 break;
                             case "OMNI":
                                 if (nu == 1) {
-                                    if (!config.getBoolean("Main.OmniSpawners Enabled")) {
+                                    if (!Setting.OMNI_SPAWNERS.getBoolean()) {
                                         text = text.replace(mi.group(), "");
                                     } else {
                                         text = text.replace(mi.group(), a(a, mi.group()));
@@ -398,7 +389,7 @@ public class GUISpawnerOverview extends AbstractGUI {
                                 }
                                 break;
                             case "DROP":
-                                if (!config.getBoolean("Spawner Drops.Allow Killing Mobs To Drop Spawners") || !p.hasPermission("epicspawners.Killcounter")) {
+                                if (!Setting.MOB_KILLING_COUNT.getBoolean() || !p.hasPermission("epicspawners.Killcounter")) {
                                     text = "";
                                 } else {
                                     text = text.replace("<TYPE>", spawner.getIdentifyingName().toLowerCase());
@@ -406,10 +397,10 @@ public class GUISpawnerOverview extends AbstractGUI {
                                     if (spawner.getFirstStack().getSpawnerData().getKillGoal() != 0)
                                         text = text.replace("<AMT>", Integer.toString(spawner.getFirstStack().getSpawnerData().getKillGoal()));
                                     else
-                                        text = text.replace("<AMT>", Integer.toString(config.getInt("Spawner Drops.Kills Needed for Drop")));
+                                        text = text.replace("<AMT>", Integer.toString(Setting.KILL_GOAL.getInt()));
                                 }
                                 if (nu == 1) {
-                                    if (config.getBoolean("Spawner Drops.Count Unnatural Kills Towards Spawner Drop")) {
+                                    if (Setting.COUNT_UNNATURAL_KILLS.getBoolean()) {
                                         text = text.replace(mi.group(), "");
                                     } else {
                                         text = text.replace(mi.group(), a(a, mi.group()));
