@@ -8,7 +8,9 @@ import com.songoda.epicspawners.utils.settings.Setting;
 import org.apache.commons.lang.WordUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.*;
+import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -368,6 +370,29 @@ public class Methods {
         return 0;
     }
 
+    public static <T extends Enum<T>> String[] getStrings(List<T> mats) {
+        List<String> strings = new ArrayList<>();
+
+        for (Object object : mats) {
+            if (object instanceof Material) {
+                strings.add(((Material) object).name());
+            } else if (object instanceof EntityType) {
+                strings.add(((EntityType) object).name());
+            }
+        }
+
+        return strings.toArray(new String[strings.size()]);
+    }
+
+    public static String[] getStrings(Set<Biome> biomes) {
+        List<String> strings = new ArrayList<>();
+
+        for (Biome biome : biomes) {
+            strings.add(biome.name());
+        }
+
+        return strings.toArray(new String[strings.size()]);
+    }
 
     public static class Tuple<key, value> {
         public final key x;

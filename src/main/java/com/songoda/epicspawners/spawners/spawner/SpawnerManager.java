@@ -229,6 +229,16 @@ public class SpawnerManager {
         spawnerConfig.addDefault(section + ".Conditions.Required Player Distance And Amount", 16 + ":" + 1);
     }
 
+    private Location roundLocation(Location location) {
+        location = location.clone();
+        location.setX(location.getBlockX());
+        location.setY(location.getBlockY());
+        location.setZ(location.getBlockZ());
+        return location;
+    }
+
+
+
     @SuppressWarnings("unchecked")
     private void loadSpawnersFromFile() {
         // Register spawner data into SpawnerRegistry from configuration.
@@ -321,15 +331,76 @@ public class SpawnerManager {
         }
     }
 
-    public ConfigWrapper getSpawnerFile() {
-        return spawnerFile;
-    }
+    public void saveSpawnersToFile() {
+        //ToDO: If the defaults are set correctly this could do the initial config save.
 
-    private Location roundLocation(Location location) {
-        location = location.clone();
-        location.setX(location.getBlockX());
-        location.setY(location.getBlockY());
-        location.setZ(location.getBlockZ());
-        return location;
+        // Save spawner settings
+        FileConfiguration spawnerConfig = spawnerFile.getConfig();
+        spawnerConfig.set("Entities", null);
+
+        ConfigurationSection entitiesSection = spawnerConfig.createSection("Entities");
+        for (SpawnerData spawnerData : getAllSpawnerData()) {
+            ConfigurationSection currentSection = entitiesSection.createSection(spawnerData.getIdentifyingName());
+
+            currentSection.set("uuid", spawnerData.getUUID());
+            currentSection.set("Display-Name", spawnerData.getDisplayName());
+
+            currentSection.set("blocks", Methods.getStrings(spawnerData.getBlocks()));
+            currentSection.set("entities", Methods.getStrings(spawnerData.getEntities()));
+            currentSection.set("itemDrops", spawnerData.getEntityDroppedItems());
+            currentSection.set("items", spawnerData.getItems());
+            currentSection.set("command", spawnerData.getCommands());
+
+            currentSection.set("custom", spawnerData.isCustom());
+            currentSection.set("Spawn-Block", String.join(", ", Methods.getStrings(spawnerData.getSpawnBlocksList())));
+            currentSection.set("Allowed", spawnerData.isActive());
+            currentSection.set("Spawn-On-Fire", spawnerData.isSpawnOnFire());
+            currentSection.set("Upgradable", spawnerData.isUpgradeable());
+            currentSection.set("Convertible", spawnerData.isConvertible());
+            currentSection.set("Convert-Ratio", spawnerData.getConvertRatio());
+            currentSection.set("In-Shop", spawnerData.isInShop());
+            currentSection.set("Shop-Price", spawnerData.getShopPrice());
+            currentSection.set("CustomGoal", spawnerData.getKillGoal());
+            currentSection.set("Custom-ECO-Cost", spawnerData.getUpgradeCostEconomy());
+            currentSection.set("Custom-XP-Cost", spawnerData.getUpgradeCostExperience());
+            currentSection.set("Tick-Rate", spawnerData.getTickRate());
+            currentSection.set("Pickup-cost", spawnerData.getPickupCost());
+            currentSection.set("Craftable", spawnerData.isCraftable());
+            currentSection.set("Recipe-Layout", spawnerData.getRecipe());
+            currentSection.set("Recipe-Ingredients", spawnerData.getRecipeIngredients());
+
+            currentSection.set("Spawn-Effect", spawnerData.getParticleEffect().name());
+            currentSection.set("Spawn-Effect-Particle", spawnerData.getSpawnEffectParticle().name());
+            currentSection.set("Entity-Spawn-Particle", spawnerData.getEntitySpawnParticle().name());
+            currentSection.set("Spawner-Spawn-Particle", spawnerData.getSpawnerSpawnParticle().name());
+            currentSection.set("Particle-Amount", spawnerData.getParticleDensity().name());
+            currentSection.set("Particle-Effect-Boosted-Only", spawnerData.isParticleEffectBoostedOnly());
+
+
+            for (SpawnCondition spawnCondition : spawnerData.getConditions()) {
+                if (spawnCondition instanceof SpawnConditionBiome) {
+                    if (EnumSet.allOf(Biome.class).equals(((SpawnConditionBiome) spawnCondition).getBiomes())) {
+                        currentSection.set("Conditions.Biomes", "ALL");
+                    } else {
+                        currentSection.set("Conditions.Biomes", String.join(", ", Methods.getStrings(((SpawnConditionBiome) spawnCondition).getBiomes())));
+                    }
+                }
+                if (spawnCondition instanceof SpawnConditionHeight)
+                    currentSection.set("Conditions.Height", ((SpawnConditionHeight) spawnCondition).getMin() + ":" + ((SpawnConditionHeight) spawnCondition).getMax());
+                if (spawnCondition instanceof SpawnConditionLightDark)
+                    currentSection.set("Conditions.Light", ((SpawnConditionLightDark) spawnCondition).getType().name());
+                if (spawnCondition instanceof SpawnConditionStorm)
+                    currentSection.set("Conditions.Storm Only", ((SpawnConditionStorm) spawnCondition).isStormOnly());
+                if (spawnCondition instanceof SpawnConditionNearbyEntities)
+                    currentSection.set("Conditions.Max Entities Around Spawner", ((SpawnConditionNearbyEntities) spawnCondition).getMax());
+                if (spawnCondition instanceof SpawnConditionNearbyPlayers)
+                    currentSection.set("Conditions.Required Player Distance And Amount", ((SpawnConditionNearbyPlayers) spawnCondition).getDistance() + ":" + ((SpawnConditionNearbyPlayers) spawnCondition).getAmount());
+            }
+
+            if (spawnerData.getDisplayItem() != null) {
+                currentSection.set("Display-Item", spawnerData.getDisplayItem().name());
+            }
+        }
+        spawnerFile.saveConfig();
     }
 }

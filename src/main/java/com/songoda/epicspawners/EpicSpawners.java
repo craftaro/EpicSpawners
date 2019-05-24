@@ -16,7 +16,6 @@ import com.songoda.epicspawners.listeners.*;
 import com.songoda.epicspawners.player.PlayerActionManager;
 import com.songoda.epicspawners.player.PlayerData;
 import com.songoda.epicspawners.spawners.SpawnManager;
-import com.songoda.epicspawners.spawners.condition.*;
 import com.songoda.epicspawners.spawners.spawner.Spawner;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.spawners.spawner.SpawnerManager;
@@ -40,8 +39,6 @@ import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
@@ -258,106 +255,11 @@ public class EpicSpawners extends JavaPlugin {
     }
 
     private void saveToFile() {
-        Set<Biome> BIOMES = EnumSet.allOf(Biome.class);
         checkStorage();
 
-        //ToDO: If the defaults are set correctly this could do the initial config save.
-
-        // Save spawner settings
-        FileConfiguration spawnerConfig = spawnerManager.getSpawnerFile().getConfig();
-        spawnerConfig.set("Entities", null);
-
-        ConfigurationSection entitiesSection = spawnerConfig.createSection("Entities");
-        for (SpawnerData spawnerData : spawnerManager.getAllSpawnerData()) {
-            ConfigurationSection currentSection = entitiesSection.createSection(spawnerData.getIdentifyingName());
-
-            currentSection.set("uuid", spawnerData.getUUID());
-            currentSection.set("Display-Name", spawnerData.getDisplayName());
-
-            currentSection.set("blocks", getStrings(spawnerData.getBlocks()));
-            currentSection.set("entities", getStrings(spawnerData.getEntities()));
-            currentSection.set("itemDrops", spawnerData.getEntityDroppedItems());
-            currentSection.set("items", spawnerData.getItems());
-            currentSection.set("command", spawnerData.getCommands());
-
-            currentSection.set("custom", spawnerData.isCustom());
-            currentSection.set("Spawn-Block", String.join(", ", getStrings(spawnerData.getSpawnBlocksList())));
-            currentSection.set("Allowed", spawnerData.isActive());
-            currentSection.set("Spawn-On-Fire", spawnerData.isSpawnOnFire());
-            currentSection.set("Upgradable", spawnerData.isUpgradeable());
-            currentSection.set("Convertible", spawnerData.isConvertible());
-            currentSection.set("Convert-Ratio", spawnerData.getConvertRatio());
-            currentSection.set("In-Shop", spawnerData.isInShop());
-            currentSection.set("Shop-Price", spawnerData.getShopPrice());
-            currentSection.set("CustomGoal", spawnerData.getKillGoal());
-            currentSection.set("Custom-ECO-Cost", spawnerData.getUpgradeCostEconomy());
-            currentSection.set("Custom-XP-Cost", spawnerData.getUpgradeCostExperience());
-            currentSection.set("Tick-Rate", spawnerData.getTickRate());
-            currentSection.set("Pickup-cost", spawnerData.getPickupCost());
-            currentSection.set("Craftable", spawnerData.isCraftable());
-            currentSection.set("Recipe-Layout", spawnerData.getRecipe());
-            currentSection.set("Recipe-Ingredients", spawnerData.getRecipeIngredients());
-
-            currentSection.set("Spawn-Effect", spawnerData.getParticleEffect().name());
-            currentSection.set("Spawn-Effect-Particle", spawnerData.getSpawnEffectParticle().name());
-            currentSection.set("Entity-Spawn-Particle", spawnerData.getEntitySpawnParticle().name());
-            currentSection.set("Spawner-Spawn-Particle", spawnerData.getSpawnerSpawnParticle().name());
-            currentSection.set("Particle-Amount", spawnerData.getParticleDensity().name());
-            currentSection.set("Particle-Effect-Boosted-Only", spawnerData.isParticleEffectBoostedOnly());
-
-
-            for (SpawnCondition spawnCondition : spawnerData.getConditions()) {
-                if (spawnCondition instanceof SpawnConditionBiome) {
-                    if (BIOMES.equals(((SpawnConditionBiome) spawnCondition).getBiomes())) {
-                        currentSection.set("Conditions.Biomes", "ALL");
-                    } else {
-                        currentSection.set("Conditions.Biomes", String.join(", ", getStrings(((SpawnConditionBiome) spawnCondition).getBiomes())));
-                    }
-                }
-                if (spawnCondition instanceof SpawnConditionHeight)
-                    currentSection.set("Conditions.Height", ((SpawnConditionHeight) spawnCondition).getMin() + ":" + ((SpawnConditionHeight) spawnCondition).getMax());
-                if (spawnCondition instanceof SpawnConditionLightDark)
-                    currentSection.set("Conditions.Light", ((SpawnConditionLightDark) spawnCondition).getType().name());
-                if (spawnCondition instanceof SpawnConditionStorm)
-                    currentSection.set("Conditions.Storm Only", ((SpawnConditionStorm) spawnCondition).isStormOnly());
-                if (spawnCondition instanceof SpawnConditionNearbyEntities)
-                    currentSection.set("Conditions.Max Entities Around Spawner", ((SpawnConditionNearbyEntities) spawnCondition).getMax());
-                if (spawnCondition instanceof SpawnConditionNearbyPlayers)
-                    currentSection.set("Conditions.Required Player Distance And Amount", ((SpawnConditionNearbyPlayers) spawnCondition).getDistance() + ":" + ((SpawnConditionNearbyPlayers) spawnCondition).getAmount());
-            }
-
-            if (spawnerData.getDisplayItem() != null) {
-                currentSection.set("Display-Item", spawnerData.getDisplayItem().name());
-            }
-        }
-
-        this.spawnerManager.getSpawnerFile().saveConfig();
+        this.spawnerManager.saveSpawnersToFile();
 
         storage.doSave();
-    }
-
-    private <T extends Enum<T>> String[] getStrings(List<T> mats) {
-        List<String> strings = new ArrayList<>();
-
-        for (Object object : mats) {
-            if (object instanceof Material) {
-                strings.add(((Material) object).name());
-            } else if (object instanceof EntityType) {
-                strings.add(((EntityType) object).name());
-            }
-        }
-
-        return strings.toArray(new String[strings.size()]);
-    }
-
-    private String[] getStrings(Set<Biome> biomes) {
-        List<String> strings = new ArrayList<>();
-
-        for (Biome biome : biomes) {
-            strings.add(biome.name());
-        }
-
-        return strings.toArray(new String[strings.size()]);
     }
 
     public ServerVersion getServerVersion() {
