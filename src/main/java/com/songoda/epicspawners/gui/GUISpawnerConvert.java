@@ -72,6 +72,8 @@ public class GUISpawnerConvert extends AbstractGUI {
     public void constructGUI() {
         inventory.clear();
         max = (int) Math.ceil((double) totalAmount / (double) 32);
+        resetClickables();
+        registerClickables();
 
         int place = 10;
         for (SpawnerData spawnerData : entities) {
@@ -168,7 +170,6 @@ public class GUISpawnerConvert extends AbstractGUI {
             page--;
             setUp();
             constructGUI();
-            registerClickables();
         });
 
         registerClickable(slots - 2, (player, inventory, cursor, slot, type) -> {
@@ -176,7 +177,6 @@ public class GUISpawnerConvert extends AbstractGUI {
             page++;
             setUp();
             constructGUI();
-            registerClickables();
         });
     }
 
