@@ -102,7 +102,7 @@ public class BlockListeners implements Listener {
         return limit;
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onSpawnerPlace(BlockPlaceEvent event) {
         //We are ignoring canceled inside the event so that it will still remove holograms when the event is canceled.
         if (!event.isCancelled()) {
@@ -178,7 +178,7 @@ public class BlockListeners implements Listener {
             Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> plugin.getHologram().processChange(event.getBlock()), 10L);
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     //Leave this on high or WorldGuard will not work...
     public void onBlockBreak(BlockBreakEvent event) {
         //We are ignoring canceled inside the event so that it will still remove holograms when the event is canceled.
