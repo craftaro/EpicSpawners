@@ -13,6 +13,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
 
@@ -127,7 +128,14 @@ public class SpawnerData {
 
 
     public ItemStack toItemStack(int amount, int stackSize) {
-        return Methods.newSpawnerItem(this, amount, stackSize);
+        Preconditions.checkArgument(stackSize > 0, "Stack size must be greater than or equal to 0");
+
+        ItemStack item = new ItemStack(EpicSpawners.getInstance().isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER"), amount);
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName(Methods.compileName(this, stackSize, true));
+        item.setItemMeta(meta);
+
+        return item;
     }
 
 

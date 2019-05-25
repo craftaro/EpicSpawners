@@ -294,7 +294,7 @@ public class EpicSpawners extends JavaPlugin {
 
             String type = spawnerData.getIdentifyingName().toUpperCase().replace(" ", "_").replace("MUSHROOM_COW", "MOOSHROOM");
 
-            ShapedRecipe spawnerRecipe = new ShapedRecipe(new NamespacedKey(this, "SPAWNER_RECIPE_" + type), Methods.newSpawnerItem(spawnerData, 1));
+            ShapedRecipe spawnerRecipe = new ShapedRecipe(new NamespacedKey(this, "SPAWNER_RECIPE_" + type), spawnerData.toItemStack());
 
             if (recipe.length() != 9) return;
 

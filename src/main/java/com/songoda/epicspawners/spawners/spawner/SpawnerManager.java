@@ -9,15 +9,18 @@ import com.songoda.epicspawners.utils.ConfigWrapper;
 import com.songoda.epicspawners.utils.Methods;
 import com.songoda.epicspawners.utils.ServerVersion;
 import com.songoda.epicspawners.utils.SpawnerDataBuilder;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
+import org.bukkit.block.CreatureSpawner;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BlockStateMeta;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -60,6 +63,35 @@ public class SpawnerManager {
         return getSpawnerData(type.name().replaceAll("_", " "));
     }
 
+    public SpawnerData getSpawnerData(int id) {
+        return spawners.values().stream().filter(spawnerData -> spawnerData.getUUID() == id)
+                .findFirst().orElse(null);
+    }
+
+    public SpawnerData getSpawnerData(ItemStack item) {
+        if (item == null) return null;
+
+        String name = item.hasItemMeta() && item.getItemMeta().hasDisplayName() ? item.getItemMeta().getDisplayName() : null;
+
+        if (name != null && name.contains(":")) {
+            String[] raw = name.replace(";", "").split(":");
+            String value = raw[0].replace(String.valueOf(ChatColor.COLOR_CHAR), "");
+            if (Methods.isInt(value)) {
+                SpawnerData spawnerData = getSpawnerData(Integer.valueOf(value));
+                if (Methods.isInt(value) && spawnerData != null) {
+                    return spawnerData;
+                }
+            }
+
+            SpawnerData spawnerData = EpicSpawners.getInstance().getSpawnerManager().getSpawnerData(ChatColor.stripColor(raw[raw.length - 1]).split(" ")[0]);
+            if (spawnerData != null)
+                return spawnerData;
+        }
+
+        BlockStateMeta bsm = (BlockStateMeta) item.getItemMeta();
+        CreatureSpawner cs = (CreatureSpawner) bsm.getBlockState();
+        return EpicSpawners.getInstance().getSpawnerManager().getSpawnerData(cs.getSpawnedType());
+    }
 
     public void addSpawnerData(String name, SpawnerData spawnerData) {
         spawners.put(name.toLowerCase(), spawnerData);
@@ -236,8 +268,6 @@ public class SpawnerManager {
         location.setZ(location.getBlockZ());
         return location;
     }
-
-
 
     @SuppressWarnings("unchecked")
     private void loadSpawnersFromFile() {

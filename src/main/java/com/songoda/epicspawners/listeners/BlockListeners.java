@@ -115,7 +115,9 @@ public class BlockListeners implements Listener {
             Location location = event.getBlock().getLocation();
             Spawner spawner = new Spawner(event.getBlock().getLocation());
 
-            SpawnerData spawnerData = Methods.getSpawnerDataFromItem(event.getItemInHand());
+            SpawnerData spawnerData = plugin.getSpawnerManager().getSpawnerData(event.getItemInHand());
+            if (spawnerData == null) return;
+
             int spawnerStackSize = Methods.getStackSizeFromItem(event.getItemInHand());
             spawner.addSpawnerStack(new SpawnerStack(spawnerData, spawnerStackSize));
 

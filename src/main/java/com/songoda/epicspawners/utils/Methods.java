@@ -6,6 +6,7 @@ import com.mojang.authlib.properties.Property;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.utils.settings.Setting;
+import com.sun.istack.internal.NotNull;
 import org.apache.commons.lang.WordUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.*;
@@ -49,52 +50,6 @@ public class Methods {
         if (lastIndex - line.length() < 25)
             lore.add(formatText("&" + color + Methods.formatText(line.substring(lastIndex))));
         return lore;
-    }
-
-    public static ItemStack newSpawnerItem(SpawnerData data, int amount) {
-        return newSpawnerItem(data, amount, 1);
-    }
-
-    public static ItemStack newSpawnerItem(SpawnerData data, int amount, int stackSize) {
-        Preconditions.checkArgument(stackSize > 0, "Stack size must be greater than or equal to 0");
-
-        ItemStack item = new ItemStack(EpicSpawners.getInstance().isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER"), amount);
-        ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName(Methods.compileName(data, stackSize, true));
-        item.setItemMeta(meta);
-
-        return item;
-    }
-
-    public static SpawnerData identifySpawner(String sid) {
-        int id = Integer.parseInt(sid.replace(";", ""));
-        for (SpawnerData data : EpicSpawners.getInstance().getSpawnerManager().getAllSpawnerData()) {
-            if (data.getUUID() == id)
-                return data;
-        }
-        return null;
-    }
-
-    public static SpawnerData getSpawnerDataFromItem(ItemStack item) {
-        if (item == null) return null;
-
-        String name = item.hasItemMeta() && item.getItemMeta().hasDisplayName() ? item.getItemMeta().getDisplayName() : null;
-
-        if (name != null && name.contains(":")) {
-            String[] raw = name.replace(";", "").split(":");
-            String value = raw[0].replace(String.valueOf(ChatColor.COLOR_CHAR), "");
-            if (Methods.isInt(value) && identifySpawner(value) != null) {
-                return identifySpawner(value);
-            }
-
-            SpawnerData spawnerData = EpicSpawners.getInstance().getSpawnerManager().getSpawnerData(ChatColor.stripColor(raw[raw.length - 1]).split(" ")[0]);
-            if (spawnerData != null)
-                return spawnerData;
-        }
-
-        BlockStateMeta bsm = (BlockStateMeta) item.getItemMeta();
-        CreatureSpawner cs = (CreatureSpawner) bsm.getBlockState();
-        return EpicSpawners.getInstance().getSpawnerManager().getSpawnerData(cs.getSpawnedType());
     }
 
     public static int getStackSizeFromItem(ItemStack item) {
