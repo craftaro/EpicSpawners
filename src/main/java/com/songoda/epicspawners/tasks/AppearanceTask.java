@@ -31,7 +31,7 @@ public class AppearanceTask extends BukkitRunnable {
     public static AppearanceTask startTask(EpicSpawners plugin) {
         if (instance == null) {
             instance = new AppearanceTask(plugin);
-            instance.runTaskTimerAsynchronously(plugin, 0, 60);
+            instance.runTaskTimer(plugin, 0, 60);
         }
 
         return instance;
@@ -84,6 +84,11 @@ public class AppearanceTask extends BukkitRunnable {
 
     public void updateDisplayItem(Spawner spawner, SpawnerData spawnerData) {
         Location location = spawner.getLocation();
+
+        if (!spawner.getWorld().isChunkLoaded(spawner.getX() >> 4, spawner.getZ() >> 4)) {
+            return;
+        }
+
         location.add(.5, -.4, .5);
 
         ItemStack itemStack = new ItemStack(Material.DIRT);
@@ -107,7 +112,7 @@ public class AppearanceTask extends BukkitRunnable {
             EntityType next = EntityType.valueOf(Methods.restoreType(spawnerData.getIdentifyingName()));
             spawner.getCreatureSpawner().setSpawnedType(next);
         } catch (Exception failure) {
-            spawner.getCreatureSpawner().setSpawnedType(EntityType.DROPPED_ITEM);
+            spawner.getCreatureSpawner().setSpawnedType(EntityType.EGG);
 
             if (itemStack.getType() == Material.AIR) return;
             location.setPitch(-360);

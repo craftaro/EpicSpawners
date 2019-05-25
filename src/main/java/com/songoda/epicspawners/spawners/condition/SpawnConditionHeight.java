@@ -1,5 +1,6 @@
 package com.songoda.epicspawners.spawners.condition;
 
+import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.spawners.spawner.Spawner;
 
 public class SpawnConditionHeight implements SpawnCondition {
@@ -18,7 +19,7 @@ public class SpawnConditionHeight implements SpawnCondition {
 
     @Override
     public String getDescription() {
-        return "Spawner y coordinate must be between " + min + " and " + max + ".";
+        return EpicSpawners.getInstance().getLocale().getMessage("interface.spawner.conditionHeight",min, max);
     }
 
     @Override

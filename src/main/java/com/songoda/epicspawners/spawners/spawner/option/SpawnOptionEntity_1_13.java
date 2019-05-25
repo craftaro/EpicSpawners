@@ -269,7 +269,7 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
         try {
             Object objIWR = clazzIWorldReader.cast(objWorld);
 
-            if (!(Boolean) methodGetCubes.invoke(objIWR, objEntityInsentient, methodGetBoundingBox.invoke(objEntityInsentient)))
+            if (!(boolean) methodGetCubes.invoke(objIWR, objEntityInsentient, methodGetBoundingBox.invoke(objEntityInsentient)))
                 return false;
 
             Material[] spawnBlocks = data.getSpawnBlocks();

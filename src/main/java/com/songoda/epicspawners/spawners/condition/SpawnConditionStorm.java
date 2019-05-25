@@ -17,7 +17,7 @@ public class SpawnConditionStorm implements SpawnCondition {
 
     @Override
     public String getDescription() {
-        return "Must be in a storm";
+        return "There is no storm.";
     }
 
     @Override

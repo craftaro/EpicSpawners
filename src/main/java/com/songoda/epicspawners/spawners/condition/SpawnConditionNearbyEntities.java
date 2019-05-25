@@ -2,12 +2,10 @@ package com.songoda.epicspawners.spawners.condition;
 
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.spawners.spawner.Spawner;
+import com.songoda.epicspawners.utils.settings.Setting;
 import org.bukkit.Location;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
-
-import java.util.Collection;
 
 public class SpawnConditionNearbyEntities implements SpawnCondition {
 
@@ -24,7 +22,7 @@ public class SpawnConditionNearbyEntities implements SpawnCondition {
 
     @Override
     public String getDescription() {
-        return "Must be less than " + max + " around this spawner.";
+        return EpicSpawners.getInstance().getLocale().getMessage("interface.spawner.conditionNearbyEntities", max);
     }
 
     @Override
@@ -32,12 +30,13 @@ public class SpawnConditionNearbyEntities implements SpawnCondition {
 
         Location location = spawner.getLocation().add(0.5, 0.5, 0.5);
 
-        String[] arr = EpicSpawners.getInstance().getConfig().getString("Main.Radius To Search Around Spawners").split("x");
+        String[] arr = Setting.SEARCH_RADIUS.getString().split("x");
 
-        Collection<Entity> amt = location.getWorld().getNearbyEntities(location, Integer.parseInt(arr[0]), Integer.parseInt(arr[1]), Integer.parseInt(arr[2]));
-        amt.removeIf(e -> !(e instanceof LivingEntity) || e.getType() == EntityType.PLAYER || e.getType() == EntityType.ARMOR_STAND);
 
-        return amt.size() < max;
+        int size = Math.toIntExact(location.getWorld().getNearbyEntities(location, Integer.parseInt(arr[0]), Integer.parseInt(arr[1]), Integer.parseInt(arr[2]))
+                .stream().filter(e -> e instanceof LivingEntity && e.getType() != EntityType.PLAYER && e.getType() != EntityType.ARMOR_STAND).count());
+
+        return size < max;
     }
 
     public int getMax() {

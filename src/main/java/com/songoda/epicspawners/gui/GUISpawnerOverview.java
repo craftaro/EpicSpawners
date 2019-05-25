@@ -2,6 +2,7 @@ package com.songoda.epicspawners.gui;
 
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.Locale;
+import com.songoda.epicspawners.spawners.condition.SpawnCondition;
 import com.songoda.epicspawners.spawners.spawner.Spawner;
 import com.songoda.epicspawners.spawners.spawner.SpawnerStack;
 import com.songoda.epicspawners.utils.CostType;
@@ -18,7 +19,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -104,26 +104,27 @@ public class GUISpawnerOverview extends AbstractGUI {
         int num = 1;
         for (Material block : blocks) {
             if (num != 1)
-                only.append("&8, &6").append(block.name());
+                only.append("&8, &a").append(block.name());
             num++;
         }
 
         String onlyStr = plugin.getLocale().getMessage("interface.spawner.onlyspawnson", only.toString());
 
-        int lastIndex = 0;
-        for (int n = 0; n < onlyStr.length(); n++) {
-            if (n - lastIndex < 30)
-                continue;
+        lore.addAll(Methods.wrap("7", onlyStr));
 
-            if (onlyStr.charAt(n) == ' ') {
-                lore.add(Methods.formatText(onlyStr.substring(lastIndex, n).trim()));
-                lastIndex = n;
+        boolean met = true;
+        for (SpawnCondition condition : spawner.getFirstStack().getSpawnerData().getConditions()) {
+            if (!condition.isMet(spawner)) {
+                if (met) {
+                    met = false;
+                    lore.add("");
+                    lore.add(plugin.getLocale().getMessage("interface.spawner.paused"));
+                }
+                lore.addAll(Methods.wrap("7", " » " + condition.getDescription()));
             }
         }
 
-        if (lastIndex - onlyStr.length() < 30)
-            lore.add(Methods.formatText(onlyStr.substring(lastIndex).trim()));
-
+        lore.add("");
         lore.add(plugin.getLocale().getMessage("interface.spawner.stats", spawner.getSpawnCount()));
         if (player.hasPermission("epicspawners.convert") && spawner.getSpawnerStacks().size() == 1) {
             lore.add("");
@@ -438,7 +439,6 @@ public class GUISpawnerOverview extends AbstractGUI {
             }
         return text;
     }
-
 
     @Override
     protected void registerOnCloses() {

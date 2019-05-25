@@ -1,5 +1,6 @@
 package com.songoda.epicspawners.spawners.condition;
 
+import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.spawners.spawner.Spawner;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -24,17 +25,17 @@ public class SpawnConditionNearbyPlayers implements SpawnCondition {
 
     @Override
     public String getDescription() {
-        return amount + " Players must be at least" + distance + " blocks away for this spawner to spawn.";
+        return EpicSpawners.getInstance().getLocale().getMessage("interface.spawner.conditionNearbyPlayers", amount, distance);
     }
 
     @Override
     public boolean isMet(Spawner spawner) {
         Location location = spawner.getLocation().add(0.5, 0.5, 0.5);
 
-        Collection<Entity> players = location.getWorld().getNearbyEntities(location, distance, distance, distance);
-        players.removeIf(e -> e.getType() != EntityType.PLAYER);
+        int size = Math.toIntExact(location.getWorld().getNearbyEntities(location, distance, distance, distance)
+                .stream().filter(e -> e.getType() == EntityType.PLAYER).count());
 
-        return players.size() >= amount;
+        return size >= amount;
     }
 
     public int getDistance() {

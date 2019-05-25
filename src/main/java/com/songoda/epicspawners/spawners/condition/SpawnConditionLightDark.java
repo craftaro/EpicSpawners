@@ -1,5 +1,6 @@
 package com.songoda.epicspawners.spawners.condition;
 
+import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.spawners.spawner.Spawner;
 import org.bukkit.Location;
 
@@ -19,12 +20,10 @@ public class SpawnConditionLightDark implements SpawnCondition {
     @Override
     public String getDescription() {
         switch (lightDark) {
-            case BOTH:
-                return "Spawns in all lighting";
             case LIGHT:
-                return "Spawns in light";
+                return EpicSpawners.getInstance().getLocale().getMessage("interface.spawner.conditionLight");
             case DARK:
-                return "Spawns in darkness";
+                return EpicSpawners.getInstance().getLocale().getMessage("interface.spawner.conditionDark");
         }
         return null;
     }

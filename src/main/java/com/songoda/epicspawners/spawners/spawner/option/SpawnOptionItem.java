@@ -29,7 +29,6 @@ public class SpawnOptionItem implements SpawnOption {
         this(items.toArray(new ItemStack[items.size()]));
     }
 
-
     public void spawn(SpawnerData data, SpawnerStack stack, Spawner spawner) {
         Location location = spawner.getLocation();
         if (location == null || location.getWorld() == null) return;
@@ -54,16 +53,13 @@ public class SpawnOptionItem implements SpawnOption {
         }
     }
 
-
     public SpawnOptionType getType() {
         return SpawnOptionType.ITEM;
     }
 
-
     public int hashCode() {
         return 31 * (items != null ? items.hashCode() : 0);
     }
-
 
     public boolean equals(Object object) {
         if (object == this) return true;

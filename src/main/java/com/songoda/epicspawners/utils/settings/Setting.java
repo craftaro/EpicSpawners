@@ -27,9 +27,6 @@ public enum Setting {
             "By default this is used to make sure there are no more than 7 entities",
             "around any single spawner."),
 
-    ALTER_DELAY("Main.Default Minecraft Spawner Cooldowns", true,
-            "If enabled the cool down customized in EpicSpawners will take effect."),
-
     ALERT_PLACE_BREAK("Main.Alerts On Place And Break", true,
             "Toggle an alerting chat message after triggered by placing or breaking a spawner."),
 

@@ -142,7 +142,6 @@ public class InteractListeners implements Listener {
             if (event.getHand() == EquipmentSlot.OFF_HAND) return;
         }
 
-
         Player player = event.getPlayer();
         Block block = event.getClickedBlock();
         Location location = block.getLocation();

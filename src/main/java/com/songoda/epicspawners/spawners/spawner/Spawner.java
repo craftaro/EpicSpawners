@@ -51,11 +51,6 @@ public class Spawner {
 
     public boolean spawn() {
         EpicSpawners instance = EpicSpawners.getInstance();
-        long lastSpawn = lastSpawns.containsKey(location) ? new Date().getTime() - lastSpawns.get(location).getTime() : 1001;
-
-        if (lastSpawn >= 1000) {
-            lastSpawns.put(location, new Date());
-        } else return false;
 
         if (getFirstStack().getSpawnerData() == null) return false;
 
@@ -77,7 +72,8 @@ public class Spawner {
         for (SpawnerStack stack : getSpawnerStacks()) {
             stack.getSpawnerData().spawn(this, stack);
         }
-        Bukkit.getScheduler().runTaskLater(instance, this::updateDelay, 10);
+        updateDelay();
+
         return true;
     }
 
@@ -113,6 +109,8 @@ public class Spawner {
 
 
     public CreatureSpawner getCreatureSpawner() {
+        if (!getWorld().isChunkLoaded(getX() >> 4, getZ() >> 4))
+            return null;
         if (creatureSpawner == null) {
             if (location.getBlock().getType() != (EpicSpawners.getInstance().isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER"))) {
                 EpicSpawners.getInstance().getSpawnerManager().removeSpawnerFromWorld(location);
@@ -240,7 +238,6 @@ public class Spawner {
 
         ItemStack inHand = player.getInventory().getItemInHand();
         if (Setting.SILKTOUCH_SPAWNERS.getBoolean()
-                && inHand != null
                 && inHand.hasItemMeta()
                 && inHand.getItemMeta().hasEnchant(Enchantment.SILK_TOUCH)
                 && inHand.getEnchantmentLevel(Enchantment.SILK_TOUCH) >= Setting.SILKTOUCH_MIN_LEVEL.getInt()
@@ -465,13 +462,10 @@ public class Spawner {
     }
 
 
-    public int updateDelay() { //ToDO: Should be redesigned to work with spawner.setmaxdelay
-        if (!Setting.ALTER_DELAY.getBoolean())
-            return 0;
-
+    public int updateDelay() {
         int max = 0;
         int min = 0;
-        for (SpawnerStack stack : spawnerStacks) { //ToDo: You can probably do this only on spawner stack or upgrade.
+        for (SpawnerStack stack : spawnerStacks) {
             String tickRate = stack.getSpawnerData().getTickRate();
 
             String[] tick = tickRate.contains(":") ? tickRate.split(":") : new String[]{tickRate, tickRate};
@@ -491,7 +485,8 @@ public class Spawner {
         int extraTicks = Setting.EXTRA_SPAWN_TICKS.getInt();
 
         if (getSpawnerDataCount() == 0) return 0;
-        int delay = (rand.nextInt(min, max + 1) / getSpawnerDataCount()) + extraTicks;
+
+        int delay = (int)(Math.random() * max + min) + extraTicks;
 
         getCreatureSpawner().setDelay(delay);
         getCreatureSpawner().update();

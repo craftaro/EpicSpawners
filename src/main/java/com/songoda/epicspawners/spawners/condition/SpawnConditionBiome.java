@@ -1,6 +1,7 @@
 package com.songoda.epicspawners.spawners.condition;
 
 import com.google.common.collect.Iterables;
+import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.spawners.spawner.Spawner;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.block.Biome;
@@ -28,8 +29,8 @@ public class SpawnConditionBiome implements SpawnCondition {
     @Override
     public String getDescription() {
         return (biomes.size() == 1)
-                ? "Spawner must be in a " + getFriendlyBiomeName() + " biome."
-                : "Spawner must be in one of (" + biomes.size() + ") biomes.";
+                ? EpicSpawners.getInstance().getLocale().getMessage("interface.spawner.conditionBiome1", getFriendlyBiomeName())
+                : EpicSpawners.getInstance().getLocale().getMessage("interface.spawner.conditionBiome2");
     }
 
     @Override

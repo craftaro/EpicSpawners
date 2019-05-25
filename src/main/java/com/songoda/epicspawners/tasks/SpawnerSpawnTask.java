@@ -4,6 +4,7 @@ import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.spawners.spawner.SpawnerManager;
 import com.songoda.epicspawners.utils.ServerVersion;
 import com.songoda.epicspawners.utils.settings.Setting;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.CreatureSpawner;
@@ -37,19 +38,18 @@ public class SpawnerSpawnTask extends BukkitRunnable {
     @Override
     public void run() {
         new ArrayList<>(manager.getSpawners()).forEach(spawner -> {
-            if (spawner == null || spawner.getSpawnerDataCount() == 0) return;
+            if (spawner == null
+                    || spawner.getSpawnerDataCount() == 0
+                    || !spawner.getWorld().isChunkLoaded(spawner.getX() >> 4, spawner.getZ() >> 4)
+                    || !spawner.checkConditions())
+                return;
 
             CreatureSpawner cSpawner = spawner.getCreatureSpawner();
             if (cSpawner == null) return;
             int delay = spawner.getCreatureSpawner().getDelay();
-            delay = delay - 30;
+            delay = delay - Setting.CUSTOM_SPAWNER_TICK_RATE.getInt();
             spawner.getCreatureSpawner().setDelay(delay);
             if (delay >= 0) return;
-
-            if (!spawner.getWorld().isChunkLoaded(spawner.getX() >> 4, spawner.getZ() >> 4) || !spawner.checkConditions()) {
-                spawner.getCreatureSpawner().setDelay(300);
-                return;
-            }
 
             if (spawner.getLocation().getBlock().getType() != (plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER"))) {
                 Location location = spawner.getLocation();
@@ -59,10 +59,8 @@ public class SpawnerSpawnTask extends BukkitRunnable {
                 return;
             }
 
-
-            if (!spawner.spawn()) {
-                spawner.getCreatureSpawner().setDelay(300);
-            }
+            if (!spawner.spawn())
+                spawner.updateDelay();
         });
     }
 

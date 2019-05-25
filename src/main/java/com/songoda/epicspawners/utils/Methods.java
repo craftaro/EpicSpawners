@@ -33,6 +33,24 @@ public class Methods {
 
     private static Map<String, Location> serializeCache = new HashMap<>();
 
+    public static List<String> wrap(String color, String line) {
+        List<String> lore = new ArrayList<>();
+        int lastIndex = 0;
+        for (int n = 0; n < line.length(); n++) {
+            if (n - lastIndex < 25)
+                continue;
+
+            if (line.charAt(n) == ' ') {
+                lore.add(formatText("&" + color + Methods.formatText(line.substring(lastIndex, n))));
+                lastIndex = n;
+            }
+        }
+
+        if (lastIndex - line.length() < 25)
+            lore.add(formatText("&" + color + Methods.formatText(line.substring(lastIndex))));
+        return lore;
+    }
+
     public static ItemStack newSpawnerItem(SpawnerData data, int amount) {
         return newSpawnerItem(data, amount, 1);
     }
