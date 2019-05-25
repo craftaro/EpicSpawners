@@ -125,17 +125,10 @@ public class BlockListeners implements Listener {
 
             doLiquidRepel(event.getBlock(), true);
 
-            if (plugin.getBlacklistHandler().isBlacklisted(player, true)) {
-                event.setCancelled(true);
-                return;
-            }
 
-            if (!player.hasPermission("epicspawners.place." + spawnerData.getIdentifyingName().replace(" ", "_"))) {
-                event.setCancelled(true);
-                return;
-            }
-
-            if (doForceCombine(player, spawner)) {
+            if (plugin.getBlacklistHandler().isBlacklisted(player, true)
+                    || !player.hasPermission("epicspawners.place." + spawnerData.getIdentifyingName().replace(" ", "_"))
+                    || doForceCombine(player, spawner)) {
                 event.setCancelled(true);
                 return;
             }
@@ -167,7 +160,7 @@ public class BlockListeners implements Listener {
             try {
                 creatureSpawner.setSpawnedType(EntityType.valueOf(spawnerData.getIdentifyingName().toUpperCase().replace(" ", "_")));
             } catch (Exception ex) {
-                creatureSpawner.setSpawnedType(EntityType.DROPPED_ITEM);
+                creatureSpawner.setSpawnedType(EntityType.EGG);
             }
             creatureSpawner.setDelay(1);
             creatureSpawner.update();

@@ -70,7 +70,7 @@ public class SpawnerStack {
 
 
     public String toString() {
-        return "ESpawnerStack:{"
+        return "SpawnerStack:{"
                 + "Size:" + stackSize + ","
                 + "Data:" + (spawnerData == null ? null : spawnerData.toString())
                 + "}";

@@ -585,7 +585,7 @@ public class Spawner {
 
 
     public String toString() {
-        return "ESpawner:{"
+        return "Spawner:{"
                 + "Owner:\"" + placedBy + "\","
                 + "Location:{"
                 + "World:\"" + location.getWorld().getName() + "\","

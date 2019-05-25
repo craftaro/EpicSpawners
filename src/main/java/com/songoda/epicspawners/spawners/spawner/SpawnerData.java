@@ -492,7 +492,7 @@ public class SpawnerData {
 
 
     public String toString() {
-        return "ESpawnerData:{Name:\"" + name + "\"}";
+        return "SpawnerData:{Name:\"" + name + "\"}";
     }
 
 }

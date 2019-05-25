@@ -1,4 +1,4 @@
-package com.songoda.epicspawners.handlers;
+package com.songoda.epicspawners.blacklist;
 
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.utils.ConfigWrapper;

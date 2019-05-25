@@ -7,7 +7,7 @@ import com.songoda.epicspawners.command.CommandManager;
 import com.songoda.epicspawners.economy.Economy;
 import com.songoda.epicspawners.economy.PlayerPointsEconomy;
 import com.songoda.epicspawners.economy.VaultEconomy;
-import com.songoda.epicspawners.handlers.BlacklistHandler;
+import com.songoda.epicspawners.blacklist.BlacklistHandler;
 import com.songoda.epicspawners.hologram.Hologram;
 import com.songoda.epicspawners.hologram.HologramHolographicDisplays;
 import com.songoda.epicspawners.listeners.*;
