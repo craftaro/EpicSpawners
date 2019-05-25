@@ -117,7 +117,7 @@ public abstract class AbstractGUI implements Listener {
         if (inventory == null
                 || inventory.getSize() != slots
                 || ChatColor.translateAlternateColorCodes('&', title) != player.getOpenInventory().getTitle()) {
-            this.inventory = Bukkit.getServer().createInventory(new GUIHolder(), slots, Methods.formatText(title));
+            this.inventory = Bukkit.getServer().createInventory(new GUIHolder(), slots, Methods.formatTitle(title));
             this.setTitle = Methods.formatText(title);
             if (this.clickables.size() == 0)
                 registerClickables();

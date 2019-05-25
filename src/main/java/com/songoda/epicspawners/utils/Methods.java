@@ -6,18 +6,15 @@ import com.mojang.authlib.properties.Property;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.utils.settings.Setting;
-import com.sun.istack.internal.NotNull;
 import org.apache.commons.lang.WordUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
-import org.bukkit.block.CreatureSpawner;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
@@ -199,6 +196,17 @@ public class Methods {
         if (cap)
             text = text.substring(0, 1).toUpperCase() + text.substring(1);
         return ChatColor.translateAlternateColorCodes('&', text);
+    }
+
+    public static String formatTitle(String text) {
+        if (text == null || text.equals(""))
+            return "";
+        if (!EpicSpawners.getInstance().isServerVersionAtLeast(ServerVersion.V1_9)) {
+            if (text.length() > 31)
+                text = text.substring(0, 29) + "...";
+        }
+        text = formatText(text);
+        return text;
     }
 
     public static String convertToInvisibleString(String s) {
