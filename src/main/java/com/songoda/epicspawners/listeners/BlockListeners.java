@@ -11,7 +11,6 @@ import com.songoda.epicspawners.spawners.spawner.SpawnerStack;
 import com.songoda.epicspawners.utils.Methods;
 import com.songoda.epicspawners.utils.ServerVersion;
 import com.songoda.epicspawners.utils.settings.Setting;
-import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -26,7 +25,6 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.permissions.PermissionAttachmentInfo;
-import org.bukkit.plugin.RegisteredServiceProvider;
 
 /**
  * Created by songoda on 2/25/2017.
@@ -250,12 +248,10 @@ public class BlockListeners implements Listener {
                 }
 
                 plugin.getSpawnerManager().removeCooldown(spawner);
-                //ToDO: Do this somewhere else.
                 double cost = spawner.getFirstStack().getSpawnerData().getPickupCost();
-                RegisteredServiceProvider<Economy> rsp = plugin.getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
-                net.milkbowl.vault.economy.Economy econ = rsp.getProvider();
-                if (econ.has(player, cost)) {
-                    econ.withdrawPlayer(player, cost);
+
+                if (plugin.getEconomy().hasBalance(player, cost)) {
+                    plugin.getEconomy().withdrawBalance(player, cost);
                 } else {
                     player.sendMessage(References.getPrefix() + plugin.getLocale().getMessage("event.block.cannotbreak"));
                     event.setCancelled(true);

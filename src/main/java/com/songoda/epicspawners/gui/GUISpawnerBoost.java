@@ -9,7 +9,6 @@ import com.songoda.epicspawners.utils.Methods;
 import com.songoda.epicspawners.utils.ServerVersion;
 import com.songoda.epicspawners.utils.gui.AbstractGUI;
 import com.songoda.epicspawners.utils.settings.Setting;
-import net.milkbowl.vault.economy.Economy;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -18,7 +17,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.plugin.RegisteredServiceProvider;
 
 import java.util.ArrayList;
 import java.util.Calendar;
