@@ -25,7 +25,7 @@ public class SpawnerData {
     private boolean custom = false;
 
     private double pickupCost = 0.0;
-    private List<Material> spawnBlocks = Collections.singletonList(Material.DIRT);
+    private List<Material> spawnBlocks = Collections.singletonList(Material.AIR);
     private boolean active = true, inShop = true;
     private boolean spawnOnFire = false, upgradeable = true, convertible = true;
     private double shopPrice = 1000.0;

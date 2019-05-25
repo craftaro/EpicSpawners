@@ -100,7 +100,7 @@ public class GUISpawnerOverview extends AbstractGUI {
 
         List<Material> blocks = spawner.getFirstStack().getSpawnerData().getSpawnBlocksList();
 
-        if (blocks.isEmpty()) blocks = Collections.singletonList(Material.DIRT);
+        if (blocks.isEmpty()) blocks = Collections.singletonList(Material.AIR);
 
         StringBuilder only = new StringBuilder(blocks.get(0).name());
 
