@@ -20,6 +20,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -98,6 +99,8 @@ public class GUISpawnerOverview extends AbstractGUI {
         }
 
         List<Material> blocks = spawner.getFirstStack().getSpawnerData().getSpawnBlocksList();
+
+        if (blocks.isEmpty()) blocks = Collections.singletonList(Material.DIRT);
 
         StringBuilder only = new StringBuilder(blocks.get(0).name());
 
