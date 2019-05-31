@@ -7,6 +7,7 @@ import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.spawners.spawner.SpawnerManager;
 import com.songoda.epicspawners.spawners.spawner.SpawnerStack;
 import com.songoda.epicspawners.utils.Methods;
+import com.songoda.epicspawners.utils.Reflection;
 import com.songoda.epicspawners.utils.ServerVersion;
 import com.songoda.epicspawners.utils.settings.Setting;
 import org.bukkit.Bukkit;
@@ -26,6 +27,7 @@ import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.SpawnEgg;
 
 /**
  * Created by songoda on 2/25/2017.
@@ -74,9 +76,13 @@ public class InteractListeners implements Listener {
 
         if (is == null || is == Material.AIR) return;
 
-        if (e.getClickedBlock().getType() == (plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER")) && is.toString().contains("SPAWN_EGG") && plugin.getBlacklistHandler().isBlacklisted(p, true))
+        if (e.getClickedBlock().getType() == (plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER"))
+                && is.toString().contains(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? "SPAWN_EGG" : "MONSTER_EGG")
+                && plugin.getBlacklistHandler().isBlacklisted(p, true))
             e.setCancelled(true);
-        if (!(e.getClickedBlock().getType() == (plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER")) && is.toString().contains("SPAWN_EGG")) && !plugin.getBlacklistHandler().isBlacklisted(p, true)) {
+        if (!(e.getClickedBlock().getType() == (plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER"))
+                && is.toString().contains(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? "SPAWN_EGG" : "MONSTER_EGG"))
+                && !plugin.getBlacklistHandler().isBlacklisted(p, true)) {
             return;
         }
 
@@ -86,14 +92,25 @@ public class InteractListeners implements Listener {
         SpawnerData blockType = spawnerManager.getSpawnerData(spawner.getCreatureSpawner().getSpawnedType());
 
         if (!Setting.EGGS_CONVERT_SPAWNERS.getBoolean()
-                || !spawner.getFirstStack().getSpawnerData().isActive()) {  //ToDo When you redo eggs make it so that if you use one on an omni
+                || !spawner.getFirstStack().getSpawnerData().isActive()) {  // ToDo When you redo eggs make it so that if you use one on an omni
             e.setCancelled(true);
             return;
         }
 
         int bmulti = spawner.getSpawnerDataCount();
         int amt = p.getInventory().getItemInHand().getAmount();
-        EntityType itype = EntityType.valueOf(i.getType().name().replace("_SPAWN_EGG", "").replace("MOOSHROOM", "MUSHROOM_COW"));
+        EntityType itype;
+
+        if (plugin.isServerVersionAtLeast(ServerVersion.V1_13))
+            itype = EntityType.valueOf(i.getType().name().replace("_SPAWN_EGG", "").replace("MOOSHROOM", "MUSHROOM_COW"));
+        else if (plugin.isServerVersionAtLeast(ServerVersion.V1_12)) {
+            String str = Reflection.getNBTTagCompound(Reflection.getNMSItemStack(i)).toString();
+            if (str.contains("minecraft:"))
+                itype = EntityType.fromName(str.substring(str.indexOf("minecraft:") + 10, str.indexOf("\"}")));
+            else
+                itype = EntityType.fromName(str.substring(str.indexOf("EntityTag:{id:") + 15, str.indexOf("\"}")));
+        } else
+            itype = ((SpawnEgg) i.getData()).getSpawnedType();
 
         SpawnerData itemType = plugin.getSpawnerManager().getSpawnerData(itype);
 
@@ -130,14 +147,14 @@ public class InteractListeners implements Listener {
         }
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void PlayerInteractEvent(PlayerArmorStandManipulateEvent event) {
         if (plugin.getSpawnerManager().isSpawner(event.getRightClicked().getLocation().getBlock().getRelative(BlockFace.UP).getLocation())) {
             event.setCancelled(true);
         }
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void PlayerInteractEvent(PlayerInteractEvent event) {
         if (plugin.isServerVersionAtLeast(ServerVersion.V1_9)) {
             if (event.getHand() == EquipmentSlot.OFF_HAND) return;
@@ -168,7 +185,7 @@ public class InteractListeners implements Listener {
         if (event.getItem() != null) {
             is = item.getType();
         }
-        if (is != null && is.name().contains("SPAWN_EGG"))
+        if (is != null && is.name().contains("SPAWN_EGG") && is.name().equals("MONSTER_EGG"))
             return;
         if (event.getClickedBlock().getType() == (plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER")) && is == (plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER")) && !plugin.getBlacklistHandler().isBlacklisted(player, true)) {
 

@@ -285,7 +285,8 @@ public class SpawnerManager {
             List<String> commands = currentSection.getStringList("command");
 
             for (String block : currentSection.getStringList("blocks")) {
-                blocks.add(Material.matchMaterial(block.toUpperCase()));
+                Material material = Material.matchMaterial(block.toUpperCase());
+                blocks.add(material == null ? Material.AIR : material);
             }
             for (String block : currentSection.getString("Spawn-Block").split(",")) {
                 spawnBlocks.add(Material.matchMaterial(block.toUpperCase().trim()));
