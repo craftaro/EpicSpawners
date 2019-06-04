@@ -119,6 +119,9 @@ public enum Setting {
             "restarts. With that said it is advised to keep this enabled.",
             "If however you enjoy living on the edge, feel free to turn it off."),
 
+    DISABLE_NATURAL_SPAWNERS("Main.Disable Natural Spawners", false,
+            "Should natural spawners be disabled?"),
+
     NO_AI("Main.Nerf Spawner Mobs", false,
             "If enabled mobs spawned by spawners will not move or attack."),
 

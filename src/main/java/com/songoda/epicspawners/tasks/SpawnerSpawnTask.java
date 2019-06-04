@@ -4,7 +4,6 @@ import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.spawners.spawner.SpawnerManager;
 import com.songoda.epicspawners.utils.ServerVersion;
 import com.songoda.epicspawners.utils.settings.Setting;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.CreatureSpawner;
@@ -41,8 +40,8 @@ public class SpawnerSpawnTask extends BukkitRunnable {
             if (spawner == null
                     || spawner.getSpawnerDataCount() == 0
                     || !spawner.getWorld().isChunkLoaded(spawner.getX() >> 4, spawner.getZ() >> 4)
-                    || !spawner.checkConditions())
-                return;
+                    || !spawner.checkConditions()
+                    || (spawner.getPlacedBy() == null && Setting.DISABLE_NATURAL_SPAWNERS.getBoolean())) return;
 
             CreatureSpawner cSpawner = spawner.getCreatureSpawner();
             if (cSpawner == null) return;
