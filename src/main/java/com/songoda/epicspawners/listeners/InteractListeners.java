@@ -204,6 +204,8 @@ public class InteractListeners implements Listener {
             if (!player.isSneaking() || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
                 Spawner spawner = plugin.getSpawnerManager().getSpawnerFromWorld(location);
 
+                if (spawner.getPlacedBy() == null && Setting.DISABLE_NATURAL_SPAWNERS.getBoolean()) return;
+
                 spawner.overview(player);
                 if (plugin.getHologram() != null)
                     plugin.getHologram().processChange(block);
