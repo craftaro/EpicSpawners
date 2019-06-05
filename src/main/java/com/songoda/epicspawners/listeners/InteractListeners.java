@@ -92,7 +92,8 @@ public class InteractListeners implements Listener {
         SpawnerData blockType = spawnerManager.getSpawnerData(spawner.getCreatureSpawner().getSpawnedType());
 
         if (!Setting.EGGS_CONVERT_SPAWNERS.getBoolean()
-                || !spawner.getFirstStack().getSpawnerData().isActive()) {  // ToDo When you redo eggs make it so that if you use one on an omni
+                || !spawner.getFirstStack().getSpawnerData().isActive()
+                || (spawner.getPlacedBy() == null && Setting.DISABLE_NATURAL_SPAWNERS.getBoolean())) {
             e.setCancelled(true);
             return;
         }

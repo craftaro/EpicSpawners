@@ -152,7 +152,8 @@ public class Spawner {
 
     public void overview(Player player) {
         EpicSpawners instance = EpicSpawners.getInstance();
-        if (!player.hasPermission("epicspawners.overview")) return;
+        if (!player.hasPermission("epicspawners.overview")
+                || (getPlacedBy() == null && Setting.DISABLE_NATURAL_SPAWNERS.getBoolean())) return;
         new GUISpawnerOverview(instance, this, player);
     }
 
