@@ -72,7 +72,7 @@ public class CommandBoost extends AbstractCommand {
     }
     @Override
     public String getPermissionNode() {
-        return "epicspawners.admin";
+        return "epicspawners.admin.boost";
     }
 
     @Override

@@ -28,7 +28,7 @@ public class CommandReload extends AbstractCommand {
 
     @Override
     public String getPermissionNode() {
-        return "epicspawners.admin";
+        return "epicspawners.admin.reload";
     }
 
     @Override

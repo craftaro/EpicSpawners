@@ -27,7 +27,7 @@ public class CommandEditor extends AbstractCommand {
 
     @Override
     public String getPermissionNode() {
-        return "epicspawners.admin";
+        return "epicspawners.admin.editor";
     }
 
     @Override

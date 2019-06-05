@@ -26,7 +26,7 @@ public class CommandSettings extends AbstractCommand {
 
     @Override
     public String getPermissionNode() {
-        return "epicspawners.admin";
+        return "epicspawners.admin.settings";
     }
 
     @Override
