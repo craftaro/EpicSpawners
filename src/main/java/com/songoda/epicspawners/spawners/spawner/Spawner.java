@@ -23,11 +23,9 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import java.time.Instant;
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class Spawner {
 
-    private static final ThreadLocalRandom rand = ThreadLocalRandom.current();
     private static ScriptEngine engine = null;
     //Holds the different types of spawners contained by this creatureSpawner.
     private final Deque<SpawnerStack> spawnerStacks = new ArrayDeque<>();
@@ -38,7 +36,6 @@ public class Spawner {
     private CreatureSpawner creatureSpawner = null;
     //ToDo: Use this for all spawner things (Like items, commands and what not) instead of the old shit
     //ToDO: There is a weird error that is triggered when a spawner is not found in the config.
-    private Map<Location, Date> lastSpawns = new HashMap<>();
 
     public Spawner(Location location) {
         this.location = location;

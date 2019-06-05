@@ -30,7 +30,6 @@ public class SpawnerSpawnTask extends BukkitRunnable {
             instance.runTaskTimer(plugin, 0, Setting.CUSTOM_SPAWNER_TICK_RATE.getInt());
         }
 
-
         return instance;
     }
 

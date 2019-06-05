@@ -191,6 +191,9 @@ public class InteractListeners implements Listener {
         if (event.getClickedBlock().getType() == (plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER")) && is == (plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER")) && !plugin.getBlacklistHandler().isBlacklisted(player, true)) {
 
             Spawner spawner = plugin.getSpawnerManager().getSpawnerFromWorld(location);
+
+            if (spawner.getPlacedBy() == null && Setting.DISABLE_NATURAL_SPAWNERS.getBoolean()) return;
+
             if (!player.isSneaking()) {
                 SpawnerData spawnerData = plugin.getSpawnerManager().getSpawnerData(item);
                 if (player.hasPermission("epicspawners.stack." + spawnerData.getIdentifyingName()) || player.hasPermission("epicspawners.stack.*")) {
