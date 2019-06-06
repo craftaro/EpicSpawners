@@ -41,33 +41,32 @@ public class InteractListeners implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void PlayerInteractEventEgg(PlayerInteractEvent e) {
-        if (!e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+    public void PlayerInteractEventEgg(PlayerInteractEvent event) {
+        if (!event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
             return;
         }
-        Player p = e.getPlayer();
-        Block b = e.getClickedBlock();
-        ItemStack i = e.getItem();
+        Player player = event.getPlayer();
+        Block block = event.getClickedBlock();
+        ItemStack item = event.getItem();
 
         Material is = null;
-        if (e.getItem() != null) {
-            is = i.getType();
+        if (event.getItem() != null) {
+            is = item.getType();
         }
 
         int radius = plugin.getConfig().getInt("Main.Spawners Repel Liquid Radius");
-        if (e.getItem() != null
+        if (event.getItem() != null
                 && is.equals(Material.WATER_BUCKET)
                 && radius != 0) {
-            Block block = e.getClickedBlock();
             int bx = block.getX();
             int by = block.getY();
             int bz = block.getZ();
             for (int fx = -radius; fx <= radius; fx++) {
                 for (int fy = -radius; fy <= radius; fy++) {
                     for (int fz = -radius; fz <= radius; fz++) {
-                        Block b2 = e.getClickedBlock().getWorld().getBlockAt(bx + fx, by + fy, bz + fz);
+                        Block b2 = event.getClickedBlock().getWorld().getBlockAt(bx + fx, by + fy, bz + fz);
                         if (b2.getType().equals(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER"))) {
-                            e.setCancelled(true);
+                            event.setCancelled(true);
                         }
                     }
                 }
@@ -76,61 +75,65 @@ public class InteractListeners implements Listener {
 
         if (is == null || is == Material.AIR) return;
 
-        if (e.getClickedBlock().getType() == (plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER"))
+        if (event.getClickedBlock().getType() == (plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER"))
                 && is.toString().contains(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? "SPAWN_EGG" : "MONSTER_EGG")
-                && plugin.getBlacklistHandler().isBlacklisted(p, true))
-            e.setCancelled(true);
-        if (!(e.getClickedBlock().getType() == (plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER"))
+                && plugin.getBlacklistHandler().isBlacklisted(player, true))
+            event.setCancelled(true);
+        if (!(event.getClickedBlock().getType() == (plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER"))
                 && is.toString().contains(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? "SPAWN_EGG" : "MONSTER_EGG"))
-                && !plugin.getBlacklistHandler().isBlacklisted(p, true)) {
+                && !plugin.getBlacklistHandler().isBlacklisted(player, true)) {
             return;
         }
 
         SpawnerManager spawnerManager = plugin.getSpawnerManager();
-        Spawner spawner = spawnerManager.getSpawnerFromWorld(b.getLocation());
+
+        if (!plugin.getSpawnerManager().isSpawner(block.getLocation()))
+            createSpawner(block.getLocation());
+
+        Spawner spawner = spawnerManager.getSpawnerFromWorld(block.getLocation());
 
         SpawnerData blockType = spawnerManager.getSpawnerData(spawner.getCreatureSpawner().getSpawnedType());
 
         if (!Setting.EGGS_CONVERT_SPAWNERS.getBoolean()
                 || !spawner.getFirstStack().getSpawnerData().isActive()
                 || (spawner.getPlacedBy() == null && Setting.DISABLE_NATURAL_SPAWNERS.getBoolean())) {
-            e.setCancelled(true);
+            event.setCancelled(true);
             return;
         }
 
         int bmulti = spawner.getSpawnerDataCount();
-        int amt = p.getInventory().getItemInHand().getAmount();
+        int amt = player.getInventory().getItemInHand().getAmount();
         EntityType itype;
 
         if (plugin.isServerVersionAtLeast(ServerVersion.V1_13))
-            itype = EntityType.valueOf(i.getType().name().replace("_SPAWN_EGG", "").replace("MOOSHROOM", "MUSHROOM_COW"));
+            itype = EntityType.valueOf(item.getType().name().replace("_SPAWN_EGG", "").replace("MOOSHROOM", "MUSHROOM_COW"));
         else if (plugin.isServerVersionAtLeast(ServerVersion.V1_12)) {
-            String str = Reflection.getNBTTagCompound(Reflection.getNMSItemStack(i)).toString();
+            String str = Reflection.getNBTTagCompound(Reflection.getNMSItemStack(item)).toString();
             if (str.contains("minecraft:"))
                 itype = EntityType.fromName(str.substring(str.indexOf("minecraft:") + 10, str.indexOf("\"}")));
             else
                 itype = EntityType.fromName(str.substring(str.indexOf("EntityTag:{id:") + 15, str.indexOf("\"}")));
         } else
-            itype = ((SpawnEgg) i.getData()).getSpawnedType();
+            itype = ((SpawnEgg) item.getData()).getSpawnedType();
 
         SpawnerData itemType = plugin.getSpawnerManager().getSpawnerData(itype);
 
-        if (!p.hasPermission("epicspawners.egg." + itype) && !p.hasPermission("epicspawners.egg.*")) {
-            e.setCancelled(true);
+        if (!player.hasPermission("epicspawners.egg." + itype) && !player.hasPermission("epicspawners.egg.*")) {
+            event.setCancelled(true);
             return;
         }
         if (amt < bmulti) {
-            p.sendMessage(plugin.getLocale().getMessage("event.egg.needmore", bmulti));
-            e.setCancelled(true);
+            player.sendMessage(plugin.getLocale().getMessage("event.egg.needmore", bmulti));
+            event.setCancelled(true);
             return;
         }
-        SpawnerChangeEvent event = new SpawnerChangeEvent(p, spawner, blockType, itemType);
-        Bukkit.getPluginManager().callEvent(event);
-        if (event.isCancelled()) {
+        SpawnerChangeEvent e = new SpawnerChangeEvent(player, spawner, blockType, itemType);
+        Bukkit.getPluginManager().callEvent(e);
+        if (e.isCancelled()) {
             return;
         }
         if (blockType.equals(itemType)) {
-            p.sendMessage(plugin.getLocale().getMessage("event.egg.sametype", blockType.getIdentifyingName()));
+            player.sendMessage(plugin.getLocale().getMessage("event.egg.sametype", blockType.getIdentifyingName()));
             return;
         }
         spawner.getFirstStack().setSpawnerData(plugin.getSpawnerManager().getSpawnerData(itype));
@@ -142,9 +145,9 @@ public class InteractListeners implements Listener {
         spawner.getCreatureSpawner().update();
 
         if (plugin.getHologram() != null)
-            plugin.getHologram().processChange(b);
-        if (p.getGameMode() != GameMode.CREATIVE) {
-            Methods.takeItem(p, bmulti - 1);
+            plugin.getHologram().processChange(block);
+        if (player.getGameMode() != GameMode.CREATIVE) {
+            Methods.takeItem(player, bmulti - 1);
         }
     }
 
@@ -167,15 +170,8 @@ public class InteractListeners implements Listener {
         ItemStack item = event.getItem();
 
         if (block.getType() == (plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER"))) {
-            if (!plugin.getSpawnerManager().isSpawner(location)) {
-                Spawner spawner = new Spawner(location);
-
-                CreatureSpawner creatureSpawner = spawner.getCreatureSpawner();
-                if (creatureSpawner == null) return;
-
-                spawner.addSpawnerStack(new SpawnerStack(plugin.getSpawnerManager().getSpawnerData(creatureSpawner.getSpawnedType()), 1));
-                plugin.getSpawnerManager().addSpawnerToWorld(location, spawner);
-            }
+            if (!plugin.getSpawnerManager().isSpawner(location))
+                createSpawner(location);
         }
 
         if (event.getClickedBlock() == null
@@ -215,5 +211,16 @@ public class InteractListeners implements Listener {
                 event.setCancelled(true);
             }
         }
+    }
+
+    public Spawner createSpawner(Location location) {
+        Spawner spawner = new Spawner(location);
+
+        CreatureSpawner creatureSpawner = spawner.getCreatureSpawner();
+        if (creatureSpawner == null) return null;
+
+        spawner.addSpawnerStack(new SpawnerStack(plugin.getSpawnerManager().getSpawnerData(creatureSpawner.getSpawnedType()), 1));
+        plugin.getSpawnerManager().addSpawnerToWorld(location, spawner);
+        return spawner;
     }
 }

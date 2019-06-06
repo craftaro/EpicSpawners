@@ -38,6 +38,7 @@ public class SpawnerSpawnTask extends BukkitRunnable {
         new ArrayList<>(manager.getSpawners()).forEach(spawner -> {
             if (spawner == null
                     || spawner.getSpawnerDataCount() == 0
+                    || spawner.getWorld() == null
                     || !spawner.getWorld().isChunkLoaded(spawner.getX() >> 4, spawner.getZ() >> 4)
                     || !spawner.checkConditions()
                     || (spawner.getPlacedBy() == null && Setting.DISABLE_NATURAL_SPAWNERS.getBoolean())) return;
