@@ -95,7 +95,7 @@ public enum Setting {
             "should the button be visible in each spawners overview GUI."),
 
     SPAWNERS_DONT_EXPLODE("Main.Prevent Spawners From Exploding", false,
-            "Should spawners break when blown up?"),
+            "Should spawners not break when blown up?"),
 
     SPAWNERS_TO_INVENTORY("Main.Add Spawners To Inventory On Drop", false,
             "Should broken spawners be added directly to the players inventory?",
