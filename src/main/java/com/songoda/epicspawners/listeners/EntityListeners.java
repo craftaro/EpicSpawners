@@ -5,6 +5,7 @@ import com.songoda.epicspawners.spawners.spawner.Spawner;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.spawners.spawner.SpawnerStack;
 import com.songoda.epicspawners.utils.ServerVersion;
+import com.songoda.epicspawners.utils.settings.Setting;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Location;
@@ -50,16 +51,15 @@ public class EntityListeners implements Listener {
 
             Spawner spawner = plugin.getSpawnerManager().getSpawnerFromWorld(block.getLocation());
 
-            if (plugin.getConfig().getBoolean("Main.Prevent Spawners From Exploding"))
+            if (Setting.SPAWNERS_DONT_EXPLODE.getBoolean())
                 toCancel.add(block);
-            else if (event.getEntity() instanceof Creeper && plugin.getConfig().getBoolean("Spawner Drops.Drop On Creeper Explosion")
-                    || event.getEntity() instanceof TNTPrimed && plugin.getConfig().getBoolean("Spawner Drops.Drop On TNT Explosion")) {
+            else {
 
                 String chance = "";
-                if (event.getEntity() instanceof Creeper && plugin.getConfig().getBoolean("Spawner Drops.Drop On Creeper Explosion"))
-                    chance = plugin.getConfig().getString("Spawner Drops.Chance On TNT Explosion");
-                else if (event.getEntity() instanceof TNTPrimed && plugin.getConfig().getBoolean("Spawner Drops.Drop On TNT Explosion"))
-                    chance = plugin.getConfig().getString("Spawner Drops.Chance On Creeper Explosion");
+                if (event.getEntity() instanceof Creeper)
+                    chance = Setting.EXPLOSION_DROP_CHANCE_TNT.getString();
+                else if (event.getEntity() instanceof TNTPrimed)
+                    chance = Setting.EXPLOSION_DROP_CHANCE_TNT.getString();
                 int ch = Integer.parseInt(chance.replace("%", ""));
                 double rand = Math.random() * 100;
                 if (rand - ch < 0 || ch == 100) {
@@ -67,12 +67,13 @@ public class EntityListeners implements Listener {
                         ItemStack item = stack.getSpawnerData().toItemStack(1, stack.getStackSize());
                         spawnLocation.getWorld().dropItemNaturally(spawnLocation.clone().add(.5, 0, .5), item);
                     }
+
+                    plugin.getSpawnerManager().removeSpawnerFromWorld(spawnLocation);
+                    if (plugin.getHologram() != null)
+                        plugin.getHologram().remove(spawner);
+                    plugin.getAppearanceTask().removeDisplayItem(spawner);
                 }
             }
-            plugin.getSpawnerManager().removeSpawnerFromWorld(spawnLocation);
-            if (plugin.getHologram() != null)
-                plugin.getHologram().remove(spawner);
-            if (spawner != null) plugin.getAppearanceTask().removeDisplayItem(spawner);
 
             Location nloc = spawnLocation.clone();
             nloc.add(.5, -.4, .5);
@@ -103,17 +104,17 @@ public class EntityListeners implements Listener {
         }
         if (event.getEntity().getKiller() == null) return;
         Player player = event.getEntity().getKiller();
-        if (!player.hasPermission("epicspawners.Killcounter") || !plugin.getConfig().getBoolean("Spawner Drops.Allow Killing Mobs To Drop Spawners"))
+        if (!player.hasPermission("epicspawners.Killcounter") || !Setting.MOB_KILLING_COUNT.getBoolean())
             return;
 
-        if (!plugin.getSpawnManager().isNaturalSpawn(event.getEntity().getUniqueId()) && !plugin.getConfig().getBoolean("Spawner Drops.Count Unnatural Kills Towards Spawner Drop"))
+        if (!plugin.getSpawnManager().isNaturalSpawn(event.getEntity().getUniqueId()) && !Setting.COUNT_UNNATURAL_KILLS.getBoolean())
             return;
 
 
         if (!plugin.getSpawnerManager().getSpawnerData(event.getEntityType()).isActive()) return;
 
         int amt = plugin.getPlayerActionManager().getPlayerAction(player).addKilledEntity(event.getEntityType());
-        int goal = plugin.getConfig().getInt("Spawner Drops.Kills Needed for Drop");
+        int goal = Setting.KILL_GOAL.getInt();
 
         SpawnerData spawnerData = plugin.getSpawnerManager().getSpawnerData(event.getEntityType());
 
@@ -122,8 +123,8 @@ public class EntityListeners implements Listener {
         int customGoal = spawnerData.getKillGoal();
         if (customGoal != 0) goal = customGoal;
 
-        if (plugin.getConfig().getInt("Spawner Drops.Alert Every X Before Drop") != 0
-                && amt % plugin.getConfig().getInt("Spawner Drops.Alert Every X Before Drop") == 0
+        if (Setting.ALERT_INTERVAL.getInt() != 0
+                && amt % Setting.ALERT_INTERVAL.getInt() == 0
                 && amt != goal) {
             player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(plugin.getLocale().getMessage("event.goal.alert", goal - amt, spawnerData.getIdentifyingName())));
         }

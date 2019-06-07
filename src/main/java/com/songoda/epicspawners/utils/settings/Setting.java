@@ -167,12 +167,6 @@ public enum Setting {
     ALERT_INTERVAL("Spawner Drops.Alert Every X Before Drop", 10,
             "Alert players every x amount of kills before dropping spawner."),
 
-    DROP_ON_CREEPER_EXPLOSION("Spawner Drops.Drop On Creeper Explosion", true,
-            "Should a spawner destroyed by a creeper drop?"),
-
-    DROP_ON_TNT_EXPLOSION("Spawner Drops.Drop On TNT Explosion", true,
-            "Should a spawner destroyed by TNT drop?"),
-
     EXPLOSION_DROP_CHANCE_TNT("Spawner Drops.Chance On TNT Explosion", "100%",
             "Chance of a TNT explosion dropping a spawner."),
 
