@@ -158,7 +158,7 @@ public class BlockListeners implements Listener {
             try {
                 creatureSpawner.setSpawnedType(EntityType.valueOf(spawnerData.getIdentifyingName().toUpperCase().replace(" ", "_")));
             } catch (Exception ex) {
-                creatureSpawner.setSpawnedType(EntityType.EGG);
+                creatureSpawner.setSpawnedType(plugin.isServerVersionAtLeast(ServerVersion.V1_9) ? EntityType.EGG : EntityType.DROPPED_ITEM);
             }
             creatureSpawner.setDelay(1);
             creatureSpawner.update();

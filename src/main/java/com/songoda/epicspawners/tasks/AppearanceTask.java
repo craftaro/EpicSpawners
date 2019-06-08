@@ -112,7 +112,7 @@ public class AppearanceTask extends BukkitRunnable {
             EntityType next = EntityType.valueOf(Methods.restoreType(spawnerData.getIdentifyingName()));
             spawner.getCreatureSpawner().setSpawnedType(next);
         } catch (Exception failure) {
-            spawner.getCreatureSpawner().setSpawnedType(EntityType.EGG);
+            spawner.getCreatureSpawner().setSpawnedType(plugin.isServerVersionAtLeast(ServerVersion.V1_9) ? EntityType.EGG : EntityType.DROPPED_ITEM);
 
             if (itemStack.getType() == Material.AIR) return;
             location.setPitch(-360);
