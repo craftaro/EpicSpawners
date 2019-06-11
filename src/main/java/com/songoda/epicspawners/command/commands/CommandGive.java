@@ -141,7 +141,7 @@ public class CommandGive extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "/es give [player/all] [spawnertype/random] [multiplier] [amount]";
+        return "/es give [player/all] [spawnertype/random] [amount] [stack-size]";
     }
 
     @Override
