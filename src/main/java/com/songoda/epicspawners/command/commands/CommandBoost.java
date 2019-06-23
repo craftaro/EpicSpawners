@@ -50,7 +50,7 @@ public class CommandBoost extends AbstractCommand {
 
         BoostData boostData = new BoostData(BoostType.PLAYER, Integer.parseInt(args[2]), duration == 0L ? Long.MAX_VALUE : System.currentTimeMillis() + duration, player.getUniqueId());
         instance.getBoostManager().addBoostToSpawner(boostData);
-        sender.sendMessage(Methods.formatText(References.getPrefix() + player.getName() + "&7 has been given a spawner boost of &6" + args[2] + "&7 for " + Methods.makeReadable(duration) + "&7."));
+        sender.sendMessage(Methods.formatText(References.getPrefix() + "&6" + player.getName() + "&7 has been given a spawner boost of &6" + args[2] + "&7" + (duration == 0L ? "" : (" for " + Methods.makeReadable(duration))) + "&7."));
 
         return ReturnType.SUCCESS;
     }

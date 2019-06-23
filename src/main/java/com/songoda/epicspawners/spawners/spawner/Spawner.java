@@ -423,7 +423,7 @@ public class Spawner {
                     if (!location.equals(boostData.getData())) continue;
                     break;
                 case PLAYER:
-                    if (!placedBy.toString().equals(boostData.getData())) continue;
+                    if (!placedBy.toString().equals(boostData.getData().toString())) continue;
                     break;
             }
             amountToBoost += boostData.getAmtBoosted();
@@ -450,7 +450,7 @@ public class Spawner {
                     if (!location.equals(boostData.getData())) continue;
                     break;
                 case PLAYER:
-                    if (!placedBy.toString().equals(boostData.getData())) continue;
+                    if (!placedBy.toString().equals(boostData.getData().toString())) continue;
                     break;
             }
 

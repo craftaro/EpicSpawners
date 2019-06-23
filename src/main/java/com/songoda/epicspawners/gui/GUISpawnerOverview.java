@@ -19,6 +19,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -144,7 +145,11 @@ public class GUISpawnerOverview extends AbstractGUI {
         if (spawner.getBoost() != 0) {
 
             // ToDo: Make it display all boosts.
-            String[] parts = plugin.getLocale().getMessage("interface.spawner.boostedstats", Integer.toString(spawner.getBoost()), spawner.getIdentifyingData().getIdentifyingName(), Methods.makeReadable(spawner.getBoostEnd().toEpochMilli() - System.currentTimeMillis())).split("\\|");
+            String[] parts = plugin.getLocale().getMessage("interface.spawner.boostedstats",
+                    Integer.toString(spawner.getBoost()),
+                    spawner.getIdentifyingData().getIdentifyingName(),
+                    spawner.getBoostEnd().toEpochMilli() == Long.MAX_VALUE ? plugin.getLocale().getMessage("interface.spawner.boostednever") : Methods.makeReadable(spawner.getBoostEnd().toEpochMilli() - System.currentTimeMillis())).split("\\|");
+
             lore.add("");
             for (String line : parts)
                 lore.add(Methods.formatText(line));
