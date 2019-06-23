@@ -160,13 +160,12 @@ public class SpawnOptionEntity_1_12 implements SpawnOption {
 
         while (spawnCount-- > 0) {
             EntityType type = types[ThreadLocalRandom.current().nextInt(types.length)];
-            spawnEntity(type, spawner, data);
-            spawner.setSpawnCount(spawner.getSpawnCount() + 1);
-            // TODO: Talk to the author of StackMob to get his ass in gear. lolk (I dropped support, try and add it in later)
+            if (spawnEntity(type, spawner, data))
+                spawner.setSpawnCount(spawner.getSpawnCount() + 1);
         }
     }
 
-    private void spawnEntity(EntityType type, Spawner spawner, SpawnerData data) {
+    private boolean spawnEntity(EntityType type, Spawner spawner, SpawnerData data) {
         try {
             Object objMobSpawnerData = null;
             Object objNBTTagCompound;
@@ -211,18 +210,10 @@ public class SpawnOptionEntity_1_12 implements SpawnOption {
                 if (!canSpawn(objEntityInsentient, data, spot))
                     continue;
 
-                /*
-                if (!(boolean)methodEntityInsentientCanSpawn.invoke(objEntityInsentient)) {
-                    continue;
-                } */
-
                 Object objBlockPosition = clazzBlockPosition.getConstructor(clazzEntity).newInstance(objEntity);
                 Object objDamageScaler = methodGetDamageScaler.invoke(objWorld, objBlockPosition);
 
                 methodEntityInsentientPrepare.invoke(objEntity, objDamageScaler, null);
-
-                //((EntityInsentient)entity).prepare(world.D(new BlockPosition(entity)), (GroupDataEntity)null);
-
 
                 ParticleType particleType = data.getEntitySpawnParticle();
 
@@ -237,7 +228,7 @@ public class SpawnOptionEntity_1_12 implements SpawnOption {
 
                 SpawnerSpawnEvent event = new SpawnerSpawnEvent(craftEntity, spawner);
                 Bukkit.getPluginManager().callEvent(event);
-                if (event.isCancelled()) return;
+                if (event.isCancelled()) return false;
 
                 if (plugin.isServerVersionAtLeast(ServerVersion.V1_9)) {
                     methodChunkRegionLoaderA2.invoke(null, objEntity, objWorld, CreatureSpawnEvent.SpawnReason.SPAWNER);
@@ -257,11 +248,12 @@ public class SpawnOptionEntity_1_12 implements SpawnOption {
                 methodCraftEntityTeleport.invoke(objBukkitEntity, spot);
 
                 plugin.getSpawnManager().addUnnaturalSpawn(craftEntity.getUniqueId());
-                return;
+                return true;
             }
         } catch (IllegalAccessException | InvocationTargetException | InstantiationException | NoSuchMethodException e) {
             e.printStackTrace();
         }
+        return false;
     }
 
     private boolean canSpawn(Object objEntityInsentient, SpawnerData data, Location location) {

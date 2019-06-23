@@ -171,13 +171,12 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
 
         while (spawnCount-- > 0) {
             EntityType type = types[ThreadLocalRandom.current().nextInt(types.length)];
-            spawnEntity(type, spawner, data);
-            spawner.setSpawnCount(spawner.getSpawnCount() + 1);
-            // TODO: Talk to the author of StackMob to get his ass in gear. lolk (I dropped support, try and add it in later)
+            if (spawnEntity(type, spawner, data))
+                spawner.setSpawnCount(spawner.getSpawnCount() + 1);
         }
     }
 
-    private void spawnEntity(EntityType type, Spawner spawner, SpawnerData data) {
+    private boolean spawnEntity(EntityType type, Spawner spawner, SpawnerData data) {
         try {
             Object objMobSpawnerData = clazzMobSpawnerData.newInstance();
             Object objNTBTagCompound = methodGetEntity.invoke(objMobSpawnerData);
@@ -201,7 +200,7 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
                 if (methodChunkRegionLoaderA != null) {
                     objEntity = methodChunkRegionLoaderA.invoke(null, objNBTTagCompound, objWorld, x, y, z, false);
                 } else {
-                    Optional optional = (Optional)methodA.invoke(null, objNBTTagCompound, objWorld);
+                    Optional optional = (Optional) methodA.invoke(null, objNBTTagCompound, objWorld);
 
                     if (!optional.isPresent()) continue;
 
@@ -238,7 +237,7 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
 
                 SpawnerSpawnEvent event = new SpawnerSpawnEvent(craftEntity, spawner);
                 Bukkit.getPluginManager().callEvent(event);
-                if (event.isCancelled()) return;
+                if (event.isCancelled()) return false;
 
                 if (methodChunkRegionLoaderA != null) {
                     methodChunkRegionLoaderA2.invoke(null, objEntity, objWorld, CreatureSpawnEvent.SpawnReason.SPAWNER);
@@ -251,18 +250,19 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
                 craftEntity.setMetadata("ES", new FixedMetadataValue(instance, data.getIdentifyingName()));
 
                 if (Setting.NO_AI.getBoolean())
-                    ((LivingEntity)craftEntity).setAI(false);
+                    ((LivingEntity) craftEntity).setAI(false);
 
                 Object objBukkitEntity = methodEntityGetBukkitEntity.invoke(objEntity);
                 spot.setYaw(random.nextFloat() * 360.0F);
                 methodCraftEntityTeleport.invoke(objBukkitEntity, spot);
 
                 EpicSpawners.getInstance().getSpawnManager().addUnnaturalSpawn(craftEntity.getUniqueId());
-                return;
+                return true;
             }
         } catch (IllegalAccessException | InvocationTargetException | InstantiationException | NoSuchMethodException e) {
             e.printStackTrace();
         }
+        return false;
     }
 
     private boolean canSpawn(Object objWorld, Object objEntityInsentient, SpawnerData data, Location location) {
