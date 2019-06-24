@@ -240,7 +240,7 @@ public class SpawnOptionEntity_1_12 implements SpawnOption {
 
                 craftEntity.setMetadata("ES", new FixedMetadataValue(plugin, data.getIdentifyingName()));
 
-                if (Setting.NO_AI.getBoolean())
+                if (Setting.NO_AI.getBoolean() && plugin.isServerVersionAtLeast(ServerVersion.V1_9))
                     ((LivingEntity) craftEntity).setAI(false);
 
                 Object objBukkitEntity = methodEntityGetBukkitEntity.invoke(objEntity);
