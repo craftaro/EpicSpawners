@@ -11,10 +11,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Creeper;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.TNTPrimed;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -93,6 +90,7 @@ public class EntityListeners implements Listener {
 
     @EventHandler
     public void onDeath(EntityDeathEvent event) {
+        if (event.getEntity().getType() == EntityType.PLAYER) return;
         if (event.getEntity().hasMetadata("ES")) {
             SpawnerData spawnerData = plugin.getSpawnerManager().getSpawnerData(event.getEntity().getMetadata("ES").get(0).asString());
             if (!spawnerData.getEntityDroppedItems().isEmpty()) {
