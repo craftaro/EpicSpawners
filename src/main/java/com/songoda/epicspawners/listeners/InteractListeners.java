@@ -75,15 +75,13 @@ public class InteractListeners implements Listener {
 
         if (is == null || is == Material.AIR) return;
 
-        if (event.getClickedBlock().getType() == (plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER"))
-                && is.toString().contains(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? "SPAWN_EGG" : "MONSTER_EGG")
-                && plugin.getBlacklistHandler().isBlacklisted(player, true))
-            event.setCancelled(true);
-        if (!(event.getClickedBlock().getType() == (plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER"))
-                && is.toString().contains(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? "SPAWN_EGG" : "MONSTER_EGG"))
-                && !plugin.getBlacklistHandler().isBlacklisted(player, true)) {
+        if (event.getClickedBlock().getType() != (plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER"))
+                || !is.toString().contains(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? "SPAWN_EGG" : "MONSTER_EGG"))
             return;
-        }
+
+            event.setCancelled(true);
+
+        if (plugin.getBlacklistHandler().isBlacklisted(player, true)) return;
 
         SpawnerManager spawnerManager = plugin.getSpawnerManager();
 
