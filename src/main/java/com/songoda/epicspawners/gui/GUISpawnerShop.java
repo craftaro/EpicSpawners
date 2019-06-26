@@ -29,21 +29,22 @@ public class GUISpawnerShop extends AbstractGUI {
         this.plugin = plugin;
         setUp();
     }
-    
+
     private void setUp() {
         int show = 0;
         int start = (page - 1) * 32;
         entities = new ArrayList<>();
         totalAmount = 0;
         for (SpawnerData spawnerData : plugin.getSpawnerManager().getAllSpawnerData()) {
-            if (!spawnerData.isInShop() || !spawnerData.isActive()) continue;
-            if (!spawnerData.getIdentifyingName().toLowerCase().equals("omni")
-                    && player.hasPermission("epicspawners.shop." + Methods.getTypeFromString(spawnerData.getIdentifyingName()).replaceAll(" ", "_"))) {
-                if (totalAmount >= start) {
-                    if (show <= 32) {
-                        entities.add(spawnerData);
-                        show++;
-                    }
+            if (spawnerData.getIdentifyingName().equalsIgnoreCase("omni")
+                    || !spawnerData.isInShop()
+                    || !spawnerData.isActive()
+                    || !player.hasPermission("epicspawners.shop." + spawnerData.getIdentifyingName().replace(" ", "_")))
+                continue;
+            if (totalAmount >= start) {
+                if (show <= 32) {
+                    entities.add(spawnerData);
+                    show++;
                 }
             }
             totalAmount++;
@@ -106,22 +107,14 @@ public class GUISpawnerShop extends AbstractGUI {
             place++;
         }
 
-        int max = (int) Math.ceil((double) totalAmount / (double) 36);
-        int num = 0;
-        while (num != 9) {
-            inventory.setItem(num, Methods.getGlass());
-            num++;
-        }
-        int num2 = slots - 9;
-        while (num2 != slots) {
-            inventory.setItem(num2, Methods.getGlass());
-            num2++;
-        }
+        for (int i = 0; i != 9; i++)
+            inventory.setItem(i, Methods.getGlass());
 
-        ItemStack exit = new ItemStack(Material.valueOf(plugin.getConfig().getString("Interfaces.Exit Icon")), 1);
-        ItemMeta exitmeta = exit.getItemMeta();
-        exitmeta.setDisplayName(plugin.getLocale().getMessage("general.nametag.exit"));
-        exit.setItemMeta(exitmeta);
+        for (int i = slots - 9; i != slots; i++)
+            inventory.setItem(i, Methods.getGlass());
+
+        createButton(8, Material.valueOf(plugin.getConfig().getString("Interfaces.Exit Icon"))
+                , plugin.getLocale().getMessage("general.nametag.exit"));
 
         ItemStack head = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3);
         ItemStack skull = Methods.addTexture(head, "http://textures.minecraft.net/texture/1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b");
@@ -136,8 +129,6 @@ public class GUISpawnerShop extends AbstractGUI {
         skull2.setDurability((short) 3);
         skull2Meta.setDisplayName(plugin.getLocale().getMessage("general.nametag.back"));
         skull2.setItemMeta(skull2Meta);
-
-        inventory.setItem(8, exit);
 
         inventory.setItem(0, Methods.getBackgroundGlass(true));
         inventory.setItem(1, Methods.getBackgroundGlass(true));
@@ -159,12 +150,9 @@ public class GUISpawnerShop extends AbstractGUI {
         inventory.setItem(slots - 7, Methods.getBackgroundGlass(false));
         inventory.setItem(slots - 3, Methods.getBackgroundGlass(false));
 
-        if (page != 1) {
-            inventory.setItem(slots - 8, skull2);
-        }
-        if (page != max) {
-            inventory.setItem(slots - 2, skull);
-        }
+
+        if (page != 1) inventory.setItem(slots - 8, skull2);
+        if (page != max) inventory.setItem(slots - 2, skull);
     }
 
     @Override
