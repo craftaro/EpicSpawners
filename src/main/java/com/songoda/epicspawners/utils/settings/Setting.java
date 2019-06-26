@@ -2,6 +2,7 @@ package com.songoda.epicspawners.utils.settings;
 
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.utils.ServerVersion;
+import org.bukkit.Material;
 
 import java.util.Arrays;
 import java.util.List;
@@ -237,6 +238,7 @@ public enum Setting {
     private Object option;
     private String[] comments;
 
+
     Setting(String setting, Object option, String... comments) {
         this.setting = setting;
         this.option = option;
@@ -244,9 +246,7 @@ public enum Setting {
     }
 
     Setting(String setting, Object option) {
-        this.setting = setting;
-        this.option = option;
-        this.comments = null;
+        this(setting, option, null);
     }
 
     public static Setting getSetting(String setting) {
@@ -285,6 +285,17 @@ public enum Setting {
 
     public String getString() {
         return EpicSpawners.getInstance().getConfig().getString(setting);
+    }
+
+    public Material getMaterial() {
+        String materialStr = EpicSpawners.getInstance().getConfig().getString(setting);
+        Material material = Material.getMaterial(materialStr);
+
+        if (material == null) {
+            System.out.println(String.format("Config value \"%s\" has an invalid material name: \"%s\"", setting, materialStr));
+        }
+
+        return material;
     }
 
     public char getChar() {

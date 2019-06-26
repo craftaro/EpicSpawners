@@ -5,6 +5,7 @@ import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.utils.Methods;
 import com.songoda.epicspawners.utils.ServerVersion;
 import com.songoda.epicspawners.utils.gui.AbstractGUI;
+import com.songoda.epicspawners.utils.settings.Setting;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -113,8 +114,8 @@ public class GUISpawnerShop extends AbstractGUI {
         for (int i = slots - 9; i != slots; i++)
             inventory.setItem(i, Methods.getGlass());
 
-        createButton(8, Material.valueOf(plugin.getConfig().getString("Interfaces.Exit Icon"))
-                , plugin.getLocale().getMessage("general.nametag.exit"));
+        createButton(8, Setting.EXIT_ICON.getMaterial(),
+                plugin.getLocale().getMessage("general.nametag.exit"));
 
         ItemStack head = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3);
         ItemStack skull = Methods.addTexture(head, "http://textures.minecraft.net/texture/1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b");
