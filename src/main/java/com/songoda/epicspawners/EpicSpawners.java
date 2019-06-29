@@ -120,7 +120,6 @@ public class EpicSpawners extends JavaPlugin {
         pluginManager.registerEvents(new InteractListeners(this), this);
         pluginManager.registerEvents(new InventoryListeners(this), this);
         pluginManager.registerEvents(new SpawnerListeners(this), this);
-        pluginManager.registerEvents(new PlayerJoinListeners(this), this);
 
         AbstractGUI.initializeListeners(this);
 

@@ -67,9 +67,6 @@ public enum Setting {
     EGGS_CONVERT_SPAWNERS("Main.Convert Spawners With Eggs", true,
             "Ability to change mob spawner type with spawn eggs."),
 
-    HELPFUL_TIPS_ENABLED("Main.Display Helpful Tips For Operators", true,
-            "Show tips to server operators."),
-
     UPGRADE_WITH_ECO_ENABLED("Main.Upgrade With Economy", true,
             "Can spawners be upgraded with money?"),
 
