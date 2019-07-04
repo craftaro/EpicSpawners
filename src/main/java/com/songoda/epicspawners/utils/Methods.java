@@ -139,7 +139,8 @@ public class Methods {
      * @return The economy formatted double.
      */
     public static String formatEconomy(double amt) {
-        DecimalFormat formatter = new DecimalFormat("#,###.00");
+        DecimalFormat formatter = amt == Math.ceil(amt) ? new DecimalFormat("#,###")
+                : new DecimalFormat("#,###.00");
         return formatter.format(amt);
     }
 
