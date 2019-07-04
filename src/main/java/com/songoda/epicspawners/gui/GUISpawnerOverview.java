@@ -131,18 +131,6 @@ public class GUISpawnerOverview extends AbstractGUI {
 
         lore.add("");
         lore.add(plugin.getLocale().getMessage("interface.spawner.stats", spawner.getSpawnCount()));
-        if (spawner.getBoost() != 0) {
-
-            // ToDo: Make it display all boosts.
-            String[] parts = plugin.getLocale().getMessage("interface.spawner.boostedstats",
-                    Integer.toString(spawner.getBoost()),
-                    spawner.getIdentifyingData().getIdentifyingName(),
-                    spawner.getBoostEnd().toEpochMilli() == Long.MAX_VALUE ? plugin.getLocale().getMessage("interface.spawner.boostednever") : Methods.makeReadable(spawner.getBoostEnd().toEpochMilli() - System.currentTimeMillis())).split("\\|");
-
-            lore.add("");
-            for (String line : parts)
-                lore.add(Methods.formatText(line));
-        }
         itemmeta.setLore(lore);
         item.setItemMeta(itemmeta);
 
@@ -202,10 +190,27 @@ public class GUISpawnerOverview extends AbstractGUI {
                     new GUISpawnerConvert(plugin, spawner, player));
         }
 
-        if (player.hasPermission("epicspawners.canboost") && spawner.getBoost() == 0) {
-            createButton(22, Setting.BOOST_ICON.getMaterial(), plugin.getLocale().getMessage("interface.spawner.boost"));
-            registerClickable(22, (player, inventory, cursor, slot, type) ->
-                    new GUISpawnerBoost(plugin, spawner, player));
+        if (player.hasPermission("epicspawners.canboost")) {
+            lore.clear();
+
+            if (spawner.getBoost() != 0) {
+
+                // ToDo: Make it display all boosts.
+                String[] parts = plugin.getLocale().getMessage("interface.spawner.boostedstats",
+                        Integer.toString(spawner.getBoost()),
+                        spawner.getIdentifyingData().getIdentifyingName(),
+                        spawner.getBoostEnd().toEpochMilli() == Long.MAX_VALUE ? plugin.getLocale().getMessage("interface.spawner.boostednever") : Methods.makeReadable(spawner.getBoostEnd().toEpochMilli() - System.currentTimeMillis())).split("\\|");
+
+                for (String line : parts)
+                    lore.add(Methods.formatText(line));
+            }
+
+            createButton(22, Setting.BOOST_ICON.getMaterial(), spawner.getBoost() == 0 ? plugin.getLocale().getMessage("interface.spawner.boost") : null, lore);
+
+
+            if (spawner.getBoost() == 0)
+                registerClickable(22, (player, inventory, cursor, slot, type) ->
+                        new GUISpawnerBoost(plugin, spawner, player));
         }
 
         if (Setting.DISPLAY_HELP_BUTTON.getBoolean()) {

@@ -145,10 +145,15 @@ public abstract class AbstractGUI implements Listener {
 
     protected ItemStack createButton(int slot, Inventory inventory, ItemStack item, String name, String... lore) {
         ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
+        if (name != null || lore.length >= 1)
+            meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', name == null ? lore[0] : name));
         if (lore != null && lore.length != 0) {
             List<String> newLore = new ArrayList<>();
-            for (String line : lore) newLore.add(ChatColor.translateAlternateColorCodes('&', line));
+
+            for (int i = 0; i < lore.length; i ++) {
+                if (name == null && i == 0) continue;
+                newLore.add(ChatColor.translateAlternateColorCodes('&', lore[i]));
+            }
             meta.setLore(newLore);
         }
         item.setItemMeta(meta);

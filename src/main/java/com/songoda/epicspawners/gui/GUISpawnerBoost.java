@@ -42,7 +42,7 @@ public class GUISpawnerBoost extends AbstractGUI {
         } else if (amount < 1) {
             amount = 1;
         }
-        init(plugin.getLocale().getMessage("interface.boost.title", Methods.compileName(spawner.getIdentifyingData(), spawner.getSpawnerDataCount(), false), amount), 27);
+        init(plugin.getLocale().getMessage("interface.boost.title", spawner.getDisplayName(), amount), 27);
     }
 
     @Override
