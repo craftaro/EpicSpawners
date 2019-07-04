@@ -38,11 +38,13 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
 
     private final ScriptEngine engine;
 
-    private EpicSpawners instance = EpicSpawners.getInstance();
+    private EpicSpawners plugin = EpicSpawners.getInstance();
 
     private Enum<?> SpawnerEnum;
 
     private boolean stackPlugin;
+
+    private boolean mcmmo;
 
     private Map<String, Integer> cache = new HashMap<>();
     private Class<?> clazzMobSpawnerData, clazzEnumMobSpawn, clazzWorldServer, clazzGeneratorAccess, clazzEntityTypes, clazzNBTTagCompound, clazzCraftWorld, clazzWorld, clazzChunkRegionLoader, clazzEntity, clazzCraftEntity, clazzEntityInsentient, clazzGroupDataEntity, clazzDifficultyDamageScaler, clazzBlockPosition, clazzIWorldReader, clazzAxisAlignedBB;
@@ -53,7 +55,6 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
         this.types = types;
         this.mgr = new ScriptEngineManager();
         this.engine = mgr.getEngineByName("JavaScript");
-        this.stackPlugin = Bukkit.getPluginManager().isPluginEnabled("UltimateStacker") || Bukkit.getPluginManager().isPluginEnabled("StackMob");
         init();
     }
 
@@ -124,6 +125,8 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
         } catch (NoSuchFieldException | NoSuchMethodException | ClassNotFoundException e) {
             e.printStackTrace();
         }
+        this.mcmmo = Bukkit.getPluginManager().isPluginEnabled("mcMMO");
+        this.stackPlugin = Bukkit.getPluginManager().isPluginEnabled("UltimateStacker") || Bukkit.getPluginManager().isPluginEnabled("StackMob");
     }
 
     @Override
@@ -132,11 +135,11 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
         location.add(.5, .5, .5);
         if (location.getWorld() == null) return;
 
-        String[] randomLowHigh = instance.getConfig().getString("Main.Random Amount Added To Each Spawn").split(":");
+        String[] randomLowHigh = plugin.getConfig().getString("Main.Random Amount Added To Each Spawn").split(":");
 
         int randomAmt = ThreadLocalRandom.current().nextInt(Integer.valueOf(randomLowHigh[0]), Integer.valueOf(randomLowHigh[1]));
 
-        String equation = instance.getConfig().getString("Main.Equations.Mobs Spawned Per Spawn");
+        String equation = plugin.getConfig().getString("Main.Equations.Mobs Spawned Per Spawn");
         equation = equation.replace("{RAND}", Integer.toString(randomAmt));
         equation = equation.replace("{MULTI}", Integer.toString(stack.getStackSize()));
 
@@ -167,7 +170,7 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
 
 
         if (amt.size() == limit && spawnerBoost == 0) return;
-        spawnCount = (stackPlugin ? spawnCount : Math.min(limit - amt.size(), spawnCount)) + spawner.getBoost();
+        spawnCount = Math.min(limit - amt.size(), spawnCount) + spawner.getBoost();
 
         while (spawnCount-- > 0) {
             EntityType type = types[ThreadLocalRandom.current().nextInt(types.length)];
@@ -239,15 +242,12 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
                 Bukkit.getPluginManager().callEvent(event);
                 if (event.isCancelled()) return false;
 
-                if (methodChunkRegionLoaderA != null) {
-                    methodChunkRegionLoaderA2.invoke(null, objEntity, objWorld, CreatureSpawnEvent.SpawnReason.SPAWNER);
-                } else {
-                    methodAddEntity.invoke(clazzWorldServer.cast(objWorld), objEntity, CreatureSpawnEvent.SpawnReason.SPAWNER);
-                }
-
                 if (data.isSpawnOnFire()) craftEntity.setFireTicks(160);
 
-                craftEntity.setMetadata("ES", new FixedMetadataValue(instance, data.getIdentifyingName()));
+                craftEntity.setMetadata("ES", new FixedMetadataValue(plugin, data.getIdentifyingName()));
+
+                if (mcmmo)
+                    craftEntity.setMetadata( "mcMMO: Spawned Entity", new FixedMetadataValue(plugin, true));
 
                 if (Setting.NO_AI.getBoolean())
                     ((LivingEntity) craftEntity).setAI(false);
@@ -255,6 +255,12 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
                 Object objBukkitEntity = methodEntityGetBukkitEntity.invoke(objEntity);
                 spot.setYaw(random.nextFloat() * 360.0F);
                 methodCraftEntityTeleport.invoke(objBukkitEntity, spot);
+
+                if (methodChunkRegionLoaderA != null) {
+                    methodChunkRegionLoaderA2.invoke(null, objEntity, objWorld, CreatureSpawnEvent.SpawnReason.SPAWNER);
+                } else {
+                    methodAddEntity.invoke(clazzWorldServer.cast(objWorld), objEntity, CreatureSpawnEvent.SpawnReason.SPAWNER);
+                }
 
                 EpicSpawners.getInstance().getSpawnManager().addUnnaturalSpawn(craftEntity.getUniqueId());
                 return true;

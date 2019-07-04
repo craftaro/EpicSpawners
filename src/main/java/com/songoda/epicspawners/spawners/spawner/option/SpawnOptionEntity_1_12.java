@@ -44,6 +44,8 @@ public class SpawnOptionEntity_1_12 implements SpawnOption {
 
     private boolean stackPlugin;
 
+    private boolean mcmmo;
+
     private Map<String, Integer> cache = new HashMap<>();
     private Class<?> clazzEntityTypes, clazzMobSpawnerData, clazzNBTTagCompound, clazzNBTTagList, clazzCraftWorld, clazzWorld, clazzChunkRegionLoader, clazzEntity, clazzCraftEntity, clazzEntityInsentient, clazzGroupDataEntity, clazzDifficultyDamageScaler, clazzBlockPosition, clazzAxisAlignedBB;
     private Method methodAddEntity, methodCreateEntityByName, methodSetPositionRotation, methodB, methodSetString, methodNTBTagListSize, methodGetHandle, methodTBNTagListK, methodEntityInsentientPrepare, methodChunkRegionLoaderA, methodEntityGetBukkitEntity, methodCraftEntityTeleport, methodEntityInsentientCanSpawn, methodChunkRegionLoaderA2, methodGetDamageScaler, methodGetCubes, methodGetBoundingBox;
@@ -53,7 +55,6 @@ public class SpawnOptionEntity_1_12 implements SpawnOption {
         this.types = types;
         this.mgr = new ScriptEngineManager();
         this.engine = mgr.getEngineByName("JavaScript");
-        this.stackPlugin = Bukkit.getPluginManager().isPluginEnabled("UltimateStacker") || Bukkit.getPluginManager().isPluginEnabled("StackMob");
         init();
     }
 
@@ -110,9 +111,12 @@ public class SpawnOptionEntity_1_12 implements SpawnOption {
 
             fieldWorldRandom = clazzWorld.getDeclaredField("random");
             fieldWorldRandom.setAccessible(true);
+
         } catch (NoSuchFieldException | NoSuchMethodException | ClassNotFoundException e) {
             e.printStackTrace();
         }
+        this.mcmmo = Bukkit.getPluginManager().isPluginEnabled("mcMMO");
+        this.stackPlugin = Bukkit.getPluginManager().isPluginEnabled("UltimateStacker") || Bukkit.getPluginManager().isPluginEnabled("StackMob");
     }
 
     @Override
@@ -239,6 +243,9 @@ public class SpawnOptionEntity_1_12 implements SpawnOption {
                 if (data.isSpawnOnFire()) craftEntity.setFireTicks(160);
 
                 craftEntity.setMetadata("ES", new FixedMetadataValue(plugin, data.getIdentifyingName()));
+
+                if (mcmmo)
+                    craftEntity.setMetadata( "mcMMO: Spawned Entity", new FixedMetadataValue(plugin, true));
 
                 if (Setting.NO_AI.getBoolean() && plugin.isServerVersionAtLeast(ServerVersion.V1_9))
                     ((LivingEntity) craftEntity).setAI(false);
