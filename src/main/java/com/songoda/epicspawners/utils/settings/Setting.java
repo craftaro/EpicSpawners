@@ -201,6 +201,10 @@ public enum Setting {
     XP_ICON("Interfaces.XP Icon", EpicSpawners.getInstance().isServerVersionAtLeast(ServerVersion.V1_13) ? "EXPERIENCE_BOTTLE" : "EXP_BOTTLE",
             "Item to be displayed as the icon for XP upgrades."),
 
+    CONVERT_ICON("Interfaces.Convert Icon", "EGG"),
+
+    BOOST_ICON("Interfaces.Boost Icon", "BLAZE_POWDER"),
+
     GLASS_TYPE_1("Interfaces.Glass Type 1", 7),
     GLASS_TYPE_2("Interfaces.Glass Type 2", 11),
     GLASS_TYPE_3("Interfaces.Glass Type 3", 3),

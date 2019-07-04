@@ -19,7 +19,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -59,6 +58,8 @@ public class GUISpawnerOverview extends AbstractGUI {
 
     @Override
     public void constructGUI() {
+        resetClickables();
+        registerClickables();
         int showAmt = spawner.getSpawnerDataCount();
         if (showAmt > 64)
             showAmt = 1;
@@ -130,18 +131,6 @@ public class GUISpawnerOverview extends AbstractGUI {
 
         lore.add("");
         lore.add(plugin.getLocale().getMessage("interface.spawner.stats", spawner.getSpawnCount()));
-        if (player.hasPermission("epicspawners.convert") && spawner.getSpawnerStacks().size() == 1) {
-            lore.add("");
-            lore.add(plugin.getLocale().getMessage("interface.spawner.convert"));
-        }
-        if (player.hasPermission("epicspawners.canboost")) {
-            if (spawner.getBoost() == 0) {
-                if (!player.hasPermission("epicspawners.convert") || spawner.getSpawnerStacks().size() != 1) {
-                    lore.add("");
-                }
-                lore.add(plugin.getLocale().getMessage("interface.spawner.boost"));
-            }
-        }
         if (spawner.getBoost() != 0) {
 
             // ToDo: Make it display all boosts.
@@ -206,6 +195,18 @@ public class GUISpawnerOverview extends AbstractGUI {
         inventory.setItem(24, BACKGROUND_GLASS_TYPE_3);
         inventory.setItem(25, BACKGROUND_GLASS_TYPE_2);
         inventory.setItem(26, BACKGROUND_GLASS_TYPE_2);
+
+        if (player.hasPermission("epicspawners.convert") && spawner.getSpawnerStacks().size() == 1) {
+            createButton(4, Setting.CONVERT_ICON.getMaterial(), plugin.getLocale().getMessage("interface.spawner.convert"));
+            registerClickable(4, (player, inventory, cursor, slot, type) ->
+                    new GUISpawnerConvert(plugin, spawner, player));
+        }
+
+        if (player.hasPermission("epicspawners.canboost") && spawner.getBoost() == 0) {
+            createButton(22, Setting.BOOST_ICON.getMaterial(), plugin.getLocale().getMessage("interface.spawner.boost"));
+            registerClickable(22, (player, inventory, cursor, slot, type) ->
+                    new GUISpawnerBoost(plugin, spawner, player));
+        }
 
         if (Setting.DISPLAY_HELP_BUTTON.getBoolean()) {
             ItemStack itemO = new ItemStack(Material.PAPER, 1);
@@ -275,14 +276,6 @@ public class GUISpawnerOverview extends AbstractGUI {
             addInfo(inventory);
         });
 
-        registerClickable(13, (player, inventory, cursor, slot, type) -> {
-            if (type.isRightClick() && spawner.getBoost() == 0 && player.hasPermission("epicspawners.canboost")) {
-                new GUISpawnerBoost(plugin, spawner, player);
-            } else if (type.isLeftClick() && spawner.getSpawnerStacks().size() == 1 && player.hasPermission("epicspawners.convert") ) {
-                new GUISpawnerConvert(plugin, spawner, player);
-            }
-        });
-
         registerClickable(11, (player, inventory, cursor, slot, type) -> {
             if (Setting.UPGRADE_WITH_XP_ENABLED.getBoolean()
                     && !inventory.getItem(slot).getItemMeta().getDisplayName().equals(ChatColor.COLOR_CHAR + "l")) {
@@ -349,102 +342,102 @@ public class GUISpawnerOverview extends AbstractGUI {
     }
 
     private String compileHow(Player p, String text) {
-            Matcher m = Pattern.compile("\\{(.*?)}").matcher(text);
-            while (m.find()) {
-                Matcher mi = Pattern.compile("\\[(.*?)]").matcher(text);
-                int nu = 0;
-                int a = 0;
-                String type = "";
-                while (mi.find()) {
-                    if (nu == 0) {
-                        type = mi.group().replace("[", "").replace("]", "");
-                        text = text.replace(mi.group(), "");
-                    } else {
-                        switch (type) {
-                            case "LEVELUP":
-                                if (nu == 1) {
-                                    if (!p.hasPermission("epicspawners.combine." + spawner.getIdentifyingName()) && !p.hasPermission("epicspawners.combine." + spawner.getIdentifyingName())) {
-                                        text = text.replace(mi.group(), "");
-                                    } else {
-                                        text = text.replace(mi.group(), a(a, mi.group()));
-                                        a++;
-                                    }
-                                } else if (nu == 2) {
-                                    if (!Setting.UPGRADE_WITH_XP_ENABLED.getBoolean()) {
-                                        text = text.replace(mi.group(), "");
-                                    } else {
-                                        text = text.replace(mi.group(), a(a, mi.group()));
-                                        a++;
-                                    }
-                                } else if (nu == 3) {
-                                    if (!Setting.UPGRADE_WITH_ECO_ENABLED.getBoolean()) {
-                                        text = text.replace(mi.group(), "");
-                                    } else {
-                                        text = text.replace(mi.group(), a(a, mi.group()));
-                                        a++;
-                                    }
-                                }
-                                break;
-                            case "WATER":
-                                if (nu == 1) {
-                                    if (!Setting.LIQUID_REPEL_RADIUS.getBoolean()) {
-                                        text = text.replace(mi.group(), "");
-                                    } else {
-                                        text = text.replace(mi.group(), a(a, mi.group()));
-                                    }
-                                }
-                                break;
-                            case "REDSTONE":
-                                if (nu == 1) {
-                                    if (!Setting.REDSTONE_ACTIVATE.getBoolean()) {
-                                        text = text.replace(mi.group(), "");
-                                    } else {
-                                        text = text.replace(mi.group(), a(a, mi.group()));
-                                    }
-                                }
-                                break;
-                            case "OMNI":
-                                if (nu == 1) {
-                                    if (!Setting.OMNI_SPAWNERS.getBoolean()) {
-                                        text = text.replace(mi.group(), "");
-                                    } else {
-                                        text = text.replace(mi.group(), a(a, mi.group()));
-                                    }
-                                }
-                                break;
-                            case "DROP":
-                                if (!Setting.MOB_KILLING_COUNT.getBoolean() || !p.hasPermission("epicspawners.Killcounter")) {
-                                    text = "";
+        Matcher m = Pattern.compile("\\{(.*?)}").matcher(text);
+        while (m.find()) {
+            Matcher mi = Pattern.compile("\\[(.*?)]").matcher(text);
+            int nu = 0;
+            int a = 0;
+            String type = "";
+            while (mi.find()) {
+                if (nu == 0) {
+                    type = mi.group().replace("[", "").replace("]", "");
+                    text = text.replace(mi.group(), "");
+                } else {
+                    switch (type) {
+                        case "LEVELUP":
+                            if (nu == 1) {
+                                if (!p.hasPermission("epicspawners.combine." + spawner.getIdentifyingName()) && !p.hasPermission("epicspawners.combine." + spawner.getIdentifyingName())) {
+                                    text = text.replace(mi.group(), "");
                                 } else {
-                                    text = text.replace("<TYPE>", spawner.getIdentifyingName().toLowerCase());
-                                    spawner.getFirstStack().getSpawnerData().getKillGoal();
-                                    if (spawner.getFirstStack().getSpawnerData().getKillGoal() != 0)
-                                        text = text.replace("<AMT>", Integer.toString(spawner.getFirstStack().getSpawnerData().getKillGoal()));
-                                    else
-                                        text = text.replace("<AMT>", Integer.toString(Setting.KILL_GOAL.getInt()));
+                                    text = text.replace(mi.group(), a(a, mi.group()));
+                                    a++;
                                 }
-                                if (nu == 1) {
-                                    if (Setting.COUNT_UNNATURAL_KILLS.getBoolean()) {
-                                        text = text.replace(mi.group(), "");
-                                    } else {
-                                        text = text.replace(mi.group(), a(a, mi.group()));
-                                    }
+                            } else if (nu == 2) {
+                                if (!Setting.UPGRADE_WITH_XP_ENABLED.getBoolean()) {
+                                    text = text.replace(mi.group(), "");
+                                } else {
+                                    text = text.replace(mi.group(), a(a, mi.group()));
+                                    a++;
                                 }
-                                break;
-                        }
+                            } else if (nu == 3) {
+                                if (!Setting.UPGRADE_WITH_ECO_ENABLED.getBoolean()) {
+                                    text = text.replace(mi.group(), "");
+                                } else {
+                                    text = text.replace(mi.group(), a(a, mi.group()));
+                                    a++;
+                                }
+                            }
+                            break;
+                        case "WATER":
+                            if (nu == 1) {
+                                if (!Setting.LIQUID_REPEL_RADIUS.getBoolean()) {
+                                    text = text.replace(mi.group(), "");
+                                } else {
+                                    text = text.replace(mi.group(), a(a, mi.group()));
+                                }
+                            }
+                            break;
+                        case "REDSTONE":
+                            if (nu == 1) {
+                                if (!Setting.REDSTONE_ACTIVATE.getBoolean()) {
+                                    text = text.replace(mi.group(), "");
+                                } else {
+                                    text = text.replace(mi.group(), a(a, mi.group()));
+                                }
+                            }
+                            break;
+                        case "OMNI":
+                            if (nu == 1) {
+                                if (!Setting.OMNI_SPAWNERS.getBoolean()) {
+                                    text = text.replace(mi.group(), "");
+                                } else {
+                                    text = text.replace(mi.group(), a(a, mi.group()));
+                                }
+                            }
+                            break;
+                        case "DROP":
+                            if (!Setting.MOB_KILLING_COUNT.getBoolean() || !p.hasPermission("epicspawners.Killcounter")) {
+                                text = "";
+                            } else {
+                                text = text.replace("<TYPE>", spawner.getIdentifyingName().toLowerCase());
+                                spawner.getFirstStack().getSpawnerData().getKillGoal();
+                                if (spawner.getFirstStack().getSpawnerData().getKillGoal() != 0)
+                                    text = text.replace("<AMT>", Integer.toString(spawner.getFirstStack().getSpawnerData().getKillGoal()));
+                                else
+                                    text = text.replace("<AMT>", Integer.toString(Setting.KILL_GOAL.getInt()));
+                            }
+                            if (nu == 1) {
+                                if (Setting.COUNT_UNNATURAL_KILLS.getBoolean()) {
+                                    text = text.replace(mi.group(), "");
+                                } else {
+                                    text = text.replace(mi.group(), a(a, mi.group()));
+                                }
+                            }
+                            break;
                     }
-                    nu++;
                 }
-
+                nu++;
             }
-            text = text.replaceAll("[\\[\\]\\{\\}]", ""); // [, ], { or }
-            return text;
+
+        }
+        text = text.replaceAll("[\\[\\]\\{\\}]", ""); // [, ], { or }
+        return text;
     }
 
     private String a(int a, String text) {
-            if (a != 0) {
-                text = ", " + text;
-            }
+        if (a != 0) {
+            text = ", " + text;
+        }
         return text;
     }
 
