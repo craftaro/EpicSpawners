@@ -186,7 +186,6 @@ public class SpawnOptionEntity_1_12 implements SpawnOption {
 
             int spawnRange = 4;
             for (int i = 0; i < 25; i++) {
-
                 Object objCraftWorld = clazzCraftWorld.cast(spawner.getWorld());
                 objCraftWorld = methodGetHandle.invoke(objCraftWorld);
                 Object objWorld = clazzWorld.cast(objCraftWorld);
@@ -232,7 +231,10 @@ public class SpawnOptionEntity_1_12 implements SpawnOption {
 
                 SpawnerSpawnEvent event = new SpawnerSpawnEvent(craftEntity, spawner);
                 Bukkit.getPluginManager().callEvent(event);
-                if (event.isCancelled()) return false;
+                if (event.isCancelled()) {
+                    craftEntity.remove();
+                    return false;
+                }
 
                 if (plugin.isServerVersionAtLeast(ServerVersion.V1_9)) {
                     methodChunkRegionLoaderA2.invoke(null, objEntity, objWorld, CreatureSpawnEvent.SpawnReason.SPAWNER);
@@ -256,6 +258,7 @@ public class SpawnOptionEntity_1_12 implements SpawnOption {
 
                 plugin.getSpawnManager().addUnnaturalSpawn(craftEntity.getUniqueId());
                 return true;
+
             }
         } catch (IllegalAccessException | InvocationTargetException | InstantiationException | NoSuchMethodException e) {
             e.printStackTrace();

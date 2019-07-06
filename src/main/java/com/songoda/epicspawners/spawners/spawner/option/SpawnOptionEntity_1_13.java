@@ -227,6 +227,15 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
                     methodEntityInsentientPrepare.invoke(objEntity, objWorld, objDamageScaler, SpawnerEnum, null, null);
                 }
 
+                Entity craftEntity = (Entity) methodEntityGetBukkitEntity.invoke(objEntity);
+
+                SpawnerSpawnEvent event = new SpawnerSpawnEvent(craftEntity, spawner);
+                Bukkit.getPluginManager().callEvent(event);
+                if (event.isCancelled()) {
+                    craftEntity.remove();
+                    return false;
+                }
+
                 ParticleType particleType = data.getEntitySpawnParticle();
 
                 if (particleType != ParticleType.NONE) {
@@ -236,11 +245,11 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
                     spot.getWorld().spawnParticle(Particle.valueOf(particleType.getEffect()), spot, 5, xx, yy, zz, 0);
                 }
 
-                Entity craftEntity = (Entity) methodEntityGetBukkitEntity.invoke(objEntity);
-
-                SpawnerSpawnEvent event = new SpawnerSpawnEvent(craftEntity, spawner);
-                Bukkit.getPluginManager().callEvent(event);
-                if (event.isCancelled()) return false;
+                if (methodChunkRegionLoaderA != null) {
+                    methodChunkRegionLoaderA2.invoke(null, objEntity, objWorld, CreatureSpawnEvent.SpawnReason.SPAWNER);
+                } else {
+                    methodAddEntity.invoke(clazzWorldServer.cast(objWorld), objEntity, CreatureSpawnEvent.SpawnReason.SPAWNER);
+                }
 
                 if (data.isSpawnOnFire()) craftEntity.setFireTicks(160);
 
@@ -256,14 +265,9 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
                 spot.setYaw(random.nextFloat() * 360.0F);
                 methodCraftEntityTeleport.invoke(objBukkitEntity, spot);
 
-                if (methodChunkRegionLoaderA != null) {
-                    methodChunkRegionLoaderA2.invoke(null, objEntity, objWorld, CreatureSpawnEvent.SpawnReason.SPAWNER);
-                } else {
-                    methodAddEntity.invoke(clazzWorldServer.cast(objWorld), objEntity, CreatureSpawnEvent.SpawnReason.SPAWNER);
-                }
-
-                EpicSpawners.getInstance().getSpawnManager().addUnnaturalSpawn(craftEntity.getUniqueId());
+                plugin.getSpawnManager().addUnnaturalSpawn(craftEntity.getUniqueId());
                 return true;
+
             }
         } catch (IllegalAccessException | InvocationTargetException | InstantiationException | NoSuchMethodException e) {
             e.printStackTrace();

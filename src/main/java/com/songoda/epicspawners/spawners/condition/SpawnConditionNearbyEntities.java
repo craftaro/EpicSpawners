@@ -32,9 +32,8 @@ public class SpawnConditionNearbyEntities implements SpawnCondition {
 
         String[] arr = Setting.SEARCH_RADIUS.getString().split("x");
 
-
         int size = Math.toIntExact(location.getWorld().getNearbyEntities(location, Integer.parseInt(arr[0]), Integer.parseInt(arr[1]), Integer.parseInt(arr[2]))
-                .stream().filter(e -> e instanceof LivingEntity && e.getType() != EntityType.PLAYER && e.getType() != EntityType.ARMOR_STAND).count());
+                .stream().filter(e -> e instanceof LivingEntity && e.getType() != EntityType.PLAYER && e.getType() != EntityType.ARMOR_STAND && e.isValid()).count());
 
         return size < max;
     }
