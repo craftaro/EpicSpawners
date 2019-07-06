@@ -303,6 +303,7 @@ public class SpawnOptionEntity_1_12 implements SpawnOption {
         SNOWMAN("snowman", "SnowMan"),
         PIG_ZOMBIE("zombie_pigman", "PigZombie"),
         EVOKER("evocation_illager", "EvocationIllager"),
+        ILLUSIONER("illusion_illager", "IllusionIllager"),
         IRON_GOLEM("villager_golem", "VillagerGolem"),
         MUSHROOM_COW("mooshroom", "MushroomCow"),
         MAGMA_CUBE("magma_cube", "LavaSlime");
