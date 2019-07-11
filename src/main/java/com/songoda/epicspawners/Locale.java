@@ -355,7 +355,7 @@ public class Locale {
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             for (int lineNumber = 0; (line = reader.readLine()) != null; lineNumber++) {
-                if (line.isEmpty() || line.startsWith("#") /* Comment */) continue;
+                if (line.trim().isEmpty() || line.startsWith("#") /* Comment */) continue;
 
                 Matcher matcher = NODE_PATTERN.matcher(line);
                 if (!matcher.find()) {
