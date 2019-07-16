@@ -205,7 +205,7 @@ public class GUISpawnerOverview extends AbstractGUI {
                     lore.add(Methods.formatText(line));
             }
 
-            createButton(22, Setting.BOOST_ICON.getMaterial(), spawner.getBoost() == 0 ? plugin.getLocale().getMessage("interface.spawner.boost") : null, lore);
+            createButton(22, Setting.BOOST_ICON.getMaterial(), spawner.getBoost() == 0 ? plugin.getLocale().getMessage("interface.spawner.boost") : plugin.getLocale().getMessage("interface.spawner.cantboost"), lore);
 
 
             if (spawner.getBoost() == 0)
