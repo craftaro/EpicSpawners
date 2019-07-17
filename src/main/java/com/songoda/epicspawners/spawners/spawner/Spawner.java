@@ -528,11 +528,9 @@ public class Spawner {
         return Collections.unmodifiableCollection(spawnerStacks);
     }
 
-
     public void clearSpawnerStacks() {
         spawnerStacks.clear();
     }
-
 
     public OfflinePlayer getPlacedBy() {
         if (placedBy == null) return null;
@@ -547,14 +545,16 @@ public class Spawner {
         this.placedBy = placedBy;
     }
 
-
     public int getSpawnCount() {
         return spawnCount;
     }
 
-
     public void setSpawnCount(int spawnCount) {
         this.spawnCount = spawnCount;
+    }
+
+    public void addSpawn() {
+        this.spawnCount ++;
     }
 
     public String getOmniState() {
@@ -565,14 +565,14 @@ public class Spawner {
         this.omniState = omniState;
     }
 
-
+    @Override
     public int hashCode() {
         int result = 31 * (location == null ? 0 : location.hashCode());
         result = 31 * result + (placedBy == null ? 0 : placedBy.hashCode());
         return result;
     }
 
-
+    @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (!(obj instanceof Spawner)) return false;
@@ -581,7 +581,7 @@ public class Spawner {
         return Objects.equals(location, other.location) && Objects.equals(placedBy, other.placedBy);
     }
 
-
+    @Override
     public String toString() {
         return "Spawner:{"
                 + "Owner:\"" + placedBy + "\","
@@ -594,5 +594,4 @@ public class Spawner {
                 + "StackCount:" + spawnerStacks.size()
                 + "}";
     }
-
 }

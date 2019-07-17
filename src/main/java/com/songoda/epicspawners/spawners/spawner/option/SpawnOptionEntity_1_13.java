@@ -10,6 +10,7 @@ import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.spawners.spawner.SpawnerStack;
 import com.songoda.epicspawners.utils.Methods;
 import com.songoda.epicspawners.utils.settings.Setting;
+import com.songoda.ultimatestacker.UltimateStacker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -40,9 +41,9 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
 
     private EpicSpawners plugin = EpicSpawners.getInstance();
 
-    private Enum<?> SpawnerEnum;
+    private boolean useUltimateStacker;
 
-    private boolean stackPlugin;
+    private Enum<?> SpawnerEnum;
 
     private boolean mcmmo;
 
@@ -55,6 +56,9 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
         this.types = types;
         this.mgr = new ScriptEngineManager();
         this.engine = mgr.getEngineByName("JavaScript");
+        if (Bukkit.getPluginManager().isPluginEnabled("UltimateStacker")) {
+            this.useUltimateStacker = com.songoda.ultimatestacker.utils.settings.Setting.STACK_ENTITIES.getBoolean();
+        }
         init();
     }
 
@@ -126,7 +130,6 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
             e.printStackTrace();
         }
         this.mcmmo = Bukkit.getPluginManager().isPluginEnabled("mcMMO");
-        this.stackPlugin = Bukkit.getPluginManager().isPluginEnabled("UltimateStacker") || Bukkit.getPluginManager().isPluginEnabled("StackMob");
     }
 
     @Override
@@ -168,18 +171,23 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
         Collection<Entity> amt = location.getWorld().getNearbyEntities(location, Integer.parseInt(arr[0]), Integer.parseInt(arr[1]), Integer.parseInt(arr[2]));
         amt.removeIf(entity -> !(entity instanceof LivingEntity) || entity.getType() == EntityType.PLAYER || entity.getType() == EntityType.ARMOR_STAND);
 
-
         if (amt.size() == limit && spawnerBoost == 0) return;
-        spawnCount = Math.min(limit - amt.size(), spawnCount) + spawner.getBoost();
+        spawnCount = Math.min((useUltimateStacker ? 99999 : limit) - amt.size(), spawnCount) + spawner.getBoost();
 
-        while (spawnCount-- > 0) {
+        int spawnCountUsed = useUltimateStacker ? 1 : spawnCount;
+
+        while (spawnCountUsed-- > 0) {
             EntityType type = types[ThreadLocalRandom.current().nextInt(types.length)];
-            if (spawnEntity(type, spawner, data))
-                spawner.setSpawnCount(spawner.getSpawnCount() + 1);
+            Entity entity = spawnEntity(type, spawner, data);
+            if (entity != null) {
+                if (useUltimateStacker)
+                    UltimateStacker.getInstance().getEntityStackManager().addStack(entity.getUniqueId(), spawnCount);
+                spawner.setSpawnCount(spawner.getSpawnCount() + (useUltimateStacker ? spawnCount : 1));
+            }
         }
     }
 
-    private boolean spawnEntity(EntityType type, Spawner spawner, SpawnerData data) {
+    private Entity spawnEntity(EntityType type, Spawner spawner, SpawnerData data) {
         try {
             Object objMobSpawnerData = clazzMobSpawnerData.newInstance();
             Object objNTBTagCompound = methodGetEntity.invoke(objMobSpawnerData);
@@ -233,7 +241,7 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
                 Bukkit.getPluginManager().callEvent(event);
                 if (event.isCancelled()) {
                     craftEntity.remove();
-                    return false;
+                    return null;
                 }
 
                 ParticleType particleType = data.getEntitySpawnParticle();
@@ -266,13 +274,14 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
                 methodCraftEntityTeleport.invoke(objBukkitEntity, spot);
 
                 plugin.getSpawnManager().addUnnaturalSpawn(craftEntity.getUniqueId());
-                return true;
+
+                return craftEntity;
 
             }
         } catch (IllegalAccessException | InvocationTargetException | InstantiationException | NoSuchMethodException e) {
             e.printStackTrace();
         }
-        return false;
+        return null;
     }
 
     private boolean canSpawn(Object objWorld, Object objEntityInsentient, SpawnerData data, Location location) {
