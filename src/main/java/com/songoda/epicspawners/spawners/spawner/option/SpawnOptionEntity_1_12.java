@@ -162,7 +162,11 @@ public class SpawnOptionEntity_1_12 implements SpawnOption {
         amt.removeIf(entity -> !(entity instanceof LivingEntity) || entity.getType() == EntityType.PLAYER || entity.getType() == EntityType.ARMOR_STAND);
 
         if (amt.size() == limit && spawnerBoost == 0) return;
+
         spawnCount = Math.min((useUltimateStacker ? 99999 : limit) - amt.size(), spawnCount) + spawner.getBoost();
+
+        boolean useUltimateStacker = (this.useUltimateStacker
+                && spawnCount >= com.songoda.ultimatestacker.utils.settings.Setting.MIN_STACK_ENTITIES.getInt());
 
         int spawnCountUsed = useUltimateStacker ? 1 : spawnCount;
 
