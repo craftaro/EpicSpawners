@@ -186,6 +186,9 @@ public enum Setting {
     VAULT_ECONOMY("Economy.Use Vault Economy", true,
             "Should Vault be used?"),
 
+    RESERVE_ECONOMY("Economy.Use Reserve Economy", true,
+            "Should Reserve be used?"),
+
     PLAYER_POINTS_ECONOMY("Economy.Use Player Points Economy", false,
             "Should PlayerPoints be used?"),
 

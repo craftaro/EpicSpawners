@@ -5,9 +5,10 @@ import com.songoda.epicspawners.boost.BoostManager;
 import com.songoda.epicspawners.boost.BoostType;
 import com.songoda.epicspawners.command.CommandManager;
 import com.songoda.epicspawners.economy.Economy;
-import com.songoda.epicspawners.economy.PlayerPointsEconomy;
-import com.songoda.epicspawners.economy.VaultEconomy;
 import com.songoda.epicspawners.blacklist.BlacklistHandler;
+import com.songoda.epicspawners.economy.PlayerPointsEconomy;
+import com.songoda.epicspawners.economy.ReserveEconomy;
+import com.songoda.epicspawners.economy.VaultEconomy;
 import com.songoda.epicspawners.hologram.Hologram;
 import com.songoda.epicspawners.hologram.HologramHolographicDisplays;
 import com.songoda.epicspawners.listeners.*;
@@ -138,12 +139,12 @@ public class EpicSpawners extends JavaPlugin {
         this.appearanceTask = AppearanceTask.startTask(this);
 
         // Setup Economy
-        if (Setting.VAULT_ECONOMY.getBoolean()
-                && getServer().getPluginManager().getPlugin("Vault") != null)
-            this.economy = new VaultEconomy(this);
-        else if (Setting.PLAYER_POINTS_ECONOMY.getBoolean()
-                && getServer().getPluginManager().getPlugin("PlayerPoints") != null)
-            this.economy = new PlayerPointsEconomy(this);
+        if (Setting.VAULT_ECONOMY.getBoolean() && pluginManager.isPluginEnabled("Vault"))
+            this.economy = new VaultEconomy();
+        else if (Setting.RESERVE_ECONOMY.getBoolean() && pluginManager.isPluginEnabled("Reserve"))
+            this.economy = new ReserveEconomy();
+        else if (Setting.PLAYER_POINTS_ECONOMY.getBoolean() && pluginManager.isPluginEnabled("PlayerPoints"))
+            this.economy = new PlayerPointsEconomy();
 
         // Load Spawners
         Bukkit.getScheduler().runTaskLater(this, this::loadData, 10);

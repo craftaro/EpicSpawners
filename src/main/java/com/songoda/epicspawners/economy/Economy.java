@@ -1,10 +1,13 @@
 package com.songoda.epicspawners.economy;
 
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 public interface Economy {
 
-    boolean hasBalance(Player player, double cost);
+    boolean hasBalance(OfflinePlayer player, double cost);
 
-    boolean withdrawBalance(Player player, double cost);
+    boolean withdrawBalance(OfflinePlayer player, double cost);
+
+    boolean deposit(OfflinePlayer player, double amount);
 }
