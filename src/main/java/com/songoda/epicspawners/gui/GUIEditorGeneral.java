@@ -40,7 +40,7 @@ public class GUIEditorGeneral extends AbstractGUI {
 
         createButton(0, Methods.addTexture(new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3),
                 "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23"),
-                plugin.getLocale().getMessage("general.nametag.back"));
+                plugin.getLocale().getMessage("general.nametag.back").getMessage());
 
         inventory.setItem(1, Methods.getBackgroundGlass(true));
         inventory.setItem(2, Methods.getBackgroundGlass(false));

@@ -19,7 +19,10 @@ public class SpawnConditionHeight implements SpawnCondition {
 
     @Override
     public String getDescription() {
-        return EpicSpawners.getInstance().getLocale().getMessage("interface.spawner.conditionHeight",min, max);
+        return EpicSpawners.getInstance().getLocale().getMessage("interface.spawner.conditionHeight")
+                .processPlaceholder("min", min)
+                .processPlaceholder("max", max)
+                .getMessage();
     }
 
     @Override

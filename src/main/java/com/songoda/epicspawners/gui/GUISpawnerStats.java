@@ -40,7 +40,7 @@ public class GUISpawnerStats extends AbstractGUI {
             slots = 45;
         }
 
-        init(plugin.getLocale().getMessage("interface.spawnerstats.title"), slots);
+        init(plugin.getLocale().getMessage("interface.spawnerstats.title").getMessage(), slots);
     }
 
     @Override
@@ -51,7 +51,7 @@ public class GUISpawnerStats extends AbstractGUI {
         }
         ItemStack exit = new ItemStack(Material.valueOf(plugin.getConfig().getString("Interfaces.Exit Icon")), 1);
         ItemMeta exitmeta = exit.getItemMeta();
-        exitmeta.setDisplayName(plugin.getLocale().getMessage("general.nametag.exit"));
+        exitmeta.setDisplayName(plugin.getLocale().getMessage("general.nametag.exit").getMessage());
         exit.setItemMeta(exitmeta);
         inventory.setItem(8, exit);
 

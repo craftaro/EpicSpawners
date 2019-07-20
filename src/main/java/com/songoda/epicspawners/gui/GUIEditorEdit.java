@@ -1,7 +1,6 @@
 package com.songoda.epicspawners.gui;
 
 import com.songoda.epicspawners.EpicSpawners;
-import com.songoda.epicspawners.References;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.utils.AbstractChatConfirm;
 import com.songoda.epicspawners.utils.Methods;
@@ -106,7 +105,7 @@ public class GUIEditorEdit extends AbstractGUI {
 
         createButton(0, Methods.addTexture(new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3),
                 "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23"),
-                plugin.getLocale().getMessage("general.nametag.back"));
+                plugin.getLocale().getMessage("general.nametag.back").getMessage());
 
 
         if (editType != EditType.ITEM && editType != EditType.BLOCK && editType != EditType.DROPS) {
@@ -192,50 +191,50 @@ public class GUIEditorEdit extends AbstractGUI {
     }
 
     private List<ItemStack> getItems(Player p) {
-            ItemStack[] items2 = p.getOpenInventory().getTopInventory().getContents();
-            //items2 = Arrays.copyOf(items2, items2.length - 9);
+        ItemStack[] items2 = p.getOpenInventory().getTopInventory().getContents();
+        //items2 = Arrays.copyOf(items2, items2.length - 9);
 
-            List<ItemStack> items = new ArrayList<>();
+        List<ItemStack> items = new ArrayList<>();
 
-            int num = 0;
-            for (ItemStack item : items2) {
-                if (num >= 10 && num <= 25 && num != 17 && num != 18 && item != null) {
-                    items.add(items2[num]);
-                }
-                num++;
+        int num = 0;
+        for (ItemStack item : items2) {
+            if (num >= 10 && num <= 25 && num != 17 && num != 18 && item != null) {
+                items.add(items2[num]);
             }
-            return items;
+            num++;
+        }
+        return items;
     }
 
-    private void save(Player p, List<ItemStack> items) {
-            if (editType == EditType.ITEM) {
-                spawnerData.setItems(items);
-            } else if (editType == EditType.DROPS) {
-                spawnerData.setEntityDroppedItems(items);
-            } else if (editType == EditType.BLOCK) {
-                List<Material> list = new ArrayList<>();
-                for (ItemStack item : items) {
-                    Material material = item.getType();
-                    list.add(material);
-                }
-                spawnerData.setBlocks(list);
-            } else if (editType == EditType.ENTITY) {
-                List<EntityType> list = new ArrayList<>();
-                for (ItemStack item : items) {
-                    EntityType entityType = EntityType.valueOf(ChatColor.stripColor(item.getItemMeta().getDisplayName()).toUpperCase().replace(" ", "_"));
-                    list.add(entityType);
-                }
-                spawnerData.setEntities(list);
-            } else if (editType == EditType.COMMAND) {
-                List<String> list = new ArrayList<>();
-                for (ItemStack item : items) {
-                    String name = ChatColor.stripColor(item.getItemMeta().getDisplayName()).substring(1);
-                    list.add(name);
-                }
-                spawnerData.setCommands(list);
+    private void save(Player player, List<ItemStack> items) {
+        if (editType == EditType.ITEM) {
+            spawnerData.setItems(items);
+        } else if (editType == EditType.DROPS) {
+            spawnerData.setEntityDroppedItems(items);
+        } else if (editType == EditType.BLOCK) {
+            List<Material> list = new ArrayList<>();
+            for (ItemStack item : items) {
+                Material material = item.getType();
+                list.add(material);
             }
-            p.sendMessage(Methods.formatText(References.getPrefix() + "&7Spawner Saved."));
-            spawnerData.reloadSpawnMethods();
+            spawnerData.setBlocks(list);
+        } else if (editType == EditType.ENTITY) {
+            List<EntityType> list = new ArrayList<>();
+            for (ItemStack item : items) {
+                EntityType entityType = EntityType.valueOf(ChatColor.stripColor(item.getItemMeta().getDisplayName()).toUpperCase().replace(" ", "_"));
+                list.add(entityType);
+            }
+            spawnerData.setEntities(list);
+        } else if (editType == EditType.COMMAND) {
+            List<String> list = new ArrayList<>();
+            for (ItemStack item : items) {
+                String name = ChatColor.stripColor(item.getItemMeta().getDisplayName()).substring(1);
+                list.add(name);
+            }
+            spawnerData.setCommands(list);
+        }
+        plugin.getLocale().newMessage("&7Spawner Saved.").sendPrefixedMessage(player);
+        spawnerData.reloadSpawnMethods();
     }
 
     public enum EditType {

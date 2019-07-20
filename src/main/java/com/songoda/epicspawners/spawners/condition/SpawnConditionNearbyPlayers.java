@@ -25,7 +25,10 @@ public class SpawnConditionNearbyPlayers implements SpawnCondition {
 
     @Override
     public String getDescription() {
-        return EpicSpawners.getInstance().getLocale().getMessage("interface.spawner.conditionNearbyPlayers", amount, distance);
+        return EpicSpawners.getInstance().getLocale().getMessage("interface.spawner.conditionNearbyPlayers")
+                .processPlaceholder("amount", amount)
+                .processPlaceholder("distance", distance)
+                .getMessage();
     }
 
     @Override

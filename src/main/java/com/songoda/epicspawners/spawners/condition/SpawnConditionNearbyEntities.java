@@ -22,7 +22,8 @@ public class SpawnConditionNearbyEntities implements SpawnCondition {
 
     @Override
     public String getDescription() {
-        return EpicSpawners.getInstance().getLocale().getMessage("interface.spawner.conditionNearbyEntities", max);
+        return EpicSpawners.getInstance().getLocale().getMessage("interface.spawner.conditionNearbyEntities")
+                .processPlaceholder("max", max).getMessage();
     }
 
     @Override

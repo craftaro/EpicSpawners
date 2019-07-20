@@ -1,7 +1,6 @@
 package com.songoda.epicspawners.command.commands;
 
 import com.songoda.epicspawners.EpicSpawners;
-import com.songoda.epicspawners.References;
 import com.songoda.epicspawners.command.AbstractCommand;
 import com.songoda.epicspawners.gui.GUISpawnerStats;
 import org.bukkit.command.CommandSender;
@@ -20,7 +19,7 @@ public class CommandSpawnerStats extends AbstractCommand {
         Player player = (Player) sender;
 
         if (instance.getPlayerActionManager().getPlayerAction(player).getEntityKills().size() == 0) {
-            player.sendMessage(References.getPrefix() + instance.getLocale().getMessage("interface.spawnerstats.nokills"));
+            instance.getLocale().getMessage("interface.spawnerstats.nokills").sendPrefixedMessage(player);
             return AbstractCommand.ReturnType.SUCCESS;
         }
 

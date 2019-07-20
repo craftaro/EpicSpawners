@@ -79,7 +79,7 @@ public class InteractListeners implements Listener {
                 || !is.toString().contains(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? "SPAWN_EGG" : "MONSTER_EGG"))
             return;
 
-            event.setCancelled(true);
+        event.setCancelled(true);
 
         if (plugin.getBlacklistHandler().isBlacklisted(player, true)) return;
 
@@ -121,7 +121,8 @@ public class InteractListeners implements Listener {
             return;
         }
         if (amt < bmulti) {
-            player.sendMessage(plugin.getLocale().getMessage("event.egg.needmore", bmulti));
+            plugin.getLocale().getMessage("event.egg.needmore")
+                    .processPlaceholder("amount", bmulti).sendPrefixedMessage(player);
             event.setCancelled(true);
             return;
         }
@@ -131,7 +132,8 @@ public class InteractListeners implements Listener {
             return;
         }
         if (blockType.equals(itemType)) {
-            player.sendMessage(plugin.getLocale().getMessage("event.egg.sametype", blockType.getIdentifyingName()));
+            plugin.getLocale().getMessage("event.egg.sametype")
+                    .processPlaceholder("type", blockType.getIdentifyingName()).sendPrefixedMessage(player);
             return;
         }
         spawner.getFirstStack().setSpawnerData(plugin.getSpawnerManager().getSpawnerData(itype));

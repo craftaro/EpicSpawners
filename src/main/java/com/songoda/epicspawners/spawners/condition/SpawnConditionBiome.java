@@ -29,8 +29,10 @@ public class SpawnConditionBiome implements SpawnCondition {
     @Override
     public String getDescription() {
         return (biomes.size() == 1)
-                ? EpicSpawners.getInstance().getLocale().getMessage("interface.spawner.conditionBiome1", getFriendlyBiomeName())
-                : EpicSpawners.getInstance().getLocale().getMessage("interface.spawner.conditionBiome2");
+                ? EpicSpawners.getInstance().getLocale().getMessage("interface.spawner.conditionBiome1")
+                .processPlaceholder("biome", getFriendlyBiomeName()).getMessage()
+                : EpicSpawners.getInstance().getLocale().getMessage("interface.spawner.conditionBiome2")
+                .getMessage();
     }
 
     @Override

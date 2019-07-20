@@ -1,7 +1,6 @@
 package com.songoda.epicspawners.command;
 
 import com.songoda.epicspawners.EpicSpawners;
-import com.songoda.epicspawners.References;
 import com.songoda.epicspawners.command.commands.*;
 import com.songoda.epicspawners.utils.Methods;
 import org.bukkit.command.Command;
@@ -68,24 +67,24 @@ public class CommandManager implements CommandExecutor {
                 }
             }
         }
-        commandSender.sendMessage(References.getPrefix() + Methods.formatText("&7The command you entered does not exist or is spelt incorrectly."));
+        plugin.getLocale().newMessage("&7The command you entered does not exist or is spelt incorrectly.").sendPrefixedMessage(commandSender);
         return true;
     }
 
     private void processRequirements(AbstractCommand command, CommandSender sender, String[] strings) {
         if (!(sender instanceof Player) && command.isNoConsole()) {
-            sender.sendMessage("You must be a player to use this command.");
+            sender.sendMessage("You must be a player to use this commands.");
             return;
         }
         if (command.getPermissionNode() == null || sender.hasPermission(command.getPermissionNode())) {
             AbstractCommand.ReturnType returnType = command.runCommand(plugin, sender, strings);
             if (returnType == AbstractCommand.ReturnType.SYNTAX_ERROR) {
-                sender.sendMessage(References.getPrefix() + Methods.formatText("&cInvalid Syntax!"));
-                sender.sendMessage(References.getPrefix() + Methods.formatText("&7The valid syntax is: &6" + command.getSyntax() + "&7."));
+                plugin.getLocale().newMessage("&cInvalid Syntax!").sendPrefixedMessage(sender);
+                plugin.getLocale().newMessage("&7The valid syntax is: &6" + command.getSyntax() + "&7.").sendPrefixedMessage(sender);
             }
             return;
         }
-        sender.sendMessage(References.getPrefix() + plugin.getLocale().getMessage("event.general.nopermission"));
+        plugin.getLocale().newMessage("event.general.nopermission").sendPrefixedMessage(sender);
     }
 
     public List<AbstractCommand> getCommands() {

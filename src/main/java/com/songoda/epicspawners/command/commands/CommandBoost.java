@@ -1,7 +1,6 @@
 package com.songoda.epicspawners.command.commands;
 
 import com.songoda.epicspawners.EpicSpawners;
-import com.songoda.epicspawners.References;
 import com.songoda.epicspawners.boost.BoostData;
 import com.songoda.epicspawners.boost.BoostType;
 import com.songoda.epicspawners.command.AbstractCommand;
@@ -23,11 +22,11 @@ public class CommandBoost extends AbstractCommand {
     @Override
     protected ReturnType runCommand(EpicSpawners instance, CommandSender sender, String... args) {
         if (args.length < 3) {
-            sender.sendMessage(References.getPrefix() + Methods.formatText("&7Syntax error..."));
+            instance.getLocale().newMessage("&7Syntax error...").sendPrefixedMessage(sender);
             return ReturnType.SYNTAX_ERROR;
         }
         if (!Methods.isInt(args[2])) {
-            sender.sendMessage(Methods.formatText(References.getPrefix() + "&6" + args[2] + " &7is not a number..."));
+            instance.getLocale().newMessage("&6" + args[2] + " &7is not a number...").sendPrefixedMessage(sender);
             return ReturnType.SYNTAX_ERROR;
         }
 
@@ -44,13 +43,13 @@ public class CommandBoost extends AbstractCommand {
 
         Player player = Bukkit.getPlayer(args[1]);
         if (player == null) {
-            sender.sendMessage(Methods.formatText(References.getPrefix() + "&cThat player does not exist or is not online..."));
+            instance.getLocale().newMessage("&cThat player does not exist or is not online...").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
 
         BoostData boostData = new BoostData(BoostType.PLAYER, Integer.parseInt(args[2]), duration == 0L ? Long.MAX_VALUE : System.currentTimeMillis() + duration, player.getUniqueId());
         instance.getBoostManager().addBoostToSpawner(boostData);
-        sender.sendMessage(Methods.formatText(References.getPrefix() + "&6" + player.getName() + "&7 has been given a spawner boost of &6" + args[2] + "&7" + (duration == 0L ? "" : (" for " + Methods.makeReadable(duration))) + "&7."));
+        instance.getLocale().newMessage("&6" + player.getName() + "&7 has been given a spawner boost of &6" + args[2] + "&7" + (duration == 0L ? "" : (" for " + Methods.makeReadable(duration))) + "&7.").sendPrefixedMessage(sender);
 
         return ReturnType.SUCCESS;
     }
@@ -70,6 +69,7 @@ public class CommandBoost extends AbstractCommand {
         }
         return null;
     }
+
     @Override
     public String getPermissionNode() {
         return "epicspawners.admin.boost";

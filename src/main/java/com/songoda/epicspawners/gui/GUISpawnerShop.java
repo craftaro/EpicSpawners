@@ -62,7 +62,7 @@ public class GUISpawnerShop extends AbstractGUI {
             slots = 45;
         }
 
-        init(plugin.getLocale().getMessage("interface.shop.title"), slots);
+        init(plugin.getLocale().getMessage("interface.shop.title").getMessage(), slots);
     }
 
     @Override
@@ -91,8 +91,9 @@ public class GUISpawnerShop extends AbstractGUI {
             String name = Methods.compileName(spawnerData, 1, true);
             ArrayList<String> lore = new ArrayList<>();
             double price = spawnerData.getShopPrice();
-            lore.add(Methods.formatText(plugin.getLocale().getMessage("interface.shop.buyprice", Methods.formatEconomy(price))));
-            String loreString = plugin.getLocale().getMessage("interface.shop.lore", Methods.getTypeFromString(Methods.getTypeFromString(spawnerData.getDisplayName())));
+            lore.add(Methods.formatText(plugin.getLocale().getMessage("interface.shop.buyprice")
+                    .processPlaceholder("cost", Methods.formatEconomy(price)).getMessage()));
+            String loreString = plugin.getLocale().getMessage("interface.shop.lore").getMessage();
             if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
                 loreString = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, loreString.replace(" ", "_")).replace("_", " ");
             }
@@ -115,20 +116,20 @@ public class GUISpawnerShop extends AbstractGUI {
             inventory.setItem(i, Methods.getGlass());
 
         createButton(8, Setting.EXIT_ICON.getMaterial(),
-                plugin.getLocale().getMessage("general.nametag.exit"));
+                plugin.getLocale().getMessage("general.nametag.exit").getMessage());
 
         ItemStack head = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3);
         ItemStack skull = Methods.addTexture(head, "http://textures.minecraft.net/texture/1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b");
         SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
         skull.setDurability((short) 3);
-        skullMeta.setDisplayName(plugin.getLocale().getMessage("general.nametag.next"));
+        skullMeta.setDisplayName(plugin.getLocale().getMessage("general.nametag.next").getMessage());
         skull.setItemMeta(skullMeta);
 
         ItemStack head2 = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3);
         ItemStack skull2 = Methods.addTexture(head2, "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23");
         SkullMeta skull2Meta = (SkullMeta) skull2.getItemMeta();
         skull2.setDurability((short) 3);
-        skull2Meta.setDisplayName(plugin.getLocale().getMessage("general.nametag.back"));
+        skull2Meta.setDisplayName(plugin.getLocale().getMessage("general.nametag.back").getMessage());
         skull2.setItemMeta(skull2Meta);
 
         inventory.setItem(0, Methods.getBackgroundGlass(true));

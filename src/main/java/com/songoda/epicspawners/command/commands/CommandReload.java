@@ -1,7 +1,6 @@
 package com.songoda.epicspawners.command.commands;
 
 import com.songoda.epicspawners.EpicSpawners;
-import com.songoda.epicspawners.References;
 import com.songoda.epicspawners.command.AbstractCommand;
 import com.songoda.epicspawners.utils.Methods;
 import org.bukkit.command.CommandSender;
@@ -17,7 +16,7 @@ public class CommandReload extends AbstractCommand {
     @Override
     protected ReturnType runCommand(EpicSpawners instance, CommandSender sender, String... args) {
         instance.reload();
-        sender.sendMessage(Methods.formatText(References.getPrefix() + "&7Configuration and Language files reloaded."));
+        instance.getLocale().getMessage("&7Configuration and Language files reloaded.").sendPrefixedMessage(sender);
         return ReturnType.SUCCESS;
     }
 

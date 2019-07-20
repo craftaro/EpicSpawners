@@ -1,7 +1,6 @@
 package com.songoda.epicspawners.gui;
 
 import com.songoda.epicspawners.EpicSpawners;
-import com.songoda.epicspawners.References;
 import com.songoda.epicspawners.boost.BoostData;
 import com.songoda.epicspawners.boost.BoostType;
 import com.songoda.epicspawners.spawners.spawner.Spawner;
@@ -42,7 +41,9 @@ public class GUISpawnerBoost extends AbstractGUI {
         } else if (amount < 1) {
             amount = 1;
         }
-        init(plugin.getLocale().getMessage("interface.boost.title", spawner.getDisplayName(), amount), 27);
+        init(plugin.getLocale().getMessage("interface.boost.title")
+                .processPlaceholder("spawner", spawner.getDisplayName())
+                .processPlaceholder("amount", amount).getMessage(), 27);
     }
 
     @Override
@@ -57,7 +58,8 @@ public class GUISpawnerBoost extends AbstractGUI {
 
         ItemStack coal = new ItemStack(Material.COAL);
         ItemMeta coalMeta = coal.getItemMeta();
-        coalMeta.setDisplayName(plugin.getLocale().getMessage("interface.boost.boostfor", "5"));
+        coalMeta.setDisplayName(plugin.getLocale().getMessage("interface.boost.boostfor")
+                .processPlaceholder("amount", "5").getMessage());
         ArrayList<String> coalLore = new ArrayList<>();
         coalLore.add(Methods.formatText("&7Costs &6&l" + Methods.getBoostCost(5, amount) + "."));
         coalMeta.setLore(coalLore);
@@ -65,7 +67,8 @@ public class GUISpawnerBoost extends AbstractGUI {
 
         ItemStack iron = new ItemStack(Material.IRON_INGOT);
         ItemMeta ironMeta = iron.getItemMeta();
-        ironMeta.setDisplayName(plugin.getLocale().getMessage("interface.boost.boostfor", "15"));
+        ironMeta.setDisplayName(plugin.getLocale().getMessage("interface.boost.boostfor")
+                .processPlaceholder("amount", "15").getMessage());
         ArrayList<String> ironLore = new ArrayList<>();
         ironLore.add(Methods.formatText("&7Costs &6&l" + Methods.getBoostCost(15, amount) + "."));
         ironMeta.setLore(ironLore);
@@ -73,7 +76,8 @@ public class GUISpawnerBoost extends AbstractGUI {
 
         ItemStack diamond = new ItemStack(Material.DIAMOND);
         ItemMeta diamondMeta = diamond.getItemMeta();
-        diamondMeta.setDisplayName(plugin.getLocale().getMessage("interface.boost.boostfor", "30"));
+        diamondMeta.setDisplayName(plugin.getLocale().getMessage("interface.boost.boostfor")
+                .processPlaceholder("amount", "30").getMessage());
         ArrayList<String> diamondLore = new ArrayList<>();
         diamondLore.add(Methods.formatText("&7Costs &6&l" + Methods.getBoostCost(30, amount) + "."));
         diamondMeta.setLore(diamondLore);
@@ -81,7 +85,8 @@ public class GUISpawnerBoost extends AbstractGUI {
 
         ItemStack emerald = new ItemStack(Material.EMERALD);
         ItemMeta emeraldMeta = emerald.getItemMeta();
-        emeraldMeta.setDisplayName(plugin.getLocale().getMessage("interface.boost.boostfor", "60"));
+        emeraldMeta.setDisplayName(plugin.getLocale().getMessage("interface.boost.boostfor")
+                .processPlaceholder("amount", "60").getMessage());
         ArrayList<String> emeraldLore = new ArrayList<>();
         emeraldLore.add(Methods.formatText("&7Costs &6&l" + Methods.getBoostCost(60, amount) + "."));
         emeraldMeta.setLore(emeraldLore);
@@ -108,11 +113,11 @@ public class GUISpawnerBoost extends AbstractGUI {
         inventory.setItem(26, Methods.getBackgroundGlass(true));
 
         createButton(4, Material.valueOf(plugin.getConfig().getString("Interfaces.Exit Icon")),
-                plugin.getLocale().getMessage("general.nametag.back"));
+                plugin.getLocale().getMessage("general.nametag.back").getMessage());
 
         createButton(8, Methods.addTexture(new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3),
                 "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23"),
-                plugin.getLocale().getMessage("general.nametag.back"));
+                plugin.getLocale().getMessage("general.nametag.back").getMessage());
 
         ItemStack head = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3);
         ItemStack skull = Methods.addTexture(head, "http://textures.minecraft.net/texture/1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b");
@@ -188,7 +193,7 @@ public class GUISpawnerBoost extends AbstractGUI {
                     stack.setAmount(cost);
                     Methods.removeFromInventory(player.getInventory(), stack);
                 } else {
-                    player.sendMessage(References.getPrefix() + plugin.getLocale().getMessage("event.upgrade.cannotafford"));
+                    plugin.getLocale().getMessage("event.upgrade.cannotafford").sendPrefixedMessage(player);
                     return;
                 }
             } else if (type.equals("ECO")) {
@@ -196,7 +201,7 @@ public class GUISpawnerBoost extends AbstractGUI {
                     if (plugin.getEconomy().hasBalance(player, cost)) {
                         plugin.getEconomy().withdrawBalance(player, cost);
                     } else {
-                        player.sendMessage(References.getPrefix() + plugin.getLocale().getMessage("event.upgrade.cannotafford"));
+                        plugin.getLocale().getMessage("event.upgrade.cannotafford").sendPrefixedMessage(player);
                         return;
                     }
                 } else {
@@ -209,7 +214,7 @@ public class GUISpawnerBoost extends AbstractGUI {
                         player.setLevel(player.getLevel() - cost);
                     }
                 } else {
-                    player.sendMessage(References.getPrefix() + plugin.getLocale().getMessage("event.upgrade.cannotafford"));
+                    plugin.getLocale().getMessage("event.upgrade.cannotafford").sendPrefixedMessage(player);
                     return;
                 }
             }
@@ -221,7 +226,7 @@ public class GUISpawnerBoost extends AbstractGUI {
 
             BoostData boostData = new BoostData(BoostType.LOCATION, amt, c.getTime().getTime(), location);
             instance.getBoostManager().addBoostToSpawner(boostData);
-            player.sendMessage(References.getPrefix() + plugin.getLocale().getMessage("event.boost.applied"));
+            plugin.getLocale().getMessage("event.boost.applied").sendPrefixedMessage(player);
             player.playSound(location, Sound.ENTITY_VILLAGER_YES, 1, 1);
     }
 

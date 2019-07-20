@@ -1,7 +1,6 @@
 package com.songoda.epicspawners.gui;
 
 import com.songoda.epicspawners.EpicSpawners;
-import com.songoda.epicspawners.References;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.utils.Methods;
 import com.songoda.epicspawners.utils.ServerVersion;
@@ -27,7 +26,9 @@ public class GUIShopItem extends AbstractGUI {
         this.back = abstractGUI;
         this.spawnerData = spawnerData;
 
-        init(plugin.getLocale().getMessage("interface.shop.spawnershoptitle", Methods.compileName(spawnerData, 1, false)), 45);
+        init(plugin.getLocale().getMessage("interface.shop.spawnershoptitle")
+                .processPlaceholder("type", Methods.compileName(spawnerData, 1, false))
+                .getMessage(), 45);
     }
 
     @Override
@@ -84,7 +85,8 @@ public class GUIShopItem extends AbstractGUI {
         String name = Methods.compileName(spawnerData, 1, false);
         itemmeta.setDisplayName(name);
         ArrayList<String> lore = new ArrayList<>();
-        lore.add(plugin.getLocale().getMessage("interface.shop.buyprice", Methods.formatEconomy(price)));
+        lore.add(plugin.getLocale().getMessage("interface.shop.buyprice")
+                .processPlaceholder("cost", Methods.formatEconomy(price)).getMessage());
         itemmeta.setLore(lore);
         item.setItemMeta(itemmeta);
         inventory.setItem(22, item);
@@ -92,7 +94,7 @@ public class GUIShopItem extends AbstractGUI {
 
         ItemStack plus = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.LIME_STAINED_GLASS_PANE : Material.valueOf("STAINED_GLASS_PANE"), 1, (short) 5);
         ItemMeta plusmeta = plus.getItemMeta();
-        plusmeta.setDisplayName(plugin.getLocale().getMessage("interface.shop.add1"));
+        plusmeta.setDisplayName(plugin.getLocale().getMessage("interface.shop.add1").getMessage());
         plus.setItemMeta(plusmeta);
         if (item.getAmount() + 1 <= 64) {
             inventory.setItem(15, plus);
@@ -104,7 +106,7 @@ public class GUIShopItem extends AbstractGUI {
         }
 
         plus = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.LIME_STAINED_GLASS_PANE : Material.valueOf("STAINED_GLASS_PANE"), 10, (short) 5);
-        plusmeta.setDisplayName(plugin.getLocale().getMessage("interface.shop.add10"));
+        plusmeta.setDisplayName(plugin.getLocale().getMessage("interface.shop.add10").getMessage());
         plus.setItemMeta(plusmeta);
         if (item.getAmount() + 10 <= 64) {
             inventory.setItem(33, plus);
@@ -116,7 +118,7 @@ public class GUIShopItem extends AbstractGUI {
         }
 
         plus = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.LIME_STAINED_GLASS_PANE : Material.valueOf("STAINED_GLASS_PANE"), 64, (short) 5);
-        plusmeta.setDisplayName(plugin.getLocale().getMessage("interface.shop.set64"));
+        plusmeta.setDisplayName(plugin.getLocale().getMessage("interface.shop.set64").getMessage());
         plus.setItemMeta(plusmeta);
         if (item.getAmount() != 64) {
             inventory.setItem(25, plus);
@@ -129,7 +131,7 @@ public class GUIShopItem extends AbstractGUI {
 
         ItemStack minus = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.RED_STAINED_GLASS_PANE : Material.valueOf("STAINED_GLASS_PANE"), 1, (short) 14);
         ItemMeta minusmeta = minus.getItemMeta();
-        minusmeta.setDisplayName(plugin.getLocale().getMessage("interface.shop.remove1"));
+        minusmeta.setDisplayName(plugin.getLocale().getMessage("interface.shop.remove1").getMessage());
         minus.setItemMeta(minusmeta);
         if (item.getAmount() != 1) {
             inventory.setItem(11, minus);
@@ -141,7 +143,7 @@ public class GUIShopItem extends AbstractGUI {
         }
 
         minus = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.RED_STAINED_GLASS_PANE : Material.valueOf("STAINED_GLASS_PANE"), 10, (short) 14);
-        minusmeta.setDisplayName(plugin.getLocale().getMessage("interface.shop.remove10"));
+        minusmeta.setDisplayName(plugin.getLocale().getMessage("interface.shop.remove10").getMessage());
         minus.setItemMeta(minusmeta);
         if (item.getAmount() - 10 >= 0) {
             inventory.setItem(29, minus);
@@ -153,7 +155,7 @@ public class GUIShopItem extends AbstractGUI {
         }
 
         minus = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.RED_STAINED_GLASS_PANE : Material.valueOf("STAINED_GLASS_PANE"), 1, (short) 14);
-        minusmeta.setDisplayName(plugin.getLocale().getMessage("interface.shop.set1"));
+        minusmeta.setDisplayName(plugin.getLocale().getMessage("interface.shop.set1").getMessage());
         minus.setItemMeta(minusmeta);
         if (item.getAmount() != 1) {
             inventory.setItem(19, minus);
@@ -164,15 +166,15 @@ public class GUIShopItem extends AbstractGUI {
             });
         }
 
-        createButton(8, Material.valueOf(Setting.EXIT_ICON.getString()), plugin.getLocale().getMessage("general.nametag.exit"));
+        createButton(8, Material.valueOf(Setting.EXIT_ICON.getString()), plugin.getLocale().getMessage("general.nametag.exit").getMessage());
 
         ItemStack skull = Methods.addTexture(new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13)
                         ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3),
                 "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23");
 
-        createButton(0, skull, plugin.getLocale().getMessage("general.nametag.back"));
+        createButton(0, skull, plugin.getLocale().getMessage("general.nametag.back").getMessage());
 
-        createButton(40, Material.valueOf(Setting.BUY_ICON.getString()), plugin.getLocale().getMessage("general.nametag.confirm"));
+        createButton(40, Material.valueOf(Setting.BUY_ICON.getString()), plugin.getLocale().getMessage("general.nametag.confirm").getMessage());
     }
 
     @Override
@@ -197,13 +199,13 @@ public class GUIShopItem extends AbstractGUI {
 
         double price = spawnerData.getShopPrice() * amount;
         if (!plugin.getEconomy().hasBalance(player, price)) {
-            player.sendMessage(References.getPrefix() + plugin.getLocale().getMessage("event.shop.cannotafford"));
+            plugin.getLocale().getMessage("event.shop.cannotafford").sendPrefixedMessage(player);
             return;
         }
 
         ItemStack item = spawnerData.toItemStack(amount);
         player.getInventory().addItem(item);
-        player.sendMessage(References.getPrefix() + plugin.getLocale().getMessage("event.shop.purchasesuccess"));
+        plugin.getLocale().getMessage("event.shop.purchasesuccess").sendPrefixedMessage(player);
         plugin.getEconomy().withdrawBalance(player, price);
     }
 

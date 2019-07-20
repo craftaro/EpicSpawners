@@ -1,7 +1,6 @@
 package com.songoda.epicspawners.spawners.spawner;
 
 import com.songoda.epicspawners.EpicSpawners;
-import com.songoda.epicspawners.References;
 import com.songoda.epicspawners.api.events.SpawnerChangeEvent;
 import com.songoda.epicspawners.boost.BoostData;
 import com.songoda.epicspawners.gui.GUISpawnerOverview;
@@ -163,7 +162,7 @@ public class Spawner {
         double price = type.getConvertPrice() * getSpawnerDataCount();
 
         if (!instance.getEconomy().hasBalance(player, price)) {
-            player.sendMessage(References.getPrefix() + EpicSpawners.getInstance().getLocale().getMessage("event.upgrade.cannotafford"));
+            EpicSpawners.getInstance().getLocale().getMessage("event.upgrade.cannotafford").sendPrefixedMessage(player);
             return;
         }
         SpawnerChangeEvent event = new SpawnerChangeEvent(player, this, getFirstStack().getSpawnerData(), type);
@@ -180,7 +179,7 @@ public class Spawner {
         }
         this.creatureSpawner.update();
 
-        player.sendMessage(References.getPrefix() + EpicSpawners.getInstance().getLocale().getMessage("event.convert.success"));
+        EpicSpawners.getInstance().getLocale().getMessage("event.convert.success").sendPrefixedMessage(player);
 
         if (instance.getHologram() != null)
             instance.getHologram().update(this);
@@ -288,7 +287,7 @@ public class Spawner {
         int currentStackSize = getSpawnerDataCount();
 
         if (getSpawnerDataCount() == max) {
-            player.sendMessage(References.getPrefix() + instance.getLocale().getMessage("event.upgrade.maxed", max));
+            instance.getLocale().getMessage("event.upgrade.maxed").sendPrefixedMessage(player);
             return false;
         }
 
@@ -328,6 +327,7 @@ public class Spawner {
     }
 
     private void upgradeFinal(Player player, int oldStackSize) {
+        EpicSpawners plugin = EpicSpawners.getInstance();
         int currentStackSize = getSpawnerDataCount();
 
         SpawnerChangeEvent event = new SpawnerChangeEvent(player, this, currentStackSize, oldStackSize);
@@ -335,23 +335,25 @@ public class Spawner {
         if (event.isCancelled()) return;
 
         if (getSpawnerDataCount() != Setting.SPAWNERS_MAX.getInt())
-            player.sendMessage(References.getPrefix() + EpicSpawners.getInstance().getLocale().getMessage("event.upgrade.success", currentStackSize));
+            plugin.getLocale().getMessage("event.upgrade.success")
+                    .processPlaceholder("level", currentStackSize).sendPrefixedMessage(player);
         else
-            player.sendMessage(References.getPrefix() + EpicSpawners.getInstance().getLocale().getMessage("event.upgrade.successmaxed", currentStackSize));
+            plugin.getLocale().getMessage("event.upgrade.successmaxed")
+                    .processPlaceholder("level", currentStackSize).sendPrefixedMessage(player);
 
         Location loc = location.clone();
         loc.setX(loc.getX() + .5);
         loc.setY(loc.getY() + .5);
         loc.setZ(loc.getZ() + .5);
-        if (EpicSpawners.getInstance().isServerVersionAtLeast(ServerVersion.V1_11)) {
+        if (plugin.isServerVersionAtLeast(ServerVersion.V1_11)) {
             player.getWorld().spawnParticle(org.bukkit.Particle.valueOf(Setting.UPGRADE_PARTICLE_TYPE.getString()), loc, 100, .5, .5, .5);
         }
 
-        if (EpicSpawners.getInstance().getHologram() != null)
-            EpicSpawners.getInstance().getHologram().update(this);
+        if (plugin.getHologram() != null)
+            plugin.getHologram().update(this);
 
         if (!Setting.SOUNDS_ENABLED.getBoolean()
-                || !EpicSpawners.getInstance().isServerVersionAtLeast(ServerVersion.V1_13)) {
+                || !plugin.isServerVersionAtLeast(ServerVersion.V1_13)) {
             return;
         }
         if (currentStackSize != Setting.SPAWNERS_MAX.getInt()) {
@@ -359,8 +361,8 @@ public class Spawner {
         } else {
             player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 2F, 25.0F);
             player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 2F, 25.0F);
-            Bukkit.getScheduler().scheduleSyncDelayedTask(EpicSpawners.getInstance(), () -> player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 1.2F, 35.0F), 5L);
-            Bukkit.getScheduler().scheduleSyncDelayedTask(EpicSpawners.getInstance(), () -> player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 1.8F, 35.0F), 10L);
+            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 1.2F, 35.0F), 5L);
+            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 1.8F, 35.0F), 10L);
         }
     }
 
@@ -371,7 +373,7 @@ public class Spawner {
         boolean maxed = getSpawnerDataCount() == Setting.SPAWNERS_MAX.getInt();
 
         if (maxed) {
-            player.sendMessage(References.getPrefix() + EpicSpawners.getInstance().getLocale().getMessage("event.upgrade.maxed"));
+            plugin.getLocale().getMessage("event.upgrade.maxed").sendPrefixedMessage(player);
             return;
         }
         if (type == CostType.ECONOMY) {
@@ -380,7 +382,7 @@ public class Spawner {
                 return;
             }
             if (!plugin.getEconomy().hasBalance(player, cost)) {
-                player.sendMessage(References.getPrefix() + EpicSpawners.getInstance().getLocale().getMessage("event.upgrade.cannotafford"));
+                plugin.getLocale().getMessage("event.upgrade.cannotafford").sendPrefixedMessage(player);
                 return;
             }
             plugin.getEconomy().withdrawBalance(player, cost);
@@ -396,7 +398,7 @@ public class Spawner {
                 spawnerStacks.getFirst().setStackSize(spawnerStacks.getFirst().getStackSize() + 1);
                 upgradeFinal(player, oldMultiplier);
             } else {
-                player.sendMessage(References.getPrefix() + EpicSpawners.getInstance().getLocale().getMessage("event.upgrade.cannotafford"));
+                plugin.getLocale().getMessage("event.upgrade.cannotafford").sendPrefixedMessage(player);
             }
         }
     }
@@ -484,7 +486,7 @@ public class Spawner {
 
         if (getSpawnerDataCount() == 0) return 0;
 
-        int delay = (int)(Math.random() * max + min) + extraTicks;
+        int delay = (int) (Math.random() * max + min) + extraTicks;
 
         getCreatureSpawner().setDelay(delay);
         getCreatureSpawner().update();
@@ -554,7 +556,7 @@ public class Spawner {
     }
 
     public void addSpawn() {
-        this.spawnCount ++;
+        this.spawnCount++;
     }
 
     public String getOmniState() {

@@ -1,12 +1,10 @@
 package com.songoda.epicspawners.command.commands;
 
 import com.songoda.epicspawners.EpicSpawners;
-import com.songoda.epicspawners.References;
 import com.songoda.epicspawners.command.AbstractCommand;
 import com.songoda.epicspawners.spawners.spawner.Spawner;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.spawners.spawner.SpawnerStack;
-import com.songoda.epicspawners.utils.Methods;
 import com.songoda.epicspawners.utils.ServerVersion;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -27,14 +25,14 @@ public class CommandChange extends AbstractCommand {
     protected ReturnType runCommand(EpicSpawners instance, CommandSender sender, String... args) {
         if (args.length != 2) return ReturnType.SYNTAX_ERROR;
         if (!sender.hasPermission("epicspawners.admin") && !sender.hasPermission("epicspawners.change.*") && !sender.hasPermission("epicspawners.change." + args[1].toUpperCase())) {
-            sender.sendMessage(References.getPrefix() + instance.getLocale().getMessage("event.general.nopermission"));
+            instance.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
         Player player = (Player) sender;
         Block block = player.getTargetBlock(null, 200);
 
         if (block.getType() != (instance.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER"))) {
-            sender.sendMessage(Methods.formatText(References.getPrefix() + "&cThis is not a spawner."));
+            instance.getLocale().newMessage("&cThis is not a spawner.").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
 
@@ -66,10 +64,11 @@ public class CommandChange extends AbstractCommand {
             spawner.getCreatureSpawner().update();
             if (instance.getHologram() != null)
                 instance.getHologram().processChange(block);
-            sender.sendMessage(Methods.formatText(References.getPrefix() + "&7Successfully changed this spawner to &6" + args[1] + "&7."));
+            instance.getLocale().newMessage("&7Successfully changed this spawner to &6" + args[1] + "&7.")
+                    .sendPrefixedMessage(sender);
             return ReturnType.SUCCESS;
         } catch (Exception ee) {
-            sender.sendMessage(Methods.formatText(References.getPrefix() + "&7That entity does not exist."));
+            instance.getLocale().newMessage("&7That entity does not exist.").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
     }
@@ -79,7 +78,7 @@ public class CommandChange extends AbstractCommand {
         if (args.length == 2) {
             List<String> spawners = new ArrayList<>();
             for (SpawnerData spawnerData : instance.getSpawnerManager().getAllSpawnerData()) {
-                spawners.add(spawnerData.getIdentifyingName().replace( " ", "_"));
+                spawners.add(spawnerData.getIdentifyingName().replace(" ", "_"));
             }
             return spawners;
         }

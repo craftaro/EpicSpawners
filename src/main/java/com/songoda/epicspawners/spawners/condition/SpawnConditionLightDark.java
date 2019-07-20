@@ -21,9 +21,9 @@ public class SpawnConditionLightDark implements SpawnCondition {
     public String getDescription() {
         switch (lightDark) {
             case LIGHT:
-                return EpicSpawners.getInstance().getLocale().getMessage("interface.spawner.conditionLight");
+                return EpicSpawners.getInstance().getLocale().getMessage("interface.spawner.conditionLight").getMessage();
             case DARK:
-                return EpicSpawners.getInstance().getLocale().getMessage("interface.spawner.conditionDark");
+                return EpicSpawners.getInstance().getLocale().getMessage("interface.spawner.conditionDark").getMessage();
         }
         return null;
     }

@@ -1,7 +1,6 @@
 package com.songoda.epicspawners.command.commands;
 
 import com.songoda.epicspawners.EpicSpawners;
-import com.songoda.epicspawners.References;
 import com.songoda.epicspawners.command.AbstractCommand;
 import com.songoda.epicspawners.utils.Methods;
 import org.bukkit.command.CommandSender;
@@ -17,7 +16,8 @@ public class CommandEpicSpawners extends AbstractCommand {
     @Override
     protected ReturnType runCommand(EpicSpawners instance, CommandSender sender, String... args) {
         sender.sendMessage("");
-        sender.sendMessage(Methods.formatText(References.getPrefix() + "&7Version " + instance.getDescription().getVersion() + " Created with <3 by &5&l&oSongoda"));
+        instance.getLocale().newMessage("&7Version " + instance.getDescription().getVersion()
+                + " Created with <3 by &5&l&oSongoda").sendPrefixedMessage(sender);
 
         for (AbstractCommand command : instance.getCommandManager().getCommands()) {
             if (command.getPermissionNode() == null || sender.hasPermission(command.getPermissionNode())) {

@@ -1,7 +1,6 @@
 package com.songoda.epicspawners.gui;
 
 import com.songoda.epicspawners.EpicSpawners;
-import com.songoda.epicspawners.Locale;
 import com.songoda.epicspawners.spawners.condition.SpawnCondition;
 import com.songoda.epicspawners.spawners.spawner.Spawner;
 import com.songoda.epicspawners.spawners.spawner.SpawnerStack;
@@ -13,7 +12,6 @@ import com.songoda.epicspawners.utils.settings.Setting;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -37,9 +35,6 @@ public class GUISpawnerOverview extends AbstractGUI {
     private final Player player;
     private final EpicSpawners plugin;
 
-    private final FileConfiguration config;
-    private final Locale locale;
-
     private int infoPage = 1;
 
     private int task;
@@ -50,8 +45,6 @@ public class GUISpawnerOverview extends AbstractGUI {
         this.player = player;
         this.plugin = plugin;
 
-        this.config = plugin.getConfig();
-        this.locale = plugin.getLocale();
         init(Methods.compileName(spawner.getIdentifyingData(), spawner.getSpawnerDataCount(), false), 27);
         runTask();
     }
@@ -84,7 +77,7 @@ public class GUISpawnerOverview extends AbstractGUI {
         }
 
         ItemMeta itemmeta = item.getItemMeta();
-        itemmeta.setDisplayName(plugin.getLocale().getMessage("interface.spawner.statstitle"));
+        itemmeta.setDisplayName(plugin.getLocale().getMessage("interface.spawner.statstitle").getMessage());
         ArrayList<String> lore = new ArrayList<>();
 
         if (spawner.getSpawnerStacks().size() != 1) {
@@ -113,7 +106,8 @@ public class GUISpawnerOverview extends AbstractGUI {
             num++;
         }
 
-        String onlyStr = plugin.getLocale().getMessage("interface.spawner.onlyspawnson", only.toString());
+        String onlyStr = plugin.getLocale().getMessage("interface.spawner.onlyspawnson")
+                .processPlaceholder("block", only.toString()).getMessage();
 
         lore.addAll(Methods.wrap("7", onlyStr));
 
@@ -123,14 +117,15 @@ public class GUISpawnerOverview extends AbstractGUI {
                 if (met) {
                     met = false;
                     lore.add("");
-                    lore.add(plugin.getLocale().getMessage("interface.spawner.paused"));
+                    lore.add(plugin.getLocale().getMessage("interface.spawner.paused").getMessage());
                 }
                 lore.addAll(Methods.wrap("7", " » " + condition.getDescription()));
             }
         }
 
         lore.add("");
-        lore.add(plugin.getLocale().getMessage("interface.spawner.stats", spawner.getSpawnCount()));
+        lore.add(plugin.getLocale().getMessage("interface.spawner.stats")
+                .processPlaceholder("amount", spawner.getSpawnCount()).getMessage());
         itemmeta.setLore(lore);
         item.setItemMeta(itemmeta);
 
@@ -144,23 +139,25 @@ public class GUISpawnerOverview extends AbstractGUI {
 
         ItemStack itemXP = new ItemStack(Material.valueOf(plugin.getConfig().getString("Interfaces.XP Icon")), 1);
         ItemMeta itemmetaXP = itemXP.getItemMeta();
-        itemmetaXP.setDisplayName(plugin.getLocale().getMessage("interface.spawner.upgradewithxp"));
+        itemmetaXP.setDisplayName(plugin.getLocale().getMessage("interface.spawner.upgradewithxp").getMessage());
         ArrayList<String> loreXP = new ArrayList<>();
         if (!maxed)
-            loreXP.add(plugin.getLocale().getMessage("interface.spawner.upgradewithxplore", Integer.toString(xpCost)));
+            loreXP.add(plugin.getLocale().getMessage("interface.spawner.upgradewithxplore")
+                    .processPlaceholder("cost", Integer.toString(xpCost)).getMessage());
         else
-            loreXP.add(plugin.getLocale().getMessage("event.upgrade.maxed"));
+            loreXP.add(plugin.getLocale().getMessage("event.upgrade.maxed").getMessage());
         itemmetaXP.setLore(loreXP);
         itemXP.setItemMeta(itemmetaXP);
 
         ItemStack itemECO = new ItemStack(Material.valueOf(plugin.getConfig().getString("Interfaces.Economy Icon")), 1);
         ItemMeta itemmetaECO = itemECO.getItemMeta();
-        itemmetaECO.setDisplayName(plugin.getLocale().getMessage("interface.spawner.upgradewitheconomy"));
+        itemmetaECO.setDisplayName(plugin.getLocale().getMessage("interface.spawner.upgradewitheconomy").getMessage());
         ArrayList<String> loreECO = new ArrayList<>();
         if (!maxed)
-            loreECO.add(plugin.getLocale().getMessage("interface.spawner.upgradewitheconomylore", Methods.formatEconomy(ecoCost)));
+            loreECO.add(plugin.getLocale().getMessage("interface.spawner.upgradewitheconomylore")
+                    .processPlaceholder("cost", Methods.formatEconomy(ecoCost)).getMessage());
         else
-            loreECO.add(plugin.getLocale().getMessage("event.upgrade.maxed"));
+            loreECO.add(plugin.getLocale().getMessage("event.upgrade.maxed").getMessage());
         itemmetaECO.setLore(loreECO);
         itemECO.setItemMeta(itemmetaECO);
 
@@ -185,7 +182,8 @@ public class GUISpawnerOverview extends AbstractGUI {
         inventory.setItem(26, BACKGROUND_GLASS_TYPE_2);
 
         if (player.hasPermission("epicspawners.convert") && spawner.getSpawnerStacks().size() == 1) {
-            createButton(4, Setting.CONVERT_ICON.getMaterial(), plugin.getLocale().getMessage("interface.spawner.convert"));
+            createButton(4, Setting.CONVERT_ICON.getMaterial(),
+                    plugin.getLocale().getMessage("interface.spawner.convert").getMessage());
             registerClickable(4, (player, inventory, cursor, slot, type) ->
                     new GUISpawnerConvert(plugin, spawner, player));
         }
@@ -196,16 +194,19 @@ public class GUISpawnerOverview extends AbstractGUI {
             if (spawner.getBoost() != 0) {
 
                 // ToDo: Make it display all boosts.
-                String[] parts = plugin.getLocale().getMessage("interface.spawner.boostedstats",
-                        Integer.toString(spawner.getBoost()),
-                        spawner.getIdentifyingData().getIdentifyingName(),
-                        spawner.getBoostEnd().toEpochMilli() == Long.MAX_VALUE ? plugin.getLocale().getMessage("interface.spawner.boostednever") : Methods.makeReadable(spawner.getBoostEnd().toEpochMilli() - System.currentTimeMillis())).split("\\|");
+                String[] parts = plugin.getLocale().getMessage("interface.spawner.boostedstats")
+                        .processPlaceholder("amount", Integer.toString(spawner.getBoost()))
+                        .processPlaceholder("type", spawner.getIdentifyingData().getIdentifyingName())
+                        .processPlaceholder("time", spawner.getBoostEnd().toEpochMilli() == Long.MAX_VALUE
+                                ? plugin.getLocale().getMessage("interface.spawner.boostednever")
+                                : Methods.makeReadable(spawner.getBoostEnd().toEpochMilli() - System.currentTimeMillis()))
+                        .getMessage().split("\\|");
 
                 for (String line : parts)
                     lore.add(Methods.formatText(line));
             }
 
-            createButton(22, Setting.BOOST_ICON.getMaterial(), spawner.getBoost() == 0 ? plugin.getLocale().getMessage("interface.spawner.boost") : plugin.getLocale().getMessage("interface.spawner.cantboost"), lore);
+            createButton(22, Setting.BOOST_ICON.getMaterial(), spawner.getBoost() == 0 ? plugin.getLocale().getMessage("interface.spawner.boost").getMessage() : plugin.getLocale().getMessage("interface.spawner.cantboost").getMessage(), lore);
 
 
             if (spawner.getBoost() == 0)
@@ -216,9 +217,9 @@ public class GUISpawnerOverview extends AbstractGUI {
         if (Setting.DISPLAY_HELP_BUTTON.getBoolean()) {
             ItemStack itemO = new ItemStack(Material.PAPER, 1);
             ItemMeta itemmetaO = itemO.getItemMeta();
-            itemmetaO.setDisplayName(plugin.getLocale().getMessage("interface.spawner.howtotitle"));
+            itemmetaO.setDisplayName(plugin.getLocale().getMessage("interface.spawner.howtotitle").getMessage());
             ArrayList<String> loreO = new ArrayList<>();
-            String text = plugin.getLocale().getMessage("interface.spawner.howtoinfo");
+            String text = plugin.getLocale().getMessage("interface.spawner.howtoinfo").getMessage();
 
             int start = (14 * infoPage) - 14;
             int li = 1; // 12
@@ -251,9 +252,9 @@ public class GUISpawnerOverview extends AbstractGUI {
             }
 
             if (max) {
-                loreO.add(locale.getMessage("interface.spawner.howtonext"));
+                loreO.add(plugin.getLocale().getMessage("interface.spawner.howtonext").getMessage());
             } else {
-                loreO.add(locale.getMessage("interface.spawner.howtoback"));
+                loreO.add(plugin.getLocale().getMessage("interface.spawner.howtoback").getMessage());
             }
 
             itemmetaO.setLore(loreO);
@@ -301,9 +302,9 @@ public class GUISpawnerOverview extends AbstractGUI {
     private void addInfo(Inventory inventory) {
         ItemStack itemO = new ItemStack(Material.PAPER, 1);
         ItemMeta itemmetaO = itemO.getItemMeta();
-        itemmetaO.setDisplayName(locale.getMessage("interface.spawner.howtotitle"));
+        itemmetaO.setDisplayName(plugin.getLocale().getMessage("interface.spawner.howtotitle").getMessage());
         List<String> loreO = new ArrayList<>();
-        String text = locale.getMessage("interface.spawner.howtoinfo");
+        String text = plugin.getLocale().getMessage("interface.spawner.howtoinfo").getMessage();
 
         int start = (14 * infoPage) - 14;
         int li = 1; // 12
@@ -336,9 +337,9 @@ public class GUISpawnerOverview extends AbstractGUI {
         }
 
         if (max) {
-            loreO.add(locale.getMessage("interface.spawner.howtonext"));
+            loreO.add(plugin.getLocale().getMessage("interface.spawner.howtonext").getMessage());
         } else {
-            loreO.add(locale.getMessage("interface.spawner.howtoback"));
+            loreO.add(plugin.getLocale().getMessage("interface.spawner.howtoback").getMessage());
         }
 
         itemmetaO.setLore(loreO);

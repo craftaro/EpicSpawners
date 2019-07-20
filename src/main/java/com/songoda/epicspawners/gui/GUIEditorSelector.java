@@ -64,7 +64,7 @@ public class GUIEditorSelector extends AbstractGUI {
 
         max = (int) Math.ceil((double) totalAmount / (double) 32);
 
-        createButton(8, plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.OAK_DOOR : Material.valueOf("WOOD_DOOR"), plugin.getLocale().getMessage("general.nametag.exit"));
+        createButton(8, plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.OAK_DOOR : Material.valueOf("WOOD_DOOR"), plugin.getLocale().getMessage("general.nametag.exit").getMessage());
 
         int place = 10;
 
@@ -124,13 +124,13 @@ public class GUIEditorSelector extends AbstractGUI {
         if (page != 1) {
             createButton(slots - 8, Methods.addTexture(new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3),
                     "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23"),
-                    plugin.getLocale().getMessage("general.nametag.back"));
+                    plugin.getLocale().getMessage("general.nametag.back").getMessage());
         }
 
         if (page != max) {
             createButton(slots - 2, Methods.addTexture(new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3),
                     "http://textures.minecraft.net/texture/1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b"),
-                    plugin.getLocale().getMessage("general.nametag.next"));
+                    plugin.getLocale().getMessage("general.nametag.next").getMessage());
         }
 
 

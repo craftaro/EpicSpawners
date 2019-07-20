@@ -2,7 +2,6 @@ package com.songoda.epicspawners.command.commands;
 
 import com.google.common.collect.Iterables;
 import com.songoda.epicspawners.EpicSpawners;
-import com.songoda.epicspawners.References;
 import com.songoda.epicspawners.command.AbstractCommand;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.utils.Methods;
@@ -26,7 +25,7 @@ public class CommandGive extends AbstractCommand {
             return ReturnType.SYNTAX_ERROR;
         }
         if (Bukkit.getPlayerExact(args[1]) == null && !args[1].toLowerCase().equals("all")) {
-            sender.sendMessage(Methods.formatText(References.getPrefix() + "&cThat username does not exist, or the user is not online!"));
+            instance.getLocale().newMessage("&cThat username does not exist, or the user is not online!").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
         int multi = 1;
@@ -40,7 +39,7 @@ public class CommandGive extends AbstractCommand {
         }
 
         if (data == null && !args[2].equalsIgnoreCase("random")) {
-            sender.sendMessage(Methods.formatText(References.getPrefix() + "&7The entity Type &6" + args[2] + " &7does not exist. Try one of these:"));
+            instance.getLocale().newMessage("&7The entity Type &6" + args[2] + " &7does not exist. Try one of these:").sendPrefixedMessage(sender);
             StringBuilder list = new StringBuilder();
 
             for (SpawnerData spawnerData : instance.getSpawnerManager().getAllSpawnerData()) {
@@ -56,7 +55,7 @@ public class CommandGive extends AbstractCommand {
         }
         if (args.length == 4) {
             if (!Methods.isInt(args[3])) {
-                sender.sendMessage(Methods.formatText(References.getPrefix() + "&6" + args[3] + "&7 is not a number."));
+                instance.getLocale().newMessage("&6" + args[3] + "&7 is not a number.").sendPrefixedMessage(sender);
                 return ReturnType.SYNTAX_ERROR;
             }
             int amt = Integer.parseInt(args[3]);
@@ -64,22 +63,22 @@ public class CommandGive extends AbstractCommand {
             if (args[1].toLowerCase().equals("all")) {
                 for (Player pl : Bukkit.getOnlinePlayers()) {
                     pl.getInventory().addItem(spawnerItem);
-                    pl.sendMessage(Methods.formatText(References.getPrefix() + instance.getLocale().getMessage("command.give.success", amt, Methods.compileName(data, multi, false))));
+                    instance.getLocale().getMessage("command.give.success").processPlaceholder("amount", amt).processPlaceholder("type", Methods.compileName(data, multi, false)).sendPrefixedMessage(pl);
                 }
             } else {
                 Player pl = Bukkit.getPlayerExact(args[1]);
                 pl.getInventory().addItem(spawnerItem);
-                pl.sendMessage(Methods.formatText(References.getPrefix() + instance.getLocale().getMessage("command.give.success", amt, Methods.compileName(data, multi, false))));
+                instance.getLocale().getMessage("command.give.success").processPlaceholder("amount", amt).processPlaceholder("type", Methods.compileName(data, multi, false)).sendPrefixedMessage(pl);
 
             }
             return ReturnType.FAILURE;
         }
         if (!Methods.isInt(args[3])) {
-            sender.sendMessage(Methods.formatText(References.getPrefix() + "&6" + args[3] + "&7 is not a number."));
+            instance.getLocale().newMessage("&6" + args[3] + "&7 is not a number.").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
         if (!Methods.isInt(args[4])) {
-            sender.sendMessage(Methods.formatText(References.getPrefix() + "&6" + args[4] + "&7 is not a number."));
+            instance.getLocale().newMessage("&6" + args[4] + "&7 is not a number.").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
         int amt = Integer.parseInt(args[3]);
@@ -88,19 +87,19 @@ public class CommandGive extends AbstractCommand {
         ItemStack spawnerItem = data.toItemStack(amt, multi);
 
         if (multi > Setting.SPAWNERS_MAX.getInt()) {
-            sender.sendMessage(Methods.formatText(References.getPrefix() + "&7 The multiplier &6" + multi + "&7 is above this spawner types maximum stack size."));
+            instance.getLocale().newMessage("&7 The multiplier &6" + multi + "&7 is above this spawner types maximum stack size.").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
 
         if (args[1].toLowerCase().equals("all")) {
             for (Player pl : Bukkit.getOnlinePlayers()) {
                 pl.getInventory().addItem(spawnerItem);
-                pl.sendMessage(Methods.formatText(References.getPrefix() + instance.getLocale().getMessage("command.give.success", amt, Methods.compileName(data, multi, false))));
+                instance.getLocale().getMessage("command.give.success").processPlaceholder("amount", amt).processPlaceholder("type", Methods.compileName(data, multi, false)).sendPrefixedMessage(pl);
             }
         } else {
             Player pl = Bukkit.getPlayerExact(args[1]);
             pl.getInventory().addItem(spawnerItem);
-            pl.sendMessage(Methods.formatText(References.getPrefix() + instance.getLocale().getMessage("command.give.success", amt, Methods.compileName(data, multi, false))));
+            instance.getLocale().getMessage("command.give.success").processPlaceholder("amount", amt).processPlaceholder("type", Methods.compileName(data, multi, false)).sendPrefixedMessage(pl);
 
         }
         return ReturnType.SUCCESS;
@@ -119,7 +118,7 @@ public class CommandGive extends AbstractCommand {
             List<String> spawners = new ArrayList<>();
             spawners.add("Random");
             for (SpawnerData spawnerData : instance.getSpawnerManager().getAllSpawnerData()) {
-                spawners.add(spawnerData.getIdentifyingName().replace( " ", "_"));
+                spawners.add(spawnerData.getIdentifyingName().replace(" ", "_"));
             }
             return spawners;
         } else if (args.length == 4) {

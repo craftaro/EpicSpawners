@@ -1,7 +1,6 @@
 package com.songoda.epicspawners.gui;
 
 import com.songoda.epicspawners.EpicSpawners;
-import com.songoda.epicspawners.References;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.utils.Methods;
 import com.songoda.epicspawners.utils.ServerVersion;
@@ -95,7 +94,7 @@ public class GUIEditorOverview extends AbstractGUI {
 
         createButton(8, Methods.addTexture(new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3),
                 "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23"),
-                plugin.getLocale().getMessage("general.nametag.back"));
+                plugin.getLocale().getMessage("general.nametag.back").getMessage());
 
         ItemStack it = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3);
 
@@ -184,7 +183,7 @@ public class GUIEditorOverview extends AbstractGUI {
                 new GUIEditorEdit(plugin, this, spawnerData, GUIEditorEdit.EditType.ITEM, player)));
 
         registerClickable(43, ((player1, inventory1, cursor, slot, type) ->
-            new GUIEditorEdit(plugin, this, spawnerData, GUIEditorEdit.EditType.COMMAND, player)));
+                new GUIEditorEdit(plugin, this, spawnerData, GUIEditorEdit.EditType.COMMAND, player)));
 
         registerClickable(24, ((player1, inventory1, cursor, slot, type) ->
                 new GUIEditorEdit(plugin, this, spawnerData, GUIEditorEdit.EditType.DROPS, player)));
@@ -206,7 +205,8 @@ public class GUIEditorOverview extends AbstractGUI {
         registerClickable(11, (player, inventory, cursor, slot, type) -> {
             if (type == ClickType.RIGHT) {
                 spawnerData.setDisplayItem(Material.valueOf(player.getInventory().getItemInHand().getType().toString()));
-                player.sendMessage(Methods.formatText(References.getPrefix() + "&7Display Item for &6" + spawnerData.getIdentifyingName() + " &7set to &6" + player.getInventory().getItemInHand().getType().toString() + "&7."));
+                plugin.getLocale().newMessage("&7Display Item for &6" + spawnerData.getIdentifyingName() + " &7set to &6" + player.getInventory().getItemInHand().getType().toString() + "&7.")
+                        .sendPrefixedMessage(player);
                 constructGUI();
             } else if (type == ClickType.LEFT) {
                 AbstractAnvilGUI gui = new AbstractAnvilGUI(player, event ->

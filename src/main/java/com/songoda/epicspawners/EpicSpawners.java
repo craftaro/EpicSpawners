@@ -31,6 +31,7 @@ import com.songoda.epicspawners.utils.Methods;
 import com.songoda.epicspawners.utils.Metrics;
 import com.songoda.epicspawners.utils.ServerVersion;
 import com.songoda.epicspawners.utils.gui.AbstractGUI;
+import com.songoda.epicspawners.utils.locale.Locale;
 import com.songoda.epicspawners.utils.settings.Setting;
 import com.songoda.epicspawners.utils.settings.SettingsManager;
 import com.songoda.epicspawners.utils.updateModules.LocaleModule;
@@ -97,7 +98,9 @@ public class EpicSpawners extends JavaPlugin {
         this.settingsManager = new SettingsManager(this);
         this.settingsManager.setupConfig();
 
-        this.setupLanguage();
+        // Setup language
+        new Locale(this, "en_US");
+        this.locale = Locale.getLocale(getConfig().getString("System.Language Mode"));
 
         //Running Songoda Updater
         Plugin plugin = new Plugin(this, 13);
@@ -278,13 +281,6 @@ public class EpicSpawners extends JavaPlugin {
         return serverVersion.ordinal() >= version.ordinal();
     }
 
-    private void setupLanguage() {
-        String langMode = getConfig().getString("System.Language Mode");
-        Locale.init(this);
-        Locale.saveDefaultLocale("en_US");
-        this.locale = Locale.getLocale(getConfig().getString("System.Language Mode", langMode));
-    }
-
     private void enabledRecipe() {
         top:
         for (SpawnerData spawnerData : spawnerManager.getAllSpawnerData()) {
@@ -334,8 +330,7 @@ public class EpicSpawners extends JavaPlugin {
     }
 
     public void reload() {
-        String langMode = getConfig().getString("System.Language Mode");
-        this.locale = Locale.getLocale(getConfig().getString("System.Language Mode", langMode));
+        this.locale = Locale.getLocale(getConfig().getString("System.Language Mode"));
         this.locale.reloadMessages();
         this.blacklistHandler.reload();
         this.settingsManager.reloadConfig();

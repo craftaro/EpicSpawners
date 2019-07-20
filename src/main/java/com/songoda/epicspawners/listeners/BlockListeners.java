@@ -1,7 +1,6 @@
 package com.songoda.epicspawners.listeners;
 
 import com.songoda.epicspawners.EpicSpawners;
-import com.songoda.epicspawners.References;
 import com.songoda.epicspawners.api.events.SpawnerBreakEvent;
 import com.songoda.epicspawners.api.events.SpawnerChangeEvent;
 import com.songoda.epicspawners.api.events.SpawnerPlaceEvent;
@@ -40,7 +39,7 @@ public class BlockListeners implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onBlockFromTo(BlockFromToEvent e) {
-            if (doLiquidRepel(e.getBlock(), false)) e.setCancelled(true);
+        if (doLiquidRepel(e.getBlock(), false)) e.setCancelled(true);
     }
 
     private boolean doLiquidRepel(Block block, boolean from) {
@@ -84,9 +83,9 @@ public class BlockListeners implements Listener {
             }
 
             if (plugin.getConfig().getBoolean("Main.Deny Place On Force Combine"))
-                player.sendMessage(References.getPrefix() + plugin.getLocale().getMessage("event.block.forcedeny"));
+                plugin.getLocale().getMessage("event.block.forcedeny").sendPrefixedMessage(player);
             else if (spawner.stack(player, placedSpawner.getFirstStack().getSpawnerData(), placedSpawner.getSpawnerDataCount()))
-                player.sendMessage(References.getPrefix() + plugin.getLocale().getMessage("event.block.mergedistance"));
+                plugin.getLocale().getMessage("event.block.mergedistance").sendPrefixedMessage(player);
             return true;
         }
         return false;
@@ -135,7 +134,8 @@ public class BlockListeners implements Listener {
             int maxSpawners = maxSpawners(player);
 
             if (maxSpawners != -1 && amountPlaced > maxSpawners) {
-                player.sendMessage(plugin.getLocale().getMessage("event.spawner.toomany", maxSpawners));
+                player.sendMessage(plugin.getLocale().getMessage("event.spawner.toomany")
+                        .processPlaceholder("amount", maxSpawners).getMessage());
                 event.setCancelled(true);
                 return;
             }
@@ -150,7 +150,9 @@ public class BlockListeners implements Listener {
             plugin.getSpawnerManager().addSpawnerToWorld(location, spawner);
 
             if (plugin.getConfig().getBoolean("Main.Alerts On Place And Break"))
-                player.sendMessage(References.getPrefix() + plugin.getLocale().getMessage("event.block.place", Methods.compileName(spawnerData, spawner.getFirstStack().getStackSize(), false)));
+                plugin.getLocale().getMessage("event.block.place")
+                        .processPlaceholder("type", Methods.compileName(spawnerData, spawner.getFirstStack().getStackSize(), false))
+                        .sendPrefixedMessage(player);
 
             CreatureSpawner creatureSpawner = spawner.getCreatureSpawner();
             if (creatureSpawner == null) return;
@@ -240,7 +242,9 @@ public class BlockListeners implements Listener {
 
             if (spawner.getFirstStack().getSpawnerData().getPickupCost() != 0 && (!naturalOnly || spawner.getPlacedBy() == null)) {
                 if (!plugin.getSpawnerManager().hasCooldown(spawner)) {
-                    player.sendMessage(References.getPrefix() + plugin.getLocale().getMessage("event.block.chargebreak", spawner.getFirstStack().getSpawnerData().getPickupCost()));
+                    plugin.getLocale().getMessage("event.block.chargebreak")
+                            .processPlaceholder("cost", spawner.getFirstStack().getSpawnerData().getPickupCost())
+                            .sendPrefixedMessage(player);
                     plugin.getSpawnerManager().addCooldown(spawner);
                     Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> plugin.getSpawnerManager().removeCooldown(spawner), 300L);
                     event.setCancelled(true);
@@ -253,7 +257,7 @@ public class BlockListeners implements Listener {
                 if (plugin.getEconomy().hasBalance(player, cost)) {
                     plugin.getEconomy().withdrawBalance(player, cost);
                 } else {
-                    player.sendMessage(References.getPrefix() + plugin.getLocale().getMessage("event.block.cannotbreak"));
+                    plugin.getLocale().getMessage("event.block.cannotbreak").sendPrefixedMessage(player);
                     event.setCancelled(true);
                     return;
                 }
@@ -264,9 +268,9 @@ public class BlockListeners implements Listener {
             if (spawner.unstack(event.getPlayer())) {
                 if (plugin.getConfig().getBoolean("Main.Alerts On Place And Break")) {
                     if (spawner.getSpawnerStacks().size() != 0) {
-                        player.sendMessage(References.getPrefix() + plugin.getLocale().getMessage("event.downgrade.success", Integer.toString(spawner.getSpawnerDataCount())));
+                        plugin.getLocale().getMessage("event.downgrade.success").processPlaceholder("level", Integer.toString(spawner.getSpawnerDataCount())).sendPrefixedMessage(player);
                     } else {
-                        player.sendMessage(References.getPrefix() + plugin.getLocale().getMessage("event.block.break", Methods.compileName(firstData, currentStackSize, true)));
+                        plugin.getLocale().getMessage("event.block.break").processPlaceholder("type", Methods.compileName(firstData, currentStackSize, true)).sendPrefixedMessage(player);
                     }
                 }
             }

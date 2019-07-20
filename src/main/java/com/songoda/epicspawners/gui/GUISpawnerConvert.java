@@ -65,7 +65,7 @@ public class GUISpawnerConvert extends AbstractGUI {
             slots = 45;
         }
 
-        init(plugin.getLocale().getMessage("interface.convert.title"), slots);
+        init(plugin.getLocale().getMessage("interface.convert.title").getMessage(), slots);
     }
 
     @Override
@@ -94,8 +94,8 @@ public class GUISpawnerConvert extends AbstractGUI {
             ArrayList<String> lore = new ArrayList<>();
             double price = spawnerData.getConvertPrice() * spawner.getSpawnerDataCount();
 
-            lore.add(plugin.getLocale().getMessage("interface.shop.buyprice", Methods.formatEconomy(price)));
-            String loreString = plugin.getLocale().getMessage("interface.convert.lore", Methods.getTypeFromString(spawnerData.getIdentifyingName()));
+            lore.add(plugin.getLocale().getMessage("interface.shop.buyprice").processPlaceholder("cost", Methods.formatEconomy(price)).getMessage());
+            String loreString = plugin.getLocale().getMessage("interface.convert.lore").getMessage();
             if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
                 loreString = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, loreString.replace(" ", "_")).replace("_", " ");
             }
@@ -139,20 +139,20 @@ public class GUISpawnerConvert extends AbstractGUI {
         inventory.setItem(slots - 3, Methods.getBackgroundGlass(false));
 
         createButton(8, Material.valueOf(plugin.getConfig().getString("Interfaces.Exit Icon")),
-                plugin.getLocale().getMessage("general.nametag.back"));
+                plugin.getLocale().getMessage("general.nametag.back").getMessage());
 
         ItemStack head = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3);
         ItemStack skull = Methods.addTexture(head, "http://textures.minecraft.net/texture/1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b");
         SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
         skull.setDurability((short) 3);
-        skullMeta.setDisplayName(plugin.getLocale().getMessage("general.nametag.next"));
+        skullMeta.setDisplayName(plugin.getLocale().getMessage("general.nametag.next").getMessage());
         skull.setItemMeta(skullMeta);
 
         ItemStack head2 = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3);
         ItemStack skull2 = Methods.addTexture(head2, "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23");
         SkullMeta skull2Meta = (SkullMeta) skull2.getItemMeta();
         skull2.setDurability((short) 3);
-        skull2Meta.setDisplayName(plugin.getLocale().getMessage("general.nametag.back"));
+        skull2Meta.setDisplayName(plugin.getLocale().getMessage("general.nametag.back").getMessage());
         skull2.setItemMeta(skull2Meta);
 
         if (page != 1) inventory.setItem(slots - 8, skull2);
