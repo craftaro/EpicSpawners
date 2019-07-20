@@ -137,7 +137,7 @@ public enum Setting {
 
     TIER_NAMES("Main.Tier Names", Arrays.asList("&7Common", "&6Uncommon", "&4Rare", "&5Mythic"),
             "The names of each spawner tier.",
-            "Where one spawner is common, two is uncommon, three is rate, and four and mythic."),
+            "Where one spawner is common, two is uncommon, three is rare, and four is mythic."),
 
     MAX_PLAYER_BOOST("Spawner Boosting.Max Multiplier For A Spawner Boost", 5,
             "The highest multiplier a spawner can be boosted to."),
