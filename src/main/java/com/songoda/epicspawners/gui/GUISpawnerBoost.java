@@ -175,58 +175,59 @@ public class GUISpawnerBoost extends AbstractGUI {
     }
 
     private void purchaseBoost(Player player, int time, int amt) {
-            Location location = spawner.getLocation();
-            player.closeInventory();
+        Location location = spawner.getLocation();
+        player.closeInventory();
         EpicSpawners instance = plugin;
 
         String un = plugin.getConfig().getString("Spawner Boosting.Item Charged For A Boost");
 
-            String[] parts = un.split(":");
+        String[] parts = un.split(":");
 
-            String type = parts[0];
-            String multi = parts[1];
-            int cost = Methods.boostCost(multi, time, amt);
-            if (!type.equals("ECO") && !type.equals("XP")) {
-                ItemStack stack = new ItemStack(Material.valueOf(type));
-                int invAmt = Methods.getAmountInInventory(player.getInventory(), stack);
-                if (invAmt >= cost) {
-                    stack.setAmount(cost);
-                    Methods.removeFromInventory(player.getInventory(), stack);
-                } else {
-                    plugin.getLocale().getMessage("event.upgrade.cannotafford").sendPrefixedMessage(player);
-                    return;
-                }
-            } else if (type.equals("ECO")) {
-                if (plugin.getEconomy() != null) {
-                    if (plugin.getEconomy().hasBalance(player, cost)) {
-                        plugin.getEconomy().withdrawBalance(player, cost);
-                    } else {
-                        plugin.getLocale().getMessage("event.upgrade.cannotafford").sendPrefixedMessage(player);
-                        return;
-                    }
-                } else {
-                    player.sendMessage("Economy not enabled.");
-                    return;
-                }
-            } else if (type.equals("XP")) {
-                if (player.getLevel() >= cost || player.getGameMode() == GameMode.CREATIVE) {
-                    if (player.getGameMode() != GameMode.CREATIVE) {
-                        player.setLevel(player.getLevel() - cost);
-                    }
-                } else {
-                    plugin.getLocale().getMessage("event.upgrade.cannotafford").sendPrefixedMessage(player);
-                    return;
-                }
+        String type = parts[0];
+        String multi = parts[1];
+        int cost = Methods.boostCost(multi, time, amt);
+        if (!type.equals("ECO") && !type.equals("XP")) {
+            ItemStack stack = new ItemStack(Material.valueOf(type));
+            int invAmt = Methods.getAmountInInventory(player.getInventory(), stack);
+            if (invAmt >= cost) {
+                stack.setAmount(cost);
+                Methods.removeFromInventory(player.getInventory(), stack);
+            } else {
+                plugin.getLocale().getMessage("event.upgrade.cannotafford").sendPrefixedMessage(player);
+                return;
             }
-            Calendar c = Calendar.getInstance();
-            Date currentDate = new Date();
-            c.setTime(currentDate);
-            c.add(Calendar.MINUTE, time);
+        } else if (type.equals("ECO")) {
+            if (plugin.getEconomy() != null) {
+                if (plugin.getEconomy().hasBalance(player, cost)) {
+                    plugin.getEconomy().withdrawBalance(player, cost);
+                } else {
+                    plugin.getLocale().getMessage("event.upgrade.cannotafford").sendPrefixedMessage(player);
+                    return;
+                }
+            } else {
+                player.sendMessage("Economy not enabled.");
+                return;
+            }
+        } else if (type.equals("XP")) {
+            if (player.getLevel() >= cost || player.getGameMode() == GameMode.CREATIVE) {
+                if (player.getGameMode() != GameMode.CREATIVE) {
+                    player.setLevel(player.getLevel() - cost);
+                }
+            } else {
+                plugin.getLocale().getMessage("event.upgrade.cannotafford").sendPrefixedMessage(player);
+                return;
+            }
+        }
+        Calendar c = Calendar.getInstance();
+        Date currentDate = new Date();
+        c.setTime(currentDate);
+        c.add(Calendar.MINUTE, time);
 
 
-            BoostData boostData = new BoostData(BoostType.LOCATION, amt, c.getTime().getTime(), location);
-            instance.getBoostManager().addBoostToSpawner(boostData);
-            plugin.getLocale().getMessage("event.boost.applied").sendPrefixedMessage(player);
+        BoostData boostData = new BoostData(BoostType.LOCATION, amt, c.getTime().getTime(), location);
+        instance.getBoostManager().addBoostToSpawner(boostData);
+        plugin.getLocale().getMessage("event.boost.applied").sendPrefixedMessage(player);
+        if (instance.isServerVersionAtLeast(ServerVersion.V1_9))
             player.playSound(location, Sound.ENTITY_VILLAGER_YES, 1, 1);
     }
 
