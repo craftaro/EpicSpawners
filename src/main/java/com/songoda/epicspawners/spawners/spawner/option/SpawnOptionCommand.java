@@ -60,6 +60,11 @@ public class SpawnOptionCommand implements SpawnOption {
                     }
                 }
 
+                // Add the world name if @w present in command
+                if (lowercaseCommand.contains("@w")) {
+                    finalCommand = finalCommand.replaceAll("@[wW]]", location.getWorld().getName());
+                }
+
                 // Get nearest player if @p is present in command
                 if (lowercaseCommand.contains("@p")) {
                     Player nearbyPlayer = getNearestPlayer(location);
