@@ -81,6 +81,11 @@ public final class SpawnerDataBuilder {
         return this;
     }
 
+    public SpawnerDataBuilder spawnLimit(int spawnLimit) {
+        this.spawnerData.setSpawnLimit(spawnLimit);
+        return this;
+    }
+
 
     public SpawnerDataBuilder inShop() {
         return inShop(true);

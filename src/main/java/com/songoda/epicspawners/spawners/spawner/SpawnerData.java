@@ -33,6 +33,7 @@ public class SpawnerData {
     private double upgradeCostEconomy = 0.0;
     private int upgradeCostExperience = 0;
     private int killGoal = 0;
+    private int spawnLimit = -1;
     private String displayName;
     private Material displayItem = null;
 
@@ -381,6 +382,13 @@ public class SpawnerData {
         this.spawnEffectParticle = spawnEffectParticle;
     }
 
+    public void setSpawnLimit(int spawnLimit) {
+        this.spawnLimit = spawnLimit;
+    }
+
+    public int getSpawnLimit() {
+        return spawnLimit;
+    }
 
     public ParticleType getEntitySpawnParticle() {
         return entitySpawnParticle;
@@ -494,5 +502,4 @@ public class SpawnerData {
     public String toString() {
         return "SpawnerData:{Name:\"" + name + "\"}";
     }
-
 }

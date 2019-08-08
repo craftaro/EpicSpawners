@@ -232,6 +232,7 @@ public class SpawnerManager {
         spawnerConfig.addDefault(section + ".CustomGoal", 0);
         spawnerConfig.addDefault(section + ".Custom-ECO-Cost", 0);
         spawnerConfig.addDefault(section + ".Custom-XP-Cost", 0);
+        spawnerConfig.addDefault(section + ".Spawn-Limit", -1);
         spawnerConfig.addDefault(section + ".Tick-Rate", "800:200");
         spawnerConfig.addDefault(section + ".Spawn-Effect", "NONE");
         spawnerConfig.addDefault(section + ".Spawn-Effect-Particle", "REDSTONE");
@@ -319,6 +320,10 @@ public class SpawnerManager {
                     .spawnerSpawnParticle(ParticleType.valueOf(currentSection.getString("Spawner-Spawn-Particle", "FIRE")))
                     .particleDensity(ParticleDensity.valueOf(currentSection.getString("Particle-Amount", "NORMAL")))
                     .particleEffectBoostedOnly(currentSection.getBoolean("Particle-Effect-Boosted-Only"));
+
+            if (currentSection.contains("Spawn-Limit")) {
+                dataBuilder.spawnLimit(currentSection.getInt("Spawn-Limit"));
+            }
 
             if (currentSection.contains("custom")) {
                 dataBuilder.isCustom(currentSection.getBoolean("custom"));
