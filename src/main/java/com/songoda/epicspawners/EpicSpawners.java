@@ -26,6 +26,7 @@ import com.songoda.epicspawners.storage.types.StorageYaml;
 import com.songoda.epicspawners.tasks.AppearanceTask;
 import com.songoda.epicspawners.tasks.SpawnerParticleTask;
 import com.songoda.epicspawners.tasks.SpawnerSpawnTask;
+import com.songoda.epicspawners.utils.EpicSpawnerProvider;
 import com.songoda.epicspawners.utils.Heads;
 import com.songoda.epicspawners.utils.Methods;
 import com.songoda.epicspawners.utils.Metrics;
@@ -37,6 +38,7 @@ import com.songoda.epicspawners.utils.settings.SettingsManager;
 import com.songoda.epicspawners.utils.updateModules.LocaleModule;
 import com.songoda.update.Plugin;
 import com.songoda.update.SongodaUpdate;
+import net.brcdev.shopgui.ShopGuiPlusApi;
 import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -151,6 +153,13 @@ public class EpicSpawners extends JavaPlugin {
 
         // Load Spawners
         Bukkit.getScheduler().runTaskLater(this, this::loadData, 10);
+
+        // ShopGUI+ support
+        if (Bukkit.getPluginManager().isPluginEnabled("ShopGUIPlus")) {
+            try {
+                ShopGuiPlusApi.registerSpawnerProvider(new EpicSpawnerProvider());
+            } catch (Exception ignored) {}
+        }
 
         // Start Metrics
         new Metrics(this);
