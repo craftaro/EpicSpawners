@@ -26,7 +26,6 @@ import com.songoda.epicspawners.storage.types.StorageYaml;
 import com.songoda.epicspawners.tasks.AppearanceTask;
 import com.songoda.epicspawners.tasks.SpawnerParticleTask;
 import com.songoda.epicspawners.tasks.SpawnerSpawnTask;
-import com.songoda.epicspawners.utils.EpicSpawnerProvider;
 import com.songoda.epicspawners.utils.Heads;
 import com.songoda.epicspawners.utils.Methods;
 import com.songoda.epicspawners.utils.Metrics;
@@ -38,7 +37,6 @@ import com.songoda.epicspawners.utils.settings.SettingsManager;
 import com.songoda.epicspawners.utils.updateModules.LocaleModule;
 import com.songoda.update.Plugin;
 import com.songoda.update.SongodaUpdate;
-import net.brcdev.shopgui.ShopGuiPlusApi;
 import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -157,7 +155,10 @@ public class EpicSpawners extends JavaPlugin {
         // ShopGUI+ support
         if (Bukkit.getPluginManager().isPluginEnabled("ShopGUIPlus")) {
             try {
-                ShopGuiPlusApi.registerSpawnerProvider(new EpicSpawnerProvider());
+                // For some reason simply creating a new instance of the class without ShopGUIPlus being installed was giving a NoClassDefFoundError.
+                // We're using reflection to get around this problem.
+                Object provider = Class.forName("com.songoda.epicspawners.utils.EpicSpawnerProvider").newInstance();
+                net.brcdev.shopgui.ShopGuiPlusApi.registerSpawnerProvider((net.brcdev.shopgui.spawner.external.provider.ExternalSpawnerProvider) provider);
             } catch (Exception ignored) {}
         }
 
