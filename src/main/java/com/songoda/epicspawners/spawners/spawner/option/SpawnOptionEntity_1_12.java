@@ -23,6 +23,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -57,7 +58,7 @@ public class SpawnOptionEntity_1_12 implements SpawnOption {
         this.mgr = new ScriptEngineManager();
         this.engine = mgr.getEngineByName("JavaScript");
         if (Bukkit.getPluginManager().isPluginEnabled("UltimateStacker")) {
-            this.useUltimateStacker = UltimateStacker.getInstance().getConfig().getBoolean("Entities.Enabled");
+            this.useUltimateStacker = ((JavaPlugin) UltimateStacker.getInstance()).getConfig().getBoolean("Entities.Enabled");
         }
         init();
     }
@@ -166,7 +167,7 @@ public class SpawnOptionEntity_1_12 implements SpawnOption {
         spawnCount = Math.min((useUltimateStacker ? 99999 : limit) - amt.size(), spawnCount) + spawner.getBoost();
 
         boolean useUltimateStacker = (this.useUltimateStacker
-                && spawnCount >= UltimateStacker.getInstance().getConfig().getInt("Entities.Min Stack Amount"));
+                && spawnCount >= ((JavaPlugin) UltimateStacker.getInstance()).getConfig().getInt("Entities.Min Stack Amount"));
 
         int spawnCountUsed = useUltimateStacker ? 1 : spawnCount;
 
