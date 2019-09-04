@@ -33,8 +33,6 @@ public class Spawner {
     private String omniState = null;
     private UUID placedBy = null;
     private CreatureSpawner creatureSpawner = null;
-    //ToDo: Use this for all spawner things (Like items, commands and what not) instead of the old shit
-    //ToDO: There is a weird error that is triggered when a spawner is not found in the config.
 
     public Spawner(Location location) {
         this.location = location;
@@ -68,6 +66,22 @@ public class Spawner {
         for (SpawnerStack stack : getSpawnerStacks()) {
             stack.getSpawnerData().spawn(this, stack);
         }
+
+        if (spawnerData.getSpawnLimit() != -1 && spawnCount * spawnerStacks.size() > spawnerData.getSpawnLimit()) {
+            this.location.getBlock().setType(Material.AIR);
+
+            if (instance.isServerVersionAtLeast(ServerVersion.V1_9))
+                location.getWorld().spawnParticle(Particle.LAVA, location.clone().add(.5, .5, .5), 5, 0, 0, 0, 5);
+            location.getWorld().playSound(location, instance.isServerVersionAtLeast(ServerVersion.V1_13)
+                    ? Sound.ENTITY_GENERIC_EXPLODE : Sound.valueOf("EXPLODE"), 10, 10);
+
+            instance.getSpawnerManager().removeSpawnerFromWorld(location);
+            if (instance.getHologram() != null)
+                instance.getHologram().remove(this);
+            return true;
+        }
+
+
         updateDelay();
 
         return true;

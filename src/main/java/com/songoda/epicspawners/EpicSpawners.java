@@ -152,6 +152,16 @@ public class EpicSpawners extends JavaPlugin {
         // Load Spawners
         Bukkit.getScheduler().runTaskLater(this, this::loadData, 10);
 
+        // ShopGUI+ support
+        if (Bukkit.getPluginManager().isPluginEnabled("ShopGUIPlus")) {
+            try {
+                // For some reason simply creating a new instance of the class without ShopGUIPlus being installed was giving a NoClassDefFoundError.
+                // We're using reflection to get around this problem.
+                Object provider = Class.forName("com.songoda.epicspawners.utils.EpicSpawnerProvider").newInstance();
+                net.brcdev.shopgui.ShopGuiPlusApi.registerSpawnerProvider((net.brcdev.shopgui.spawner.external.provider.ExternalSpawnerProvider) provider);
+            } catch (Exception ignored) {}
+        }
+
         // Start Metrics
         new Metrics(this);
 
