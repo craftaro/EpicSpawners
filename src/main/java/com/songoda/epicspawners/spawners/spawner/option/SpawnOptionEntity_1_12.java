@@ -57,7 +57,7 @@ public class SpawnOptionEntity_1_12 implements SpawnOption {
         this.mgr = new ScriptEngineManager();
         this.engine = mgr.getEngineByName("JavaScript");
         if (Bukkit.getPluginManager().isPluginEnabled("UltimateStacker")) {
-            this.useUltimateStacker = com.songoda.ultimatestacker.utils.settings.Setting.STACK_ENTITIES.getBoolean();
+            this.useUltimateStacker = UltimateStacker.getInstance().getConfig().getBoolean("Entities.Enabled");
         }
         init();
     }
@@ -166,7 +166,7 @@ public class SpawnOptionEntity_1_12 implements SpawnOption {
         spawnCount = Math.min((useUltimateStacker ? 99999 : limit) - amt.size(), spawnCount) + spawner.getBoost();
 
         boolean useUltimateStacker = (this.useUltimateStacker
-                && spawnCount >= com.songoda.ultimatestacker.utils.settings.Setting.MIN_STACK_ENTITIES.getInt());
+                && spawnCount >= UltimateStacker.getInstance().getConfig().getInt("Entities.Min Stack Amount"));
 
         int spawnCountUsed = useUltimateStacker ? 1 : spawnCount;
 
