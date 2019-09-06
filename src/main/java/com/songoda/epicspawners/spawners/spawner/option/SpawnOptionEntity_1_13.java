@@ -10,7 +10,6 @@ import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.spawners.spawner.SpawnerStack;
 import com.songoda.epicspawners.utils.Methods;
 import com.songoda.epicspawners.utils.settings.Setting;
-import com.songoda.ultimatestacker.UltimateStacker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -21,7 +20,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.Plugin;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -58,7 +57,7 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
         this.mgr = new ScriptEngineManager();
         this.engine = mgr.getEngineByName("JavaScript");
         if (Bukkit.getPluginManager().isPluginEnabled("UltimateStacker")) {
-            this.useUltimateStacker = ((JavaPlugin) UltimateStacker.getInstance()).getConfig().getBoolean("Entities.Enabled");
+            this.useUltimateStacker = ((Plugin) com.songoda.ultimatestacker.UltimateStacker.getInstance()).getConfig().getBoolean("Entities.Enabled");
         }
         init();
     }
@@ -177,7 +176,7 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
         spawnCount = Math.min((useUltimateStacker ? 99999 : limit) - amt.size(), spawnCount) + spawner.getBoost();
 
         boolean useUltimateStacker = (this.useUltimateStacker
-                && spawnCount >= ((JavaPlugin) UltimateStacker.getInstance()).getConfig().getInt("Entities.Min Stack Amount"));
+                && spawnCount >= ((Plugin) com.songoda.ultimatestacker.UltimateStacker.getInstance()).getConfig().getInt("Entities.Min Stack Amount"));
 
         int spawnCountUsed = useUltimateStacker ? 1 : spawnCount;
 
@@ -186,7 +185,7 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
             Entity entity = spawnEntity(type, spawner, data);
             if (entity != null) {
                 if (useUltimateStacker)
-                    UltimateStacker.getInstance().getEntityStackManager().addStack(entity.getUniqueId(), spawnCount);
+                    com.songoda.ultimatestacker.UltimateStacker.getInstance().getEntityStackManager().addStack(entity.getUniqueId(), spawnCount);
                 spawner.setSpawnCount(spawner.getSpawnCount() + (useUltimateStacker ? spawnCount : 1));
             }
         }
