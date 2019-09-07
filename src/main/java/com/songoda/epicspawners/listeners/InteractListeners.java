@@ -166,6 +166,7 @@ public class InteractListeners implements Listener {
 
         Player player = event.getPlayer();
         Block block = event.getClickedBlock();
+        if(block == null) return;
         Location location = block.getLocation();
         ItemStack item = event.getItem();
 
