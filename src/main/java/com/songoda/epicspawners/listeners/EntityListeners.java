@@ -124,17 +124,27 @@ public class EntityListeners implements Listener {
         if (Setting.ALERT_INTERVAL.getInt() != 0
                 && amt % Setting.ALERT_INTERVAL.getInt() == 0
                 && amt != goal) {
-            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(plugin.getLocale().getMessage("event.goal.alert")
-                    .processPlaceholder("goal", goal - amt)
-                    .processPlaceholder("type", spawnerData.getIdentifyingName()).getMessage()));
+            if(plugin.isServerVersionAtLeast(ServerVersion.V1_9))
+                player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(plugin.getLocale().getMessage("event.goal.alert")
+                        .processPlaceholder("goal", goal - amt)
+                        .processPlaceholder("type", spawnerData.getIdentifyingName()).getMessage()));
+            else
+                player.sendTitle("", plugin.getLocale().getMessage("event.goal.alert")
+                        .processPlaceholder("goal", goal - amt)
+                        .processPlaceholder("type", spawnerData.getIdentifyingName()).getMessage());
         }
 
         if (amt >= goal) {
             ItemStack item = spawnerData.toItemStack();
             event.getEntity().getLocation().getWorld().dropItemNaturally(event.getEntity().getLocation(), item);
             plugin.getPlayerActionManager().getPlayerAction(player).removeEntity(event.getEntityType());
-            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(plugin.getLocale().getMessage("event.goal.reached")
-                    .processPlaceholder("type", spawnerData.getIdentifyingName()).getMessage()));
+            if(plugin.isServerVersionAtLeast(ServerVersion.V1_9))
+                player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(plugin.getLocale().getMessage("event.goal.reached")
+                        .processPlaceholder("type", spawnerData.getIdentifyingName()).getMessage()));
+            else
+                player.sendTitle("", plugin.getLocale().getMessage("event.goal.alert")
+                        .processPlaceholder("goal", goal - amt)
+                        .processPlaceholder("type", spawnerData.getIdentifyingName()).getMessage());
         }
     }
 }
