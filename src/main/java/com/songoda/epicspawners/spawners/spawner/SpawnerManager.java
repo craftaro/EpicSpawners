@@ -154,7 +154,7 @@ public class SpawnerManager {
 
     public int getAmountPlaced(Player player) {
         return Math.toIntExact(spawnersInWorld.values().stream().filter(spawner -> spawner.getPlacedBy() != null
-                && player.getUniqueId().equals(spawner.getPlacedBy().getUniqueId())).count());
+                && player.getUniqueId().equals(spawner.getPlacedBy().getUniqueId())).count()) + 1;
     }
 
     private void processDefaultSpawner(String value) {
