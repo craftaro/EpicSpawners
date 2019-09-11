@@ -95,7 +95,9 @@ public class BlockListeners implements Listener {
         int limit = -1;
         for (PermissionAttachmentInfo permissionAttachmentInfo : player.getEffectivePermissions()) {
             if (!permissionAttachmentInfo.getPermission().toLowerCase().startsWith("epicspawners.limit")) continue;
-            limit = Integer.parseInt(permissionAttachmentInfo.getPermission().split("\\.")[2]);
+            int num = Integer.parseInt(permissionAttachmentInfo.getPermission().split("\\.")[2]);
+            if (num > limit)
+                limit = num;
         }
         if (limit == -1) limit = plugin.getConfig().getInt("Main.Max Spawners Per Player");
         return limit;
