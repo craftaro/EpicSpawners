@@ -105,7 +105,7 @@ public class InteractListeners implements Listener {
 
         if (plugin.isServerVersionAtLeast(ServerVersion.V1_13))
             itype = EntityType.valueOf(item.getType().name().replace("_SPAWN_EGG", "").replace("MOOSHROOM", "MUSHROOM_COW"));
-        else if (plugin.isServerVersionAtLeast(ServerVersion.V1_12)) {
+        else if (plugin.isServerVersionAtLeast(ServerVersion.V1_11)) {
             String str = Reflection.getNBTTagCompound(Reflection.getNMSItemStack(item)).toString();
             if (str.contains("minecraft:"))
                 itype = EntityType.fromName(str.substring(str.indexOf("minecraft:") + 10, str.indexOf("\"}")));
