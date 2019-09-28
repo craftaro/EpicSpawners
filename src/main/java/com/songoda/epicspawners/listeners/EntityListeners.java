@@ -6,6 +6,7 @@ import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.spawners.spawner.SpawnerStack;
 import com.songoda.epicspawners.utils.ServerVersion;
 import com.songoda.epicspawners.utils.settings.Setting;
+import com.songoda.ultimatestacker.UltimateStacker;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Location;
@@ -22,6 +23,9 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.Configuration;
+import org.bukkit.plugin.Plugin;
 
 /**
  * Created by songoda on 2/25/2017.
@@ -29,7 +33,8 @@ import java.util.List;
 public class EntityListeners implements Listener {
 
     private final EpicSpawners plugin;
-
+    private UltimateStacker ultimateStacker = (UltimateStacker.getInstance() == null) ? null : UltimateStacker.getInstance();
+    
     public EntityListeners(EpicSpawners plugin) {
         this.plugin = plugin;
     }
@@ -110,10 +115,10 @@ public class EntityListeners implements Listener {
 
 
         if (!plugin.getSpawnerManager().getSpawnerData(event.getEntityType()).isActive()) return;
-
-        int amt = plugin.getPlayerActionManager().getPlayerAction(player).addKilledEntity(event.getEntityType());
+        
+        int amt = plugin.getPlayerActionManager().getPlayerAction(player).addKilledEntity(event.getEntityType());       
         int goal = Setting.KILL_GOAL.getInt();
-
+        
         SpawnerData spawnerData = plugin.getSpawnerManager().getSpawnerData(event.getEntityType());
 
         if (!spawnerData.isActive()) return;
@@ -146,5 +151,36 @@ public class EntityListeners implements Listener {
                         .processPlaceholder("goal", goal - amt)
                         .processPlaceholder("type", spawnerData.getIdentifyingName()).getMessage());
         }
+        
+        // bkr
+        
+        if(ultimateStacker != null) { 
+            
+            String entityType = event.getEntity().getType().toString().toLowerCase().replaceAll("_", " ");
+            String entityName = event.getEntity().getName().toLowerCase();
+      
+            if(entityType.equals("MUSHROOM_COW")) entityType = "Mooshroom";
+            
+            // Bukkit.getConsoleSender().sendMessage(entityType + " = " + entityName);
+            
+            if(!entityType.equalsIgnoreCase(entityName)) {
+                
+                if(ultimateStacker.getEntityStackManager().getStack(event.getEntity().getUniqueId()) != null) {
+                    int quantity = (ultimateStacker.getEntityStackManager().getStack(event.getEntity().getUniqueId()).getAmount());
+                    boolean killAll = ((Plugin)ultimateStacker).getConfig().getBoolean("Entities.Kill Whole Stack On Death");
+
+                    if(killAll) {
+                        for(int count = 0; count < quantity-1; count++) {
+                            plugin.getPlayerActionManager().getPlayerAction(player).addKilledEntity(event.getEntityType());
+                        }
+                    }
+                }
+            }
+        } else {
+            plugin.getPlayerActionManager().getPlayerAction(player).addKilledEntity(event.getEntityType());
+        }
+        
+        // bkr - e
+
     }
 }

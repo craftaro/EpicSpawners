@@ -103,17 +103,21 @@ public class InteractListeners implements Listener {
         int amt = player.getInventory().getItemInHand().getAmount();
         EntityType itype;
 
-        if (plugin.isServerVersionAtLeast(ServerVersion.V1_13))
+        if (plugin.isServerVersionAtLeast(ServerVersion.V1_13)) {
             itype = EntityType.valueOf(item.getType().name().replace("_SPAWN_EGG", "").replace("MOOSHROOM", "MUSHROOM_COW"));
-        else if (plugin.isServerVersionAtLeast(ServerVersion.V1_11)) {
+        } else if (plugin.isServerVersionAtLeast(ServerVersion.V1_11)) {
             String str = Reflection.getNBTTagCompound(Reflection.getNMSItemStack(item)).toString();
-            if (str.contains("minecraft:"))
+            if (str.contains("minecraft:")) {
                 itype = EntityType.fromName(str.substring(str.indexOf("minecraft:") + 10, str.indexOf("\"}")));
-            else
+            } else {
                 itype = EntityType.fromName(str.substring(str.indexOf("EntityTag:{id:") + 15, str.indexOf("\"}")));
-        } else
+            }
+        } else {
             itype = ((SpawnEgg) item.getData()).getSpawnedType();
+        }
 
+        //Bukkit.getConsoleSender().sendMessage("General -> " + itype);
+        
         SpawnerData itemType = plugin.getSpawnerManager().getSpawnerData(itype);
 
         if (!player.hasPermission("epicspawners.egg." + itype) && !player.hasPermission("epicspawners.egg.*")) {
