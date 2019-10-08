@@ -49,6 +49,7 @@ interface.spawnerstats.title = "&5&lSpawnerStats"
 interface.spawnerstats.prefix = "&7Your current spawner stats:"
 interface.spawnerstats.nokills = "&7You currently have no mob kills. Go kill something!"
 interface.boost.title = "&8Boosting %spawner% &8by %amount%"
+interface.boot.cost - "&7Costs &6&l%cost%."
 interface.boost.boostfor = "&7&lBoost for &6&l%amount% &7&lMinutes"
 
 #Command Messages

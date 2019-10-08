@@ -61,7 +61,8 @@ public class GUISpawnerBoost extends AbstractGUI {
         coalMeta.setDisplayName(plugin.getLocale().getMessage("interface.boost.boostfor")
                 .processPlaceholder("amount", "5").getMessage());
         ArrayList<String> coalLore = new ArrayList<>();
-        coalLore.add(Methods.formatText("&7Costs &6&l" + Methods.getBoostCost(5, amount) + "."));
+        coalLore.add(plugin.getLocale().getMessage("interface.boot.cost")
+                .processPlaceholder("cost", Methods.getBoostCost(5, amount)).getMessage());
         coalMeta.setLore(coalLore);
         coal.setItemMeta(coalMeta);
 
@@ -70,7 +71,8 @@ public class GUISpawnerBoost extends AbstractGUI {
         ironMeta.setDisplayName(plugin.getLocale().getMessage("interface.boost.boostfor")
                 .processPlaceholder("amount", "15").getMessage());
         ArrayList<String> ironLore = new ArrayList<>();
-        ironLore.add(Methods.formatText("&7Costs &6&l" + Methods.getBoostCost(15, amount) + "."));
+        ironLore.add(plugin.getLocale().getMessage("interface.boot.cost")
+                .processPlaceholder("cost", Methods.getBoostCost(15, amount)).getMessage());
         ironMeta.setLore(ironLore);
         iron.setItemMeta(ironMeta);
 
@@ -79,7 +81,8 @@ public class GUISpawnerBoost extends AbstractGUI {
         diamondMeta.setDisplayName(plugin.getLocale().getMessage("interface.boost.boostfor")
                 .processPlaceholder("amount", "30").getMessage());
         ArrayList<String> diamondLore = new ArrayList<>();
-        diamondLore.add(Methods.formatText("&7Costs &6&l" + Methods.getBoostCost(30, amount) + "."));
+        diamondLore.add(plugin.getLocale().getMessage("interface.boot.cost")
+                .processPlaceholder("cost", Methods.getBoostCost(30, amount)).getMessage());
         diamondMeta.setLore(diamondLore);
         diamond.setItemMeta(diamondMeta);
 
@@ -88,7 +91,8 @@ public class GUISpawnerBoost extends AbstractGUI {
         emeraldMeta.setDisplayName(plugin.getLocale().getMessage("interface.boost.boostfor")
                 .processPlaceholder("amount", "60").getMessage());
         ArrayList<String> emeraldLore = new ArrayList<>();
-        emeraldLore.add(Methods.formatText("&7Costs &6&l" + Methods.getBoostCost(60, amount) + "."));
+        emeraldLore.add(plugin.getLocale().getMessage("interface.boot.cost")
+                .processPlaceholder("cost", Methods.getBoostCost(60, amount)).getMessage());
         emeraldMeta.setLore(emeraldLore);
         emerald.setItemMeta(emeraldMeta);
 
