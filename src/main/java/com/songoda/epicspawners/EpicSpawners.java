@@ -105,14 +105,14 @@ public class EpicSpawners extends SongodaPlugin {
         this.commandManager.addCommand(new CommandEpicSpawners(this))
                 .addSubCommands(
                         new CommandGive(this),
-                        new CommandSpawnerShop(this),
-                        new CommandSpawnerStats(this),
                         new CommandBoost(this),
                         new CommandEditor(this),
                         new CommandSettings(this),
                         new CommandReload(this),
                         new CommandChange(this)
                 );
+        this.commandManager.addCommand(new CommandSpawnerStats(this));
+        this.commandManager.addCommand(new CommandSpawnerShop(this));
 
         this.heads = new Heads();
 

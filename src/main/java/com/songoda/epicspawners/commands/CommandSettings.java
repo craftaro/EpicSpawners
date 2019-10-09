@@ -30,16 +30,16 @@ public class CommandSettings extends AbstractCommand {
 
     @Override
     public String getPermissionNode() {
-        return "ultimateclaims.admin";
+        return "epicspawners.admin";
     }
 
     @Override
     public String getSyntax() {
-        return "/c settings";
+        return "/es settings";
     }
 
     @Override
     public String getDescription() {
-        return "Edit the UltimateClaims Settings.";
+        return "Edit the EpicSpawners Settings.";
     }
 }
