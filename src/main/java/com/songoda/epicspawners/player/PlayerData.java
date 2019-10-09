@@ -21,8 +21,12 @@ public class PlayerData {
     }
 
     public int addKilledEntity(EntityType type) {
+        return addKilledEntity(type, 1);
+    }
+
+    public int addKilledEntity(EntityType type, int amount) {
         if (entityKills == null) entityKills = new EnumMap<>(EntityType.class);
-        return entityKills.merge(type, 1, Integer::sum);
+        return entityKills.merge(type, amount, Integer::sum);
     }
 
     public void removeEntity(EntityType entity) {

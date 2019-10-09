@@ -150,32 +150,16 @@ public class EntityListeners implements Listener {
                         .processPlaceholder("type", spawnerData.getIdentifyingName()).getMessage());
         }
 
+        int amount = 1;
+
         if (ultimateStacker != null) {
-            String entityType = event.getEntity().getType().toString().toLowerCase().replaceAll("_", " ");
-            String entityName = event.getEntity().getName().toLowerCase();
-
-            if (entityType.equals("MUSHROOM_COW")) entityType = "Mooshroom";
-
-            if (entityType.equalsIgnoreCase(entityName)) {
-                plugin.getPlayerActionManager().getPlayerAction(player).addKilledEntity(event.getEntityType());
-                return;
-            }
-
-            if (ultimateStacker.getEntityStackManager().getStack(event.getEntity().getUniqueId()) == null) {
-                return;
-            }
-
-            int quantity = (ultimateStacker.getEntityStackManager().getStack(event.getEntity().getUniqueId()).getAmount());
             boolean killAll = ((Plugin) ultimateStacker).getConfig().getBoolean("Entities.Kill Whole Stack On Death");
-
-            if (!killAll) {
-                return;
+            if (ultimateStacker.getEntityStackManager().isStacked(event.getEntity().getUniqueId()) && killAll) {
+                amount = ultimateStacker.getEntityStackManager().getStack(event.getEntity().getUniqueId()).getAmount();
             }
-
-            for (int count = 0; count < quantity - 1; count++) {
-                plugin.getPlayerActionManager().getPlayerAction(player).addKilledEntity(event.getEntityType());
-            }
-
         }
+
+        plugin.getPlayerActionManager().getPlayerAction(player).addKilledEntity(event.getEntityType(), amount);
     }
 }
+

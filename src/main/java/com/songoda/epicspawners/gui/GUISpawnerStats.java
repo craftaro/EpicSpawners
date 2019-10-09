@@ -1,5 +1,6 @@
 package com.songoda.epicspawners.gui;
 
+import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.utils.Methods;
@@ -46,16 +47,7 @@ public class GUISpawnerStats extends AbstractGUI {
     @Override
     public void constructGUI() {
 
-        for (int i = 0; i < 9; i++) {
-            inventory.setItem(i, Methods.getGlass());
-        }
-        ItemStack exit = new ItemStack(Material.valueOf(plugin.getConfig().getString("Interfaces.Exit Icon")), 1);
-        ItemMeta exitmeta = exit.getItemMeta();
-        exitmeta.setDisplayName(plugin.getLocale().getMessage("general.nametag.exit").getMessage());
-        exit.setItemMeta(exitmeta);
-        inventory.setItem(8, exit);
-
-        short place = 9;
+        short place = 0;
         for (Map.Entry<EntityType, Integer> entry : plugin.getPlayerActionManager().getPlayerAction(player).getEntityKills().entrySet()) {
             int goal = plugin.getConfig().getInt("Spawner Drops.Kills Needed for Drop");
 
@@ -64,7 +56,7 @@ public class GUISpawnerStats extends AbstractGUI {
             int customGoal = spawnerData.getKillGoal();
             if (customGoal != 0) goal = customGoal;
 
-            ItemStack it = new ItemStack(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3);
+            ItemStack it = CompatibleMaterial.PLAYER_HEAD.getItem();
 
             ItemStack item = plugin.getHeads().addTexture(it, spawnerData);
 
@@ -81,7 +73,6 @@ public class GUISpawnerStats extends AbstractGUI {
 
     @Override
     protected void registerClickables() {
-        registerClickable(8, (player, inventory, cursor, slot, type) -> player.closeInventory());
     }
 
     @Override
