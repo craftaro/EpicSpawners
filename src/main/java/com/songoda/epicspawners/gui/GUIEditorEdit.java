@@ -164,13 +164,14 @@ public class GUIEditorEdit extends AbstractGUI {
                         List<EntityType> entities = new ArrayList<>(spawnerData.getEntities());
                         entities.add(eType);
                         spawnerData.setEntities(entities);
+                        player.closeInventory();
                         constructGUI();
+                        player.openInventory(inventory);
+                        init(setTitle, inventory.getSize());
                     } catch (Exception ex) {
                         player.sendMessage("That is not a correct EntityType. Please try again..");
                     }
                 });
-
-                gui.setOnClose((player1) -> init(setTitle, inventory.getSize()));
                 plugin.getGuiManager().showGUI(player, gui);
             });
         }

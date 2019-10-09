@@ -196,16 +196,16 @@ public class Settings {
     public static final ConfigSetting SILKTOUCH_PLACED_SPAWNER_DROP_CHANCE = new ConfigSetting(config, "Spawner Drops.Chance On Placed Silktouch", "100%",
             "Chance of a placed spawner dropping with silk touch.");
 
-    public static final ConfigSetting EXIT_ICON = new ConfigSetting(config, "Interfaces.Exit Icon", CompatibleMaterial.OAK_DOOR.getMaterial(),
+    public static final ConfigSetting EXIT_ICON = new ConfigSetting(config, "Interfaces.Exit Icon", CompatibleMaterial.OAK_DOOR.getMaterial().name(),
             "Item to be displayed as the icon for exiting the interface.");
 
     public static final ConfigSetting BUY_ICON = new ConfigSetting(config, "Interfaces.Buy Icon", "EMERALD",
             "Item to be displayed as the icon for buying a spawner.");
 
-    public static final ConfigSetting ECO_ICON = new ConfigSetting(config, "Interfaces.Economy Icon", CompatibleMaterial.SUNFLOWER.getMaterial(),
+    public static final ConfigSetting ECO_ICON = new ConfigSetting(config, "Interfaces.Economy Icon", CompatibleMaterial.SUNFLOWER.getMaterial().name(),
             "Item to be displayed as the icon for economy upgrades.");
 
-    public static final ConfigSetting XP_ICON = new ConfigSetting(config, "Interfaces.XP Icon", CompatibleMaterial.EXPERIENCE_BOTTLE.getMaterial(),
+    public static final ConfigSetting XP_ICON = new ConfigSetting(config, "Interfaces.XP Icon", CompatibleMaterial.EXPERIENCE_BOTTLE.getMaterial().name(),
             "Item to be displayed as the icon for XP upgrades.");
 
     public static final ConfigSetting CONVERT_ICON = new ConfigSetting(config, "Interfaces.Convert Icon", "EGG");
@@ -228,18 +228,6 @@ public class Settings {
     public static void setupConfig() {
         config.load();
         config.setAutoremove(true).setAutosave(true);
-
-        // convert glass pane settings
-        int color;
-        if ((color = GLASS_TYPE_1.getInt(-1)) != -1) {
-            config.set(GLASS_TYPE_1.getKey(), CompatibleMaterial.getGlassPaneColor(color).name());
-        }
-        if ((color = GLASS_TYPE_2.getInt(-1)) != -1) {
-            config.set(GLASS_TYPE_2.getKey(), CompatibleMaterial.getGlassPaneColor(color).name());
-        }
-        if ((color = GLASS_TYPE_3.getInt(-1)) != -1) {
-            config.set(GLASS_TYPE_3.getKey(), CompatibleMaterial.getGlassPaneColor(color).name());
-        }
 
         // convert economy settings
         if (config.getBoolean("Economy.Use Vault Economy") && EconomyManager.getManager().isEnabled("Vault")) {

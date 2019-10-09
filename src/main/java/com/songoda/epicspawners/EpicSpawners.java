@@ -287,10 +287,7 @@ public class EpicSpawners extends SongodaPlugin {
     }
 
     private void saveToFile() {
-        checkStorage();
-
         this.spawnerManager.saveSpawnersToFile();
-
         storage.doSave();
     }
 

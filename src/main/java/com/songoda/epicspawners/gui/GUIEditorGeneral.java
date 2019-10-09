@@ -143,11 +143,13 @@ public class GUIEditorGeneral extends AbstractGUI {
                 String msg = gui.getInputText().trim();
                 if (Methods.isNumeric(msg)) {
                     spawnerData.setShopPrice(Double.parseDouble(msg));
+                    player.closeInventory();
+                    player.openInventory(inventory);
+                    init(setTitle, inventory.getSize());
                 } else {
                     player.sendMessage(Methods.formatText("&CYou must enter a number."));
                 }
             });
-            gui.setOnClose((player1) -> init(setTitle, inventory.getSize()));
             plugin.getGuiManager().showGUI(player, gui);
 
             player.sendMessage(Methods.formatText("&7Enter a sale price for &6" + Methods.getTypeFromString(spawnerData.getIdentifyingName()) + "&7."));
@@ -161,11 +163,13 @@ public class GUIEditorGeneral extends AbstractGUI {
                 String msg = gui.getInputText().trim();
                 if (Methods.isNumeric(msg)) {
                     spawnerData.setUpgradeCostEconomy(Double.parseDouble(msg));
+                    player.closeInventory();
+                    player.openInventory(inventory);
+                    init(setTitle, inventory.getSize());
                 } else {
                     player.sendMessage(Methods.formatText("&CYou must enter a number."));
                 }
             });
-            gui.setOnClose((player1) -> init(setTitle, inventory.getSize()));
             plugin.getGuiManager().showGUI(player, gui);
 
             player.sendMessage(Methods.formatText("&7Enter a custom eco cost for " + Methods.getTypeFromString(spawnerData.getIdentifyingName()) + "&7."));
@@ -180,11 +184,13 @@ public class GUIEditorGeneral extends AbstractGUI {
                 String msg = gui.getInputText().trim();
                 if (Methods.isInt(msg)) {
                     spawnerData.setUpgradeCostExperience(Integer.parseInt(msg));
+                    player.closeInventory();
+                    player.openInventory(inventory);
+                    init(setTitle, inventory.getSize());
                 } else {
                     player.sendMessage(Methods.formatText("&CYou must enter a number."));
                 }
             });
-            gui.setOnClose((player1) -> init(setTitle, inventory.getSize()));
             plugin.getGuiManager().showGUI(player, gui);
 
             player.sendMessage(Methods.formatText("&7Enter a custom xp cost for " + Methods.getTypeFromString(spawnerData.getIdentifyingName()) + "&7."));
@@ -199,12 +205,13 @@ public class GUIEditorGeneral extends AbstractGUI {
                 String msg = gui.getInputText().trim();
                 if (Methods.isInt(msg)) {
                     spawnerData.setKillGoal(Integer.parseInt(msg));
+                    player.closeInventory();
+                    player.openInventory(inventory);
+                    init(setTitle, inventory.getSize());
                 } else {
                     player.sendMessage(Methods.formatText("&CYou must enter a number."));
                 }
             });
-
-            gui.setOnClose((player1) -> init(setTitle, inventory.getSize()));
             plugin.getGuiManager().showGUI(player, gui);
 
             player.sendMessage(Methods.formatText("&7Enter a custom goal for " + Methods.getTypeFromString(spawnerData.getIdentifyingName()) + "&7."));
@@ -219,12 +226,13 @@ public class GUIEditorGeneral extends AbstractGUI {
                 String msg = gui.getInputText().trim();
                 if (Methods.isNumeric(msg)) {
                     spawnerData.setPickupCost(Double.parseDouble(msg));
+                    player.closeInventory();
+                    player.openInventory(inventory);
+                    init(setTitle, inventory.getSize());
                 } else {
                     player.sendMessage(Methods.formatText("&CYou must enter a number."));
                 }
             });
-
-            gui.setOnClose((player1) -> init(setTitle, inventory.getSize()));
             plugin.getGuiManager().showGUI(player, gui);
 
             player.sendMessage(Methods.formatText("&7Enter a pickup cost for " + Methods.getTypeFromString(spawnerData.getIdentifyingName()) + "&7."));
@@ -236,10 +244,12 @@ public class GUIEditorGeneral extends AbstractGUI {
         registerClickable(40, (player, inventory, cursor, slot, type) -> {
             AnvilGui gui = new AnvilGui(player);
             gui.setTitle("Goal: Ex. 800:200");
-            gui.setAction(event ->
-                    spawnerData.setTickRate(gui.getInputText().trim()));
-
-            gui.setOnClose((player1) -> init(setTitle, inventory.getSize()));
+            gui.setAction(event -> {
+                spawnerData.setTickRate(gui.getInputText().trim());
+                player.closeInventory();
+                player.openInventory(inventory);
+                init(setTitle, inventory.getSize());
+            });
             plugin.getGuiManager().showGUI(player, gui);
 
             player.sendMessage(Methods.formatText("&7Enter a tick rate min and max for " + Methods.getTypeFromString(spawnerData.getIdentifyingName()) + "&7."));
