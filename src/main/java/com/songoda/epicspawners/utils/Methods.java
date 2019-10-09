@@ -3,9 +3,10 @@ package com.songoda.epicspawners.utils;
 import com.google.common.base.Preconditions;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.epicspawners.EpicSpawners;
+import com.songoda.epicspawners.settings.Settings;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
-import com.songoda.epicspawners.utils.settings.Setting;
 import org.apache.commons.lang.WordUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.*;
@@ -73,7 +74,7 @@ public class Methods {
 
     public static String getBoostCost(int time, int amount) {
         StringBuilder cost = new StringBuilder("&6&l");
-        String[] parts = Setting.BOOST_COST.getString().split(":");
+        String[] parts = Settings.BOOST_COST.getString().split(":");
 
         String type = parts[0];
         String multi = parts[1];
@@ -99,14 +100,14 @@ public class Methods {
     }
 
     public static String compileName(SpawnerData data, int multi, boolean full) {
-        String nameFormat = Setting.NAME_FORMAT.getString();
+        String nameFormat = Settings.NAME_FORMAT.getString();
         String displayName = data.getDisplayName();
 
         nameFormat = nameFormat.replace("{TYPE}", displayName);
 
-        if ((multi > 1 || Setting.DISPLAY_LEVEL_ONE.getBoolean() || Setting.NAMED_SPAWNER_TIERS.getBoolean()) && multi >= 0) {
-            if (Setting.NAMED_SPAWNER_TIERS.getBoolean() && Setting.TIER_NAMES.getStringList().size() >= multi) {
-                nameFormat = nameFormat.replace("{AMT}", Setting.TIER_NAMES.getStringList().get(multi - 1));
+        if ((multi > 1 || Settings.DISPLAY_LEVEL_ONE.getBoolean() || Settings.NAMED_SPAWNER_TIERS.getBoolean()) && multi >= 0) {
+            if (Settings.NAMED_SPAWNER_TIERS.getBoolean() && Settings.TIER_NAMES.getStringList().size() >= multi) {
+                nameFormat = nameFormat.replace("{AMT}", Settings.TIER_NAMES.getStringList().get(multi - 1));
             } else {
                 nameFormat = nameFormat.replace("{AMT}", Integer.toString(multi));
             }
@@ -160,10 +161,10 @@ public class Methods {
         int randomNum = 1 + (int) (Math.random() * 6);
         ItemStack glass;
         if (rainbow) {
-            glass = new ItemStack(EpicSpawners.getInstance().isServerVersionAtLeast(ServerVersion.V1_13) ?
+            glass = new ItemStack(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ?
                     Material.LEGACY_STAINED_GLASS_PANE : Material.valueOf("STAINED_GLASS_PANE"), 1, (short) randomNum);
         } else {
-            glass = new ItemStack(EpicSpawners.getInstance().isServerVersionAtLeast(ServerVersion.V1_13) ?
+            glass = new ItemStack(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ?
                     Material.LEGACY_STAINED_GLASS_PANE : Material.valueOf("STAINED_GLASS_PANE"), 1, (short) type);
         }
         ItemMeta glassmeta = glass.getItemMeta();
@@ -201,7 +202,7 @@ public class Methods {
     public static String formatTitle(String text) {
         if (text == null || text.equals(""))
             return "";
-        if (!EpicSpawners.getInstance().isServerVersionAtLeast(ServerVersion.V1_9)) {
+        if (!ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9)) {
             if (text.length() > 31)
                 text = text.substring(0, 29) + "...";
         }
@@ -438,6 +439,7 @@ public class Methods {
     public static class Tuple<key, value> {
         public final key x;
         public final value y;
+
         public Tuple(key x, value y) {
             this.x = x;
             this.y = y;

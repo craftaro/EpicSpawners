@@ -1,12 +1,11 @@
-package com.songoda.epicspawners.command.commands;
+package com.songoda.epicspawners.commands;
 
+import com.songoda.core.commands.AbstractCommand;
+import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.epicspawners.EpicSpawners;
-import com.songoda.epicspawners.command.AbstractCommand;
 import com.songoda.epicspawners.spawners.spawner.Spawner;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.spawners.spawner.SpawnerStack;
-import com.songoda.epicspawners.utils.ServerVersion;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
@@ -17,30 +16,33 @@ import java.util.List;
 
 public class CommandChange extends AbstractCommand {
 
-    public CommandChange(AbstractCommand abstractCommand) {
-        super(abstractCommand, true, "change");
+    private final EpicSpawners plugin;
+
+    public CommandChange(EpicSpawners plugin) {
+        super(true, "change");
+        this.plugin = plugin;
     }
 
     @Override
-    protected ReturnType runCommand(EpicSpawners instance, CommandSender sender, String... args) {
-        if (args.length != 2) return ReturnType.SYNTAX_ERROR;
-        if (!sender.hasPermission("epicspawners.admin") && !sender.hasPermission("epicspawners.change.*") && !sender.hasPermission("epicspawners.change." + args[1].toUpperCase())) {
-            instance.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(sender);
+    protected ReturnType runCommand(CommandSender sender, String... args) {
+        if (args.length != 1) return ReturnType.SYNTAX_ERROR;
+        if (!sender.hasPermission("epicspawners.admin") && !sender.hasPermission("epicspawners.change.*") && !sender.hasPermission("epicspawners.change." + args[0].toUpperCase())) {
+            plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
         Player player = (Player) sender;
         Block block = player.getTargetBlock(null, 200);
 
-        if (block.getType() != (instance.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER"))) {
-            instance.getLocale().newMessage("&cThis is not a spawner.").sendPrefixedMessage(sender);
+        if (block.getType() != CompatibleMaterial.SPAWNER.getMaterial()) {
+            plugin.getLocale().newMessage("&cThis is not a spawner.").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
 
-        Spawner spawner = instance.getSpawnerManager().getSpawnerFromWorld(block.getLocation());
+        Spawner spawner = plugin.getSpawnerManager().getSpawnerFromWorld(block.getLocation());
 
         SpawnerData data = null;
-        for (SpawnerData spawnerData : instance.getSpawnerManager().getAllSpawnerData()) {
-            String input = args[1].toUpperCase().replace("_", "").replace(" ", "");
+        for (SpawnerData spawnerData : plugin.getSpawnerManager().getAllSpawnerData()) {
+            String input = args[0].toUpperCase().replace("_", "").replace(" ", "");
             String compare = spawnerData.getIdentifyingName().toUpperCase().replace("_", "").replace(" ", "");
             if (input.equals(compare))
                 data = spawnerData;
@@ -57,27 +59,26 @@ public class CommandChange extends AbstractCommand {
             spawner.addSpawnerStack(stack);
             spawner.getSpawnerStacks();
             try {
-                spawner.getCreatureSpawner().setSpawnedType(EntityType.valueOf(args[1].toUpperCase()));
+                spawner.getCreatureSpawner().setSpawnedType(EntityType.valueOf(args[0].toUpperCase()));
             } catch (Exception ex) {
                 spawner.getCreatureSpawner().setSpawnedType(EntityType.valueOf("PIG"));
             }
             spawner.getCreatureSpawner().update();
-            if (instance.getHologram() != null)
-                instance.getHologram().processChange(block);
-            instance.getLocale().newMessage("&7Successfully changed this spawner to &6" + args[1] + "&7.")
+            plugin.updateHologram(spawner);
+            plugin.getLocale().newMessage("&7Successfully changed this spawner to &6" + args[0] + "&7.")
                     .sendPrefixedMessage(sender);
             return ReturnType.SUCCESS;
         } catch (Exception ee) {
-            instance.getLocale().newMessage("&7That entity does not exist.").sendPrefixedMessage(sender);
+            plugin.getLocale().newMessage("&7That entity does not exist.").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
     }
 
     @Override
-    protected List<String> onTab(EpicSpawners instance, CommandSender sender, String... args) {
-        if (args.length == 2) {
+    protected List<String> onTab(CommandSender sender, String... args) {
+        if (args.length == 1) {
             List<String> spawners = new ArrayList<>();
-            for (SpawnerData spawnerData : instance.getSpawnerManager().getAllSpawnerData()) {
+            for (SpawnerData spawnerData : plugin.getSpawnerManager().getAllSpawnerData()) {
                 spawners.add(spawnerData.getIdentifyingName().replace(" ", "_"));
             }
             return spawners;

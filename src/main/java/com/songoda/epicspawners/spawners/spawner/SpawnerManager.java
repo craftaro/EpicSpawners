@@ -1,13 +1,14 @@
 package com.songoda.epicspawners.spawners.spawner;
 
+import com.songoda.core.compatibility.CompatibleMaterial;
+import com.songoda.core.compatibility.ServerVersion;
+import com.songoda.core.configuration.Config;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.particles.ParticleDensity;
 import com.songoda.epicspawners.particles.ParticleEffect;
 import com.songoda.epicspawners.particles.ParticleType;
 import com.songoda.epicspawners.spawners.condition.*;
-import com.songoda.epicspawners.utils.ConfigWrapper;
 import com.songoda.epicspawners.utils.Methods;
-import com.songoda.epicspawners.utils.ServerVersion;
 import com.songoda.epicspawners.utils.SpawnerDataBuilder;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -38,7 +39,7 @@ public class SpawnerManager {
     // This is the map that holds the cooldowns for picking up stuffs
     private static final List<Spawner> pickingUp = new ArrayList<>();
 
-    private ConfigWrapper spawnerFile = new ConfigWrapper(EpicSpawners.getInstance(), "", "spawners.yml");
+    private Config spawnerConfig = new Config(EpicSpawners.getInstance(), "spawners.yml");
 
     public SpawnerManager(EpicSpawners plugin) {
         this.plugin = plugin;
@@ -48,8 +49,8 @@ public class SpawnerManager {
                 processDefaultSpawner(entityType.name()));
 
         this.processDefaultSpawner("Omni");
-        this.spawnerFile.getConfig().options().copyDefaults(true);
-        this.spawnerFile.saveConfig();
+        this.spawnerConfig.options().copyDefaults(true);
+        this.spawnerConfig.save();
 
         this.loadSpawnersFromFile();
     }
@@ -159,14 +160,14 @@ public class SpawnerManager {
 
     private void processDefaultSpawner(String value) {
         EpicSpawners plugin = EpicSpawners.getInstance();
-        FileConfiguration spawnerConfig = spawnerFile.getConfig();
+        FileConfiguration spawnerConfig = this.spawnerConfig.getFileConfig();
 
         String type = Methods.getTypeFromString(value);
         Random rn = new Random();
         int uuid = rn.nextInt(9999);
-        
+
         String section = "Entities." + type;
-        
+
         spawnerConfig.addDefault(section + ".uuid", uuid);
 
         if (!spawnerConfig.contains(section + ".Display-Name")) {
@@ -187,10 +188,10 @@ public class SpawnerManager {
             case "LLAMA":
             case "HORSE":
             case "CAT":
-                spawnBlock = plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? "GRASS_BLOCK" : "GRASS";
+                spawnBlock = CompatibleMaterial.GRASS_BLOCK.getMaterial().name();
                 break;
             case "MUSHROOM_COW":
-                spawnBlock = plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? "MYCELIUM" : "MYCEL";
+                spawnBlock = CompatibleMaterial.MYCELIUM.getMaterial().name();
                 break;
             case "SQUID":
             case "ELDER_GUARDIAN":
@@ -198,10 +199,10 @@ public class SpawnerManager {
             case "SALMON":
             case "PUFFERFISH":
             case "TROPICAL_FISH":
-                spawnBlock = plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? "WATER" : "STATIONARY_WATER, WATER";
+                spawnBlock = ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? "WATER" : "STATIONARY_WATER, WATER";
                 break;
             case "OCELOT":
-                spawnBlock = plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? "GRASS_BLOCK, JUNGLE_LEAVES, " +
+                spawnBlock = ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? "GRASS_BLOCK, JUNGLE_LEAVES, " +
                         "ACACIA_LEAVES, BIRCH_LEAVES, DARK_OAK_LEAVES, OAK_LEAVES, SPRUCE_LEAVES" : "GRASS, LEAVES";
                 break;
         }
@@ -246,7 +247,7 @@ public class SpawnerManager {
 
         if (entityType == EntityType.SLIME) {
             spawnerConfig.addDefault(section + ".Conditions.Biomes",
-                    plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Biome.SWAMP.name() : Biome.valueOf("SWAMPLAND").name());
+                    ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Biome.SWAMP.name() : Biome.valueOf("SWAMPLAND").name());
             spawnerConfig.addDefault(section + ".Conditions.Height", "50:70");
         } else {
             spawnerConfig.addDefault(section + ".Conditions.Biomes", "ALL");
@@ -273,7 +274,7 @@ public class SpawnerManager {
     @SuppressWarnings("unchecked")
     private void loadSpawnersFromFile() {
         // Register spawner data into SpawnerRegistry from configuration.
-        FileConfiguration spawnerConfig = spawnerFile.getConfig();
+        FileConfiguration spawnerConfig = this.spawnerConfig.getFileConfig();
         if (!spawnerConfig.contains("Entities")) return;
         for (String key : spawnerConfig.getConfigurationSection("Entities").getKeys(false)) {
             ConfigurationSection currentSection = spawnerConfig.getConfigurationSection("Entities." + key);
@@ -371,7 +372,7 @@ public class SpawnerManager {
         //ToDO: If the defaults are set correctly this could do the initial config save.
 
         // Save spawner settings
-        FileConfiguration spawnerConfig = spawnerFile.getConfig();
+        FileConfiguration spawnerConfig = this.spawnerConfig.getFileConfig();
         spawnerConfig.set("Entities", null);
 
         ConfigurationSection entitiesSection = spawnerConfig.createSection("Entities");
@@ -437,10 +438,10 @@ public class SpawnerManager {
                 currentSection.set("Display-Item", spawnerData.getDisplayItem().name());
             }
         }
-        spawnerFile.saveConfig();
+        this.spawnerConfig.save();
     }
 
-    public ConfigWrapper getSpawnerFile() {
-        return spawnerFile;
+    public Config getSpawnerConfig() {
+        return spawnerConfig;
     }
 }

@@ -1,14 +1,14 @@
 package com.songoda.epicspawners.gui;
 
+import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.epicspawners.EpicSpawners;
+import com.songoda.epicspawners.settings.Settings;
 import com.songoda.epicspawners.spawners.condition.SpawnCondition;
 import com.songoda.epicspawners.spawners.spawner.Spawner;
 import com.songoda.epicspawners.spawners.spawner.SpawnerStack;
 import com.songoda.epicspawners.utils.CostType;
 import com.songoda.epicspawners.utils.Methods;
-import com.songoda.epicspawners.utils.ServerVersion;
 import com.songoda.epicspawners.utils.gui.AbstractGUI;
-import com.songoda.epicspawners.utils.settings.Setting;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -59,7 +59,7 @@ public class GUISpawnerOverview extends AbstractGUI {
         else if (showAmt == 0)
             showAmt = 1;
 
-        ItemStack item = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), showAmt, (byte) 3);
+        ItemStack item = new ItemStack(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), showAmt, (byte) 3);
 
         if (spawner.getSpawnerStacks().size() != 1) {
             item = plugin.getHeads().addTexture(item, plugin.getSpawnerManager().getSpawnerData("omni"));
@@ -71,7 +71,7 @@ public class GUISpawnerOverview extends AbstractGUI {
                 try {
                     item = plugin.getHeads().addTexture(item, spawner.getIdentifyingData());
                 } catch (Exception e) {
-                    item = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER"), showAmt);
+                    item = new ItemStack(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER"), showAmt);
                 }
             }
         }
@@ -182,7 +182,7 @@ public class GUISpawnerOverview extends AbstractGUI {
         inventory.setItem(26, BACKGROUND_GLASS_TYPE_2);
 
         if (player.hasPermission("epicspawners.convert") && spawner.getSpawnerStacks().size() == 1) {
-            createButton(4, Setting.CONVERT_ICON.getMaterial(),
+            createButton(4, Settings.CONVERT_ICON.getMaterial().getMaterial(),
                     plugin.getLocale().getMessage("interface.spawner.convert").getMessage());
             registerClickable(4, (player, inventory, cursor, slot, type) ->
                     new GUISpawnerConvert(plugin, spawner, player));
@@ -206,7 +206,7 @@ public class GUISpawnerOverview extends AbstractGUI {
                     lore.add(Methods.formatText(line));
             }
 
-            createButton(22, Setting.BOOST_ICON.getMaterial(), spawner.getBoost() == 0 ? plugin.getLocale().getMessage("interface.spawner.boost").getMessage() : plugin.getLocale().getMessage("interface.spawner.cantboost").getMessage(), lore);
+            createButton(22, Settings.BOOST_ICON.getMaterial().getMaterial(), spawner.getBoost() == 0 ? plugin.getLocale().getMessage("interface.spawner.boost").getMessage() : plugin.getLocale().getMessage("interface.spawner.cantboost").getMessage(), lore);
 
 
             if (spawner.getBoost() == 0)
@@ -214,7 +214,7 @@ public class GUISpawnerOverview extends AbstractGUI {
                         new GUISpawnerBoost(plugin, spawner, player));
         }
 
-        if (Setting.DISPLAY_HELP_BUTTON.getBoolean()) {
+        if (Settings.DISPLAY_HELP_BUTTON.getBoolean()) {
             ItemStack itemO = new ItemStack(Material.PAPER, 1);
             ItemMeta itemmetaO = itemO.getItemMeta();
             itemmetaO.setDisplayName(plugin.getLocale().getMessage("interface.spawner.howtotitle").getMessage());
@@ -263,9 +263,9 @@ public class GUISpawnerOverview extends AbstractGUI {
         }
         if (spawner.getSpawnerStacks().size() == 1) {
             if (spawner.getFirstStack().getSpawnerData().isUpgradeable()) {
-                if (Setting.UPGRADE_WITH_XP_ENABLED.getBoolean())
+                if (Settings.UPGRADE_WITH_XP_ENABLED.getBoolean())
                     inventory.setItem(11, itemXP);
-                if (Setting.UPGRADE_WITH_ECO_ENABLED.getBoolean())
+                if (Settings.UPGRADE_WITH_ECO_ENABLED.getBoolean())
                     inventory.setItem(15, itemECO);
             }
         }
@@ -283,7 +283,7 @@ public class GUISpawnerOverview extends AbstractGUI {
         });
 
         registerClickable(11, (player, inventory, cursor, slot, type) -> {
-            if (Setting.UPGRADE_WITH_XP_ENABLED.getBoolean()
+            if (Settings.UPGRADE_WITH_XP_ENABLED.getBoolean()
                     && !inventory.getItem(slot).getItemMeta().getDisplayName().equals(ChatColor.COLOR_CHAR + "l")) {
                 this.spawner.upgrade(player, CostType.EXPERIENCE);
             }
@@ -291,7 +291,7 @@ public class GUISpawnerOverview extends AbstractGUI {
         });
 
         registerClickable(15, (player, inventory, cursor, slot, type) -> {
-            if (Setting.UPGRADE_WITH_ECO_ENABLED.getBoolean()
+            if (Settings.UPGRADE_WITH_ECO_ENABLED.getBoolean()
                     && !inventory.getItem(slot).getItemMeta().getDisplayName().equals(ChatColor.COLOR_CHAR + "l")) {
                 this.spawner.upgrade(player, CostType.ECONOMY);
             }
@@ -369,14 +369,14 @@ public class GUISpawnerOverview extends AbstractGUI {
                                     a++;
                                 }
                             } else if (nu == 2) {
-                                if (!Setting.UPGRADE_WITH_XP_ENABLED.getBoolean()) {
+                                if (!Settings.UPGRADE_WITH_XP_ENABLED.getBoolean()) {
                                     text = text.replace(mi.group(), "");
                                 } else {
                                     text = text.replace(mi.group(), a(a, mi.group()));
                                     a++;
                                 }
                             } else if (nu == 3) {
-                                if (!Setting.UPGRADE_WITH_ECO_ENABLED.getBoolean()) {
+                                if (!Settings.UPGRADE_WITH_ECO_ENABLED.getBoolean()) {
                                     text = text.replace(mi.group(), "");
                                 } else {
                                     text = text.replace(mi.group(), a(a, mi.group()));
@@ -386,7 +386,7 @@ public class GUISpawnerOverview extends AbstractGUI {
                             break;
                         case "WATER":
                             if (nu == 1) {
-                                if (!Setting.LIQUID_REPEL_RADIUS.getBoolean()) {
+                                if (!Settings.LIQUID_REPEL_RADIUS.getBoolean()) {
                                     text = text.replace(mi.group(), "");
                                 } else {
                                     text = text.replace(mi.group(), a(a, mi.group()));
@@ -395,7 +395,7 @@ public class GUISpawnerOverview extends AbstractGUI {
                             break;
                         case "REDSTONE":
                             if (nu == 1) {
-                                if (!Setting.REDSTONE_ACTIVATE.getBoolean()) {
+                                if (!Settings.REDSTONE_ACTIVATE.getBoolean()) {
                                     text = text.replace(mi.group(), "");
                                 } else {
                                     text = text.replace(mi.group(), a(a, mi.group()));
@@ -404,7 +404,7 @@ public class GUISpawnerOverview extends AbstractGUI {
                             break;
                         case "OMNI":
                             if (nu == 1) {
-                                if (!Setting.OMNI_SPAWNERS.getBoolean()) {
+                                if (!Settings.OMNI_SPAWNERS.getBoolean()) {
                                     text = text.replace(mi.group(), "");
                                 } else {
                                     text = text.replace(mi.group(), a(a, mi.group()));
@@ -412,7 +412,7 @@ public class GUISpawnerOverview extends AbstractGUI {
                             }
                             break;
                         case "DROP":
-                            if (!Setting.MOB_KILLING_COUNT.getBoolean() || !p.hasPermission("epicspawners.Killcounter")) {
+                            if (!Settings.MOB_KILLING_COUNT.getBoolean() || !p.hasPermission("epicspawners.Killcounter")) {
                                 text = "";
                             } else {
                                 text = text.replace("<TYPE>", spawner.getIdentifyingName().toLowerCase());
@@ -420,10 +420,10 @@ public class GUISpawnerOverview extends AbstractGUI {
                                 if (spawner.getFirstStack().getSpawnerData().getKillGoal() != 0)
                                     text = text.replace("<AMT>", Integer.toString(spawner.getFirstStack().getSpawnerData().getKillGoal()));
                                 else
-                                    text = text.replace("<AMT>", Integer.toString(Setting.KILL_GOAL.getInt()));
+                                    text = text.replace("<AMT>", Integer.toString(Settings.KILL_GOAL.getInt()));
                             }
                             if (nu == 1) {
-                                if (Setting.COUNT_UNNATURAL_KILLS.getBoolean()) {
+                                if (Settings.COUNT_UNNATURAL_KILLS.getBoolean()) {
                                     text = text.replace(mi.group(), "");
                                 } else {
                                     text = text.replace(mi.group(), a(a, mi.group()));

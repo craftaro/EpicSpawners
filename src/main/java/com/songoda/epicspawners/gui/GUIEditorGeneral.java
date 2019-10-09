@@ -1,15 +1,14 @@
 package com.songoda.epicspawners.gui;
 
+import com.songoda.core.compatibility.ServerVersion;
+import com.songoda.core.gui.AnvilGui;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.utils.Methods;
-import com.songoda.epicspawners.utils.ServerVersion;
-import com.songoda.epicspawners.utils.gui.AbstractAnvilGUI;
 import com.songoda.epicspawners.utils.gui.AbstractGUI;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 public class GUIEditorGeneral extends AbstractGUI {
 
@@ -38,7 +37,7 @@ public class GUIEditorGeneral extends AbstractGUI {
             num++;
         }
 
-        createButton(0, Methods.addTexture(new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3),
+        createButton(0, Methods.addTexture(new ItemStack(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3),
                 "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23"),
                 plugin.getLocale().getMessage("general.nametag.back").getMessage());
 
@@ -62,7 +61,7 @@ public class GUIEditorGeneral extends AbstractGUI {
         inventory.setItem(43, Methods.getBackgroundGlass(true));
         inventory.setItem(44, Methods.getBackgroundGlass(true));
 
-        createButton(19, plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SUNFLOWER : Material.valueOf("DOUBLE_PLANT"), "&6&lShop Price",
+        createButton(19, ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SUNFLOWER : Material.valueOf("DOUBLE_PLANT"), "&6&lShop Price",
                 "&7Currently: &a" + spawnerData.getShopPrice(),
                 "&7This is the price of the",
                 "&7spawner in the shop.");
@@ -72,7 +71,7 @@ public class GUIEditorGeneral extends AbstractGUI {
                 "&7If this is true this spawner",
                 "&7will show up in the shop GUI.");
 
-        createButton(22, plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.FIRE_CHARGE : Material.valueOf("FIREWORK_CHARGE"), "&c&lSpawn On Fire",
+        createButton(22, ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.FIRE_CHARGE : Material.valueOf("FIREWORK_CHARGE"), "&c&lSpawn On Fire",
                 "&7Currently: &a" + spawnerData.isSpawnOnFire(),
                 "&7If this is true this spawner",
                 "&7will spawn entities on fire.");
@@ -82,17 +81,17 @@ public class GUIEditorGeneral extends AbstractGUI {
                 "&7Setting this to true will define",
                 "&7upgradable.");
 
-        createButton(24, plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SUNFLOWER : Material.valueOf("DOUBLE_PLANT"), "&6&lCustom Economy cost",
+        createButton(24, ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SUNFLOWER : Material.valueOf("DOUBLE_PLANT"), "&6&lCustom Economy cost",
                 "&7Currently: &a" + spawnerData.getUpgradeCostEconomy(),
                 "&7This is the custom economy cost",
                 "&7to upgrade this spawner.");
 
-        createButton(25, plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.EXPERIENCE_BOTTLE : Material.valueOf("EXP_BOTTLE"), "&5&lCustom Experience cost",
+        createButton(25, ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.EXPERIENCE_BOTTLE : Material.valueOf("EXP_BOTTLE"), "&5&lCustom Experience cost",
                 "&7Currently: &a" + spawnerData.getUpgradeCostExperience(),
                 "&7This is the custom XP cost",
                 "&7to upgrade this spawner.");
 
-        createButton(30, plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.EXPERIENCE_BOTTLE : Material.valueOf("EXP_BOTTLE"), "&5&lCustom Goal",
+        createButton(30, ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.EXPERIENCE_BOTTLE : Material.valueOf("EXP_BOTTLE"), "&5&lCustom Goal",
                 "&7Currently: &a" + spawnerData.getKillGoal(),
                 "&7If this is set to anything",
                 "&7but 0 the default kill goal",
@@ -104,7 +103,7 @@ public class GUIEditorGeneral extends AbstractGUI {
                 "&7will allow you to charge players",
                 "&7for breaking this type of spawner.");
 
-        createButton(40, plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.CLOCK : Material.valueOf("WATCH"), "&6&lTick Rate",
+        createButton(40, ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.CLOCK : Material.valueOf("WATCH"), "&6&lTick Rate",
                 "&7Currently: &a" + spawnerData.getTickRate(),
                 "&7This is the default tick rate",
                 "&7that your spawner will use",
@@ -138,46 +137,36 @@ public class GUIEditorGeneral extends AbstractGUI {
         });
 
         registerClickable(19, (player, inventory, cursor, slot, type) -> {
-            AbstractAnvilGUI gui = new AbstractAnvilGUI(player, event -> {
-                if (Methods.isNumeric(event.getName())) {
-                    spawnerData.setShopPrice(Double.parseDouble(event.getName()));
+            AnvilGui gui = new AnvilGui(player);
+            gui.setTitle("Goal: Ex. 19.99");
+            gui.setAction(event -> {
+                String msg = gui.getInputText().trim();
+                if (Methods.isNumeric(msg)) {
+                    spawnerData.setShopPrice(Double.parseDouble(msg));
                 } else {
                     player.sendMessage(Methods.formatText("&CYou must enter a number."));
                 }
             });
-
-            gui.setOnClose((player1, inventory1) -> init(setTitle, inventory.getSize()));
-
-            ItemStack item = new ItemStack(Material.PAPER);
-            ItemMeta meta = item.getItemMeta();
-            meta.setDisplayName("Goal: Ex. 19.99");
-            item.setItemMeta(meta);
-
-            gui.setSlot(AbstractAnvilGUI.AnvilSlot.INPUT_LEFT, item);
-            gui.open();
+            gui.setOnClose((player1) -> init(setTitle, inventory.getSize()));
+            plugin.getGuiManager().showGUI(player, gui);
 
             player.sendMessage(Methods.formatText("&7Enter a sale price for &6" + Methods.getTypeFromString(spawnerData.getIdentifyingName()) + "&7."));
             player.sendMessage(Methods.formatText("&7Example: &619.99&7."));
         });
 
         registerClickable(24, (player, inventory, cursor, slot, type) -> {
-            AbstractAnvilGUI gui = new AbstractAnvilGUI(player, event -> {
-                if (Methods.isNumeric(event.getName())) {
-                    spawnerData.setUpgradeCostEconomy(Double.parseDouble(event.getName()));
+            AnvilGui gui = new AnvilGui(player);
+            gui.setTitle("Goal: Ex. 19.99");
+            gui.setAction(event -> {
+                String msg = gui.getInputText().trim();
+                if (Methods.isNumeric(msg)) {
+                    spawnerData.setUpgradeCostEconomy(Double.parseDouble(msg));
                 } else {
                     player.sendMessage(Methods.formatText("&CYou must enter a number."));
                 }
             });
-
-            gui.setOnClose((player1, inventory1) -> init(setTitle, inventory.getSize()));
-
-            ItemStack item = new ItemStack(Material.PAPER);
-            ItemMeta meta = item.getItemMeta();
-            meta.setDisplayName("Goal: Ex. 19.99");
-            item.setItemMeta(meta);
-
-            gui.setSlot(AbstractAnvilGUI.AnvilSlot.INPUT_LEFT, item);
-            gui.open();
+            gui.setOnClose((player1) -> init(setTitle, inventory.getSize()));
+            plugin.getGuiManager().showGUI(player, gui);
 
             player.sendMessage(Methods.formatText("&7Enter a custom eco cost for " + Methods.getTypeFromString(spawnerData.getIdentifyingName()) + "&7."));
             player.sendMessage(Methods.formatText("&7Use &60 &7to use the default cost."));
@@ -185,23 +174,18 @@ public class GUIEditorGeneral extends AbstractGUI {
         });
 
         registerClickable(25, (player, inventory, cursor, slot, type) -> {
-            AbstractAnvilGUI gui = new AbstractAnvilGUI(player, event -> {
-                if (Methods.isInt(event.getName())) {
-                    spawnerData.setUpgradeCostExperience(Integer.parseInt(event.getName()));
+            AnvilGui gui = new AnvilGui(player);
+            gui.setTitle("Goal: Ex. 25");
+            gui.setAction(event -> {
+                String msg = gui.getInputText().trim();
+                if (Methods.isInt(msg)) {
+                    spawnerData.setUpgradeCostExperience(Integer.parseInt(msg));
                 } else {
                     player.sendMessage(Methods.formatText("&CYou must enter a number."));
                 }
             });
-
-            gui.setOnClose((player1, inventory1) -> init(setTitle, inventory.getSize()));
-
-            ItemStack item = new ItemStack(Material.PAPER);
-            ItemMeta meta = item.getItemMeta();
-            meta.setDisplayName("Goal: Ex. 25");
-            item.setItemMeta(meta);
-
-            gui.setSlot(AbstractAnvilGUI.AnvilSlot.INPUT_LEFT, item);
-            gui.open();
+            gui.setOnClose((player1) -> init(setTitle, inventory.getSize()));
+            plugin.getGuiManager().showGUI(player, gui);
 
             player.sendMessage(Methods.formatText("&7Enter a custom xp cost for " + Methods.getTypeFromString(spawnerData.getIdentifyingName()) + "&7."));
             player.sendMessage(Methods.formatText("&7Use &60 &7to use the default cost."));
@@ -209,23 +193,19 @@ public class GUIEditorGeneral extends AbstractGUI {
         });
 
         registerClickable(30, (player, inventory, cursor, slot, type) -> {
-            AbstractAnvilGUI gui = new AbstractAnvilGUI(player, event -> {
-                if (Methods.isInt(event.getName())) {
-                    spawnerData.setKillGoal(Integer.parseInt(event.getName()));
+            AnvilGui gui = new AnvilGui(player);
+            gui.setTitle("Goal: Ex. 5");
+            gui.setAction(event -> {
+                String msg = gui.getInputText().trim();
+                if (Methods.isInt(msg)) {
+                    spawnerData.setKillGoal(Integer.parseInt(msg));
                 } else {
                     player.sendMessage(Methods.formatText("&CYou must enter a number."));
                 }
             });
 
-            gui.setOnClose((player1, inventory1) -> init(setTitle, inventory.getSize()));
-
-            ItemStack item = new ItemStack(Material.PAPER);
-            ItemMeta meta = item.getItemMeta();
-            meta.setDisplayName("Goal: Ex. 5");
-            item.setItemMeta(meta);
-
-            gui.setSlot(AbstractAnvilGUI.AnvilSlot.INPUT_LEFT, item);
-            gui.open();
+            gui.setOnClose((player1) -> init(setTitle, inventory.getSize()));
+            plugin.getGuiManager().showGUI(player, gui);
 
             player.sendMessage(Methods.formatText("&7Enter a custom goal for " + Methods.getTypeFromString(spawnerData.getIdentifyingName()) + "&7."));
             player.sendMessage(Methods.formatText("&7Use &60 &7to use the default price."));
@@ -233,23 +213,19 @@ public class GUIEditorGeneral extends AbstractGUI {
         });
 
         registerClickable(32, (player, inventory, cursor, slot, type) -> {
-            AbstractAnvilGUI gui = new AbstractAnvilGUI(player, event -> {
-                if (Methods.isNumeric(event.getName())) {
-                    spawnerData.setPickupCost(Double.parseDouble(event.getName()));
+            AnvilGui gui = new AnvilGui(player);
+            gui.setTitle("Goal: Ex. 719.99");
+            gui.setAction(event -> {
+                String msg = gui.getInputText().trim();
+                if (Methods.isNumeric(msg)) {
+                    spawnerData.setPickupCost(Double.parseDouble(msg));
                 } else {
                     player.sendMessage(Methods.formatText("&CYou must enter a number."));
                 }
             });
 
-            gui.setOnClose((player1, inventory1) -> init(setTitle, inventory.getSize()));
-
-            ItemStack item = new ItemStack(Material.PAPER);
-            ItemMeta meta = item.getItemMeta();
-            meta.setDisplayName("Cost: Ex. 719.99");
-            item.setItemMeta(meta);
-
-            gui.setSlot(AbstractAnvilGUI.AnvilSlot.INPUT_LEFT, item);
-            gui.open();
+            gui.setOnClose((player1) -> init(setTitle, inventory.getSize()));
+            plugin.getGuiManager().showGUI(player, gui);
 
             player.sendMessage(Methods.formatText("&7Enter a pickup cost for " + Methods.getTypeFromString(spawnerData.getIdentifyingName()) + "&7."));
             player.sendMessage(Methods.formatText("&7Use &60 &7to disable."));
@@ -258,18 +234,13 @@ public class GUIEditorGeneral extends AbstractGUI {
         });
 
         registerClickable(40, (player, inventory, cursor, slot, type) -> {
-            AbstractAnvilGUI gui = new AbstractAnvilGUI(player, event ->
-                    spawnerData.setTickRate(event.getName().trim()));
+            AnvilGui gui = new AnvilGui(player);
+            gui.setTitle("Goal: Ex. 800:200");
+            gui.setAction(event ->
+                    spawnerData.setTickRate(gui.getInputText().trim()));
 
-            gui.setOnClose((player1, inventory1) -> init(setTitle, inventory.getSize()));
-
-            ItemStack item = new ItemStack(Material.PAPER);
-            ItemMeta meta = item.getItemMeta();
-            meta.setDisplayName("Rate: Ex. 800:200");
-            item.setItemMeta(meta);
-
-            gui.setSlot(AbstractAnvilGUI.AnvilSlot.INPUT_LEFT, item);
-            gui.open();
+            gui.setOnClose((player1) -> init(setTitle, inventory.getSize()));
+            plugin.getGuiManager().showGUI(player, gui);
 
             player.sendMessage(Methods.formatText("&7Enter a tick rate min and max for " + Methods.getTypeFromString(spawnerData.getIdentifyingName()) + "&7."));
             player.sendMessage(Methods.formatText("&7Example: &3800:200&6."));

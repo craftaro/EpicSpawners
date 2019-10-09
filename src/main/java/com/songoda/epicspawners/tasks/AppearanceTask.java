@@ -5,8 +5,8 @@ import com.songoda.epicspawners.spawners.spawner.Spawner;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.spawners.spawner.SpawnerStack;
 import com.songoda.epicspawners.utils.Methods;
-import com.songoda.epicspawners.utils.ServerVersion;
-import com.songoda.epicspawners.utils.settings.Setting;
+import com.songoda.core.compatibility.ServerVersion;
+import com.songoda.epicspawners.settings.Settings;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.CreatureSpawner;
@@ -49,7 +49,7 @@ public class AppearanceTask extends BukkitRunnable {
             if (!location.getWorld().isChunkLoaded(destx, destz)) {
                 continue;
             }
-            if (location.getBlock().getType() != (instance.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER")))
+            if (location.getBlock().getType() != (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER")))
                 continue;
 
             if (spawner.getSpawnerStacks().size() <= 1) {
@@ -57,7 +57,7 @@ public class AppearanceTask extends BukkitRunnable {
                 continue;
             }
 
-            if (!Setting.OMNI_SPAWNERS.getBoolean()) continue;
+            if (!Settings.OMNI_SPAWNERS.getBoolean()) continue;
 
             String last = null;
             SpawnerData next = null;
@@ -112,7 +112,7 @@ public class AppearanceTask extends BukkitRunnable {
             EntityType next = EntityType.valueOf(Methods.restoreType(spawnerData.getIdentifyingName()));
             spawner.getCreatureSpawner().setSpawnedType(next);
         } catch (Exception failure) {
-            spawner.getCreatureSpawner().setSpawnedType(plugin.isServerVersionAtLeast(ServerVersion.V1_9) ? EntityType.EGG : EntityType.DROPPED_ITEM);
+            spawner.getCreatureSpawner().setSpawnedType(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9) ? EntityType.EGG : EntityType.DROPPED_ITEM);
 
             if (itemStack.getType() == Material.AIR) return;
             location.setPitch(-360);

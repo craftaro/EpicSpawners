@@ -1,10 +1,11 @@
 package com.songoda.epicspawners.gui;
 
+import com.songoda.core.gui.AnvilGui;
+import com.songoda.core.input.ChatPrompt;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.utils.Methods;
-import com.songoda.epicspawners.utils.ServerVersion;
-import com.songoda.epicspawners.utils.gui.AbstractAnvilGUI;
+import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.epicspawners.utils.gui.AbstractGUI;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -92,11 +93,11 @@ public class GUIEditorOverview extends AbstractGUI {
         inventory.setItem(52, Methods.getBackgroundGlass(false));
         inventory.setItem(53, Methods.getBackgroundGlass(false));
 
-        createButton(8, Methods.addTexture(new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3),
+        createButton(8, Methods.addTexture(new ItemStack(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3),
                 "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23"),
                 plugin.getLocale().getMessage("general.nametag.back").getMessage());
 
-        ItemStack it = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3);
+        ItemStack it = new ItemStack(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3);
 
         ItemStack item = plugin.getHeads().addTexture(it, spawnerData);
         if (spawnerData.getDisplayItem() != null && spawnerData.getDisplayItem() != Material.AIR) {
@@ -135,11 +136,11 @@ public class GUIEditorOverview extends AbstractGUI {
         createButton(23, Material.LEVER, "&9&lGeneral Settings");
         createButton(24, Material.BONE, "&e&lDrop Settings");
 
-        createButton(25, plugin.getHeads().addTexture(new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3), plugin.getSpawnerManager().getSpawnerData("omni")), "&a&lEntity Settings");
+        createButton(25, plugin.getHeads().addTexture(new ItemStack(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3), plugin.getSpawnerManager().getSpawnerData("omni")), "&a&lEntity Settings");
 
         createButton(41, Material.CHEST, "&5&lItem Settings");
         createButton(32, Material.GOLD_BLOCK, "&c&lBlock Settings");
-        createButton(34, plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.FIREWORK_ROCKET : Material.valueOf("FIREWORK"), "&b&lParticle Settings");
+        createButton(34, ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.FIREWORK_ROCKET : Material.valueOf("FIREWORK"), "&b&lParticle Settings");
         createButton(43, Material.PAPER, "&6&lCommand Settings");
     }
 
@@ -154,25 +155,17 @@ public class GUIEditorOverview extends AbstractGUI {
                     spawnerData.setActive(true);
                 constructGUI();
             } else if (type == ClickType.RIGHT) {
-                AbstractAnvilGUI gui = new AbstractAnvilGUI(player, event -> {
-                    if (event.getName().equalsIgnoreCase("yes")) {
+                ChatPrompt chatPrompt = ChatPrompt.showPrompt(plugin, player, event -> {
+                    if (event.getMessage().equalsIgnoreCase("yes")) {
                         player.sendMessage(Methods.formatText("&6" + spawnerData.getIdentifyingName() + " Spawner &7 has been destroyed successfully"));
                         plugin.getSpawnerManager().removeSpawnerData(spawnerData.getIdentifyingName());
                     }
                 });
 
-                gui.setOnClose((player, inventory) -> {
+                chatPrompt.setOnClose(() -> {
                     back.init(back.getSetTitle(), back.getInventory().getSize());
                     back.constructGUI();
                 });
-
-                ItemStack item = new ItemStack(Material.PAPER);
-                ItemMeta meta = item.getItemMeta();
-                meta.setDisplayName("Are you sure? (Yes/No)");
-                item.setItemMeta(meta);
-
-                gui.setSlot(AbstractAnvilGUI.AnvilSlot.INPUT_LEFT, item);
-                gui.open();
             }
         }));
 
@@ -209,18 +202,14 @@ public class GUIEditorOverview extends AbstractGUI {
                         .sendPrefixedMessage(player);
                 constructGUI();
             } else if (type == ClickType.LEFT) {
-                AbstractAnvilGUI gui = new AbstractAnvilGUI(player, event ->
-                        spawnerData.setDisplayName(event.getName()));
+                AnvilGui gui = new AnvilGui(player);
+                gui.setTitle("Enter a display name.");
+                gui.setAction(event ->
+                        spawnerData.setDisplayName(gui.getInputText().trim()));
 
-                gui.setOnClose((player1, inventory1) -> init("&8Editing: " + Methods.compileName(spawnerData, 1, false) + "&8.", inventory.getSize()));
+                gui.setOnClose((player1) -> init("&8Editing: " + Methods.compileName(spawnerData, 1, false) + "&8.", inventory.getSize()));
 
-                ItemStack item = new ItemStack(Material.PAPER);
-                ItemMeta meta = item.getItemMeta();
-                meta.setDisplayName("Enter a display name.");
-                item.setItemMeta(meta);
-
-                gui.setSlot(AbstractAnvilGUI.AnvilSlot.INPUT_LEFT, item);
-                gui.open();
+                plugin.getGuiManager().showGUI(player, gui);
             }
         });
     }

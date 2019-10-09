@@ -1,7 +1,7 @@
-package com.songoda.epicspawners.command.commands;
+package com.songoda.epicspawners.commands;
 
+import com.songoda.core.commands.AbstractCommand;
 import com.songoda.epicspawners.EpicSpawners;
-import com.songoda.epicspawners.command.AbstractCommand;
 import com.songoda.epicspawners.gui.GUISpawnerStats;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -10,27 +10,30 @@ import java.util.List;
 
 public class CommandSpawnerStats extends AbstractCommand {
 
-    public CommandSpawnerStats() {
-        super(null, true, "spawnerstats");
+    private final EpicSpawners plugin;
+
+    public CommandSpawnerStats(EpicSpawners plugin) {
+        super(true, "spawnerstats");
+        this.plugin = plugin;
     }
 
     @Override
-    protected ReturnType runCommand(EpicSpawners instance, CommandSender sender, String... args) {
+    protected ReturnType runCommand(CommandSender sender, String... args) {
         Player player = (Player) sender;
 
-        if (instance.getPlayerActionManager().getPlayerAction(player).getEntityKills().size() == 0) {
-            instance.getLocale().getMessage("interface.spawnerstats.nokills").sendPrefixedMessage(player);
+        if (plugin.getPlayerActionManager().getPlayerAction(player).getEntityKills().size() == 0) {
+            plugin.getLocale().getMessage("interface.spawnerstats.nokills").sendPrefixedMessage(player);
             return AbstractCommand.ReturnType.SUCCESS;
         }
 
 
-        new GUISpawnerStats(instance, player);
+        new GUISpawnerStats(plugin, player);
 
         return ReturnType.SUCCESS;
     }
 
     @Override
-    protected List<String> onTab(EpicSpawners instance, CommandSender sender, String... args) {
+    protected List<String> onTab(CommandSender sender, String... args) {
         return null;
     }
 

@@ -1,13 +1,14 @@
 package com.songoda.epicspawners.gui;
 
+import com.songoda.core.compatibility.ServerVersion;
+import com.songoda.core.hooks.EconomyManager;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.boost.BoostData;
 import com.songoda.epicspawners.boost.BoostType;
+import com.songoda.epicspawners.settings.Settings;
 import com.songoda.epicspawners.spawners.spawner.Spawner;
 import com.songoda.epicspawners.utils.Methods;
-import com.songoda.epicspawners.utils.ServerVersion;
 import com.songoda.epicspawners.utils.gui.AbstractGUI;
-import com.songoda.epicspawners.utils.settings.Setting;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -35,8 +36,8 @@ public class GUISpawnerBoost extends AbstractGUI {
     }
 
     private void setUp() {
-        if (amount > Setting.MAX_PLAYER_BOOST.getInt()) {
-            amount = Setting.MAX_PLAYER_BOOST.getInt();
+        if (amount > Settings.MAX_PLAYER_BOOST.getInt()) {
+            amount = Settings.MAX_PLAYER_BOOST.getInt();
             return;
         } else if (amount < 1) {
             amount = 1;
@@ -119,18 +120,18 @@ public class GUISpawnerBoost extends AbstractGUI {
         createButton(4, Material.valueOf(plugin.getConfig().getString("Interfaces.Exit Icon")),
                 plugin.getLocale().getMessage("general.nametag.back").getMessage());
 
-        createButton(8, Methods.addTexture(new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3),
+        createButton(8, Methods.addTexture(new ItemStack(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3),
                 "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23"),
                 plugin.getLocale().getMessage("general.nametag.back").getMessage());
 
-        ItemStack head = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3);
+        ItemStack head = new ItemStack(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3);
         ItemStack skull = Methods.addTexture(head, "http://textures.minecraft.net/texture/1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b");
         SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
         skull.setDurability((short) 3);
         skullMeta.setDisplayName(Methods.formatText("&6&l+1"));
         skull.setItemMeta(skullMeta);
 
-        ItemStack head2 = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3);
+        ItemStack head2 = new ItemStack(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3);
         ItemStack skull2 = Methods.addTexture(head2, "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23");
         SkullMeta skull2Meta = (SkullMeta) skull2.getItemMeta();
         skull2.setDurability((short) 3);
@@ -140,7 +141,7 @@ public class GUISpawnerBoost extends AbstractGUI {
         if (amount != 1) {
             inventory.setItem(0, skull2);
         }
-        if (amount < Setting.MAX_PLAYER_BOOST.getInt()) {
+        if (amount < Settings.MAX_PLAYER_BOOST.getInt()) {
             inventory.setItem(8, skull);
         }
     }
@@ -201,9 +202,9 @@ public class GUISpawnerBoost extends AbstractGUI {
                 return;
             }
         } else if (type.equals("ECO")) {
-            if (plugin.getEconomy() != null) {
-                if (plugin.getEconomy().hasBalance(player, cost)) {
-                    plugin.getEconomy().withdrawBalance(player, cost);
+            if (EconomyManager.isEnabled()) {
+                if (EconomyManager.hasBalance(player, cost)) {
+                    EconomyManager.withdrawBalance(player, cost);
                 } else {
                     plugin.getLocale().getMessage("event.upgrade.cannotafford").sendPrefixedMessage(player);
                     return;
@@ -231,7 +232,7 @@ public class GUISpawnerBoost extends AbstractGUI {
         BoostData boostData = new BoostData(BoostType.LOCATION, amt, c.getTime().getTime(), location);
         instance.getBoostManager().addBoostToSpawner(boostData);
         plugin.getLocale().getMessage("event.boost.applied").sendPrefixedMessage(player);
-        if (instance.isServerVersionAtLeast(ServerVersion.V1_9))
+        if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9))
             player.playSound(location, Sound.ENTITY_VILLAGER_YES, 1, 1);
     }
 

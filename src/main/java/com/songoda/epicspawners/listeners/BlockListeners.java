@@ -1,15 +1,16 @@
 package com.songoda.epicspawners.listeners;
 
+import com.songoda.core.compatibility.ServerVersion;
+import com.songoda.core.hooks.EconomyManager;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.api.events.SpawnerBreakEvent;
 import com.songoda.epicspawners.api.events.SpawnerChangeEvent;
 import com.songoda.epicspawners.api.events.SpawnerPlaceEvent;
+import com.songoda.epicspawners.settings.Settings;
 import com.songoda.epicspawners.spawners.spawner.Spawner;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.spawners.spawner.SpawnerStack;
 import com.songoda.epicspawners.utils.Methods;
-import com.songoda.epicspawners.utils.ServerVersion;
-import com.songoda.epicspawners.utils.settings.Setting;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -60,7 +61,7 @@ public class BlockListeners implements Listener {
                             b2.setType(Material.AIR);
                         }
                     } else {
-                        if (b2.getType().equals(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER"))) {
+                        if (b2.getType().equals(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER"))) {
                             return true;
                         }
                     }
@@ -107,7 +108,7 @@ public class BlockListeners implements Listener {
     public void onSpawnerPlace(BlockPlaceEvent event) {
         //We are ignoring canceled inside the event so that it will still remove holograms when the event is canceled.
         if (!event.isCancelled()) {
-            if (event.getBlock().getType() != (plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER"))
+            if (event.getBlock().getType() != (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER"))
                     || ((CreatureSpawner) event.getBlock().getState()).getSpawnedType() == EntityType.FIREWORK) return;
 
 
@@ -162,24 +163,22 @@ public class BlockListeners implements Listener {
             try {
                 creatureSpawner.setSpawnedType(EntityType.valueOf(spawnerData.getIdentifyingName().toUpperCase().replace(" ", "_")));
             } catch (Exception ex) {
-                creatureSpawner.setSpawnedType(plugin.isServerVersionAtLeast(ServerVersion.V1_9) ? EntityType.EGG : EntityType.DROPPED_ITEM);
+                creatureSpawner.setSpawnedType(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9) ? EntityType.EGG : EntityType.DROPPED_ITEM);
             }
             creatureSpawner.setDelay(1);
             creatureSpawner.update();
 
             spawner.setPlacedBy(player);
 
-            if (plugin.getHologram() != null) {
-                plugin.getHologram().processChange(event.getBlock());
-                plugin.getHologram().add(spawner);
-            }
+            plugin.processChange(event.getBlock());
+            plugin.updateHologram(spawner);
             plugin.getAppearanceTask().updateDisplayItem(spawner, spawnerData);
 
             return;
         }
 
-        if (plugin.getHologram() != null)
-            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> plugin.getHologram().processChange(event.getBlock()), 10L);
+        //ToDo: Probably remove this.
+        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> plugin.processChange(event.getBlock()), 10L);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -190,7 +189,7 @@ public class BlockListeners implements Listener {
 
             Player player = event.getPlayer();
 
-            if (event.getBlock().getType() != (plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER"))
+            if (event.getBlock().getType() != (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER"))
                     || ((CreatureSpawner) event.getBlock().getState()).getSpawnedType() == EntityType.FIREWORK) return;
 
             if (plugin.getBlacklistHandler().isBlacklisted(event.getPlayer(), true)) {
@@ -217,15 +216,12 @@ public class BlockListeners implements Listener {
             if (spawner.getFirstStack().getSpawnerData() == null) {
                 event.getBlock().setType(Material.AIR);
                 System.out.println("A corrupted spawner has been removed as its Type no longer exists.");
-                plugin.getSpawnerManager().removeSpawnerFromWorld(location);
-                if (plugin.getHologram() != null)
-                    plugin.getHologram().update(spawner);
-                plugin.getAppearanceTask().removeDisplayItem(spawner);
+                spawner.destroy(plugin);
                 return;
             }
 
             int currentStackSize = spawner.getSpawnerDataCount();
-            boolean destroyWholeStack = player.isSneaking() && Setting.SNEAK_FOR_STACK.getBoolean() || Setting.ONLY_DROP_STACKED.getBoolean();
+            boolean destroyWholeStack = player.isSneaking() && Settings.SNEAK_FOR_STACK.getBoolean() || Settings.ONLY_DROP_STACKED.getBoolean();
             if (currentStackSize - 1 == 0 || destroyWholeStack) {
                 SpawnerBreakEvent breakEvent = new SpawnerBreakEvent(player, spawner);
                 Bukkit.getPluginManager().callEvent(breakEvent);
@@ -240,7 +236,7 @@ public class BlockListeners implements Listener {
                 }
             }
 
-            boolean naturalOnly = Setting.ONLY_CHARGE_NATURAL.getBoolean();
+            boolean naturalOnly = Settings.ONLY_CHARGE_NATURAL.getBoolean();
 
             if (spawner.getFirstStack().getSpawnerData().getPickupCost() != 0 && (!naturalOnly || spawner.getPlacedBy() == null)) {
                 if (!plugin.getSpawnerManager().hasCooldown(spawner)) {
@@ -256,8 +252,8 @@ public class BlockListeners implements Listener {
                 plugin.getSpawnerManager().removeCooldown(spawner);
                 double cost = spawner.getFirstStack().getSpawnerData().getPickupCost();
 
-                if (plugin.getEconomy().hasBalance(player, cost)) {
-                    plugin.getEconomy().withdrawBalance(player, cost);
+                if (EconomyManager.hasBalance(player, cost)) {
+                    EconomyManager.withdrawBalance(player, cost);
                 } else {
                     plugin.getLocale().getMessage("event.block.cannotbreak").sendPrefixedMessage(player);
                     event.setCancelled(true);
@@ -277,15 +273,14 @@ public class BlockListeners implements Listener {
                 }
             }
 
-            if (plugin.getHologram() != null)
-                plugin.getHologram().update(spawner);
+            plugin.updateHologram(spawner);
 
             plugin.getAppearanceTask().removeDisplayItem(spawner);
 
             return;
         }
-        if (plugin.getHologram() == null) return;
 
-        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> plugin.getHologram().processChange(event.getBlock()), 10L);
+        //ToDo: Probably remove this.
+        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> plugin.processChange(event.getBlock()), 10L);
     }
 }

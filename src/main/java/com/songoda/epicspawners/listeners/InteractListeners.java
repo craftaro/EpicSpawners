@@ -1,15 +1,15 @@
 package com.songoda.epicspawners.listeners;
 
+import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.api.events.SpawnerChangeEvent;
+import com.songoda.epicspawners.settings.Settings;
 import com.songoda.epicspawners.spawners.spawner.Spawner;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.spawners.spawner.SpawnerManager;
 import com.songoda.epicspawners.spawners.spawner.SpawnerStack;
 import com.songoda.epicspawners.utils.Methods;
 import com.songoda.epicspawners.utils.Reflection;
-import com.songoda.epicspawners.utils.ServerVersion;
-import com.songoda.epicspawners.utils.settings.Setting;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -65,7 +65,7 @@ public class InteractListeners implements Listener {
                 for (int fy = -radius; fy <= radius; fy++) {
                     for (int fz = -radius; fz <= radius; fz++) {
                         Block b2 = event.getClickedBlock().getWorld().getBlockAt(bx + fx, by + fy, bz + fz);
-                        if (b2.getType().equals(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER"))) {
+                        if (b2.getType().equals(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER"))) {
                             event.setCancelled(true);
                         }
                     }
@@ -75,8 +75,8 @@ public class InteractListeners implements Listener {
 
         if (is == null || is == Material.AIR) return;
 
-        if (event.getClickedBlock().getType() != (plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER"))
-                || !is.toString().contains(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? "SPAWN_EGG" : "MONSTER_EGG"))
+        if (event.getClickedBlock().getType() != (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER"))
+                || !is.toString().contains(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? "SPAWN_EGG" : "MONSTER_EGG"))
             return;
 
         event.setCancelled(true);
@@ -92,9 +92,9 @@ public class InteractListeners implements Listener {
 
         SpawnerData blockType = spawnerManager.getSpawnerData(spawner.getCreatureSpawner().getSpawnedType());
 
-        if (!Setting.EGGS_CONVERT_SPAWNERS.getBoolean()
+        if (!Settings.EGGS_CONVERT_SPAWNERS.getBoolean()
                 || !spawner.getFirstStack().getSpawnerData().isActive()
-                || (spawner.getPlacedBy() == null && Setting.DISABLE_NATURAL_SPAWNERS.getBoolean())) {
+                || (spawner.getPlacedBy() == null && Settings.DISABLE_NATURAL_SPAWNERS.getBoolean())) {
             event.setCancelled(true);
             return;
         }
@@ -103,9 +103,9 @@ public class InteractListeners implements Listener {
         int amt = player.getInventory().getItemInHand().getAmount();
         EntityType itype;
 
-        if (plugin.isServerVersionAtLeast(ServerVersion.V1_13)) {
+        if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13)) {
             itype = EntityType.valueOf(item.getType().name().replace("_SPAWN_EGG", "").replace("MOOSHROOM", "MUSHROOM_COW"));
-        } else if (plugin.isServerVersionAtLeast(ServerVersion.V1_11)) {
+        } else if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_11)) {
             String str = Reflection.getNBTTagCompound(Reflection.getNMSItemStack(item)).toString();
             if (str.contains("minecraft:")) {
                 itype = EntityType.fromName(str.substring(str.indexOf("minecraft:") + 10, str.indexOf("\"}")));
@@ -117,7 +117,7 @@ public class InteractListeners implements Listener {
         }
 
         //Bukkit.getConsoleSender().sendMessage("General -> " + itype);
-        
+
         SpawnerData itemType = plugin.getSpawnerManager().getSpawnerData(itype);
 
         if (!player.hasPermission("epicspawners.egg." + itype) && !player.hasPermission("epicspawners.egg.*")) {
@@ -148,8 +148,7 @@ public class InteractListeners implements Listener {
         }
         spawner.getCreatureSpawner().update();
 
-        if (plugin.getHologram() != null)
-            plugin.getHologram().processChange(block);
+        plugin.processChange(block);
         if (player.getGameMode() != GameMode.CREATIVE) {
             Methods.takeItem(player, bmulti - 1);
         }
@@ -164,17 +163,17 @@ public class InteractListeners implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void PlayerInteractEvent(PlayerInteractEvent event) {
-        if (plugin.isServerVersionAtLeast(ServerVersion.V1_9)) {
+        if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9)) {
             if (event.getHand() == EquipmentSlot.OFF_HAND) return;
         }
 
         Player player = event.getPlayer();
         Block block = event.getClickedBlock();
-        if(block == null) return;
+        if (block == null) return;
         Location location = block.getLocation();
         ItemStack item = event.getItem();
 
-        if (block.getType() == (plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER"))) {
+        if (block.getType() == (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER"))) {
             if (!plugin.getSpawnerManager().isSpawner(location))
                 createSpawner(location);
         }
@@ -189,30 +188,28 @@ public class InteractListeners implements Listener {
         }
         if (is != null && is.name().contains("SPAWN_EGG") && is.name().equals("MONSTER_EGG"))
             return;
-        if (event.getClickedBlock().getType() == (plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER")) && is == (plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER")) && !plugin.getBlacklistHandler().isBlacklisted(player, true)) {
+        if (event.getClickedBlock().getType() == (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER")) && is == (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER")) && !plugin.getBlacklistHandler().isBlacklisted(player, true)) {
 
             Spawner spawner = plugin.getSpawnerManager().getSpawnerFromWorld(location);
 
-            if (spawner.getPlacedBy() == null && Setting.DISABLE_NATURAL_SPAWNERS.getBoolean()) return;
+            if (spawner.getPlacedBy() == null && Settings.DISABLE_NATURAL_SPAWNERS.getBoolean()) return;
 
             if (!player.isSneaking()) {
                 SpawnerData spawnerData = plugin.getSpawnerManager().getSpawnerData(item);
                 if (player.hasPermission("epicspawners.stack." + spawnerData.getIdentifyingName()) || player.hasPermission("epicspawners.stack.*")) {
                     spawner.preStack(player, item);
-                    if (plugin.getHologram() != null)
-                        plugin.getHologram().update(spawner);
+                    plugin.updateHologram(spawner);
                     event.setCancelled(true);
                 }
             }
-        } else if (event.getClickedBlock().getType() == (plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER")) && !plugin.getBlacklistHandler().isBlacklisted(player, false)) {
+        } else if (event.getClickedBlock().getType() == (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER")) && !plugin.getBlacklistHandler().isBlacklisted(player, false)) {
             if (!player.isSneaking() || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
                 Spawner spawner = plugin.getSpawnerManager().getSpawnerFromWorld(location);
 
-                if (spawner.getPlacedBy() == null && Setting.DISABLE_NATURAL_SPAWNERS.getBoolean()) return;
+                if (spawner.getPlacedBy() == null && Settings.DISABLE_NATURAL_SPAWNERS.getBoolean()) return;
 
                 spawner.overview(player);
-                if (plugin.getHologram() != null)
-                    plugin.getHologram().processChange(block);
+                plugin.processChange(block);
                 event.setCancelled(true);
             }
         }

@@ -1,11 +1,11 @@
 package com.songoda.epicspawners.gui;
 
+import com.songoda.core.compatibility.ServerVersion;
+import com.songoda.core.gui.AnvilGui;
+import com.songoda.core.input.ChatPrompt;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
-import com.songoda.epicspawners.utils.AbstractChatConfirm;
 import com.songoda.epicspawners.utils.Methods;
-import com.songoda.epicspawners.utils.ServerVersion;
-import com.songoda.epicspawners.utils.gui.AbstractAnvilGUI;
 import com.songoda.epicspawners.utils.gui.AbstractGUI;
 import com.songoda.epicspawners.utils.gui.Range;
 import org.bukkit.ChatColor;
@@ -61,7 +61,7 @@ public class GUIEditorEdit extends AbstractGUI {
             } else if (spawnerData.getBlocks().size() >= spot + 1 && editType == EditType.BLOCK) {
                 inventory.setItem(num, new ItemStack(spawnerData.getBlocks().get(spot)));
             } else if (spawnerData.getEntities().size() >= spot + 1 && editType == EditType.ENTITY && spawnerData.getEntities().get(spot) != EntityType.GIANT) {
-                ItemStack it = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3);
+                ItemStack it = new ItemStack(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3);
                 ItemStack item = plugin.getHeads().addTexture(it,
                         plugin.getSpawnerManager().getSpawnerData(spawnerData.getEntities().get(spot)));
                 ItemMeta meta = item.getItemMeta();
@@ -103,7 +103,7 @@ public class GUIEditorEdit extends AbstractGUI {
         inventory.setItem(52, Methods.getBackgroundGlass(true));
         inventory.setItem(53, Methods.getBackgroundGlass(true));
 
-        createButton(0, Methods.addTexture(new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3),
+        createButton(0, Methods.addTexture(new ItemStack(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3),
                 "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23"),
                 plugin.getLocale().getMessage("general.nametag.back").getMessage());
 
@@ -115,7 +115,7 @@ public class GUIEditorEdit extends AbstractGUI {
                 add = new ItemStack(Material.PAPER);
                 addName = "&6Add Command";
             } else {
-                add = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SHEEP_SPAWN_EGG : Material.valueOf("MONSTER_EGG"));
+                add = new ItemStack(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SHEEP_SPAWN_EGG : Material.valueOf("MONSTER_EGG"));
                 addName = "&6Add entity";
             }
 
@@ -144,7 +144,7 @@ public class GUIEditorEdit extends AbstractGUI {
                 player.sendMessage(Methods.formatText("&7@n will execute the command for the person who originally placed the spawner."));
                 player.sendMessage(Methods.formatText("&7If you're getting command output try &6/gamerule sendCommandFeedback false&7."));
                 player.sendMessage(Methods.formatText("&7do not include a &a/"));
-                AbstractChatConfirm abstractChatConfirm = new AbstractChatConfirm(player, event -> {
+                ChatPrompt abstractChatConfirm = ChatPrompt.showPrompt(plugin, player, event -> {
                     List<String> commands = new ArrayList<>(spawnerData.getCommands());
                     commands.add(event.getMessage());
                     spawnerData.setCommands(commands);
@@ -156,9 +156,11 @@ public class GUIEditorEdit extends AbstractGUI {
             });
         } else {
             registerClickable(39, (player, inventory, cursor, slot, type) -> {
-                AbstractAnvilGUI gui = new AbstractAnvilGUI(player, event -> {
+                AnvilGui gui = new AnvilGui(player);
+                gui.setTitle("Entity: Ex. IRON_GOLEM");
+                gui.setAction(event -> {
                     try {
-                        EntityType eType = EntityType.valueOf(event.getName().toUpperCase());
+                        EntityType eType = EntityType.valueOf(gui.getInputText().trim().toUpperCase());
                         List<EntityType> entities = new ArrayList<>(spawnerData.getEntities());
                         entities.add(eType);
                         spawnerData.setEntities(entities);
@@ -168,15 +170,8 @@ public class GUIEditorEdit extends AbstractGUI {
                     }
                 });
 
-                gui.setOnClose((player1, inventory1) -> init(setTitle, inventory.getSize()));
-
-                ItemStack item = new ItemStack(Material.PAPER);
-                ItemMeta meta = item.getItemMeta();
-                meta.setDisplayName("Entity: Ex. IRON_GOLEM");
-                item.setItemMeta(meta);
-
-                gui.setSlot(AbstractAnvilGUI.AnvilSlot.INPUT_LEFT, item);
-                gui.open();
+                gui.setOnClose((player1) -> init(setTitle, inventory.getSize()));
+                plugin.getGuiManager().showGUI(player, gui);
             });
         }
 

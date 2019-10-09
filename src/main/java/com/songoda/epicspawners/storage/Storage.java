@@ -1,11 +1,11 @@
 package com.songoda.epicspawners.storage;
 
+import com.songoda.core.configuration.Config;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.boost.BoostData;
 import com.songoda.epicspawners.player.PlayerData;
 import com.songoda.epicspawners.spawners.spawner.Spawner;
 import com.songoda.epicspawners.spawners.spawner.SpawnerStack;
-import com.songoda.epicspawners.utils.ConfigWrapper;
 import com.songoda.epicspawners.utils.Methods;
 
 import java.util.List;
@@ -13,14 +13,12 @@ import java.util.List;
 public abstract class Storage {
 
     protected final EpicSpawners plugin;
-    protected final ConfigWrapper dataFile;
+    protected final Config dataFile;
 
     public Storage(EpicSpawners plugin) {
         this.plugin = plugin;
-        this.dataFile = new ConfigWrapper(plugin, "", "data.yml");
-        this.dataFile.createNewFile(null, "EpicSpawners Data File");
-        this.dataFile.getConfig().options().copyDefaults(true);
-        this.dataFile.saveConfig();
+        this.dataFile = new Config(plugin, "data.yml");
+        this.dataFile.load();
     }
 
     public abstract boolean containsGroup(String group);

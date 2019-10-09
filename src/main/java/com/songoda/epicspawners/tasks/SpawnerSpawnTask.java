@@ -1,11 +1,9 @@
 package com.songoda.epicspawners.tasks;
 
+import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.epicspawners.EpicSpawners;
+import com.songoda.epicspawners.settings.Settings;
 import com.songoda.epicspawners.spawners.spawner.SpawnerManager;
-import com.songoda.epicspawners.utils.ServerVersion;
-import com.songoda.epicspawners.utils.settings.Setting;
-import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -27,7 +25,7 @@ public class SpawnerSpawnTask extends BukkitRunnable {
         plugin = plug;
         if (instance == null) {
             instance = new SpawnerSpawnTask(plugin);
-            instance.runTaskTimer(plugin, 0, Setting.CUSTOM_SPAWNER_TICK_RATE.getInt());
+            instance.runTaskTimer(plugin, 0, Settings.CUSTOM_SPAWNER_TICK_RATE.getInt());
         }
 
         return instance;
@@ -41,20 +39,17 @@ public class SpawnerSpawnTask extends BukkitRunnable {
                     || spawner.getWorld() == null
                     || !spawner.getWorld().isChunkLoaded(spawner.getX() >> 4, spawner.getZ() >> 4)
                     || !spawner.checkConditions()
-                    || (spawner.getPlacedBy() == null && Setting.DISABLE_NATURAL_SPAWNERS.getBoolean())) return;
+                    || (spawner.getPlacedBy() == null && Settings.DISABLE_NATURAL_SPAWNERS.getBoolean())) return;
 
             CreatureSpawner cSpawner = spawner.getCreatureSpawner();
             if (cSpawner == null) return;
             int delay = spawner.getCreatureSpawner().getDelay();
-            delay = delay - Setting.CUSTOM_SPAWNER_TICK_RATE.getInt();
+            delay = delay - Settings.CUSTOM_SPAWNER_TICK_RATE.getInt();
             spawner.getCreatureSpawner().setDelay(delay);
             if (delay >= 0) return;
 
-            if (spawner.getLocation().getBlock().getType() != (plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER"))) {
-                Location location = spawner.getLocation();
-                plugin.getAppearanceTask().removeDisplayItem(spawner);
-                plugin.getSpawnerManager().removeSpawnerFromWorld(location);
-                plugin.getHologram().remove(spawner);
+            if (spawner.getLocation().getBlock().getType() != CompatibleMaterial.SPAWNER.getMaterial()) {
+                spawner.destroy(plugin);
                 return;
             }
 

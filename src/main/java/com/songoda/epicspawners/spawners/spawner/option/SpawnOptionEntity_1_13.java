@@ -9,7 +9,7 @@ import com.songoda.epicspawners.spawners.spawner.Spawner;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.spawners.spawner.SpawnerStack;
 import com.songoda.epicspawners.utils.Methods;
-import com.songoda.epicspawners.utils.settings.Setting;
+import com.songoda.epicspawners.settings.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -270,7 +270,7 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
                 if (mcmmo)
                     craftEntity.setMetadata( "mcMMO: Spawned Entity", new FixedMetadataValue(plugin, true));
 
-                if (Setting.NO_AI.getBoolean())
+                if (Settings.NO_AI.getBoolean())
                     ((LivingEntity) craftEntity).setAI(false);
 
                 Object objBukkitEntity = methodEntityGetBukkitEntity.invoke(objEntity);

@@ -1,11 +1,12 @@
 package com.songoda.epicspawners.gui;
 
+import com.songoda.core.compatibility.ServerVersion;
+import com.songoda.core.hooks.EconomyManager;
 import com.songoda.epicspawners.EpicSpawners;
+import com.songoda.epicspawners.settings.Settings;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.utils.Methods;
-import com.songoda.epicspawners.utils.ServerVersion;
 import com.songoda.epicspawners.utils.gui.AbstractGUI;
-import com.songoda.epicspawners.utils.settings.Setting;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -70,7 +71,7 @@ public class GUIShopItem extends AbstractGUI {
 
         double price = spawnerData.getShopPrice() * amount;
 
-        ItemStack it = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), amount, (byte) 3);
+        ItemStack it = new ItemStack(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), amount, (byte) 3);
 
         ItemStack item = EpicSpawners.getInstance().getHeads().addTexture(it, spawnerData);
 
@@ -92,7 +93,7 @@ public class GUIShopItem extends AbstractGUI {
         inventory.setItem(22, item);
 
 
-        ItemStack plus = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.LIME_STAINED_GLASS_PANE : Material.valueOf("STAINED_GLASS_PANE"), 1, (short) 5);
+        ItemStack plus = new ItemStack(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.LIME_STAINED_GLASS_PANE : Material.valueOf("STAINED_GLASS_PANE"), 1, (short) 5);
         ItemMeta plusmeta = plus.getItemMeta();
         plusmeta.setDisplayName(plugin.getLocale().getMessage("interface.shop.add1").getMessage());
         plus.setItemMeta(plusmeta);
@@ -105,7 +106,7 @@ public class GUIShopItem extends AbstractGUI {
             });
         }
 
-        plus = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.LIME_STAINED_GLASS_PANE : Material.valueOf("STAINED_GLASS_PANE"), 10, (short) 5);
+        plus = new ItemStack(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.LIME_STAINED_GLASS_PANE : Material.valueOf("STAINED_GLASS_PANE"), 10, (short) 5);
         plusmeta.setDisplayName(plugin.getLocale().getMessage("interface.shop.add10").getMessage());
         plus.setItemMeta(plusmeta);
         if (item.getAmount() + 10 <= 64) {
@@ -117,7 +118,7 @@ public class GUIShopItem extends AbstractGUI {
             });
         }
 
-        plus = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.LIME_STAINED_GLASS_PANE : Material.valueOf("STAINED_GLASS_PANE"), 64, (short) 5);
+        plus = new ItemStack(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.LIME_STAINED_GLASS_PANE : Material.valueOf("STAINED_GLASS_PANE"), 64, (short) 5);
         plusmeta.setDisplayName(plugin.getLocale().getMessage("interface.shop.set64").getMessage());
         plus.setItemMeta(plusmeta);
         if (item.getAmount() != 64) {
@@ -129,7 +130,7 @@ public class GUIShopItem extends AbstractGUI {
             });
         }
 
-        ItemStack minus = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.RED_STAINED_GLASS_PANE : Material.valueOf("STAINED_GLASS_PANE"), 1, (short) 14);
+        ItemStack minus = new ItemStack(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.RED_STAINED_GLASS_PANE : Material.valueOf("STAINED_GLASS_PANE"), 1, (short) 14);
         ItemMeta minusmeta = minus.getItemMeta();
         minusmeta.setDisplayName(plugin.getLocale().getMessage("interface.shop.remove1").getMessage());
         minus.setItemMeta(minusmeta);
@@ -142,7 +143,7 @@ public class GUIShopItem extends AbstractGUI {
             });
         }
 
-        minus = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.RED_STAINED_GLASS_PANE : Material.valueOf("STAINED_GLASS_PANE"), 10, (short) 14);
+        minus = new ItemStack(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.RED_STAINED_GLASS_PANE : Material.valueOf("STAINED_GLASS_PANE"), 10, (short) 14);
         minusmeta.setDisplayName(plugin.getLocale().getMessage("interface.shop.remove10").getMessage());
         minus.setItemMeta(minusmeta);
         if (item.getAmount() - 10 >= 0) {
@@ -154,7 +155,7 @@ public class GUIShopItem extends AbstractGUI {
             });
         }
 
-        minus = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.RED_STAINED_GLASS_PANE : Material.valueOf("STAINED_GLASS_PANE"), 1, (short) 14);
+        minus = new ItemStack(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.RED_STAINED_GLASS_PANE : Material.valueOf("STAINED_GLASS_PANE"), 1, (short) 14);
         minusmeta.setDisplayName(plugin.getLocale().getMessage("interface.shop.set1").getMessage());
         minus.setItemMeta(minusmeta);
         if (item.getAmount() != 1) {
@@ -166,15 +167,15 @@ public class GUIShopItem extends AbstractGUI {
             });
         }
 
-        createButton(8, Material.valueOf(Setting.EXIT_ICON.getString()), plugin.getLocale().getMessage("general.nametag.exit").getMessage());
+        createButton(8, Material.valueOf(Settings.EXIT_ICON.getString()), plugin.getLocale().getMessage("general.nametag.exit").getMessage());
 
-        ItemStack skull = Methods.addTexture(new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13)
+        ItemStack skull = Methods.addTexture(new ItemStack(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13)
                         ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3),
                 "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23");
 
         createButton(0, skull, plugin.getLocale().getMessage("general.nametag.back").getMessage());
 
-        createButton(40, Material.valueOf(Setting.BUY_ICON.getString()), plugin.getLocale().getMessage("general.nametag.confirm").getMessage());
+        createButton(40, Material.valueOf(Settings.BUY_ICON.getString()), plugin.getLocale().getMessage("general.nametag.confirm").getMessage());
     }
 
     @Override
@@ -192,13 +193,13 @@ public class GUIShopItem extends AbstractGUI {
     }
 
     private void confirm(Player player, int amount) {
-        if (plugin.getEconomy() == null) {
+        if (!EconomyManager.isEnabled()) {
             player.sendMessage("Economy not enabled.");
             return;
         }
 
         double price = spawnerData.getShopPrice() * amount;
-        if (!plugin.getEconomy().hasBalance(player, price)) {
+        if (!EconomyManager.hasBalance(player, price)) {
             plugin.getLocale().getMessage("event.shop.cannotafford").sendPrefixedMessage(player);
             return;
         }
@@ -206,7 +207,7 @@ public class GUIShopItem extends AbstractGUI {
         ItemStack item = spawnerData.toItemStack(amount);
         player.getInventory().addItem(item);
         plugin.getLocale().getMessage("event.shop.purchasesuccess").sendPrefixedMessage(player);
-        plugin.getEconomy().withdrawBalance(player, price);
+        EconomyManager.withdrawBalance(player, price);
     }
 
     @Override

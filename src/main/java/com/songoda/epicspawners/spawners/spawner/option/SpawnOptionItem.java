@@ -4,7 +4,7 @@ import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.spawners.spawner.Spawner;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.spawners.spawner.SpawnerStack;
-import com.songoda.epicspawners.utils.ServerVersion;
+import com.songoda.core.compatibility.ServerVersion;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -38,7 +38,7 @@ public class SpawnOptionItem implements SpawnOption {
         World world = location.getWorld();
         Location spawnLocation = location.clone().add(0.5, 0.9, 0.5);
 
-        if (EpicSpawners.getInstance().isServerVersionAtLeast(ServerVersion.V1_9))
+        if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9))
             location.getWorld().playSound(location, Sound.ENTITY_ITEM_PICKUP, 0.1F, 1F);
 
         int spawnerBoost = spawner.getBoost();

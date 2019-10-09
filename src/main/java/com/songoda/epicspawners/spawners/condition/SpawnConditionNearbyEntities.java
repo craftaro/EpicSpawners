@@ -2,7 +2,7 @@ package com.songoda.epicspawners.spawners.condition;
 
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.spawners.spawner.Spawner;
-import com.songoda.epicspawners.utils.settings.Setting;
+import com.songoda.epicspawners.settings.Settings;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -31,7 +31,7 @@ public class SpawnConditionNearbyEntities implements SpawnCondition {
 
         Location location = spawner.getLocation().add(0.5, 0.5, 0.5);
 
-        String[] arr = Setting.SEARCH_RADIUS.getString().split("x");
+        String[] arr = Settings.SEARCH_RADIUS.getString().split("x");
 
         int size = Math.toIntExact(location.getWorld().getNearbyEntities(location, Integer.parseInt(arr[0]), Integer.parseInt(arr[1]), Integer.parseInt(arr[2]))
                 .stream().filter(e -> e instanceof LivingEntity && e.getType() != EntityType.PLAYER && e.getType() != EntityType.ARMOR_STAND && e.isValid()).count());

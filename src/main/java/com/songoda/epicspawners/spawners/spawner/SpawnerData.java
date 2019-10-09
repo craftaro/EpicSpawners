@@ -1,14 +1,13 @@
 package com.songoda.epicspawners.spawners.spawner;
 
 import com.google.common.base.Preconditions;
-import com.songoda.epicspawners.EpicSpawners;
+import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.epicspawners.particles.ParticleDensity;
 import com.songoda.epicspawners.particles.ParticleEffect;
 import com.songoda.epicspawners.particles.ParticleType;
 import com.songoda.epicspawners.spawners.condition.*;
 import com.songoda.epicspawners.spawners.spawner.option.*;
 import com.songoda.epicspawners.utils.Methods;
-import com.songoda.epicspawners.utils.ServerVersion;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.EntityType;
@@ -92,7 +91,7 @@ public class SpawnerData {
 
     public void reloadSpawnMethods() {
         spawnOptions.clear();
-        if (EpicSpawners.getInstance().isServerVersionAtLeast(ServerVersion.V1_13)) {
+        if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13)) {
             if (!entities.isEmpty()) spawnOptions.add(new SpawnOptionEntity_1_13(entities));
         } else {
             if (!entities.isEmpty()) spawnOptions.add(new SpawnOptionEntity_1_12(entities));
@@ -131,7 +130,7 @@ public class SpawnerData {
     public ItemStack toItemStack(int amount, int stackSize) {
         Preconditions.checkArgument(stackSize > 0, "Stack size must be greater than or equal to 0");
 
-        ItemStack item = new ItemStack(EpicSpawners.getInstance().isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER"), amount);
+        ItemStack item = new ItemStack(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER"), amount);
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName(Methods.compileName(this, stackSize, true));
         item.setItemMeta(meta);

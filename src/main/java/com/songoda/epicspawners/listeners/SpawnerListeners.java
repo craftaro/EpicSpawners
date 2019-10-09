@@ -5,7 +5,7 @@ import com.songoda.epicspawners.spawners.spawner.Spawner;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.spawners.spawner.SpawnerStack;
 import com.songoda.epicspawners.utils.Methods;
-import com.songoda.epicspawners.utils.ServerVersion;
+import com.songoda.core.compatibility.ServerVersion;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -35,7 +35,7 @@ public class SpawnerListeners implements Listener {
             entity.remove();
         }
 
-        if (plugin.isServerVersionAtLeast(ServerVersion.V1_11)) {
+        if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_11)) {
             if (entity.getPassengers().size() != 0) {
                 for (Entity e : entity.getPassengers()) {
                     e.remove();

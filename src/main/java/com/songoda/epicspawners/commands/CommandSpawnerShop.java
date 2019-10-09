@@ -1,7 +1,7 @@
-package com.songoda.epicspawners.command.commands;
+package com.songoda.epicspawners.commands;
 
+import com.songoda.core.commands.AbstractCommand;
 import com.songoda.epicspawners.EpicSpawners;
-import com.songoda.epicspawners.command.AbstractCommand;
 import com.songoda.epicspawners.gui.GUISpawnerShop;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -10,18 +10,21 @@ import java.util.List;
 
 public class CommandSpawnerShop extends AbstractCommand {
 
-    public CommandSpawnerShop() {
-        super(null, true, "spawnershop");
+    private final EpicSpawners plugin;
+
+    public CommandSpawnerShop(EpicSpawners plugin) {
+        super(true, "spawnershop");
+        this.plugin = plugin;
     }
 
     @Override
-    protected ReturnType runCommand(EpicSpawners plugin, CommandSender sender, String... args) {
+    protected ReturnType runCommand(CommandSender sender, String... args) {
         new GUISpawnerShop(plugin, (Player) sender);
         return ReturnType.SUCCESS;
     }
 
     @Override
-    protected List<String> onTab(EpicSpawners instance, CommandSender sender, String... args) {
+    protected List<String> onTab(CommandSender sender, String... args) {
         return null;
     }
 

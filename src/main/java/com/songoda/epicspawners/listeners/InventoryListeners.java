@@ -1,7 +1,7 @@
 package com.songoda.epicspawners.listeners;
 
 import com.songoda.epicspawners.EpicSpawners;
-import com.songoda.epicspawners.utils.ServerVersion;
+import com.songoda.core.compatibility.ServerVersion;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -30,7 +30,7 @@ public class InventoryListeners implements Listener {
                     if (event.getAction() != InventoryAction.NOTHING) {
                         if (event.getCurrentItem().getType() != Material.AIR) {
                             ItemStack item = event.getCurrentItem();
-                            if (item.getType() == (plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER"))) {
+                            if (item.getType() == (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER"))) {
                                 event.setCancelled(true);
                             }
                         }

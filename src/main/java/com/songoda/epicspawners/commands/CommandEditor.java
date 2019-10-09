@@ -1,7 +1,7 @@
-package com.songoda.epicspawners.command.commands;
+package com.songoda.epicspawners.commands;
 
+import com.songoda.core.commands.AbstractCommand;
 import com.songoda.epicspawners.EpicSpawners;
-import com.songoda.epicspawners.command.AbstractCommand;
 import com.songoda.epicspawners.gui.GUIEditorSelector;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -10,18 +10,21 @@ import java.util.List;
 
 public class CommandEditor extends AbstractCommand {
 
-    public CommandEditor(AbstractCommand abstractCommand) {
-        super(abstractCommand, true,"editor");
+    private final EpicSpawners plugin;
+
+    public CommandEditor(EpicSpawners plugin) {
+        super(true, "editor");
+        this.plugin = plugin;
     }
 
     @Override
-    protected ReturnType runCommand(EpicSpawners instance, CommandSender sender, String... args) {
-        new GUIEditorSelector(instance, (Player)sender);
+    protected ReturnType runCommand(CommandSender sender, String... args) {
+        new GUIEditorSelector(plugin, (Player) sender);
         return ReturnType.SUCCESS;
     }
 
     @Override
-    protected List<String> onTab(EpicSpawners instance, CommandSender sender, String... args) {
+    protected List<String> onTab(CommandSender sender, String... args) {
         return null;
     }
 

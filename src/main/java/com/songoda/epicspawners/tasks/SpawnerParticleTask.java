@@ -6,7 +6,7 @@ import com.songoda.epicspawners.particles.ParticleEffect;
 import com.songoda.epicspawners.particles.ParticleType;
 import com.songoda.epicspawners.spawners.spawner.Spawner;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
-import com.songoda.epicspawners.utils.ServerVersion;
+import com.songoda.core.compatibility.ServerVersion;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -60,7 +60,7 @@ public class SpawnerParticleTask extends BukkitRunnable {
                 double z = HALO_RADIUS * Math.sin(theta);
 
                 centre.add(x, 0.2, z);
-                if (plugin.isServerVersionAtLeast(ServerVersion.V1_13))
+                if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13))
                     centre.getWorld().spawnParticle(Particle.valueOf(particle.getEffect()), centre, density.getEffect(), 0, 0, 0, 0, Particle.valueOf(particle.getEffect()) == org.bukkit.Particle.REDSTONE ? new org.bukkit.Particle.DustOptions(Color.RED, 1) : null);
                 else
                     centre.getWorld().spawnParticle(Particle.valueOf(particle.getEffect()), centre, density.getEffect(), 0, 0, 0, 0);
@@ -73,7 +73,7 @@ public class SpawnerParticleTask extends BukkitRunnable {
                     double x = 1.2 * cosAngle, z = 1.2 * sinAngle;
                     centre.add(x, -0.2, z);
 
-                    if (plugin.isServerVersionAtLeast(ServerVersion.V1_13))
+                    if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13))
                         centre.getWorld().spawnParticle(Particle.valueOf(particle.getEffect()), centre, density.getEffect(), 0, 0, 0, 0, Particle.valueOf(particle.getEffect()) == org.bukkit.Particle.REDSTONE ? new org.bukkit.Particle.DustOptions(Color.RED, 1) : null);
                     else
                         centre.getWorld().spawnParticle(Particle.valueOf(particle.getEffect()), centre, density.getEffect(), 0, 0, 0, 0);
@@ -83,7 +83,7 @@ public class SpawnerParticleTask extends BukkitRunnable {
                     x = 0.8 * cosAngle;
                     z = 0.8 * sinAngle;
                     centre.add(x, 0, z);
-                    if (plugin.isServerVersionAtLeast(ServerVersion.V1_13))
+                    if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13))
                         centre.getWorld().spawnParticle(Particle.valueOf(particle.getEffect()), centre, density.getEffect(), 0, 0, 0, 0, Particle.valueOf(particle.getEffect()) == org.bukkit.Particle.REDSTONE ? new org.bukkit.Particle.DustOptions(Color.RED, 1) : null);
                     else
                         centre.getWorld().spawnParticle(Particle.valueOf(particle.getEffect()), centre, density.getEffect(), 0, 0, 0, 0);

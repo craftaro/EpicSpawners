@@ -12,8 +12,8 @@ import java.util.*;
 
 public class StorageYaml extends Storage {
 
-    private static final Map<String, Object> toSave = new HashMap<>();
-    private static Map<String, Object> lastSave = null;
+    private final Map<String, Object> toSave = new HashMap<>();
+    private Map<String, Object> lastSave = null;
 
     public StorageYaml(EpicSpawners plugin) {
         super(plugin);
@@ -21,21 +21,21 @@ public class StorageYaml extends Storage {
 
     @Override
     public boolean containsGroup(String group) {
-        return dataFile.getConfig().contains("data." + group);
+        return dataFile.contains("data." + group);
     }
 
     @Override
     public List<StorageRow> getRowsByGroup(String group) {
         List<StorageRow> rows = new ArrayList<>();
-        ConfigurationSection currentSection = dataFile.getConfig().getConfigurationSection("data." + group);
+        ConfigurationSection currentSection = dataFile.getConfigurationSection("data." + group);
         for (String key : currentSection.getKeys(false)) {
 
             Map<String, StorageItem> items = new HashMap<>();
-            ConfigurationSection currentSection2 = dataFile.getConfig().getConfigurationSection("data." + group + "." + key);
+            ConfigurationSection currentSection2 = dataFile.getConfigurationSection("data." + group + "." + key);
             for (String key2 : currentSection2.getKeys(false)) {
                 String path = "data." + group + "." + key + "." + key2;
-                items.put(key2, new StorageItem(dataFile.getConfig().get(path) instanceof MemorySection
-                        ? convertToInLineList(path) : dataFile.getConfig().get(path)));
+                items.put(key2, new StorageItem(dataFile.get(path) instanceof MemorySection
+                        ? convertToInLineList(path) : dataFile.get(path)));
             }
             if (items.isEmpty()) continue;
             StorageRow row = new StorageRow(key, items);
@@ -46,8 +46,8 @@ public class StorageYaml extends Storage {
 
     private String convertToInLineList(String path) {
         StringBuilder converted = new StringBuilder();
-        for (String key : dataFile.getConfig().getConfigurationSection(path).getKeys(false)) {
-            converted.append(key).append(":").append(dataFile.getConfig().getInt(path + "." + key)).append(";");
+        for (String key : dataFile.getConfigurationSection(path).getKeys(false)) {
+            converted.append(key).append(":").append(dataFile.getInt(path + "." + key)).append(";");
         }
         return converted.toString();
     }
@@ -85,19 +85,19 @@ public class StorageYaml extends Storage {
                 if (toSave.containsKey(entry.getKey())) {
                     Object newValue = toSave.get(entry.getKey());
                     if (!entry.getValue().equals(newValue)) {
-                        dataFile.getConfig().set(entry.getKey(), newValue);
+                        dataFile.set(entry.getKey(), newValue);
                     }
                     toSave.remove(entry.getKey());
                 } else {
-                    dataFile.getConfig().set(entry.getKey(), null);
+                    dataFile.set(entry.getKey(), null);
                 }
             }
 
             for (Map.Entry<String, Object> entry : toSave.entrySet()) {
-                dataFile.getConfig().set(entry.getKey(), entry.getValue());
+                dataFile.set(entry.getKey(), entry.getValue());
             }
 
-            dataFile.saveConfig();
+            dataFile.save();
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
@@ -108,7 +108,8 @@ public class StorageYaml extends Storage {
         File data = new File(plugin.getDataFolder(), "data.yml");
         File dataClone = new File(plugin.getDataFolder(), "data-backup-" + System.currentTimeMillis() + ".yml");
         try {
-            copyFile(data, dataClone);
+            if (data.exists())
+                copyFile(data, dataClone);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -125,7 +126,7 @@ public class StorageYaml extends Storage {
 
     @Override
     public void closeConnection() {
-        dataFile.saveConfig();
+        dataFile.save();
     }
 
     private static void copyFile(File source, File dest) throws IOException {

@@ -1,4 +1,5 @@
-package com.songoda.epicspawners.utils.version;
+package com.songoda.epicspawners.utils;
+
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -98,3 +99,4 @@ public class NMSUtil {
         }
     }
 }
+

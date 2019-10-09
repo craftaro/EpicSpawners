@@ -3,7 +3,7 @@ package com.songoda.epicspawners.gui;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.utils.Methods;
-import com.songoda.epicspawners.utils.ServerVersion;
+import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.epicspawners.utils.gui.AbstractGUI;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -64,7 +64,7 @@ public class GUIEditorSelector extends AbstractGUI {
 
         max = (int) Math.ceil((double) totalAmount / (double) 32);
 
-        createButton(8, plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.OAK_DOOR : Material.valueOf("WOOD_DOOR"), plugin.getLocale().getMessage("general.nametag.exit").getMessage());
+        createButton(8, ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.OAK_DOOR : Material.valueOf("WOOD_DOOR"), plugin.getLocale().getMessage("general.nametag.exit").getMessage());
 
         int place = 10;
 
@@ -72,7 +72,7 @@ public class GUIEditorSelector extends AbstractGUI {
             if (place == 17 || place == (slots - 18)) place++;
             if (place == 18 && slots == 36) place++;
 
-            ItemStack icon = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3);
+            ItemStack icon = new ItemStack(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3);
             ItemStack item = plugin.getHeads().addTexture(icon, spawnerData);
             if (spawnerData.getDisplayItem() != null && spawnerData.getDisplayItem() != Material.AIR) {
                 item.setType(spawnerData.getDisplayItem());
@@ -122,13 +122,13 @@ public class GUIEditorSelector extends AbstractGUI {
         inventory.setItem(slots - 3, glassType3);
 
         if (page != 1) {
-            createButton(slots - 8, Methods.addTexture(new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3),
+            createButton(slots - 8, Methods.addTexture(new ItemStack(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3),
                     "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23"),
                     plugin.getLocale().getMessage("general.nametag.back").getMessage());
         }
 
         if (page != max) {
-            createButton(slots - 2, Methods.addTexture(new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3),
+            createButton(slots - 2, Methods.addTexture(new ItemStack(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3),
                     "http://textures.minecraft.net/texture/1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b"),
                     plugin.getLocale().getMessage("general.nametag.next").getMessage());
         }

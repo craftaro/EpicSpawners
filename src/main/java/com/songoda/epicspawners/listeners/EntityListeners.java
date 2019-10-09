@@ -1,11 +1,11 @@
 package com.songoda.epicspawners.listeners;
 
+import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.epicspawners.EpicSpawners;
+import com.songoda.epicspawners.settings.Settings;
 import com.songoda.epicspawners.spawners.spawner.Spawner;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.spawners.spawner.SpawnerStack;
-import com.songoda.epicspawners.utils.ServerVersion;
-import com.songoda.epicspawners.utils.settings.Setting;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -47,22 +47,22 @@ public class EntityListeners implements Listener {
         List<Block> toCancel = new ArrayList<>();
         while (it.hasNext()) {
             Block block = it.next();
-            if (block.getType() != (plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER")))
+            if (block.getType() != (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER")))
                 continue;
 
             Location spawnLocation = block.getLocation();
 
             Spawner spawner = plugin.getSpawnerManager().getSpawnerFromWorld(block.getLocation());
 
-            if (Setting.SPAWNERS_DONT_EXPLODE.getBoolean())
+            if (Settings.SPAWNERS_DONT_EXPLODE.getBoolean())
                 toCancel.add(block);
             else {
 
                 String chance = "";
                 if (event.getEntity() instanceof Creeper)
-                    chance = Setting.EXPLOSION_DROP_CHANCE_TNT.getString();
+                    chance = Settings.EXPLOSION_DROP_CHANCE_TNT.getString();
                 else if (event.getEntity() instanceof TNTPrimed)
-                    chance = Setting.EXPLOSION_DROP_CHANCE_TNT.getString();
+                    chance = Settings.EXPLOSION_DROP_CHANCE_TNT.getString();
                 int ch = Integer.parseInt(chance.replace("%", ""));
                 double rand = Math.random() * 100;
                 if (rand - ch < 0 || ch == 100) {
@@ -71,10 +71,7 @@ public class EntityListeners implements Listener {
                         spawnLocation.getWorld().dropItemNaturally(spawnLocation.clone().add(.5, 0, .5), item);
                     }
 
-                    plugin.getSpawnerManager().removeSpawnerFromWorld(spawnLocation);
-                    if (plugin.getHologram() != null)
-                        plugin.getHologram().remove(spawner);
-                    plugin.getAppearanceTask().removeDisplayItem(spawner);
+                    spawner.destroy(plugin);
                 }
             }
 
@@ -108,17 +105,17 @@ public class EntityListeners implements Listener {
         }
         if (event.getEntity().getKiller() == null) return;
         Player player = event.getEntity().getKiller();
-        if (!player.hasPermission("epicspawners.Killcounter") || !Setting.MOB_KILLING_COUNT.getBoolean())
+        if (!player.hasPermission("epicspawners.Killcounter") || !Settings.MOB_KILLING_COUNT.getBoolean())
             return;
 
-        if (!plugin.getSpawnManager().isNaturalSpawn(event.getEntity().getUniqueId()) && !Setting.COUNT_UNNATURAL_KILLS.getBoolean())
+        if (!plugin.getSpawnManager().isNaturalSpawn(event.getEntity().getUniqueId()) && !Settings.COUNT_UNNATURAL_KILLS.getBoolean())
             return;
 
 
         if (!plugin.getSpawnerManager().getSpawnerData(event.getEntityType()).isActive()) return;
 
         int amt = plugin.getPlayerActionManager().getPlayerAction(player).addKilledEntity(event.getEntityType());
-        int goal = Setting.KILL_GOAL.getInt();
+        int goal = Settings.KILL_GOAL.getInt();
 
         SpawnerData spawnerData = plugin.getSpawnerManager().getSpawnerData(event.getEntityType());
 
@@ -127,10 +124,10 @@ public class EntityListeners implements Listener {
         int customGoal = spawnerData.getKillGoal();
         if (customGoal != 0) goal = customGoal;
 
-        if (Setting.ALERT_INTERVAL.getInt() != 0
-                && amt % Setting.ALERT_INTERVAL.getInt() == 0
+        if (Settings.ALERT_INTERVAL.getInt() != 0
+                && amt % Settings.ALERT_INTERVAL.getInt() == 0
                 && amt != goal) {
-            if (plugin.isServerVersionAtLeast(ServerVersion.V1_9))
+            if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9))
                 player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(plugin.getLocale().getMessage("event.goal.alert")
                         .processPlaceholder("goal", goal - amt)
                         .processPlaceholder("type", spawnerData.getIdentifyingName()).getMessage()));
@@ -144,7 +141,7 @@ public class EntityListeners implements Listener {
             ItemStack item = spawnerData.toItemStack();
             event.getEntity().getLocation().getWorld().dropItemNaturally(event.getEntity().getLocation(), item);
             plugin.getPlayerActionManager().getPlayerAction(player).removeEntity(event.getEntityType());
-            if (plugin.isServerVersionAtLeast(ServerVersion.V1_9))
+            if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9))
                 player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(plugin.getLocale().getMessage("event.goal.reached")
                         .processPlaceholder("type", spawnerData.getIdentifyingName()).getMessage()));
             else
@@ -153,35 +150,32 @@ public class EntityListeners implements Listener {
                         .processPlaceholder("type", spawnerData.getIdentifyingName()).getMessage());
         }
 
-        // bkr
-
         if (ultimateStacker != null) {
-
             String entityType = event.getEntity().getType().toString().toLowerCase().replaceAll("_", " ");
             String entityName = event.getEntity().getName().toLowerCase();
 
             if (entityType.equals("MUSHROOM_COW")) entityType = "Mooshroom";
 
-            // Bukkit.getConsoleSender().sendMessage(entityType + " = " + entityName);
-
-            if (!entityType.equalsIgnoreCase(entityName)) {
-
-                if (ultimateStacker.getEntityStackManager().getStack(event.getEntity().getUniqueId()) != null) {
-                    int quantity = (ultimateStacker.getEntityStackManager().getStack(event.getEntity().getUniqueId()).getAmount());
-                    boolean killAll = ((Plugin) ultimateStacker).getConfig().getBoolean("Entities.Kill Whole Stack On Death");
-
-                    if (killAll) {
-                        for (int count = 0; count < quantity - 1; count++) {
-                            plugin.getPlayerActionManager().getPlayerAction(player).addKilledEntity(event.getEntityType());
-                        }
-                    }
-                }
+            if (entityType.equalsIgnoreCase(entityName)) {
+                plugin.getPlayerActionManager().getPlayerAction(player).addKilledEntity(event.getEntityType());
+                return;
             }
-        } else {
-            plugin.getPlayerActionManager().getPlayerAction(player).addKilledEntity(event.getEntityType());
+
+            if (ultimateStacker.getEntityStackManager().getStack(event.getEntity().getUniqueId()) == null) {
+                return;
+            }
+
+            int quantity = (ultimateStacker.getEntityStackManager().getStack(event.getEntity().getUniqueId()).getAmount());
+            boolean killAll = ((Plugin) ultimateStacker).getConfig().getBoolean("Entities.Kill Whole Stack On Death");
+
+            if (!killAll) {
+                return;
+            }
+
+            for (int count = 0; count < quantity - 1; count++) {
+                plugin.getPlayerActionManager().getPlayerAction(player).addKilledEntity(event.getEntityType());
+            }
+
         }
-
-        // bkr - e
-
     }
 }

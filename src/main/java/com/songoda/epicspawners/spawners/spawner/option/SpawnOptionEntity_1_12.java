@@ -9,8 +9,8 @@ import com.songoda.epicspawners.spawners.spawner.Spawner;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.spawners.spawner.SpawnerStack;
 import com.songoda.epicspawners.utils.Methods;
-import com.songoda.epicspawners.utils.ServerVersion;
-import com.songoda.epicspawners.utils.settings.Setting;
+import com.songoda.core.compatibility.ServerVersion;
+import com.songoda.epicspawners.settings.Settings;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -82,7 +82,7 @@ public class SpawnOptionEntity_1_12 implements SpawnOption {
             clazzDifficultyDamageScaler = Class.forName("net.minecraft.server." + ver + ".DifficultyDamageScaler");
             clazzAxisAlignedBB = Class.forName("net.minecraft.server." + ver + ".AxisAlignedBB");
 
-            if (plugin.isServerVersionAtLeast(ServerVersion.V1_9)) {
+            if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9)) {
                 clazzMobSpawnerData = Class.forName("net.minecraft.server." + ver + ".MobSpawnerData");
                 clazzNBTTagCompound = Class.forName("net.minecraft.server." + ver + ".NBTTagCompound");
 
@@ -189,11 +189,11 @@ public class SpawnOptionEntity_1_12 implements SpawnOption {
 
             Methods.Tuple<String, String> typeTranslation = TypeTranslations.fromType(type);
 
-            if (plugin.isServerVersionAtLeast(ServerVersion.V1_9)) {
+            if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9)) {
                 objMobSpawnerData = clazzMobSpawnerData.newInstance();
                 objNBTTagCompound = methodB.invoke(objMobSpawnerData);
 
-                methodSetString.invoke(objNBTTagCompound, "id", plugin.isServerVersionAtLeast(ServerVersion.V1_11) ? "minecraft:" + typeTranslation.getKey().replace(" ", "_") : typeTranslation.getValue());
+                methodSetString.invoke(objNBTTagCompound, "id", ServerVersion.isServerVersionAtLeast(ServerVersion.V1_11) ? "minecraft:" + typeTranslation.getKey().replace(" ", "_") : typeTranslation.getValue());
             }
 
             int spawnRange = 4;
@@ -209,7 +209,7 @@ public class SpawnOptionEntity_1_12 implements SpawnOption {
                 double z = (double) spawner.getZ() + (random.nextDouble() - random.nextDouble()) * (double) spawnRange + 0.5D;
 
                 Object objEntity;
-                if (plugin.isServerVersionAtLeast(ServerVersion.V1_9)) {
+                if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9)) {
                     objNBTTagCompound = methodB.invoke(objMobSpawnerData);
                     objEntity = methodChunkRegionLoaderA.invoke(null, objNBTTagCompound, objWorld, x, y, z, false);
                 } else {
@@ -232,7 +232,7 @@ public class SpawnOptionEntity_1_12 implements SpawnOption {
 
                 ParticleType particleType = data.getEntitySpawnParticle();
 
-                if (particleType != ParticleType.NONE && plugin.isServerVersionAtLeast(ServerVersion.V1_12)) {
+                if (particleType != ParticleType.NONE && ServerVersion.isServerVersionAtLeast(ServerVersion.V1_12)) {
                     float xx = (float) (0 + (Math.random() * 1));
                     float yy = (float) (0 + (Math.random() * 2));
                     float zz = (float) (0 + (Math.random() * 1));
@@ -248,7 +248,7 @@ public class SpawnOptionEntity_1_12 implements SpawnOption {
                     return null;
                 }
 
-                if (plugin.isServerVersionAtLeast(ServerVersion.V1_9)) {
+                if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9)) {
                     methodChunkRegionLoaderA2.invoke(null, objEntity, objWorld, CreatureSpawnEvent.SpawnReason.SPAWNER);
                 } else {
                     methodAddEntity.invoke(objWorld, objEntity, CreatureSpawnEvent.SpawnReason.SPAWNER);
@@ -261,7 +261,7 @@ public class SpawnOptionEntity_1_12 implements SpawnOption {
                 if (mcmmo)
                     craftEntity.setMetadata( "mcMMO: Spawned Entity", new FixedMetadataValue(plugin, true));
 
-                if (Setting.NO_AI.getBoolean() && plugin.isServerVersionAtLeast(ServerVersion.V1_9))
+                if (Settings.NO_AI.getBoolean() && ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9))
                     ((LivingEntity) craftEntity).setAI(false);
 
                 Object objBukkitEntity = methodEntityGetBukkitEntity.invoke(objEntity);

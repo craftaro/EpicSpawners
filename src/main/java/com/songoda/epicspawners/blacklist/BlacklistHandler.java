@@ -1,7 +1,7 @@
 package com.songoda.epicspawners.blacklist;
 
+import com.songoda.core.configuration.Config;
 import com.songoda.epicspawners.EpicSpawners;
-import com.songoda.epicspawners.utils.ConfigWrapper;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -12,16 +12,16 @@ import java.util.List;
  */
 public class BlacklistHandler {
 
-    private ConfigWrapper blackFile = new ConfigWrapper(EpicSpawners.getInstance(), "", "blacklist.yml");
+    private Config blackConfig = new Config(EpicSpawners.getInstance(), "blacklist.yml");
 
     public BlacklistHandler() {
-        blackFile.createNewFile("Loading language file", "EpicSpawners.java blacklist file");
+        blackConfig.load();
         loadBlacklistFile();
     }
 
     public boolean isBlacklisted(Player player, boolean notify) {
         boolean blacklisted = false;
-        List<String> list = blackFile.getConfig().getStringList("settings.blacklist");
+        List<String> list = blackConfig.getStringList("settings.blacklist");
         String cWorld = player.getWorld().getName();
         for (String world : list) {
             if (!cWorld.equalsIgnoreCase(world)) continue;
@@ -39,14 +39,18 @@ public class BlacklistHandler {
         list.add("world3");
         list.add("world4");
         list.add("world5");
-        blackFile.getConfig().addDefault("settings.blacklist", list);
+        blackConfig.addDefault("settings.blacklist", list);
 
-        blackFile.getConfig().options().copyDefaults(true);
-        blackFile.saveConfig();
+        blackConfig.options().copyDefaults(true);
+        blackConfig.save();
+    }
+
+    public Config getBlackConfig() {
+        return blackConfig;
     }
 
     public void reload() {
-        blackFile.reloadConfig();
+        blackConfig.load();
         loadBlacklistFile();
     }
 }
