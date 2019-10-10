@@ -11,7 +11,6 @@ import com.songoda.epicspawners.spawners.spawner.SpawnerStack;
 import com.songoda.epicspawners.utils.Methods;
 import com.songoda.epicspawners.utils.Reflection;
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -116,8 +115,6 @@ public class InteractListeners implements Listener {
             itype = ((SpawnEgg) item.getData()).getSpawnedType();
         }
 
-        //Bukkit.getConsoleSender().sendMessage("General -> " + itype);
-
         SpawnerData itemType = plugin.getSpawnerManager().getSpawnerData(itype);
 
         if (!player.hasPermission("epicspawners.egg." + itype) && !player.hasPermission("epicspawners.egg.*")) {
@@ -149,9 +146,7 @@ public class InteractListeners implements Listener {
         spawner.getCreatureSpawner().update();
 
         plugin.processChange(block);
-        if (player.getGameMode() != GameMode.CREATIVE) {
-            Methods.takeItem(player, bmulti - 1);
-        }
+        Methods.takeItem(player, bmulti);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
