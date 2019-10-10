@@ -43,6 +43,7 @@ public class SpawnerManager {
 
     public SpawnerManager(EpicSpawners plugin) {
         this.plugin = plugin;
+        this.spawnerConfig.load();
         Arrays.stream(EntityType.values()).filter(entityType -> entityType.isSpawnable()
                 && entityType.isAlive()
                 && entityType != EntityType.ARMOR_STAND).forEach(entityType ->
