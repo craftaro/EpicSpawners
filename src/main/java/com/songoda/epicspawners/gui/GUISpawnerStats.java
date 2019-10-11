@@ -47,25 +47,37 @@ public class GUISpawnerStats extends AbstractGUI {
     @Override
     public void constructGUI() {
 
-        short place = 0;
+        for (int i = 0; i < 9; i++) {
+            inventory.setItem(i, Methods.getGlass());
+        }
+        ItemStack exit = new ItemStack(Material.valueOf(plugin.getConfig().getString("Interfaces.Exit Icon")), 1);
+        ItemMeta exitmeta = exit.getItemMeta();
+        exitmeta.setDisplayName(plugin.getLocale().getMessage("general.nametag.exit").getMessage());
+        exit.setItemMeta(exitmeta);
+        inventory.setItem(8, exit);
+
+
+        //ToDo: When this gui is converted to core we need a page system for this.
+        short place = 9;
         for (Map.Entry<EntityType, Integer> entry : plugin.getPlayerActionManager().getPlayerAction(player).getEntityKills().entrySet()) {
             int goal = plugin.getConfig().getInt("Spawner Drops.Kills Needed for Drop");
-
             SpawnerData spawnerData = plugin.getSpawnerManager().getSpawnerData(entry.getKey());
 
             int customGoal = spawnerData.getKillGoal();
             if (customGoal != 0) goal = customGoal;
+            if (place >= 54) {
+                player.sendMessage(Methods.formatText("&6" + spawnerData.getDisplayName() + "&7: &e" + entry.getValue() + "&7/&e" + goal));
+            } else {
+                ItemStack it = CompatibleMaterial.PLAYER_HEAD.getItem();
+                ItemStack item = plugin.getHeads().addTexture(it, spawnerData);
 
-            ItemStack it = CompatibleMaterial.PLAYER_HEAD.getItem();
-
-            ItemStack item = plugin.getHeads().addTexture(it, spawnerData);
-
-            ItemMeta itemmeta = item.getItemMeta();
-            ArrayList<String> lore = new ArrayList<>();
-            itemmeta.setLore(lore);
-            itemmeta.setDisplayName(Methods.formatText("&6" + spawnerData.getDisplayName() + "&7: &e" + entry.getValue() + "&7/&e" + goal));
-            item.setItemMeta(itemmeta);
-            inventory.setItem(place, item);
+                ItemMeta itemmeta = item.getItemMeta();
+                ArrayList<String> lore = new ArrayList<>();
+                itemmeta.setLore(lore);
+                itemmeta.setDisplayName(Methods.formatText("&6" + spawnerData.getDisplayName() + "&7: &e" + entry.getValue() + "&7/&e" + goal));
+                item.setItemMeta(itemmeta);
+                inventory.setItem(place, item);
+            }
 
             place++;
         }
@@ -73,6 +85,7 @@ public class GUISpawnerStats extends AbstractGUI {
 
     @Override
     protected void registerClickables() {
+        registerClickable(8, (player, inventory, cursor, slot, type) -> player.closeInventory());
     }
 
     @Override
