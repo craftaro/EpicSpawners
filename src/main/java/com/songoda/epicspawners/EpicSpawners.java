@@ -102,7 +102,7 @@ public class EpicSpawners extends SongodaPlugin {
 
         // Register commands
         this.commandManager = new CommandManager(this);
-        this.commandManager.addCommand(new CommandEpicSpawners(this))
+        this.commandManager.addMainCommand("EpicSpawners")
                 .addSubCommands(
                         new CommandGive(this),
                         new CommandBoost(this),
