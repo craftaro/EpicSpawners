@@ -204,10 +204,14 @@ public class GUIEditorOverview extends AbstractGUI {
             } else if (type == ClickType.LEFT) {
                 AnvilGui gui = new AnvilGui(player);
                 gui.setTitle("Enter a display name.");
-                gui.setAction(event ->
-                        spawnerData.setDisplayName(gui.getInputText().trim()));
+                gui.setAction(event -> {
+                    spawnerData.setDisplayName(gui.getInputText().trim());
 
-                gui.setOnClose((player1) -> init("&8Editing: " + Methods.compileName(spawnerData, 1, false) + "&8.", inventory.getSize()));
+                    player.closeInventory();
+                    player.openInventory(inventory);
+                    init("&8Editing: " + Methods.compileName(spawnerData, 1, false) + "&8.", inventory.getSize());
+
+                });
 
                 plugin.getGuiManager().showGUI(player, gui);
             }
