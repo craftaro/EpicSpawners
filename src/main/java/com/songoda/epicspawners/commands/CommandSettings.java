@@ -19,7 +19,7 @@ public class CommandSettings extends AbstractCommand {
 
     @Override
     protected AbstractCommand.ReturnType runCommand(CommandSender sender, String... args) {
-        plugin.getGuiManager().showGUI((Player) sender, new ConfigEditorGui(plugin, null, "UltimateClaims Settings Manager", plugin.getCoreConfig()));
+        plugin.getGuiManager().showGUI((Player) sender, new ConfigEditorGui(plugin, null, "EpicSpawners Settings Manager", plugin.getCoreConfig()));
         return ReturnType.SUCCESS;
     }
 
