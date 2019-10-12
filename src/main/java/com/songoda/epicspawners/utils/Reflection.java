@@ -9,8 +9,7 @@ import org.bukkit.inventory.ItemStack;
 public class Reflection {
 
     public static Object getNMSItemStack(ItemStack item) {
-        @SuppressWarnings("rawtypes")
-        Class cis = getCraftItemStack();
+        Class<?> cis = getCraftItemStack();
         java.lang.reflect.Method method;
         try {
             method = cis.getMethod("asNMSCopy", ItemStack.class);
@@ -23,10 +22,9 @@ public class Reflection {
         return null;
     }
 
-    @SuppressWarnings({"unchecked"})
+ 
     public static Object getNBTTagCompound(Object nmsitem) {
-        @SuppressWarnings("rawtypes")
-        Class c = nmsitem.getClass();
+        Class<?> c = nmsitem.getClass();
         java.lang.reflect.Method method;
         try {
             method = c.getMethod("getTag");
@@ -39,11 +37,11 @@ public class Reflection {
         return null;
     }
 
-    @SuppressWarnings("rawtypes")
-    public static Class getCraftItemStack() {
+
+    public static Class<?> getCraftItemStack() {
         String version = Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3];
         try {
-            Class c = Class.forName("org.bukkit.craftbukkit." + version + ".inventory.CraftItemStack");
+            Class<?> c = Class.forName("org.bukkit.craftbukkit." + version + ".inventory.CraftItemStack");
             //Constructor<?> cons = c.getConstructor(ItemStack.class);
             //return cons.newInstance(item);
             return c;
