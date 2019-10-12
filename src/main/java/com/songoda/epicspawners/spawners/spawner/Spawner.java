@@ -273,7 +273,7 @@ public class Spawner {
             }
         }
         
-        if (stack.getStackSize() > 1) {
+        if (stack.getStackSize() > 1 && stackSize == 1) {
             stack.setStackSize(stack.getStackSize() - 1);
             return true;
         }

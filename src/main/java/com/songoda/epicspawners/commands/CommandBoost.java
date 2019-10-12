@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class CommandBoost extends AbstractCommand {
@@ -69,7 +70,7 @@ public class CommandBoost extends AbstractCommand {
         } else if (args.length == 3) {
             return Arrays.asList("1m", "2h", "3d", "4d");
         }
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
