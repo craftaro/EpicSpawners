@@ -29,6 +29,7 @@ public class BlacklistHandler {
                 EpicSpawners.getInstance().getLocale().getMessage("event.block.blacklisted")
                         .sendPrefixedMessage(player);
             blacklisted = true;
+            break;
         }
         return blacklisted;
     }
