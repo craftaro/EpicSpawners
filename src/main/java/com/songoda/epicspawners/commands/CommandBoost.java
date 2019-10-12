@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 public class CommandBoost extends AbstractCommand {
@@ -52,7 +53,9 @@ public class CommandBoost extends AbstractCommand {
 
         BoostData boostData = new BoostData(BoostType.PLAYER, Integer.parseInt(args[1]), duration == 0L ? Long.MAX_VALUE : System.currentTimeMillis() + duration, player.getUniqueId());
         plugin.getBoostManager().addBoostToSpawner(boostData);
-        plugin.getLocale().newMessage("&6" + player.getName() + "&7 has been given a spawner boost of &6" + args[1] + "&7" + (duration == 0L ? "" : (" for " + Methods.makeReadable(duration))) + "&7.").sendPrefixedMessage(sender);
+        plugin.getLocale()
+                .newMessage("&6" + player.getName() + "&7 has been given a spawner boost of &6" + args[1] + "&7" + (duration == 0L ? "" : (" for " + Methods.makeReadable(duration))) + "&7.")
+                .sendPrefixedMessage(sender);
 
         return ReturnType.SUCCESS;
     }
@@ -60,11 +63,7 @@ public class CommandBoost extends AbstractCommand {
     @Override
     protected List<String> onTab(CommandSender sender, String... args) {
         if (args.length == 1) {
-            List<String> players = new ArrayList<>();
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                players.add(player.getName());
-            }
-            return players;
+            return Methods.convertToList(Bukkit.getOnlinePlayers(), Player::getName);
         } else if (args.length == 2) {
             return Arrays.asList("1", "2", "3", "4", "5");
         } else if (args.length == 3) {

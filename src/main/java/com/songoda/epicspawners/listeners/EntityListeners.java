@@ -114,13 +114,25 @@ public class EntityListeners implements Listener {
 
         if (!plugin.getSpawnerManager().getSpawnerData(event.getEntityType()).isActive()) return;
 
-        int amt = plugin.getPlayerActionManager().getPlayerAction(player).addKilledEntity(event.getEntityType());
-        int goal = Settings.KILL_GOAL.getInt();
+
+
 
         SpawnerData spawnerData = plugin.getSpawnerManager().getSpawnerData(event.getEntityType());
 
         if (!spawnerData.isActive()) return;
 
+        int amount = 1;
+
+        if (ultimateStacker != null) {
+            boolean killAll = ultimateStacker.getConfig().getBoolean("Entities.Kill Whole Stack On Death");
+            if (ultimateStacker.getEntityStackManager().isStacked(event.getEntity().getUniqueId()) && killAll) {
+                amount = ultimateStacker.getEntityStackManager().getStack(event.getEntity().getUniqueId()).getAmount();
+            }
+        }
+
+        int amt = plugin.getPlayerActionManager().getPlayerAction(player).addKilledEntity(event.getEntityType(), amount);
+        int goal = Settings.KILL_GOAL.getInt();
+        
         int customGoal = spawnerData.getKillGoal();
         if (customGoal != 0) goal = customGoal;
 
@@ -149,17 +161,6 @@ public class EntityListeners implements Listener {
                         .processPlaceholder("goal", goal - amt)
                         .processPlaceholder("type", spawnerData.getIdentifyingName()).getMessage());
         }
-
-        int amount = 1;
-
-        if (ultimateStacker != null) {
-            boolean killAll = ((Plugin) ultimateStacker).getConfig().getBoolean("Entities.Kill Whole Stack On Death");
-            if (ultimateStacker.getEntityStackManager().isStacked(event.getEntity().getUniqueId()) && killAll) {
-                amount = ultimateStacker.getEntityStackManager().getStack(event.getEntity().getUniqueId()).getAmount();
-            }
-        }
-
-        plugin.getPlayerActionManager().getPlayerAction(player).addKilledEntity(event.getEntityType(), amount);
     }
 }
 

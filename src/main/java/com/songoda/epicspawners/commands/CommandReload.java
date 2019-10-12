@@ -4,6 +4,7 @@ import com.songoda.core.commands.AbstractCommand;
 import com.songoda.epicspawners.EpicSpawners;
 import org.bukkit.command.CommandSender;
 
+import java.util.Collections;
 import java.util.List;
 
 public class CommandReload extends AbstractCommand {
@@ -24,7 +25,7 @@ public class CommandReload extends AbstractCommand {
 
     @Override
     protected List<String> onTab(CommandSender sender, String... args) {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override

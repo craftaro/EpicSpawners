@@ -6,6 +6,7 @@ import com.songoda.epicspawners.gui.GUIEditorSelector;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.Collections;
 import java.util.List;
 
 public class CommandEditor extends AbstractCommand {
@@ -25,7 +26,7 @@ public class CommandEditor extends AbstractCommand {
 
     @Override
     protected List<String> onTab(CommandSender sender, String... args) {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override

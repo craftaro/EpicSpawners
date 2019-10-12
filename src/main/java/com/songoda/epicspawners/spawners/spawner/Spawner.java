@@ -272,8 +272,8 @@ public class Spawner {
                 }
             }
         }
-
-        if (stack.getStackSize() != stackSize) {
+        
+        if (stack.getStackSize() > 1) {
             stack.setStackSize(stack.getStackSize() - 1);
             return true;
         }
@@ -298,7 +298,7 @@ public class Spawner {
         int max = Settings.SPAWNERS_MAX.getInt();
         int currentStackSize = getSpawnerDataCount();
 
-        if (getSpawnerDataCount() == max) {
+        if (max <= 0 || getSpawnerDataCount() == max) {
             instance.getLocale().getMessage("event.upgrade.maxed").sendPrefixedMessage(player);
             return false;
         }

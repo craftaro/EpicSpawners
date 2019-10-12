@@ -6,6 +6,7 @@ import com.songoda.epicspawners.gui.GUISpawnerStats;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.Collections;
 import java.util.List;
 
 public class CommandSpawnerStats extends AbstractCommand {
@@ -34,7 +35,7 @@ public class CommandSpawnerStats extends AbstractCommand {
 
     @Override
     protected List<String> onTab(CommandSender sender, String... args) {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override

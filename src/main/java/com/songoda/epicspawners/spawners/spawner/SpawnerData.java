@@ -128,7 +128,7 @@ public class SpawnerData {
 
 
     public ItemStack toItemStack(int amount, int stackSize) {
-        Preconditions.checkArgument(stackSize > 0, "Stack size must be greater than or equal to 0");
+        Preconditions.checkArgument(stackSize >= 0, "Stack size must be greater than or equal to 0");
 
         ItemStack item = new ItemStack(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER"), amount);
         ItemMeta meta = item.getItemMeta();

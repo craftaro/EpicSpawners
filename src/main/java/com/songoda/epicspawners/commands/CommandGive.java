@@ -87,7 +87,7 @@ public class CommandGive extends AbstractCommand {
         int amt = Integer.parseInt(args[2]);
 
         multi = Integer.parseInt(args[3]);
-        ItemStack spawnerItem = data.toItemStack(amt, multi);
+        ItemStack spawnerItem = data.toItemStack(amt, Math.max(0, multi));
 
         if (multi > Settings.SPAWNERS_MAX.getInt()) {
             plugin.getLocale().newMessage("&7 The multiplier &6" + multi + "&7 is above this spawner types maximum stack size.").sendPrefixedMessage(sender);
@@ -111,29 +111,32 @@ public class CommandGive extends AbstractCommand {
     @Override
     protected List<String> onTab(CommandSender sender, String... args) {
         if (args.length == 1) {
-            List<String> players = new ArrayList<>();
+            List<String> players = Methods.convertToList(Bukkit.getOnlinePlayers(), Player::getName);
             players.add("All");
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                players.add(player.getName());
-            }
             return players;
         } else if (args.length == 2) {
-            List<String> spawners = new ArrayList<>();
-            spawners.add("Random");
-            for (SpawnerData spawnerData : plugin.getSpawnerManager().getAllSpawnerData()) {
-                spawners.add(spawnerData.getIdentifyingName().replace(" ", "_"));
-            }
+            List<String> spawners = Methods.convertToList(plugin.getSpawnerManager().getAllSpawnerData(), (spawnerData) -> spawnerData.getIdentifyingName().replace(" ", "_"));
+            spawners.add("random");
             return spawners;
         } else if (args.length == 3) {
-            List<String> values = new ArrayList<>();
-            for (int i = 1; i <= Settings.SPAWNERS_MAX.getInt(); i++) {
-                values.add(String.valueOf(i));
+            int max = Settings.SPAWNERS_MAX.getInt();
+            List<String> values;;
+            
+            if(max <= 0) {
+                values = new ArrayList<>(1);
+                values.add(String.valueOf(1));
+            }else {
+                values = new ArrayList<>(max);
+                for (int i = 1; i <= max; i++) {
+                    values.add(String.valueOf(i));
+                }
             }
+            
             return values;
         } else if (args.length == 4) {
             return Arrays.asList("1", "2", "3", "4", "5");
         }
-        return null;
+        return Collections.emptyList();
     }
 
     @Override

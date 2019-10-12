@@ -413,7 +413,7 @@ public class Methods {
     }
 
     public static <T extends Enum<T>> String[] getStrings(List<T> mats) {
-        List<String> strings = new ArrayList<>();
+        List<String> strings = new ArrayList<>(mats.size());
 
         for (Object object : mats) {
             if (object instanceof Material) {
@@ -427,13 +427,31 @@ public class Methods {
     }
 
     public static String[] getStrings(Set<Biome> biomes) {
-        List<String> strings = new ArrayList<>();
+        List<String> strings = new ArrayList<>(biomes.size());
 
         for (Biome biome : biomes) {
             strings.add(biome.name());
         }
 
         return strings.toArray(new String[strings.size()]);
+    }
+    
+    public static <T> List<String> convertToList(Collection<T> collection, ConversionStrategy<T> strategy) {
+
+        List<String> converted = new ArrayList<>(collection.size());
+
+        for (T obj : collection) {
+            String convert = strategy.convertToString(obj);
+            if (convert != null) converted.add(convert);
+        }
+
+        return converted;
+    }
+    
+    public static interface ConversionStrategy<T> {
+
+        public String convertToString(T input);
+
     }
 
     public static class Tuple<key, value> {
