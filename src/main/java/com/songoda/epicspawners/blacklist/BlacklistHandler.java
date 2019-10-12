@@ -20,18 +20,14 @@ public class BlacklistHandler {
     }
 
     public boolean isBlacklisted(Player player, boolean notify) {
-        boolean blacklisted = false;
         List<String> list = blackConfig.getStringList("settings.blacklist");
         String cWorld = player.getWorld().getName();
         for (String world : list) {
             if (!cWorld.equalsIgnoreCase(world)) continue;
-            if (notify)
-                EpicSpawners.getInstance().getLocale().getMessage("event.block.blacklisted")
-                        .sendPrefixedMessage(player);
-            blacklisted = true;
-            break;
+            if (notify) EpicSpawners.getInstance().getLocale().getMessage("event.block.blacklisted").sendPrefixedMessage(player);
+            return true;
         }
-        return blacklisted;
+        return false;
     }
 
     private void loadBlacklistFile() {

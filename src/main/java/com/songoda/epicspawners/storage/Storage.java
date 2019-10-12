@@ -10,6 +10,8 @@ import com.songoda.epicspawners.utils.Methods;
 
 import java.util.List;
 
+import org.bukkit.Location;
+
 public abstract class Storage {
 
     protected final EpicSpawners plugin;
@@ -30,12 +32,13 @@ public abstract class Storage {
     public void updateData(EpicSpawners plugin) {
         // Save game data
         for (Spawner spawner : plugin.getSpawnerManager().getSpawners()) {
-            if (spawner.getFirstStack() == null
-                    || spawner.getFirstStack().getSpawnerData() == null
-                    || spawner.getLocation() == null
-                    || spawner.getLocation().getWorld() == null) continue;
+            if (spawner.getFirstStack() == null || spawner.getFirstStack().getSpawnerData() == null) continue;
+            
+            Location spawnerLocation = spawner.getLocation();
+            
+            if (spawnerLocation == null || spawnerLocation.getWorld() == null) continue;
 
-            StorageItem location = new StorageItem("location", Methods.serializeLocation(spawner.getLocation()));
+            StorageItem location = new StorageItem("location", Methods.serializeLocation(spawnerLocation));
 
             StringBuilder stacksStr = new StringBuilder();
             for (SpawnerStack stack : spawner.getSpawnerStacks()) {

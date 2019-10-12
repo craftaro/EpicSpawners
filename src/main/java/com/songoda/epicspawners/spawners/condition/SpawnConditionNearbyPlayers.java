@@ -3,10 +3,7 @@ package com.songoda.epicspawners.spawners.condition;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.spawners.spawner.Spawner;
 import org.bukkit.Location;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-
-import java.util.Collection;
 
 public class SpawnConditionNearbyPlayers implements SpawnCondition {
 
