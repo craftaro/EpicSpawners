@@ -36,7 +36,7 @@ public class CommandEditor extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "/es editor";
+        return "editor";
     }
 
     @Override

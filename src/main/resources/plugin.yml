@@ -6,10 +6,10 @@ main: com.songoda.epicspawners.EpicSpawners
 author: songoda
 api-version: 1.13
 commands:
-  EpicSpawners:
+  es:
     description: I have no idea.
     default: true
-    aliases: [es]
+    aliases: [EpicSpawners]
     usage: /<command> [reload]
   SpawnerStats:
     description: I have no idea.

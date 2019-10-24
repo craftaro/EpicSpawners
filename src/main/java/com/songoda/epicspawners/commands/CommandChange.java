@@ -93,7 +93,7 @@ public class CommandChange extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "/es change <Type>";
+        return "change <Type>";
     }
 
     @Override

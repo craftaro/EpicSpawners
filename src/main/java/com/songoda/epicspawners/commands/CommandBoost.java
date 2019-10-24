@@ -80,7 +80,7 @@ public class CommandBoost extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "/es boost <player> <amount> [duration]";
+        return "boost <player> <amount> [duration]";
     }
 
     @Override
