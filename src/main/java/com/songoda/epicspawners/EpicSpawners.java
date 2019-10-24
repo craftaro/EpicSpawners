@@ -13,6 +13,7 @@ import com.songoda.epicspawners.blacklist.BlacklistHandler;
 import com.songoda.epicspawners.boost.BoostData;
 import com.songoda.epicspawners.boost.BoostManager;
 import com.songoda.epicspawners.boost.BoostType;
+import com.songoda.epicspawners.commands.*;
 import com.songoda.epicspawners.listeners.*;
 import com.songoda.epicspawners.player.PlayerActionManager;
 import com.songoda.epicspawners.player.PlayerData;
@@ -36,11 +37,11 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
-import com.songoda.epicspawners.commands.*;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.plugin.PluginManager;
 
+import java.io.*;
 import java.util.*;
 
 public class EpicSpawners extends SongodaPlugin {
@@ -91,9 +92,9 @@ public class EpicSpawners extends SongodaPlugin {
         // Load Economy & Hologram hooks
         EconomyManager.load();
         HologramManager.load(this);
-
         // Setup Config
         Settings.setupConfig();
+        repairLanguage();
         this.setLocale(Settings.LANGUGE_MODE.getString(), false);
 
         // Set Economy & Hologram preference
@@ -337,6 +338,24 @@ public class EpicSpawners extends SongodaPlugin {
             }
             getServer().addRecipe(spawnerRecipe);
         }
+    }
+
+    private void repairLanguage() {
+        try {
+            File languageFile = new File(getDataFolder().getAbsolutePath() +  File.separator + "locales" +  File.separator + Settings.LANGUGE_MODE.getString() + ".lang");
+
+            BufferedReader reader = new BufferedReader(new FileReader(languageFile));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(languageFile));
+
+            String currentLine;
+            while ((currentLine = reader.readLine()) != null) {
+                String trimmedLine = currentLine.trim();
+                if (trimmedLine.contains("howto")) continue;
+                writer.write(currentLine + System.getProperty("line.separator"));
+            }
+            writer.close();
+            reader.close();
+        } catch (IOException ignored) { }
     }
 
     public SpawnManager getSpawnManager() {
