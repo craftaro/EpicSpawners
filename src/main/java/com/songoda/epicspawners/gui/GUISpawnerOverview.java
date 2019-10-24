@@ -217,9 +217,9 @@ public class GUISpawnerOverview extends AbstractGUI {
         if (Settings.DISPLAY_HELP_BUTTON.getBoolean()) {
             ItemStack itemO = new ItemStack(Material.PAPER, 1);
             ItemMeta itemmetaO = itemO.getItemMeta();
-            itemmetaO.setDisplayName(plugin.getLocale().getMessage("interface.spawner.howtotitle").getMessage());
+            itemmetaO.setDisplayName(plugin.getLocale().getMessage("interface.spawner.tutorialtitle").getMessage());
             ArrayList<String> loreO = new ArrayList<>();
-            String text = plugin.getLocale().getMessage("interface.spawner.howtoinfo").getMessage();
+            String text = plugin.getLocale().getMessage("interface.spawner.tutorial").getMessage();
 
             int start = (14 * infoPage) - 14;
             int li = 1; // 12
@@ -302,9 +302,9 @@ public class GUISpawnerOverview extends AbstractGUI {
     private void addInfo(Inventory inventory) {
         ItemStack itemO = new ItemStack(Material.PAPER, 1);
         ItemMeta itemmetaO = itemO.getItemMeta();
-        itemmetaO.setDisplayName(plugin.getLocale().getMessage("interface.spawner.howtotitle").getMessage());
+        itemmetaO.setDisplayName(plugin.getLocale().getMessage("interface.spawner.tutorialtitle").getMessage());
         List<String> loreO = new ArrayList<>();
-        String text = plugin.getLocale().getMessage("interface.spawner.howtoinfo").getMessage();
+        String text = plugin.getLocale().getMessage("interface.spawner.tutorial").getMessage();
 
         int start = (14 * infoPage) - 14;
         int li = 1; // 12
