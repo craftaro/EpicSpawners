@@ -5,16 +5,12 @@ import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.spawners.spawner.Spawner;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
-import com.songoda.epicspawners.spawners.spawner.SpawnerStack;
 import com.songoda.epicspawners.utils.Methods;
-
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -52,30 +48,16 @@ public class CommandChange extends AbstractCommand {
                 data = spawnerData;
         }
 
+        EntityType type = EntityType.valueOf("PIG");
+
+
         if (data == null) {
             player.sendMessage("This type does not exist.");
             return ReturnType.FAILURE;
         }
 
-        try {
-            SpawnerStack stack = new SpawnerStack(data, spawner.getSpawnerDataCount());
-            spawner.clearSpawnerStacks();
-            spawner.addSpawnerStack(stack);
-            spawner.getSpawnerStacks();
-            try {
-                spawner.getCreatureSpawner().setSpawnedType(EntityType.valueOf(args[0].toUpperCase()));
-            } catch (Exception ex) {
-                spawner.getCreatureSpawner().setSpawnedType(EntityType.valueOf("PIG"));
-            }
-            spawner.getCreatureSpawner().update();
-            plugin.updateHologram(spawner);
-            plugin.getLocale().newMessage("&7Successfully changed this spawner to &6" + args[0] + "&7.")
-                    .sendPrefixedMessage(sender);
-            return ReturnType.SUCCESS;
-        } catch (Exception ee) {
-            plugin.getLocale().newMessage("&7That entity does not exist.").sendPrefixedMessage(sender);
-            return ReturnType.FAILURE;
-        }
+        spawner.convert(data, player, sender.hasPermission("epicspawners"));
+        return ReturnType.SUCCESS;
     }
 
     @Override

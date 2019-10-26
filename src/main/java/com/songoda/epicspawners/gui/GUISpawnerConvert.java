@@ -106,7 +106,7 @@ public class GUISpawnerConvert extends AbstractGUI {
             inventory.setItem(place, item);
 
             registerClickable(place, (player, inventory, cursor, slot, type) ->
-                    spawner.convert(spawnerData, player));
+                    spawner.convert(spawnerData, player, false));
 
             place++;
         }
