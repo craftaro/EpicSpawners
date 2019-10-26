@@ -179,7 +179,7 @@ public class Spawner {
             EpicSpawners.getInstance().getLocale().getMessage("event.upgrade.cannotafford").sendPrefixedMessage(player);
             return;
         }
-        
+
         SpawnerChangeEvent event = new SpawnerChangeEvent(player, this, getFirstStack().getSpawnerData(), type);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
