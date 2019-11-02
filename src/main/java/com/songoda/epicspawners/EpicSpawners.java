@@ -343,6 +343,7 @@ public class EpicSpawners extends SongodaPlugin {
     private void repairLanguage() {
         try {
             File languageFile = new File(getDataFolder().getAbsolutePath() +  File.separator + "locales" +  File.separator + Settings.LANGUGE_MODE.getString() + ".lang");
+            if (!languageFile.exists()) return;
 
             BufferedReader reader = new BufferedReader(new FileReader(languageFile));
             BufferedWriter writer = new BufferedWriter(new FileWriter(languageFile));
