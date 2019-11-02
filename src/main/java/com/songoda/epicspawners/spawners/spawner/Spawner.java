@@ -167,7 +167,7 @@ public class Spawner {
         new GUISpawnerOverview(instance, this, player);
     }
 
-    public void convert(SpawnerData type, Player player) {
+    public void convert(SpawnerData type, Player player, boolean forced) {
         EpicSpawners instance = EpicSpawners.getInstance();
         if (!EconomyManager.isEnabled()) {
             player.sendMessage("Economy not enabled.");
@@ -175,10 +175,11 @@ public class Spawner {
         }
         double price = type.getConvertPrice() * getSpawnerDataCount();
 
-        if (!EconomyManager.hasBalance(player, price)) {
+        if (!forced && !EconomyManager.hasBalance(player, price)) {
             EpicSpawners.getInstance().getLocale().getMessage("event.upgrade.cannotafford").sendPrefixedMessage(player);
             return;
         }
+
         SpawnerChangeEvent event = new SpawnerChangeEvent(player, this, getFirstStack().getSpawnerData(), type);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
@@ -197,7 +198,8 @@ public class Spawner {
 
         instance.updateHologram(this);
         player.closeInventory();
-        EconomyManager.withdrawBalance(player, price);
+        if (!forced)
+            EconomyManager.withdrawBalance(player, price);
     }
 
     public int getUpgradeCost(CostType type) {
@@ -272,7 +274,7 @@ public class Spawner {
                 }
             }
         }
-        
+
         if (stack.getStackSize() > 1 && stackSize == 1) {
             stack.setStackSize(stack.getStackSize() - 1);
             return true;
