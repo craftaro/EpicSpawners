@@ -19,7 +19,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -114,9 +113,6 @@ public class EntityListeners implements Listener {
 
         if (!plugin.getSpawnerManager().getSpawnerData(event.getEntityType()).isActive()) return;
 
-
-
-
         SpawnerData spawnerData = plugin.getSpawnerManager().getSpawnerData(event.getEntityType());
 
         if (!spawnerData.isActive()) return;
@@ -132,7 +128,7 @@ public class EntityListeners implements Listener {
 
         int amt = plugin.getPlayerActionManager().getPlayerAction(player).addKilledEntity(event.getEntityType(), amount);
         int goal = Settings.KILL_GOAL.getInt();
-        
+
         int customGoal = spawnerData.getKillGoal();
         if (customGoal != 0) goal = customGoal;
 
@@ -151,7 +147,12 @@ public class EntityListeners implements Listener {
 
         if (amt >= goal) {
             ItemStack item = spawnerData.toItemStack();
-            event.getEntity().getLocation().getWorld().dropItemNaturally(event.getEntity().getLocation(), item);
+
+            if (Settings.SPAWNERS_TO_INVENTORY.getBoolean() && player.getInventory().firstEmpty() != -1)
+                player.getInventory().addItem(item);
+            else
+                event.getEntity().getLocation().getWorld().dropItemNaturally(event.getEntity().getLocation(), item);
+
             plugin.getPlayerActionManager().getPlayerAction(player).removeEntity(event.getEntityType());
             if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9))
                 player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(plugin.getLocale().getMessage("event.goal.reached")
