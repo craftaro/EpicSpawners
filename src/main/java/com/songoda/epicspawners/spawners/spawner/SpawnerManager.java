@@ -174,9 +174,6 @@ public class SpawnerManager {
         if (!spawnerConfig.contains(section + ".Display-Name")) {
             spawnerConfig.set(section + ".Display-Name", type);
         }
-        if (!spawnerConfig.contains(section + ".Pickup-cost")) {
-            spawnerConfig.addDefault(section + ".Pickup-cost", 0);
-        }
 
         String spawnBlock = "AIR";
 
@@ -222,6 +219,7 @@ public class SpawnerManager {
             }
         }
 
+        spawnerConfig.addDefault(section + ".Pickup-Cost", 0);
         spawnerConfig.addDefault(section + ".custom", false);
         spawnerConfig.addDefault(section + ".Spawn-Block", spawnBlock);
         spawnerConfig.addDefault(section + ".Allowed", true);
@@ -367,6 +365,15 @@ public class SpawnerManager {
 
             addSpawnerData(key, data);
         }
+        reloadSpawnerData();
+    }
+
+    public void reloadSpawnerData() {
+        for (Spawner spawner : spawnersInWorld.values()) {
+            for (SpawnerStack stack : spawner.getSpawnerStacks()) {
+                stack.setSpawnerData(spawners.get(stack.getSpawnerData().getIdentifyingName().toLowerCase()));
+            }
+        }
     }
 
     public void saveSpawnersToFile() {
@@ -402,7 +409,7 @@ public class SpawnerManager {
             currentSection.set("Custom-ECO-Cost", spawnerData.getUpgradeCostEconomy());
             currentSection.set("Custom-XP-Cost", spawnerData.getUpgradeCostExperience());
             currentSection.set("Tick-Rate", spawnerData.getTickRate());
-            currentSection.set("Pickup-cost", spawnerData.getPickupCost());
+            currentSection.set("Pickup-Cost", spawnerData.getPickupCost());
             currentSection.set("Craftable", spawnerData.isCraftable());
             currentSection.set("Recipe-Layout", spawnerData.getRecipe());
             currentSection.set("Recipe-Ingredients", spawnerData.getRecipeIngredients());

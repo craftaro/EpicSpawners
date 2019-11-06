@@ -309,6 +309,10 @@ public class Spawner {
                 && (!Settings.OMNI_SPAWNERS.getBoolean() || !player.hasPermission("epicspawners.omni")))
             return false;
 
+        SpawnerChangeEvent event = new SpawnerChangeEvent(player, this, currentStackSize + 1, currentStackSize);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled()) return false;
+
         if ((getSpawnerDataCount() + amount) > max) {
             ItemStack item = data.toItemStack(1, (getSpawnerDataCount() + amount) - max);
             if (player.getInventory().firstEmpty() == -1)
@@ -323,7 +327,7 @@ public class Spawner {
         for (SpawnerStack stack : spawnerStacks) {
             if (!stack.getSpawnerData().equals(data)) continue;
             stack.setStackSize(stack.getStackSize() + amount);
-            upgradeFinal(player, currentStackSize);
+            upgradeFinal(player);
 
             if (player.getGameMode() != GameMode.CREATIVE)
                 Methods.takeItem(player, 1);
@@ -340,13 +344,9 @@ public class Spawner {
         return true;
     }
 
-    private void upgradeFinal(Player player, int oldStackSize) {
+    private void upgradeFinal(Player player) {
         EpicSpawners plugin = EpicSpawners.getInstance();
         int currentStackSize = getSpawnerDataCount();
-
-        SpawnerChangeEvent event = new SpawnerChangeEvent(player, this, currentStackSize, oldStackSize);
-        Bukkit.getPluginManager().callEvent(event);
-        if (event.isCancelled()) return;
 
         if (getSpawnerDataCount() != Settings.SPAWNERS_MAX.getInt())
             plugin.getLocale().getMessage("event.upgrade.success")
@@ -389,27 +389,37 @@ public class Spawner {
             plugin.getLocale().getMessage("event.upgrade.maxed").sendPrefixedMessage(player);
             return;
         }
+        int currentStackSize = getSpawnerDataCount();
         if (type == CostType.ECONOMY) {
             if (!EconomyManager.isEnabled()) {
                 player.sendMessage("Economy not enabled.");
                 return;
             }
-            if (!EconomyManager.hasBalance(player, cost)) {
+            if (!player.isOp() && !EconomyManager.hasBalance(player, cost)) {
                 plugin.getLocale().getMessage("event.upgrade.cannotafford").sendPrefixedMessage(player);
                 return;
             }
-            EconomyManager.withdrawBalance(player, cost);
-            int oldMultiplier = getSpawnerDataCount();
+
+            SpawnerChangeEvent event = new SpawnerChangeEvent(player, this, currentStackSize + 1, currentStackSize);
+            Bukkit.getPluginManager().callEvent(event);
+            if (event.isCancelled()) return;
+
+            if (!player.isOp())
+                EconomyManager.withdrawBalance(player, cost);
             spawnerStacks.getFirst().setStackSize(spawnerStacks.getFirst().getStackSize() + 1);
-            upgradeFinal(player, oldMultiplier);
+            upgradeFinal(player);
         } else if (type == CostType.EXPERIENCE) {
+
+            SpawnerChangeEvent event = new SpawnerChangeEvent(player, this, currentStackSize + 1, currentStackSize);
+            Bukkit.getPluginManager().callEvent(event);
+            if (event.isCancelled()) return;
+
             if (player.getLevel() >= cost || player.getGameMode() == GameMode.CREATIVE) {
                 if (player.getGameMode() != GameMode.CREATIVE) {
                     player.setLevel(player.getLevel() - cost);
                 }
-                int oldMultiplier = getSpawnerDataCount();
                 spawnerStacks.getFirst().setStackSize(spawnerStacks.getFirst().getStackSize() + 1);
-                upgradeFinal(player, oldMultiplier);
+                upgradeFinal(player);
             } else {
                 plugin.getLocale().getMessage("event.upgrade.cannotafford").sendPrefixedMessage(player);
             }
