@@ -113,26 +113,20 @@ public class GUIEditorGeneral extends AbstractGUI {
     @Override
     protected void registerClickables() {
         registerClickable(13, (player, inventory, cursor, slot, type) -> {
-            if (spawnerData.isUpgradeable())
-                spawnerData.setUpgradeable(false);
-            else
-                spawnerData.setUpgradeable(true);
+            spawnerData.setUpgradeable(!spawnerData.isUpgradeable());
+            
             constructGUI();
         });
 
         registerClickable(20, (player, inventory, cursor, slot, type) -> {
-            if (spawnerData.isInShop())
-                spawnerData.setInShop(false);
-            else
-                spawnerData.setInShop(true);
+            spawnerData.setInShop(!spawnerData.isInShop());
+            
             constructGUI();
         });
 
         registerClickable(22, (player, inventory, cursor, slot, type) -> {
-            if (spawnerData.isSpawnOnFire())
-                spawnerData.setSpawnOnFire(false);
-            else
-                spawnerData.setSpawnOnFire(true);
+            spawnerData.setSpawnOnFire(!spawnerData.isSpawnOnFire());
+            
             constructGUI();
         });
 
@@ -145,6 +139,7 @@ public class GUIEditorGeneral extends AbstractGUI {
                     spawnerData.setShopPrice(Double.parseDouble(msg));
                     player.closeInventory();
                     player.openInventory(inventory);
+                    
                     init(setTitle, inventory.getSize());
                 } else {
                     player.sendMessage(Methods.formatText("&CYou must enter a number."));
@@ -165,6 +160,7 @@ public class GUIEditorGeneral extends AbstractGUI {
                     spawnerData.setUpgradeCostEconomy(Double.parseDouble(msg));
                     player.closeInventory();
                     player.openInventory(inventory);
+                    
                     init(setTitle, inventory.getSize());
                 } else {
                     player.sendMessage(Methods.formatText("&CYou must enter a number."));
@@ -186,6 +182,7 @@ public class GUIEditorGeneral extends AbstractGUI {
                     spawnerData.setUpgradeCostExperience(Integer.parseInt(msg));
                     player.closeInventory();
                     player.openInventory(inventory);
+                    
                     init(setTitle, inventory.getSize());
                 } else {
                     player.sendMessage(Methods.formatText("&CYou must enter a number."));
@@ -207,6 +204,7 @@ public class GUIEditorGeneral extends AbstractGUI {
                     spawnerData.setKillGoal(Integer.parseInt(msg));
                     player.closeInventory();
                     player.openInventory(inventory);
+                    
                     init(setTitle, inventory.getSize());
                 } else {
                     player.sendMessage(Methods.formatText("&CYou must enter a number."));
@@ -228,6 +226,7 @@ public class GUIEditorGeneral extends AbstractGUI {
                     spawnerData.setPickupCost(Double.parseDouble(msg));
                     player.closeInventory();
                     player.openInventory(inventory);
+                    
                     init(setTitle, inventory.getSize());
                 } else {
                     player.sendMessage(Methods.formatText("&CYou must enter a number."));
@@ -248,6 +247,7 @@ public class GUIEditorGeneral extends AbstractGUI {
                 spawnerData.setTickRate(gui.getInputText().trim());
                 player.closeInventory();
                 player.openInventory(inventory);
+                
                 init(setTitle, inventory.getSize());
             });
             plugin.getGuiManager().showGUI(player, gui);
@@ -264,6 +264,10 @@ public class GUIEditorGeneral extends AbstractGUI {
 
     @Override
     protected void registerOnCloses() {
+
+        registerOnClose(((player1, inventory1) -> {
+            plugin.getSpawnerManager().saveSpawnersToFile();
+        }));
 
     }
 }

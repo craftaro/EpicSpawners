@@ -185,6 +185,10 @@ public class GUIEditorEdit extends AbstractGUI {
     @Override
     protected void registerOnCloses() {
 
+        registerOnClose(((player1, inventory1) -> {
+            plugin.getSpawnerManager().saveSpawnersToFile();
+        }));
+
     }
 
     private List<ItemStack> getItems(Player p) {

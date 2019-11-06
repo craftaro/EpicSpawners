@@ -365,6 +365,15 @@ public class SpawnerManager {
 
             addSpawnerData(key, data);
         }
+        reloadSpawnerData();
+    }
+
+    public void reloadSpawnerData() {
+        for (Spawner spawner : spawnersInWorld.values()) {
+            for (SpawnerStack stack : spawner.getSpawnerStacks()) {
+                stack.setSpawnerData(spawners.get(stack.getSpawnerData().getIdentifyingName().toLowerCase()));
+            }
+        }
     }
 
     public void saveSpawnersToFile() {
