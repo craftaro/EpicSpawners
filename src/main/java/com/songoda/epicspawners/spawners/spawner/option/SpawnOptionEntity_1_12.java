@@ -174,7 +174,7 @@ public class SpawnOptionEntity_1_12 implements SpawnOption {
             EntityType type = types[ThreadLocalRandom.current().nextInt(types.length)];
             Entity entity = spawnEntity(type, spawner, data);
             if (entity != null) {
-                if (useUltimateStacker)
+                if (useUltimateStacker && com.songoda.ultimatestacker.UltimateStacker.getInstance().getMobFile().getBoolean("Mobs." + entity.getType().name() + ".Enabled"))
                     com.songoda.ultimatestacker.UltimateStacker.getInstance().getEntityStackManager().addStack(entity.getUniqueId(), spawnCount);
                 spawner.setSpawnCount(spawner.getSpawnCount() + (useUltimateStacker ? spawnCount : 1));
             }

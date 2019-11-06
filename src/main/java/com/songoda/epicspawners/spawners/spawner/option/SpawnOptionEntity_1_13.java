@@ -3,13 +3,13 @@ package com.songoda.epicspawners.spawners.spawner.option;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.api.events.SpawnerSpawnEvent;
 import com.songoda.epicspawners.particles.ParticleType;
+import com.songoda.epicspawners.settings.Settings;
 import com.songoda.epicspawners.spawners.condition.SpawnCondition;
 import com.songoda.epicspawners.spawners.condition.SpawnConditionNearbyEntities;
 import com.songoda.epicspawners.spawners.spawner.Spawner;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.spawners.spawner.SpawnerStack;
 import com.songoda.epicspawners.utils.Methods;
-import com.songoda.epicspawners.settings.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -184,7 +184,7 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
             EntityType type = types[ThreadLocalRandom.current().nextInt(types.length)];
             Entity entity = spawnEntity(type, spawner, data);
             if (entity != null) {
-                if (useUltimateStacker)
+                if (useUltimateStacker && com.songoda.ultimatestacker.UltimateStacker.getInstance().getMobFile().getBoolean("Mobs." + entity.getType().name() + ".Enabled"))
                     com.songoda.ultimatestacker.UltimateStacker.getInstance().getEntityStackManager().addStack(entity.getUniqueId(), spawnCount);
                 spawner.setSpawnCount(spawner.getSpawnCount() + (useUltimateStacker ? spawnCount : 1));
             }
@@ -268,7 +268,7 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
                 craftEntity.setMetadata("ES", new FixedMetadataValue(plugin, data.getIdentifyingName()));
 
                 if (mcmmo)
-                    craftEntity.setMetadata( "mcMMO: Spawned Entity", new FixedMetadataValue(plugin, true));
+                    craftEntity.setMetadata("mcMMO: Spawned Entity", new FixedMetadataValue(plugin, true));
 
                 if (Settings.NO_AI.getBoolean())
                     ((LivingEntity) craftEntity).setAI(false);
