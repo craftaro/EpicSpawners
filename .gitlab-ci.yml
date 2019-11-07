@@ -4,7 +4,7 @@ stages:
 variables:
   name: "EpicSpawners"
   path: "/builds/$CI_PROJECT_PATH"
-  version: "6.1.13"
+  version: "6.1.14"
 
 build:
   stage: build
