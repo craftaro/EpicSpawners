@@ -165,9 +165,7 @@ public class BlockListeners implements Listener {
             } catch (Exception ex) {
                 creatureSpawner.setSpawnedType(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9) ? EntityType.EGG : EntityType.DROPPED_ITEM);
             }
-            creatureSpawner.setDelay(1);
-            creatureSpawner.update();
-
+            spawner.updateDelay();
             spawner.setPlacedBy(player);
 
             plugin.processChange(event.getBlock());
