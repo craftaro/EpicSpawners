@@ -140,7 +140,7 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
 
         String[] randomLowHigh = plugin.getConfig().getString("Main.Random Amount Added To Each Spawn").split(":");
 
-        int randomAmt = ThreadLocalRandom.current().nextInt(Integer.valueOf(randomLowHigh[0]), Integer.valueOf(randomLowHigh[1]));
+        int randomAmt = ThreadLocalRandom.current().nextInt(Integer.parseInt(randomLowHigh[0]), Integer.parseInt(randomLowHigh[1]));
 
         String equation = plugin.getConfig().getString("Main.Equations.Mobs Spawned Per Spawn");
         equation = equation.replace("{RAND}", Integer.toString(randomAmt));
