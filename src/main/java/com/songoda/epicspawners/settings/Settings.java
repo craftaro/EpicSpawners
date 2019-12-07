@@ -133,8 +133,10 @@ public class Settings {
     public static final ConfigSetting COST_EQUATION_ECONOMY = new ConfigSetting(config, "Main.Equations.Calculate Economy Upgrade Cost", "{ECOCost} * {Level}",
             "The equation used to calculate the economy upgrade cost.");
 
-    public static final ConfigSetting SPAWNER_EQUATION_SPAWNS = new ConfigSetting(config, "Main.Equations.Mobs Spawned Per Spawn", "{MULTI} * {RAND}",
-            "The equation that defines the amount of mobs a spawner will spawn each time it is triggered.");
+    public static final ConfigSetting SPAWNER_SPAWN_EQUATION = new ConfigSetting(config, "Main.Equations.Mobs Spawned Per Single Spawn", "{RAND}",
+            "The equation that defines the amount of mobs a spawner will spawn each time it is triggered.",
+            "This is ran once for each spawner in the stack then summed up after. You may use the variable {STACK_SIZE}",
+            "If you like.");
 
     public static final ConfigSetting NAMED_SPAWNER_TIERS = new ConfigSetting(config, "Main.Named Spawners Tiers", false,
             "Whether or not spawners will have names rather than numbers.");

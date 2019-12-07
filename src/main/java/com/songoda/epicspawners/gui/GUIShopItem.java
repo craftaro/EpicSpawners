@@ -13,6 +13,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class GUIShopItem extends AbstractGUI {
 
@@ -205,7 +207,10 @@ public class GUIShopItem extends AbstractGUI {
         }
 
         ItemStack item = spawnerData.toItemStack(amount);
-        player.getInventory().addItem(item);
+        Map<Integer, ItemStack> overfilled = player.getInventory().addItem(item);
+        for (ItemStack item2 : overfilled.values()) {
+            player.getWorld().dropItemNaturally(player.getLocation(), item2);
+        }
         plugin.getLocale().getMessage("event.shop.purchasesuccess").sendPrefixedMessage(player);
         EconomyManager.withdrawBalance(player, price);
     }
