@@ -155,6 +155,7 @@ public class GUIEditorOverview extends AbstractGUI {
                     spawnerData.setActive(true);
                 constructGUI();
             } else if (type == ClickType.RIGHT) {
+                player.sendMessage("Type \"yes\" to confirm this action.");
                 ChatPrompt chatPrompt = ChatPrompt.showPrompt(plugin, player, event -> {
                     if (event.getMessage().equalsIgnoreCase("yes")) {
                         player.sendMessage(Methods.formatText("&6" + spawnerData.getIdentifyingName() + " Spawner &7 has been destroyed successfully"));
