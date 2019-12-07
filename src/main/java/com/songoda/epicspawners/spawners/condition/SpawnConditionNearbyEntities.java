@@ -8,9 +8,15 @@ import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 public class SpawnConditionNearbyEntities implements SpawnCondition {
 
     private final int max;
+
+    private static Map<Location, Integer> cachedAmounts = new HashMap<>();
 
     public SpawnConditionNearbyEntities(int max) {
         this.max = max;
@@ -29,15 +35,25 @@ public class SpawnConditionNearbyEntities implements SpawnCondition {
 
     @Override
     public boolean isMet(Spawner spawner) {
+        return getEntitiesAroundSpawner(spawner.getLocation().add(0.5, 0.5, 0.5), false) < max;
+    }
 
-        Location location = spawner.getLocation().add(0.5, 0.5, 0.5);
-
+    public static int getEntitiesAroundSpawner(Location location, boolean cached) {
+        if (cached) {
+            if (cachedAmounts.containsKey(location))
+                return cachedAmounts.get(location);
+            return 0;
+        }
         String[] arr = Settings.SEARCH_RADIUS.getString().split("x");
 
-        int size = location.getWorld().getNearbyEntities(location, Integer.parseInt(arr[0]), Integer.parseInt(arr[1]), Integer.parseInt(arr[2]))
-                .stream().filter(e -> e instanceof LivingEntity && e.getType() != EntityType.PLAYER && e.getType() != EntityType.ARMOR_STAND && e.isValid()).mapToInt(e -> EntityStackerManager.getStacker().getSize((LivingEntity) e)).sum();
-
-        return size < max;
+        int amt = location.getWorld().getNearbyEntities(location, Integer.parseInt(arr[0]), Integer.parseInt(arr[1]), Integer.parseInt(arr[2]))
+                .stream().filter(e -> e instanceof LivingEntity && e.getType() != EntityType.PLAYER && e.getType() != EntityType.ARMOR_STAND && e.isValid())
+                .mapToInt(e -> {
+                    if (EntityStackerManager.getStacker() == null) return 1;
+                    return EntityStackerManager.getStacker().getSize((LivingEntity) e);
+                }).sum();
+        cachedAmounts.put(location, amt);
+        return amt;
     }
 
     public int getMax() {
