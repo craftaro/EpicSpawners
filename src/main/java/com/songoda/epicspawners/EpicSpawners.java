@@ -308,18 +308,18 @@ public class EpicSpawners extends SongodaPlugin {
 
             ShapedRecipe spawnerRecipe = new ShapedRecipe(new NamespacedKey(this, "SPAWNER_RECIPE_" + type), spawnerData.toItemStack());
 
-            if (recipe.length() != 9) return;
+            if (recipe.length() != 9) continue;
 
             String[] split = Methods.splitStringEvery(recipe, 3);
             spawnerRecipe.shape(split[0], split[1], split[2]);
 
             List<String> ingredients = spawnerData.getRecipeIngredients();
 
-            if (ingredients.isEmpty()) return;
+            if (ingredients.isEmpty()) continue;
 
             for (String ingredient : ingredients) {
                 try {
-                    if (!ingredient.contains(",")) return;
+                    if (!ingredient.contains(",")) continue top;
                     String[] s = ingredient.split(",");
                     char letter = s[0].trim().toCharArray()[0];
                     String materialStr = s[1].trim();
