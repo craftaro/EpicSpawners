@@ -1,5 +1,6 @@
 package com.songoda.epicspawners.listeners;
 
+import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.core.hooks.EconomyManager;
 import com.songoda.epicspawners.EpicSpawners;
@@ -187,15 +188,13 @@ public class BlockListeners implements Listener {
 
             Player player = event.getPlayer();
 
-            if (event.getBlock().getType() != (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER"))
+            if (CompatibleMaterial.getMaterial(event.getBlock().getType()) != CompatibleMaterial.SPAWNER
                     || ((CreatureSpawner) event.getBlock().getState()).getSpawnedType() == EntityType.FIREWORK) return;
 
             if (plugin.getBlacklistHandler().isBlacklisted(event.getPlayer(), true)) {
                 event.setCancelled(true);
                 return;
             }
-
-            event.setCancelled(true);
 
             Location location = event.getBlock().getLocation();
 
@@ -224,12 +223,14 @@ public class BlockListeners implements Listener {
                 SpawnerBreakEvent breakEvent = new SpawnerBreakEvent(player, spawner);
                 Bukkit.getPluginManager().callEvent(breakEvent);
                 if (breakEvent.isCancelled()) {
+                    event.setCancelled(true);
                     return;
                 }
             } else {
                 SpawnerChangeEvent changeEvent = new SpawnerChangeEvent(player, spawner, currentStackSize - 1, currentStackSize);
                 Bukkit.getPluginManager().callEvent(changeEvent);
                 if (changeEvent.isCancelled()) {
+                    event.setCancelled(true);
                     return;
                 }
             }
@@ -262,6 +263,9 @@ public class BlockListeners implements Listener {
             SpawnerData firstData = spawner.getFirstStack().getSpawnerData();
 
             if (spawner.unstack(event.getPlayer())) {
+                if (event.getBlock().getType() != Material.AIR)
+                    event.setCancelled(true);
+
                 if (plugin.getConfig().getBoolean("Main.Alerts On Place And Break")) {
                     if (spawner.getSpawnerStacks().size() != 0) {
                         plugin.getLocale().getMessage("event.downgrade.success").processPlaceholder("level", Integer.toString(spawner.getSpawnerDataCount())).sendPrefixedMessage(player);

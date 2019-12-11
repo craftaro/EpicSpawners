@@ -31,7 +31,7 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class SpawnOptionEntity_1_13 implements SpawnOption {
+public class SpawnOptionEntity_1_15 implements SpawnOption {
 
     private final EntityType[] types;
 
@@ -48,11 +48,11 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
     private boolean mcmmo;
 
     private Map<String, Integer> cache = new HashMap<>();
-    private Class<?> clazzMobSpawnerData, clazzEnumMobSpawn, clazzWorldServer, clazzGeneratorAccess, clazzEntityTypes, clazzNBTTagCompound, clazzCraftWorld, clazzWorld, clazzChunkRegionLoader, clazzEntity, clazzCraftEntity, clazzEntityInsentient, clazzGroupDataEntity, clazzDifficultyDamageScaler, clazzBlockPosition, clazzIWorldReader, clazzICollisionAccess, clazzAxisAlignedBB;
+    private Class<?> clazzMobSpawnerData, clazzEnumMobSpawn, clazzWorldServer, clazzGeneratorAccess, clazzEntityTypes, clazzNBTTagCompound, clazzCraftWorld, clazzWorld, clazzChunkRegionLoader, clazzEntity, clazzCraftEntity, clazzEntityInsentient, clazzGroupDataEntity, clazzDifficultyDamageScaler, clazzBlockPosition, clazzIWorldReader, clazzAxisAlignedBB;
     private Method methodGetEntity, methodSetString, methodSetPosition, methodA, methodAddEntity, methodGetHandle, methodChunkRegionLoaderA, methodEntityGetBukkitEntity, methodCraftEntityTeleport, methodEntityInsentientPrepare, methodChunkRegionLoaderA2, methodGetDamageScaler, methodGetCubes, methodGetBoundingBox;
     private Field fieldWorldRandom;
 
-    public SpawnOptionEntity_1_13(EntityType... types) {
+    public SpawnOptionEntity_1_15(EntityType... types) {
         this.types = types;
         this.mgr = new ScriptEngineManager();
         this.engine = mgr.getEngineByName("JavaScript");
@@ -62,7 +62,7 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
         init();
     }
 
-    public SpawnOptionEntity_1_13(Collection<EntityType> entities) {
+    public SpawnOptionEntity_1_15(Collection<EntityType> entities) {
         this(entities.toArray(new EntityType[entities.size()]));
     }
 
@@ -83,15 +83,7 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
             clazzIWorldReader = Class.forName("net.minecraft.server." + ver + ".IWorldReader");
             clazzAxisAlignedBB = Class.forName("net.minecraft.server." + ver + ".AxisAlignedBB");
             clazzEntityTypes = Class.forName("net.minecraft.server." + ver + ".EntityTypes");
-
-            try {
-                clazzICollisionAccess = Class.forName("net.minecraft.server." + ver + ".ICollisionAccess");
-                methodGetCubes = clazzICollisionAccess.getDeclaredMethod("getCubes", clazzEntity, clazzAxisAlignedBB);
-            } catch (ClassNotFoundException e) {
-                clazzIWorldReader = Class.forName("net.minecraft.server." + ver + ".IWorldReader");
-                methodGetCubes = clazzIWorldReader.getDeclaredMethod("getCubes", clazzEntity, clazzAxisAlignedBB);
-            }
-
+            clazzIWorldReader = Class.forName("net.minecraft.server." + ver + ".IWorldReader");
             clazzGeneratorAccess = Class.forName("net.minecraft.server." + ver + ".GeneratorAccess");
 
             try {
@@ -103,6 +95,7 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
 
             methodGetBoundingBox = clazzEntity.getDeclaredMethod("getBoundingBox");
             methodSetPosition = clazzEntity.getDeclaredMethod("setPosition", double.class, double.class, double.class);
+            methodGetCubes = clazzIWorldReader.getDeclaredMethod("getCubes", clazzEntity, clazzAxisAlignedBB);
             methodGetHandle = clazzCraftWorld.getDeclaredMethod("getHandle");
             try {
                 methodChunkRegionLoaderA = clazzChunkRegionLoader.getDeclaredMethod("a", clazzNBTTagCompound, clazzWorld, double.class, double.class, double.class, boolean.class);
@@ -149,7 +142,7 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
 
         // Get the amount of entities to spawn per spawner in the stack.
         int spawnCount = 0;
-        for (int i = 0; i < stack.getStackSize(); i++) {
+        for (int i = 0; i < stack.getStackSize(); i ++) {
             int randomAmt = ThreadLocalRandom.current().nextInt(Integer.parseInt(randomLowHigh[0]), Integer.parseInt(randomLowHigh[1]));
 
             String equation = Settings.SPAWNER_SPAWN_EQUATION.getString();
@@ -297,7 +290,7 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
 
     private boolean canSpawn(Object objWorld, Object objEntityInsentient, SpawnerData data, Location location) {
         try {
-            Object objIWR = clazzIWorldReader == null ? clazzICollisionAccess.cast(objWorld) : clazzIWorldReader.cast(objWorld);
+            Object objIWR = clazzIWorldReader.cast(objWorld);
 
             if (!(boolean) methodGetCubes.invoke(objIWR, objEntityInsentient, methodGetBoundingBox.invoke(objEntityInsentient)))
                 return false;
@@ -344,9 +337,9 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
     @Override
     public boolean equals(Object object) {
         if (object == this) return true;
-        if (!(object instanceof SpawnOptionEntity_1_13)) return false;
+        if (!(object instanceof SpawnOptionEntity_1_15)) return false;
 
-        SpawnOptionEntity_1_13 other = (SpawnOptionEntity_1_13) object;
+        SpawnOptionEntity_1_15 other = (SpawnOptionEntity_1_15) object;
         return Arrays.equals(types, other.types);
     }
 
