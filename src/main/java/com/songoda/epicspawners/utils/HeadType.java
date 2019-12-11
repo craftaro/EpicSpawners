@@ -70,7 +70,8 @@ public enum HeadType {
     FOX("http://textures.minecraft.net/texture/1528ee714d3fca31655feae1cd3c14d346f9bcae3e457b7658c9f915e21"),
     PILLAGER("http://textures.minecraft.net/texture/63550f89aea88665804c2fd1b6682930c23233184fdc060991305718ed660597"),
     RAVAGER("http://textures.minecraft.net/texture/d91a9d864e36fbec19b584bcb71292530755b10c4e60784fec92b51f8189363c"),
-    TRADER_LLAMA("http://textures.minecraft.net/texture/6bc438fc1fbbaea2289aabecedd3fdf269ddc979bf8b5c6a8fc4bb8dcd4e1fe");
+    TRADER_LLAMA("http://textures.minecraft.net/texture/6bc438fc1fbbaea2289aabecedd3fdf269ddc979bf8b5c6a8fc4bb8dcd4e1fe"),
+    BEE("http://textures.minecraft.net/texture/5162dd0b9f65b58a1e70f81d8e03e8ff6c53e4e985bdbe0186558d8a69a81189");
 
     private final String url;
 
