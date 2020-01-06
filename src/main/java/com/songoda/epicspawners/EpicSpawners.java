@@ -42,7 +42,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.plugin.PluginManager;
 
-import java.io.*;
 import java.util.*;
 
 public class EpicSpawners extends SongodaPlugin {

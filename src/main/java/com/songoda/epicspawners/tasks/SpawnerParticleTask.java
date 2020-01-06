@@ -12,6 +12,8 @@ import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.ArrayList;
+
 public class SpawnerParticleTask extends BukkitRunnable {
 
     private static final double THETA_INCREMENT = Math.PI / 18.0; // 10 degrees
@@ -36,7 +38,7 @@ public class SpawnerParticleTask extends BukkitRunnable {
 
     @Override
     public void run() {
-        for (Spawner spawner : plugin.getSpawnerManager().getSpawners()) {
+        for (Spawner spawner : new ArrayList<>(plugin.getSpawnerManager().getSpawners())) {
             if (spawner == null || spawner.getLocation() == null || spawner.getSpawnerDataCount() == 0 || spawner.getFirstStack().getSpawnerData() == null)
                 continue;
 
