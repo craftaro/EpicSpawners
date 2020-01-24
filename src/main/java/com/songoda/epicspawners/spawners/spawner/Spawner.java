@@ -1,5 +1,7 @@
 package com.songoda.epicspawners.spawners.spawner;
 
+import com.songoda.core.compatibility.CompatibleParticleHandler;
+import com.songoda.core.compatibility.CompatibleSound;
 import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.core.hooks.EconomyManager;
 import com.songoda.epicspawners.EpicSpawners;
@@ -57,11 +59,12 @@ public class Spawner {
         if (!isRedstonePowered()) return false;
 
         ParticleType particleType = spawnerData.getSpawnerSpawnParticle();
-        if (particleType != ParticleType.NONE && ServerVersion.isServerVersionAtLeast(ServerVersion.V1_12)) {
+        if (particleType != ParticleType.NONE) {
             float x = (float) (0 + (Math.random() * .8));
             float y = (float) (0 + (Math.random() * .8));
             float z = (float) (0 + (Math.random() * .8));
-            particleLocation.getWorld().spawnParticle(Particle.valueOf(particleType.getEffect()), particleLocation, 0, x, y, z, 0);
+            CompatibleParticleHandler.spawnParticles(CompatibleParticleHandler.ParticleType.getParticle(particleType.getEffect()),
+                    particleLocation, 0, x, y, z, 0);
         }
 
         for (SpawnerStack stack : getSpawnerStacks()) {
@@ -71,8 +74,8 @@ public class Spawner {
         if (spawnerData.getSpawnLimit() != -1 && spawnCount * spawnerStacks.size() > spawnerData.getSpawnLimit()) {
             this.location.getBlock().setType(Material.AIR);
 
-            if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9))
-                location.getWorld().spawnParticle(Particle.LAVA, location.clone().add(.5, .5, .5), 5, 0, 0, 0, 5);
+            CompatibleParticleHandler.spawnParticles(CompatibleParticleHandler.ParticleType.LAVA,
+                    location.clone().add(.5, .5, .5), 5, 0, 0, 0, 5);
             location.getWorld().playSound(location, ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13)
                     ? Sound.ENTITY_GENERIC_EXPLODE : Sound.valueOf("EXPLODE"), 10, 10);
 
@@ -242,8 +245,8 @@ public class Spawner {
             stackSize = stack.getStackSize();
         }
 
-        if (Settings.SOUNDS_ENABLED.getBoolean() && ServerVersion.isServerVersionAtLeast(ServerVersion.V1_12)) {
-            player.playSound(player.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 0.6F, 15.0F);
+        if (Settings.SOUNDS_ENABLED.getBoolean()) {
+            player.playSound(player.getLocation(), CompatibleSound.ENTITY_ARROW_HIT_PLAYER.getSound(), 0.6F, 15.0F);
         }
         ItemStack item = stack.getSpawnerData().toItemStack(1, stackSize);
 
@@ -359,23 +362,22 @@ public class Spawner {
         loc.setX(loc.getX() + .5);
         loc.setY(loc.getY() + .5);
         loc.setZ(loc.getZ() + .5);
-        if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_11)) {
-            player.getWorld().spawnParticle(org.bukkit.Particle.valueOf(Settings.UPGRADE_PARTICLE_TYPE.getString()), loc, 100, .5, .5, .5);
-        }
+
+        CompatibleParticleHandler.spawnParticles(CompatibleParticleHandler.ParticleType.getParticle(Settings.UPGRADE_PARTICLE_TYPE.getString()),
+                loc, 100, .5, .5, .5);
 
         plugin.updateHologram(this);
 
-        if (!Settings.SOUNDS_ENABLED.getBoolean()
-                || !ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13)) {
+        if (!Settings.SOUNDS_ENABLED.getBoolean()) {
             return;
         }
         if (currentStackSize != Settings.SPAWNERS_MAX.getInt()) {
-            player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 0.6F, 15.0F);
+            player.playSound(player.getLocation(), CompatibleSound.ENTITY_PLAYER_LEVELUP.getSound(), 0.6F, 15.0F);
         } else {
-            player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 2F, 25.0F);
-            player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 2F, 25.0F);
-            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 1.2F, 35.0F), 5L);
-            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 1.8F, 35.0F), 10L);
+            player.playSound(player.getLocation(), CompatibleSound.ENTITY_PLAYER_LEVELUP.getSound(), 2F, 25.0F);
+            player.playSound(player.getLocation(), CompatibleSound.BLOCK_NOTE_BLOCK_CHIME.getSound(), 2F, 25.0F);
+            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> player.playSound(player.getLocation(), CompatibleSound.BLOCK_NOTE_BLOCK_CHIME.getSound(), 1.2F, 35.0F), 5L);
+            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> player.playSound(player.getLocation(), CompatibleSound.BLOCK_NOTE_BLOCK_CHIME.getSound(), 1.8F, 35.0F), 10L);
         }
     }
 

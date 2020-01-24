@@ -1,5 +1,6 @@
 package com.songoda.epicspawners.gui;
 
+import com.songoda.core.compatibility.CompatibleSound;
 import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.core.hooks.EconomyManager;
 import com.songoda.epicspawners.EpicSpawners;
@@ -12,7 +13,6 @@ import com.songoda.epicspawners.utils.gui.AbstractGUI;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -232,8 +232,7 @@ public class GUISpawnerBoost extends AbstractGUI {
         BoostData boostData = new BoostData(BoostType.LOCATION, amt, c.getTime().getTime(), location);
         instance.getBoostManager().addBoostToSpawner(boostData);
         plugin.getLocale().getMessage("event.boost.applied").sendPrefixedMessage(player);
-        if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9))
-            player.playSound(location, Sound.ENTITY_VILLAGER_YES, 1, 1);
+        player.playSound(location, CompatibleSound.ENTITY_VILLAGER_YES.getSound(), 1, 1);
     }
 
     @Override
