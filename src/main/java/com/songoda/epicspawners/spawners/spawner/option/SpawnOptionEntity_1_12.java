@@ -1,5 +1,6 @@
 package com.songoda.epicspawners.spawners.spawner.option;
 
+import com.songoda.core.compatibility.CompatibleParticleHandler;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.api.events.SpawnerSpawnEvent;
 import com.songoda.epicspawners.particles.ParticleType;
@@ -232,11 +233,12 @@ public class SpawnOptionEntity_1_12 implements SpawnOption {
 
                 ParticleType particleType = data.getEntitySpawnParticle();
 
-                if (particleType != ParticleType.NONE && ServerVersion.isServerVersionAtLeast(ServerVersion.V1_12)) {
+                if (particleType != ParticleType.NONE) {
                     float xx = (float) (0 + (Math.random() * 1));
                     float yy = (float) (0 + (Math.random() * 2));
                     float zz = (float) (0 + (Math.random() * 1));
-                    spot.getWorld().spawnParticle(Particle.valueOf(particleType.getEffect()), spot, 5, xx, yy, zz, 0);
+                    CompatibleParticleHandler.spawnParticles(CompatibleParticleHandler.ParticleType.getParticle(particleType.getEffect()),
+                            spot, 5, xx, yy, zz, 0);
                 }
 
                 Entity craftEntity = (Entity) methodEntityGetBukkitEntity.invoke(objEntity);

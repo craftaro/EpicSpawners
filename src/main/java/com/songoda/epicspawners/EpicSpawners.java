@@ -4,7 +4,6 @@ import com.songoda.core.SongodaCore;
 import com.songoda.core.SongodaPlugin;
 import com.songoda.core.commands.CommandManager;
 import com.songoda.core.compatibility.CompatibleMaterial;
-import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.core.configuration.Config;
 import com.songoda.core.gui.GuiManager;
 import com.songoda.core.hooks.EconomyManager;
@@ -78,8 +77,7 @@ public class EpicSpawners extends SongodaPlugin {
     public void onPluginDisable() {
         this.saveToFile();
         this.storage.closeConnection();
-        if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_12))
-            this.particleTask.cancel();
+        this.particleTask.cancel();
         this.spawnerCustomSpawnTask.cancel();
         HologramManager.removeAllHolograms();
     }
@@ -144,8 +142,7 @@ public class EpicSpawners extends SongodaPlugin {
         Bukkit.getScheduler().runTaskTimerAsynchronously(this, this::saveToFile, timeout, timeout);
 
         // Start tasks
-        if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_12))
-            this.particleTask = SpawnerParticleTask.startTask(this);
+        this.particleTask = SpawnerParticleTask.startTask(this);
         this.spawnerCustomSpawnTask = SpawnerSpawnTask.startTask(this);
         this.appearanceTask = AppearanceTask.startTask(this);
 

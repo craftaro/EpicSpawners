@@ -1,5 +1,6 @@
 package com.songoda.epicspawners.tasks;
 
+import com.songoda.core.compatibility.CompatibleParticleHandler;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.particles.ParticleDensity;
 import com.songoda.epicspawners.particles.ParticleEffect;
@@ -65,7 +66,8 @@ public class SpawnerParticleTask extends BukkitRunnable {
                 if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13))
                     centre.getWorld().spawnParticle(Particle.valueOf(particle.getEffect()), centre, density.getEffect(), 0, 0, 0, 0, Particle.valueOf(particle.getEffect()) == org.bukkit.Particle.REDSTONE ? new org.bukkit.Particle.DustOptions(Color.RED, 1) : null);
                 else
-                    centre.getWorld().spawnParticle(Particle.valueOf(particle.getEffect()), centre, density.getEffect(), 0, 0, 0, 0);
+                    CompatibleParticleHandler.spawnParticles(CompatibleParticleHandler.ParticleType.getParticle(particle.getEffect()),
+                            centre, density.getEffect(), 0, 0, 0, 0);
             } else if (effect == ParticleEffect.TARGET) {
                 for (int i = 0; i < 360; i += 10) {
                     double angle = Math.toRadians(i);
@@ -78,7 +80,8 @@ public class SpawnerParticleTask extends BukkitRunnable {
                     if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13))
                         centre.getWorld().spawnParticle(Particle.valueOf(particle.getEffect()), centre, density.getEffect(), 0, 0, 0, 0, Particle.valueOf(particle.getEffect()) == org.bukkit.Particle.REDSTONE ? new org.bukkit.Particle.DustOptions(Color.RED, 1) : null);
                     else
-                        centre.getWorld().spawnParticle(Particle.valueOf(particle.getEffect()), centre, density.getEffect(), 0, 0, 0, 0);
+                        CompatibleParticleHandler.spawnParticles(CompatibleParticleHandler.ParticleType.getParticle(particle.getEffect()),
+                                centre, density.getEffect(), 0, 0, 0, 0);
                     centre.subtract(x, -0.2, z);
 
                     // Inner circle
@@ -88,7 +91,8 @@ public class SpawnerParticleTask extends BukkitRunnable {
                     if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13))
                         centre.getWorld().spawnParticle(Particle.valueOf(particle.getEffect()), centre, density.getEffect(), 0, 0, 0, 0, Particle.valueOf(particle.getEffect()) == org.bukkit.Particle.REDSTONE ? new org.bukkit.Particle.DustOptions(Color.RED, 1) : null);
                     else
-                        centre.getWorld().spawnParticle(Particle.valueOf(particle.getEffect()), centre, density.getEffect(), 0, 0, 0, 0);
+                        CompatibleParticleHandler.spawnParticles(CompatibleParticleHandler.ParticleType.getParticle(particle.getEffect()),
+                                centre, density.getEffect(), 0, 0, 0, 0);
                     centre.subtract(x, 0, z);
                 }
             }

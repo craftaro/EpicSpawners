@@ -1,5 +1,7 @@
 package com.songoda.epicspawners.spawners.spawner;
 
+import com.songoda.core.compatibility.CompatibleParticleHandler;
+import com.songoda.core.compatibility.CompatibleSound;
 import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.core.hooks.EconomyManager;
 import com.songoda.epicspawners.EpicSpawners;
@@ -57,11 +59,12 @@ public class Spawner {
         if (!isRedstonePowered()) return false;
 
         ParticleType particleType = spawnerData.getSpawnerSpawnParticle();
-        if (particleType != ParticleType.NONE && ServerVersion.isServerVersionAtLeast(ServerVersion.V1_12)) {
+        if (particleType != ParticleType.NONE) {
             float x = (float) (0 + (Math.random() * .8));
             float y = (float) (0 + (Math.random() * .8));
             float z = (float) (0 + (Math.random() * .8));
-            particleLocation.getWorld().spawnParticle(Particle.valueOf(particleType.getEffect()), particleLocation, 0, x, y, z, 0);
+            CompatibleParticleHandler.spawnParticles(CompatibleParticleHandler.ParticleType.getParticle(particleType.getEffect()),
+                    particleLocation, 0, x, y, z, 0);
         }
 
         for (SpawnerStack stack : getSpawnerStacks()) {
@@ -71,8 +74,8 @@ public class Spawner {
         if (spawnerData.getSpawnLimit() != -1 && spawnCount * spawnerStacks.size() > spawnerData.getSpawnLimit()) {
             this.location.getBlock().setType(Material.AIR);
 
-            if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9))
-                location.getWorld().spawnParticle(Particle.LAVA, location.clone().add(.5, .5, .5), 5, 0, 0, 0, 5);
+            CompatibleParticleHandler.spawnParticles(CompatibleParticleHandler.ParticleType.LAVA,
+                    location.clone().add(.5, .5, .5), 5, 0, 0, 0, 5);
             location.getWorld().playSound(location, ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13)
                     ? Sound.ENTITY_GENERIC_EXPLODE : Sound.valueOf("EXPLODE"), 10, 10);
 
@@ -359,9 +362,9 @@ public class Spawner {
         loc.setX(loc.getX() + .5);
         loc.setY(loc.getY() + .5);
         loc.setZ(loc.getZ() + .5);
-        if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_11)) {
-            player.getWorld().spawnParticle(org.bukkit.Particle.valueOf(Settings.UPGRADE_PARTICLE_TYPE.getString()), loc, 100, .5, .5, .5);
-        }
+
+        CompatibleParticleHandler.spawnParticles(CompatibleParticleHandler.ParticleType.getParticle(Settings.UPGRADE_PARTICLE_TYPE.getString()),
+                loc, 100, .5, .5, .5);
 
         plugin.updateHologram(this);
 
