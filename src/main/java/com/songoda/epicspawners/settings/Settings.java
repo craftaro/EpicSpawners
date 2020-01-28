@@ -154,6 +154,9 @@ public class Settings {
             "Which hologram plugin should be used?",
             "You can choose from \"" + HologramManager.getManager().getRegisteredPlugins().stream().collect(Collectors.joining(", ")) + "\".");
 
+    public static final ConfigSetting CHARGE_FOR_CREATIVE = new ConfigSetting(config, "Main.Charge For Creative", false,
+            "Should players in creative have to pay for perks like upgrades and boosting?");
+
     public static final ConfigSetting MAX_PLAYER_BOOST = new ConfigSetting(config, "Spawner Boosting.Max Multiplier For A Spawner Boost", 5,
             "The highest multiplier a spawner can be boosted to.");
 
