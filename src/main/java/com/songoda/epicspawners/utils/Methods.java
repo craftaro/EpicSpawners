@@ -62,7 +62,7 @@ public class Methods {
     }
 
     public static void takeItem(Player player, int amount) {
-        if (player.getGameMode() == GameMode.CREATIVE) return;
+        if (player.getGameMode() == GameMode.CREATIVE && !Settings.CHARGE_FOR_CREATIVE.getBoolean()) return;
 
         ItemStack item = player.getInventory().getItemInHand();
 

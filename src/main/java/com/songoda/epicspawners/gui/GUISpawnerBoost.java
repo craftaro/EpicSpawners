@@ -215,9 +215,8 @@ public class GUISpawnerBoost extends AbstractGUI {
             }
         } else if (type.equals("XP")) {
             if (player.getLevel() >= cost || player.getGameMode() == GameMode.CREATIVE) {
-                if (player.getGameMode() != GameMode.CREATIVE) {
+                if (player.getGameMode() != GameMode.CREATIVE || Settings.CHARGE_FOR_CREATIVE.getBoolean())
                     player.setLevel(player.getLevel() - cost);
-                }
             } else {
                 plugin.getLocale().getMessage("event.upgrade.cannotafford").sendPrefixedMessage(player);
                 return;

@@ -332,7 +332,7 @@ public class Spawner {
             stack.setStackSize(stack.getStackSize() + amount);
             upgradeFinal(player);
 
-            if (player.getGameMode() != GameMode.CREATIVE)
+            if (player.getGameMode() != GameMode.CREATIVE || Settings.CHARGE_FOR_CREATIVE.getBoolean())
                 Methods.takeItem(player, 1);
 
             return true;
@@ -341,7 +341,7 @@ public class Spawner {
         SpawnerStack stack = new SpawnerStack(data, amount);
         spawnerStacks.push(stack);
 
-        if (player.getGameMode() != GameMode.CREATIVE)
+        if (player.getGameMode() != GameMode.CREATIVE || Settings.CHARGE_FOR_CREATIVE.getBoolean())
             Methods.takeItem(player, 1);
 
         return true;
@@ -416,10 +416,9 @@ public class Spawner {
             Bukkit.getPluginManager().callEvent(event);
             if (event.isCancelled()) return;
 
-            if (player.getLevel() >= cost || player.getGameMode() == GameMode.CREATIVE) {
-                if (player.getGameMode() != GameMode.CREATIVE) {
+            if (player.getLevel() >= cost || player.getGameMode() == GameMode.CREATIVE && Settings.CHARGE_FOR_CREATIVE.getBoolean()) {
+                if (player.getGameMode() != GameMode.CREATIVE && Settings.CHARGE_FOR_CREATIVE.getBoolean())
                     player.setLevel(player.getLevel() - cost);
-                }
                 spawnerStacks.getFirst().setStackSize(spawnerStacks.getFirst().getStackSize() + 1);
                 upgradeFinal(player);
             } else {

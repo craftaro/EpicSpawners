@@ -4,13 +4,13 @@ import com.songoda.core.configuration.Config;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.boost.BoostData;
 import com.songoda.epicspawners.player.PlayerData;
+import com.songoda.epicspawners.settings.Settings;
 import com.songoda.epicspawners.spawners.spawner.Spawner;
 import com.songoda.epicspawners.spawners.spawner.SpawnerStack;
 import com.songoda.epicspawners.utils.Methods;
+import org.bukkit.Location;
 
 import java.util.List;
-
-import org.bukkit.Location;
 
 public abstract class Storage {
 
@@ -32,10 +32,14 @@ public abstract class Storage {
     public void updateData(EpicSpawners plugin) {
         // Save game data
         for (Spawner spawner : plugin.getSpawnerManager().getSpawners()) {
-            if (spawner.getFirstStack() == null || spawner.getFirstStack().getSpawnerData() == null) continue;
-            
+            if (spawner.getFirstStack() == null || spawner.getFirstStack().getSpawnerData() == null
+                    || spawner.getSpawnerDataCount() == 1
+                    && !spawner.getFirstStack().getSpawnerData().isCustom()
+                    && spawner.getSpawnCount() == 0
+                    && spawner.getPlacedBy() == null || !Settings.ALWAYS_REMEMBER_PLACER.getBoolean()) continue;
+
             Location spawnerLocation = spawner.getLocation();
-            
+
             if (spawnerLocation == null || spawnerLocation.getWorld() == null) continue;
 
             StorageItem location = new StorageItem("location", Methods.serializeLocation(spawnerLocation));

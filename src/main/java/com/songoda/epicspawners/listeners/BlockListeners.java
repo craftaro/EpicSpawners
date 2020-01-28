@@ -3,6 +3,7 @@ package com.songoda.epicspawners.listeners;
 import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.core.hooks.EconomyManager;
+import com.songoda.core.utils.ItemUtils;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.api.events.SpawnerBreakEvent;
 import com.songoda.epicspawners.api.events.SpawnerChangeEvent;
@@ -13,6 +14,7 @@ import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.spawners.spawner.SpawnerStack;
 import com.songoda.epicspawners.utils.Methods;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -157,6 +159,9 @@ public class BlockListeners implements Listener {
                 plugin.getLocale().getMessage("event.block.place")
                         .processPlaceholder("type", Methods.compileName(spawnerData, spawner.getFirstStack().getStackSize(), false))
                         .sendPrefixedMessage(player);
+
+            if (player.getGameMode() == GameMode.CREATIVE && Settings.CHARGE_FOR_CREATIVE.getBoolean())
+                Methods.takeItem(player, 1);
 
             CreatureSpawner creatureSpawner = spawner.getCreatureSpawner();
             if (creatureSpawner == null) return;

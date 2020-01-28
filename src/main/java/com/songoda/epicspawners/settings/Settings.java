@@ -154,8 +154,15 @@ public class Settings {
             "Which hologram plugin should be used?",
             "You can choose from \"" + HologramManager.getManager().getRegisteredPlugins().stream().collect(Collectors.joining(", ")) + "\".");
 
+    public static final ConfigSetting CHARGE_FOR_CREATIVE = new ConfigSetting(config, "Main.Charge For Creative", false,
+            "Should players in creative have to pay for perks like upgrades and boosting?");
+
     public static final ConfigSetting MAX_PLAYER_BOOST = new ConfigSetting(config, "Spawner Boosting.Max Multiplier For A Spawner Boost", 5,
             "The highest multiplier a spawner can be boosted to.");
+
+    public static final ConfigSetting ALWAYS_REMEMBER_PLACER = new ConfigSetting(config, "Main.Always Remember Placer", true,
+            "Should the person who placed a spawner be remembered under every",
+            "circumstance? Disabling this can greatly decrease save file size.");
 
     public static final ConfigSetting BOOST_COST = new ConfigSetting(config, "Spawner Boosting.Item Charged For A Boost", "DIAMOND:2",
             "The cost required when a player boosts their own spawner.",
