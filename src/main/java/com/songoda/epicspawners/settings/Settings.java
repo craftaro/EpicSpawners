@@ -53,12 +53,6 @@ public class Settings {
             "Making this smaller or larger will not effect a spawners spawn rate as",
             "this value only effects the frequency in which a spawn attempt is triggered.");
 
-    public static final ConfigSetting RANDOM_LOW_HIGH = new ConfigSetting(config, "Main.Random Amount Added To Each Spawn", "1:4",
-            "Spawners will always spawn a single entity for every level it contains multiplied",
-            "by a random number generated between (by default) 1 and 4.",
-            "For example if the random number 3 is generated then by default",
-            "a level 5 spawner will spawn (5 * 3) entities which would be 15.");
-
     public static final ConfigSetting SOUNDS_ENABLED = new ConfigSetting(config, "Main.Sounds Enabled", true,
             "Toggles various sound effects used throughout the plugin.");
 
@@ -136,7 +130,12 @@ public class Settings {
     public static final ConfigSetting SPAWNER_SPAWN_EQUATION = new ConfigSetting(config, "Main.Equations.Mobs Spawned Per Single Spawn", "{RAND}",
             "The equation that defines the amount of mobs a spawner will spawn each time it is triggered.",
             "This is ran once for each spawner in the stack then summed up after. You may use the variable {STACK_SIZE}",
-            "If you like.");
+            "or {RAND} If you like. For more information about how to make equations for this option look up the",
+            "Java ScriptEngine.");
+
+    public static final ConfigSetting RANDOM_LOW_HIGH = new ConfigSetting(config, "Main.Equations.Random Amount Variable", "1:4",
+            "This value depicts the variable {RAND} in equations used by this plugin",
+            "It generates a random number between (by default) 1 and 4.");
 
     public static final ConfigSetting NAMED_SPAWNER_TIERS = new ConfigSetting(config, "Main.Named Spawners Tiers", false,
             "Whether or not spawners will have names rather than numbers.");
