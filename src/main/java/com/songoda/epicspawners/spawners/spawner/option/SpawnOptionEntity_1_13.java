@@ -145,7 +145,7 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
         location.add(.5, .5, .5);
         if (location.getWorld() == null) return;
 
-        String[] randomLowHigh = plugin.getConfig().getString("Main.Random Amount Added To Each Spawn").split(":");
+        String[] randomLowHigh = Settings.RANDOM_LOW_HIGH.getString().split(":");
 
         // Get the amount of entities to spawn per spawner in the stack.
         int spawnCount = 0;
