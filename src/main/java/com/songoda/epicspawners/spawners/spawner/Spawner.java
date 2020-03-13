@@ -6,6 +6,8 @@ import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.core.hooks.EconomyManager;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.api.events.SpawnerChangeEvent;
+import com.songoda.epicspawners.api.events.SpawnerDropEvent;
+import com.songoda.epicspawners.api.events.SpawnerPlaceEvent;
 import com.songoda.epicspawners.boost.BoostData;
 import com.songoda.epicspawners.gui.GUISpawnerOverview;
 import com.songoda.epicspawners.particles.ParticleType;
@@ -259,6 +261,12 @@ public class Spawner {
                 && player.hasPermission("epicspawners.silkdrop." + stack.getSpawnerData().getIdentifyingName().replace(' ', '_'))
                 || player.hasPermission("epicspawners.no-silk-drop")) {
             if (Settings.SPAWNERS_TO_INVENTORY.getBoolean()) {
+                SpawnerDropEvent placeEvent = new SpawnerDropEvent(player, this);
+                Bukkit.getPluginManager().callEvent(placeEvent);
+                if (placeEvent.isCancelled()) {
+                    return false;
+                }
+
                 Collection<ItemStack> leftOver = player.getInventory().addItem(item).values();
                 for (ItemStack itemStack : leftOver) {
                     player.getWorld().dropItemNaturally(player.getLocation(), itemStack);
@@ -270,6 +278,12 @@ public class Spawner {
                 double rand = Math.random() * 100;
 
                 if (rand - ch < 0 || ch == 100) {
+                    SpawnerDropEvent placeEvent = new SpawnerDropEvent(player, this);
+                    Bukkit.getPluginManager().callEvent(placeEvent);
+                    if (placeEvent.isCancelled()) {
+                        return false;
+                    }
+
                     if (Settings.SPAWNERS_TO_INVENTORY.getBoolean() && player.getInventory().firstEmpty() != -1)
                         player.getInventory().addItem(item);
                     else
