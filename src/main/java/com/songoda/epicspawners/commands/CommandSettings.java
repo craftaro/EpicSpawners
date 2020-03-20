@@ -15,7 +15,7 @@ public class CommandSettings extends AbstractCommand {
     private final EpicSpawners plugin;
 
     public CommandSettings(EpicSpawners plugin) {
-        super(true, "Settings");
+        super(CommandType.PLAYER_ONLY, "settings");
         this.plugin = plugin;
     }
 

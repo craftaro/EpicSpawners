@@ -1,11 +1,11 @@
 package com.songoda.epicspawners.gui;
 
+import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.epicspawners.EpicSpawners;
+import com.songoda.epicspawners.settings.Settings;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.utils.Methods;
-import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.epicspawners.utils.gui.AbstractGUI;
-import com.songoda.epicspawners.settings.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -14,6 +14,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class GUISpawnerShop extends AbstractGUI {
@@ -74,6 +75,10 @@ public class GUISpawnerShop extends AbstractGUI {
         max = (int) Math.ceil((double) totalAmount / (double) 32);
 
         int place = 10;
+
+        // Sort entities by their shopOrder val
+        entities.sort(Comparator.comparingInt(SpawnerData::getShopOrder));
+
         for (SpawnerData spawnerData : entities) {
             if (place == 17 || place == (slots - 18)) place++;
             if (place == 18 && slots == 36) place++;

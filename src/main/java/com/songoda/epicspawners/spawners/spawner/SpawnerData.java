@@ -28,6 +28,7 @@ public class SpawnerData {
     private boolean active = true, inShop = true;
     private boolean spawnOnFire = false, upgradeable = true, convertible = true;
     private double shopPrice = 1000.0;
+    private int shopOrder = 0;
     private String convertRatio = "45%";
     private double upgradeCostEconomy = 0.0;
     private int upgradeCostExperience = 0;
@@ -189,6 +190,16 @@ public class SpawnerData {
 
     public boolean isInShop() {
         return inShop;
+    }
+
+
+    public int getShopOrder() {
+        return shopOrder;
+    }
+
+
+    public void setShopOrder(int slot) {
+        this.shopOrder = slot;
     }
 
 
