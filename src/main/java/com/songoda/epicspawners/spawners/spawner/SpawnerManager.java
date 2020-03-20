@@ -228,6 +228,7 @@ public class SpawnerManager {
         spawnerConfig.addDefault(section + ".Convertible", true);
         spawnerConfig.addDefault(section + ".Convert-Ratio", "45%");
         spawnerConfig.addDefault(section + ".In-Shop", true);
+        spawnerConfig.addDefault(section + ".Shop-Order", 0);
         spawnerConfig.addDefault(section + ".Shop-Price", 1000.00);
         spawnerConfig.addDefault(section + ".CustomGoal", 0);
         spawnerConfig.addDefault(section + ".Custom-ECO-Cost", 0);
@@ -338,6 +339,10 @@ public class SpawnerManager {
                 dataBuilder.displayItem(Material.valueOf(currentSection.getString("Display-Item")));
             }
 
+            if (currentSection.contains("Shop-Order")) {
+                dataBuilder.shopOrder(currentSection.getInt("Shop-Order"));
+            }
+
             SpawnerData data = dataBuilder.build();
 
             if (currentSection.contains("Conditions")) {
@@ -404,6 +409,7 @@ public class SpawnerManager {
             currentSection.set("Convertible", spawnerData.isConvertible());
             currentSection.set("Convert-Ratio", spawnerData.getConvertRatio());
             currentSection.set("In-Shop", spawnerData.isInShop());
+            currentSection.set("Shop-Order", spawnerData.getShopOrder());
             currentSection.set("Shop-Price", spawnerData.getShopPrice());
             currentSection.set("CustomGoal", spawnerData.getKillGoal());
             currentSection.set("Custom-ECO-Cost", spawnerData.getUpgradeCostEconomy());

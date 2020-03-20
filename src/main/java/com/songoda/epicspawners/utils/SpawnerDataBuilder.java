@@ -137,6 +137,12 @@ public final class SpawnerDataBuilder {
     }
 
 
+    public SpawnerDataBuilder shopOrder(int order) {
+        this.spawnerData.setShopOrder(order);
+        return this;
+    }
+
+
     public SpawnerDataBuilder convertRatio(String ratio) {
         this.spawnerData.setConvertRatio(ratio);
         return this;
