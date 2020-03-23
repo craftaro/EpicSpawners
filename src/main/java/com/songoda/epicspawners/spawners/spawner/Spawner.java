@@ -431,7 +431,7 @@ public class Spawner {
             if (event.isCancelled()) return;
 
             if (player.getLevel() >= cost || player.getGameMode() == GameMode.CREATIVE && !Settings.CHARGE_FOR_CREATIVE.getBoolean()) {
-                if (player.getGameMode() != GameMode.CREATIVE && Settings.CHARGE_FOR_CREATIVE.getBoolean())
+                if (player.getGameMode() != GameMode.CREATIVE || Settings.CHARGE_FOR_CREATIVE.getBoolean())
                     player.setLevel(player.getLevel() - cost);
                 spawnerStacks.getFirst().setStackSize(spawnerStacks.getFirst().getStackSize() + 1);
                 upgradeFinal(player);
