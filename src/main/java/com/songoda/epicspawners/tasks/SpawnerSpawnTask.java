@@ -38,7 +38,8 @@ public class SpawnerSpawnTask extends BukkitRunnable {
                     || spawner.getWorld() == null
                     || !spawner.getWorld().isChunkLoaded(spawner.getX() >> 4, spawner.getZ() >> 4)) return;
 
-            if (spawner.getLocation().getBlock().getType() != CompatibleMaterial.SPAWNER.getMaterial()) {
+            if (spawner.getLocation().getBlock().getType() != CompatibleMaterial.SPAWNER.getMaterial()
+                    || spawner.getFirstStack() == null) {
                 spawner.destroy(plugin);
                 return;
             }
