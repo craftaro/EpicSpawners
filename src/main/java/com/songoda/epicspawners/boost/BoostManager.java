@@ -1,22 +1,29 @@
 package com.songoda.epicspawners.boost;
 
+import com.songoda.epicspawners.boost.types.Boosted;
+
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class BoostManager {
 
-    private final Set<BoostData> boostedSpawners = new HashSet<>();
+    private final Set<Boosted> registeredBoosts = new HashSet<>();
 
-    public void addBoostToSpawner(BoostData data) {
-        this.boostedSpawners.add(data);
+    public void addBoost(Boosted boosted) {
+        this.registeredBoosts.add(boosted);
     }
 
-    public void removeBoostFromSpawner(BoostData data) {
-        this.boostedSpawners.remove(data);
+    public void removeBoost(Boosted boosted) {
+        this.registeredBoosts.remove(boosted);
     }
 
-    public Set<BoostData> getBoosts() {
-        return Collections.unmodifiableSet(boostedSpawners);
+    public Set<Boosted> getBoosts() {
+        return Collections.unmodifiableSet(registeredBoosts);
+    }
+
+    public void addBoosts(List<Boosted> boosts) {
+        registeredBoosts.addAll(boosts);
     }
 }
