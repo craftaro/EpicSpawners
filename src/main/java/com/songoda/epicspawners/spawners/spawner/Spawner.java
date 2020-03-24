@@ -1,10 +1,8 @@
 package com.songoda.epicspawners.spawners.spawner;
 
-import com.songoda.core.compatibility.CompatibleMaterial;
-import com.songoda.core.compatibility.CompatibleParticleHandler;
-import com.songoda.core.compatibility.CompatibleSound;
-import com.songoda.core.compatibility.ServerVersion;
+import com.songoda.core.compatibility.*;
 import com.songoda.core.hooks.EconomyManager;
+import com.songoda.core.utils.ItemUtils;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.api.events.SpawnerChangeEvent;
 import com.songoda.epicspawners.api.events.SpawnerDropEvent;
@@ -352,6 +350,7 @@ public class Spawner {
             amount = max - currentStackSize;
         }
 
+        CompatibleHand hand = CompatibleHand.getHand(event);
 
         for (SpawnerStack stack : spawnerStacks) {
             if (!stack.getSpawnerData().equals(data)) continue;
@@ -360,7 +359,7 @@ public class Spawner {
             upgradeFinal(player);
 
             if (player.getGameMode() != GameMode.CREATIVE || Settings.CHARGE_FOR_CREATIVE.getBoolean())
-                Methods.takeItem(player, 1);
+                ItemUtils.takeActiveItem(player, hand, 1);
 
             return true;
         }
@@ -369,7 +368,7 @@ public class Spawner {
         spawnerStacks.push(stack);
 
         if (player.getGameMode() != GameMode.CREATIVE || Settings.CHARGE_FOR_CREATIVE.getBoolean())
-            Methods.takeItem(player, 1);
+            ItemUtils.takeActiveItem(player, hand, 1);
 
         return true;
     }

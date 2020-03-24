@@ -61,17 +61,6 @@ public class Methods {
         return NumberUtils.toInt(amount, 1);
     }
 
-    public static void takeItem(Player player, int amount) {
-        if (player.getGameMode() == GameMode.CREATIVE && !Settings.CHARGE_FOR_CREATIVE.getBoolean()) return;
-
-        ItemStack item = player.getInventory().getItemInHand();
-
-        int result = item.getAmount() - amount;
-        item.setAmount(result);
-
-        player.setItemInHand(result > 0 ? item : null);
-    }
-
     public static String getBoostCost(int time, int amount) {
         StringBuilder cost = new StringBuilder("&6&l");
         String[] parts = Settings.BOOST_COST.getString().split(":");

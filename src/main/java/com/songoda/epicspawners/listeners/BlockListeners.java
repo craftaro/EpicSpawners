@@ -1,5 +1,6 @@
 package com.songoda.epicspawners.listeners;
 
+import com.songoda.core.compatibility.CompatibleHand;
 import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.core.hooks.EconomyManager;
@@ -74,7 +75,7 @@ public class BlockListeners implements Listener {
         return false;
     }
 
-    private boolean doForceCombine(Player player, Spawner placedSpawner) {
+    private boolean doForceCombine(Player player, Spawner placedSpawner, BlockPlaceEvent event) {
         if (plugin.getConfig().getInt("Main.Force Combine Radius") == 0) return false;
 
         for (Spawner spawner : plugin.getSpawnerManager().getSpawners()) {
@@ -88,8 +89,12 @@ public class BlockListeners implements Listener {
 
             if (plugin.getConfig().getBoolean("Main.Deny Place On Force Combine"))
                 plugin.getLocale().getMessage("event.block.forcedeny").sendPrefixedMessage(player);
-            else if (spawner.stack(player, placedSpawner.getFirstStack().getSpawnerData(), placedSpawner.getSpawnerDataCount()))
+            else if (spawner.stack(player, placedSpawner.getFirstStack().getSpawnerData(), placedSpawner.getSpawnerDataCount())) {
                 plugin.getLocale().getMessage("event.block.mergedistance").sendPrefixedMessage(player);
+                CompatibleHand hand = CompatibleHand.getHand(event);
+                if (hand == CompatibleHand.OFF_HAND)
+                    ItemUtils.takeActiveItem(player, hand);
+            }
             return true;
         }
         return false;
@@ -132,7 +137,7 @@ public class BlockListeners implements Listener {
 
             if (plugin.getBlacklistHandler().isBlacklisted(player, true)
                     || !player.hasPermission("epicspawners.place." + spawnerData.getIdentifyingName().replace(" ", "_"))
-                    || doForceCombine(player, spawner)) {
+                    || doForceCombine(player, spawner, event)) {
                 event.setCancelled(true);
                 return;
             }
@@ -162,7 +167,7 @@ public class BlockListeners implements Listener {
                         .sendPrefixedMessage(player);
 
             if (player.getGameMode() == GameMode.CREATIVE && Settings.CHARGE_FOR_CREATIVE.getBoolean())
-                Methods.takeItem(player, 1);
+                ItemUtils.takeActiveItem(player, CompatibleHand.getHand(event), 1);
 
             CreatureSpawner creatureSpawner = spawner.getCreatureSpawner();
             if (creatureSpawner != null) {

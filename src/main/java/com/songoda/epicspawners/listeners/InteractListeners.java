@@ -1,6 +1,9 @@
 package com.songoda.epicspawners.listeners;
 
+import com.songoda.core.compatibility.CompatibleHand;
+import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.core.compatibility.ServerVersion;
+import com.songoda.core.utils.ItemUtils;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.api.events.SpawnerChangeEvent;
 import com.songoda.epicspawners.settings.Settings;
@@ -8,7 +11,6 @@ import com.songoda.epicspawners.spawners.spawner.Spawner;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.spawners.spawner.SpawnerManager;
 import com.songoda.epicspawners.spawners.spawner.SpawnerStack;
-import com.songoda.epicspawners.utils.Methods;
 import com.songoda.epicspawners.utils.Reflection;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -24,7 +26,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.SpawnEgg;
 
@@ -48,14 +49,9 @@ public class InteractListeners implements Listener {
         Block block = event.getClickedBlock();
         ItemStack item = event.getItem();
 
-        Material is = null;
-        if (event.getItem() != null) {
-            is = item.getType();
-        }
-
-        int radius = plugin.getConfig().getInt("Main.Spawners Repel Liquid Radius");
-        if (event.getItem() != null
-                && is.equals(Material.WATER_BUCKET)
+        int radius = Settings.LIQUID_REPEL_RADIUS.getInt();
+        if (item != null
+                && item.getType().equals(Material.WATER_BUCKET)
                 && radius != 0) {
             int bx = block.getX();
             int by = block.getY();
@@ -63,8 +59,8 @@ public class InteractListeners implements Listener {
             for (int fx = -radius; fx <= radius; fx++) {
                 for (int fy = -radius; fy <= radius; fy++) {
                     for (int fz = -radius; fz <= radius; fz++) {
-                        Block b2 = event.getClickedBlock().getWorld().getBlockAt(bx + fx, by + fy, bz + fz);
-                        if (b2.getType().equals(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER"))) {
+                        Block b = event.getClickedBlock().getWorld().getBlockAt(bx + fx, by + fy, bz + fz);
+                        if (b.getType() == CompatibleMaterial.SPAWNER.getMaterial()) {
                             event.setCancelled(true);
                         }
                     }
@@ -72,10 +68,10 @@ public class InteractListeners implements Listener {
             }
         }
 
-        if (is == null || is == Material.AIR) return;
+        if (item == null || item.getType() == Material.AIR) return;
 
-        if (event.getClickedBlock().getType() != (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER"))
-                || !is.toString().contains(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? "SPAWN_EGG" : "MONSTER_EGG"))
+        if (block.getType() == CompatibleMaterial.SPAWNER.getMaterial()
+                || !item.getType().name().contains(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? "SPAWN_EGG" : "MONSTER_EGG"))
             return;
 
         event.setCancelled(true);
@@ -148,7 +144,7 @@ public class InteractListeners implements Listener {
         spawner.getCreatureSpawner().update();
 
         plugin.processChange(block);
-        Methods.takeItem(player, bmulti);
+        ItemUtils.takeActiveItem(player, CompatibleHand.getHand(event), bmulti);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -160,33 +156,24 @@ public class InteractListeners implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void PlayerInteractEvent(PlayerInteractEvent event) {
-        if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9)) {
-            if (event.getHand() == EquipmentSlot.OFF_HAND) return;
-        }
-
         Player player = event.getPlayer();
         Block block = event.getClickedBlock();
         if (block == null) return;
         Location location = block.getLocation();
         ItemStack item = event.getItem();
 
-        if (block.getType() == (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER"))) {
-            if (!plugin.getSpawnerManager().isSpawner(location))
-                createMissingSpawner(location);
-        }
+        boolean isSpawner = block.getType() == CompatibleMaterial.SPAWNER.getMaterial();
+
+        if (isSpawner && !plugin.getSpawnerManager().isSpawner(location))
+            createMissingSpawner(location);
 
         if (event.getClickedBlock() == null
                 || event.getAction() != Action.RIGHT_CLICK_BLOCK)
             return;
 
-        Material is = null;
-        if (event.getItem() != null) {
-            is = item.getType();
-        }
-        if (is != null && is.name().contains("SPAWN_EGG") && is.name().equals("MONSTER_EGG"))
+        if (item != null && item.getType().name().contains("SPAWN_EGG") && item.getType().name().equals("MONSTER_EGG"))
             return;
-        if (event.getClickedBlock().getType() == (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER")) && is == (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER")) && !plugin.getBlacklistHandler().isBlacklisted(player, true)) {
-
+        if (isSpawner && CompatibleMaterial.SPAWNER.matches(item)) {
             Spawner spawner = plugin.getSpawnerManager().getSpawnerFromWorld(location);
 
             if (spawner.getPlacedBy() == null && Settings.DISABLE_NATURAL_SPAWNERS.getBoolean()) return;
@@ -199,7 +186,7 @@ public class InteractListeners implements Listener {
                     event.setCancelled(true);
                 }
             }
-        } else if (event.getClickedBlock().getType() == (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER")) && !plugin.getBlacklistHandler().isBlacklisted(player, false)) {
+        } else if (isSpawner && !plugin.getBlacklistHandler().isBlacklisted(player, false)) {
             if (!player.isSneaking() || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
                 Spawner spawner = plugin.getSpawnerManager().getSpawnerFromWorld(location);
 
