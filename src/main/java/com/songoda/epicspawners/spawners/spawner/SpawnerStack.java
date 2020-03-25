@@ -8,6 +8,9 @@ import java.util.Objects;
  */
 public class SpawnerStack {
 
+    // The spawner that owns this stack.
+    private Spawner spawner;
+
     // This is the instance of SpawnerData that
     // This SpawnerStack utilizes.
     private SpawnerData spawnerData;
@@ -68,12 +71,19 @@ public class SpawnerStack {
         return stackSize == other.stackSize && Objects.equals(spawnerData, other.spawnerData);
     }
 
-
-    public String toString() {
-        return "SpawnerStack:{"
-                + "Size:" + stackSize + ","
-                + "Data:" + (spawnerData == null ? null : spawnerData.toString())
-                + "}";
+    public Spawner getSpawner() {
+        return spawner;
     }
 
+    public void setSpawner(Spawner spawner) {
+        this.spawner = spawner;
+    }
+
+    @Override
+    public String toString() {
+        return "SpawnerStack{" +
+                "spawnerData=" + spawnerData +
+                ", stackSize=" + stackSize +
+                '}';
+    }
 }

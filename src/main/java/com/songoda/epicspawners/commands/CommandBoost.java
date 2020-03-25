@@ -2,16 +2,13 @@ package com.songoda.epicspawners.commands;
 
 import com.songoda.core.commands.AbstractCommand;
 import com.songoda.epicspawners.EpicSpawners;
-import com.songoda.epicspawners.boost.BoostData;
-import com.songoda.epicspawners.boost.BoostType;
+import com.songoda.epicspawners.boost.types.BoostedPlayer;
 import com.songoda.epicspawners.utils.Methods;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -38,8 +35,7 @@ public class CommandBoost extends AbstractCommand {
         long duration = 0L;
 
         if (args.length > 2) {
-            for (int i = 0; i < args.length; i++) {
-                String line = args[i];
+            for (String line : args) {
                 long time = Methods.parseTime(line);
                 duration += time;
 
@@ -52,8 +48,8 @@ public class CommandBoost extends AbstractCommand {
             return ReturnType.FAILURE;
         }
 
-        BoostData boostData = new BoostData(BoostType.PLAYER, Integer.parseInt(args[1]), duration == 0L ? Long.MAX_VALUE : System.currentTimeMillis() + duration, player.getUniqueId());
-        plugin.getBoostManager().addBoostToSpawner(boostData);
+        BoostedPlayer boost = new BoostedPlayer(player, Integer.parseInt(args[1]), duration == 0L ? Long.MAX_VALUE : System.currentTimeMillis() + duration);
+        plugin.getBoostManager().addBoost(boost);
         plugin.getLocale()
                 .newMessage("&6" + player.getName() + "&7 has been given a spawner boost of &6" + args[1] + "&7" + (duration == 0L ? "" : (" for " + Methods.makeReadable(duration))) + "&7.")
                 .sendPrefixedMessage(sender);

@@ -31,13 +31,13 @@ public class SpawnerManager {
     private final EpicSpawners plugin;
 
     // These are the spawner types loaded into memory.
-    private static final Map<String, SpawnerData> spawners = new LinkedHashMap<>();
+    private final Map<String, SpawnerData> registeredSpawnerData = new LinkedHashMap<>();
 
     // These are spawners that exist in the game world.
-    private static final Map<Location, Spawner> spawnersInWorld = new HashMap<>();
+    private final Map<Location, Spawner> spawnersInWorld = new HashMap<>();
 
     // This is the map that holds the cooldowns for picking up stuffs
-    private static final List<Spawner> pickingUp = new ArrayList<>();
+    private final List<Spawner> pickingUp = new ArrayList<>();
 
     private Config spawnerConfig = new Config(EpicSpawners.getInstance(), "spawners.yml");
 
@@ -53,11 +53,11 @@ public class SpawnerManager {
         this.spawnerConfig.options().copyDefaults(true);
         this.spawnerConfig.save();
 
-        this.loadSpawnersFromFile();
+        this.loadSpawnerDataFromFile();
     }
 
     public SpawnerData getSpawnerData(String name) {
-        return spawners.values().stream().filter(spawnerData -> spawnerData.getIdentifyingName()
+        return registeredSpawnerData.values().stream().filter(spawnerData -> spawnerData.getIdentifyingName()
                 .equalsIgnoreCase(name)).findFirst().orElse(null);
     }
 
@@ -66,7 +66,7 @@ public class SpawnerManager {
     }
 
     public SpawnerData getSpawnerData(int id) {
-        return spawners.values().stream().filter(spawnerData -> spawnerData.getUUID() == id)
+        return registeredSpawnerData.values().stream().filter(spawnerData -> spawnerData.getUUID() == id)
                 .findFirst().orElse(null);
     }
 
@@ -96,25 +96,25 @@ public class SpawnerManager {
     }
 
     public void addSpawnerData(String name, SpawnerData spawnerData) {
-        spawners.put(name.toLowerCase(), spawnerData);
+        this.registeredSpawnerData.put(name.toLowerCase(), spawnerData);
         spawnerData.reloadSpawnMethods();
         spawnerData.reloadSpawnMethods();
     }
 
     public void addSpawnerData(SpawnerData spawnerData) {
-        spawners.put(spawnerData.getIdentifyingName().toLowerCase(), spawnerData);
+        this.registeredSpawnerData.put(spawnerData.getIdentifyingName().toLowerCase(), spawnerData);
     }
 
     public void removeSpawnerData(String name) {
-        spawners.remove(name.toLowerCase());
+        registeredSpawnerData.remove(name.toLowerCase());
     }
 
     public Collection<SpawnerData> getAllSpawnerData() {
-        return Collections.unmodifiableCollection(spawners.values());
+        return Collections.unmodifiableCollection(registeredSpawnerData.values());
     }
 
     public Collection<SpawnerData> getAllEnabledSpawnerData() {
-        return spawners.values().stream().filter(spawnerData -> spawnerData.isActive()
+        return registeredSpawnerData.values().stream().filter(spawnerData -> spawnerData.isActive()
                 && !spawnerData.getIdentifyingName().equals("Omni")).collect(Collectors.toList());
     }
 
@@ -123,7 +123,7 @@ public class SpawnerManager {
     }
 
     public boolean isSpawnerData(String type) {
-        return spawners.containsKey(type.toLowerCase());
+        return registeredSpawnerData.containsKey(type.toLowerCase());
     }
 
     public Spawner getSpawnerFromWorld(Location location) {
@@ -138,8 +138,16 @@ public class SpawnerManager {
         return spawnersInWorld.remove(roundLocation(location));
     }
 
+    public Spawner removeSpawnerFromWorld(Spawner spawner) {
+        return spawnersInWorld.remove(spawner.getLocation());
+    }
+
     public Collection<Spawner> getSpawners() {
         return Collections.unmodifiableCollection(spawnersInWorld.values());
+    }
+
+    public void addSpawners(Map<Location, Spawner> spawners) {
+        spawnersInWorld.putAll(spawners);
     }
 
     public void addCooldown(Spawner spawner) {
@@ -272,7 +280,7 @@ public class SpawnerManager {
     }
 
     @SuppressWarnings("unchecked")
-    private void loadSpawnersFromFile() {
+    private void loadSpawnerDataFromFile() {
         // Register spawner data into SpawnerRegistry from configuration.
         FileConfiguration spawnerConfig = this.spawnerConfig.getFileConfig();
         if (!spawnerConfig.contains("Entities")) return;
@@ -376,12 +384,12 @@ public class SpawnerManager {
     public void reloadSpawnerData() {
         for (Spawner spawner : spawnersInWorld.values()) {
             for (SpawnerStack stack : spawner.getSpawnerStacks()) {
-                stack.setSpawnerData(spawners.get(stack.getSpawnerData().getIdentifyingName().toLowerCase()));
+                stack.setSpawnerData(registeredSpawnerData.get(stack.getSpawnerData().getIdentifyingName().toLowerCase()));
             }
         }
     }
 
-    public void saveSpawnersToFile() {
+    public void saveSpawnerDataToFile() {
         //ToDO: If the defaults are set correctly this could do the initial config save.
 
         // Save spawner settings

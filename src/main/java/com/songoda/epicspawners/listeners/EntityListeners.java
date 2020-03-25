@@ -2,6 +2,8 @@ package com.songoda.epicspawners.listeners;
 
 import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.epicspawners.EpicSpawners;
+import com.songoda.epicspawners.player.PlayerData;
+import com.songoda.epicspawners.player.PlayerDataManager;
 import com.songoda.epicspawners.settings.Settings;
 import com.songoda.epicspawners.spawners.spawner.Spawner;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
@@ -125,8 +127,15 @@ public class EntityListeners implements Listener {
                 amount = ultimateStacker.getEntityStackManager().getStack(event.getEntity().getUniqueId()).getAmount();
             }
         }
+        PlayerDataManager playerDataManager = plugin.getPlayerDataManager();
 
-        int amt = plugin.getPlayerActionManager().getPlayerAction(player).addKilledEntity(event.getEntityType(), amount);
+        boolean isPlayerData = playerDataManager.isPlayerData(player);
+        PlayerData playerData = playerDataManager.getPlayerData(player);
+        int amt = playerData.addKilledEntity(event.getEntityType(), amount);
+        if (isPlayerData)
+            plugin.getDataManager().updateEntityKill(player, event.getEntity().getType(), amt);
+        else
+            plugin.getDataManager().createEntityKill(player, event.getEntity().getType(), amt);
         int goal = Settings.KILL_GOAL.getInt();
 
         int customGoal = spawnerData.getKillGoal();
@@ -153,7 +162,8 @@ public class EntityListeners implements Listener {
             else
                 event.getEntity().getLocation().getWorld().dropItemNaturally(event.getEntity().getLocation(), item);
 
-            plugin.getPlayerActionManager().getPlayerAction(player).removeEntity(event.getEntityType());
+            plugin.getPlayerDataManager().getPlayerData(player).removeEntity(event.getEntityType());
+            plugin.getDataManager().deleteEntityKills(player, event.getEntityType());
             if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9))
                 player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(plugin.getLocale().getMessage("event.goal.reached")
                         .processPlaceholder("type", spawnerData.getIdentifyingName()).getMessage()));

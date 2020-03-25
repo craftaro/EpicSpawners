@@ -1,6 +1,7 @@
 package com.songoda.epicspawners.spawners.spawner.option;
 
 import com.songoda.epicspawners.EpicSpawners;
+import com.songoda.epicspawners.boost.types.Boosted;
 import com.songoda.epicspawners.spawners.spawner.Spawner;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.spawners.spawner.SpawnerStack;
@@ -41,12 +42,13 @@ public class SpawnOptionItem implements SpawnOption {
         if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9))
             location.getWorld().playSound(location, Sound.ENTITY_ITEM_PICKUP, 0.1F, 1F);
 
-        int spawnerBoost = spawner.getBoost();
+        int spawnerBoost = spawner.getBoosts().stream().mapToInt(Boosted::getAmountBoosted).sum();
         for (int i = 0; i < spawner.getSpawnerDataCount() + spawnerBoost; i++) {
             for (ItemStack item : items) {
                 if (item == null || item.getType() == Material.AIR) continue;
                 Item droppedItem = world.dropItem(spawnLocation, item);
                 spawner.setSpawnCount(spawner.getSpawnCount() + 1);
+                EpicSpawners.getInstance().getDataManager().updateSpawner(spawner);
 
                 double dx = -.2 + (.2 - -.2) * random.nextDouble();
                 double dy = 0 + (.5 - 0) * random.nextDouble();

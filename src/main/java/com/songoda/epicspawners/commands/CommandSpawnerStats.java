@@ -22,7 +22,7 @@ public class CommandSpawnerStats extends AbstractCommand {
     protected ReturnType runCommand(CommandSender sender, String... args) {
         Player player = (Player) sender;
 
-        if (plugin.getPlayerActionManager().getPlayerAction(player).getEntityKills().size() == 0) {
+        if (plugin.getPlayerDataManager().getPlayerData(player).getEntityKills().size() == 0) {
             plugin.getLocale().getMessage("interface.spawnerstats.nokills").sendPrefixedMessage(player);
             return AbstractCommand.ReturnType.SUCCESS;
         }

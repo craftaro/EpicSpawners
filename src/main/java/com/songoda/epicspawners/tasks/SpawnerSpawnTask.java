@@ -25,7 +25,7 @@ public class SpawnerSpawnTask extends BukkitRunnable {
         plugin = plug;
         if (instance == null) {
             instance = new SpawnerSpawnTask(plugin);
-            instance.runTaskTimer(plugin, 0, Settings.CUSTOM_SPAWNER_TICK_RATE.getInt());
+            instance.runTaskTimer(plugin, 50L, Settings.CUSTOM_SPAWNER_TICK_RATE.getInt());
         }
 
         return instance;
@@ -38,7 +38,8 @@ public class SpawnerSpawnTask extends BukkitRunnable {
                     || spawner.getWorld() == null
                     || !spawner.getWorld().isChunkLoaded(spawner.getX() >> 4, spawner.getZ() >> 4)) return;
 
-            if (spawner.getLocation().getBlock().getType() != CompatibleMaterial.SPAWNER.getMaterial()) {
+            if (spawner.getLocation().getBlock().getType() != CompatibleMaterial.SPAWNER.getMaterial()
+                    || spawner.getFirstStack() == null) {
                 spawner.destroy(plugin);
                 return;
             }
