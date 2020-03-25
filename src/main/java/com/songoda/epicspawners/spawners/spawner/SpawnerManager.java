@@ -376,6 +376,7 @@ public class SpawnerManager {
         for (Spawner spawner : spawnersInWorld.values()) {
             for (SpawnerStack stack : spawner.getSpawnerStacks()) {
                 stack.setSpawnerData(registeredSpawnerData.get(stack.getSpawnerData().getIdentifyingName().toLowerCase()));
+                plugin.getDataManager().updateSpawnerStack(stack);
             }
         }
     }

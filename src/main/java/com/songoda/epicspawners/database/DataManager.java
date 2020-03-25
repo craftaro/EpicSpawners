@@ -16,7 +16,9 @@ import org.bukkit.World;
 import org.bukkit.entity.EntityType;
 import org.bukkit.plugin.Plugin;
 
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -62,47 +64,41 @@ public class DataManager extends DataManagerAbstract {
         }));
     }
 
-    public void createSpawner(Spawner spawner) {
-        this.async(() -> this.databaseConnector.connect(connection -> {
-            doCreateSpawner(spawner, connection);
-        }));
-    }
-
 
     public void createSpawners(List<Spawner> spawners) {
-        this.async(() -> this.databaseConnector.connect(connection -> {
-            for (Spawner spawner : spawners)
-                doCreateSpawner(spawner, connection);
-        }));
+        for (Spawner spawner : spawners)
+            createSpawner(spawner);
     }
 
-    public void doCreateSpawner(Spawner spawner, Connection connection) throws SQLException {
-        String createSpawner = "INSERT INTO " + this.getTablePrefix() + "placed_spawners (spawn_count, placed_by, world, x, y, z) VALUES (?, ?, ?, ?, ?, ?)";
-        try (PreparedStatement statement = connection.prepareStatement(createSpawner)) {
-            statement.setInt(1, spawner.getSpawnCount());
-            statement.setString(2,
-                    spawner.getPlacedBy() == null ? null : spawner.getPlacedBy().getUniqueId().toString());
+    public void createSpawner(Spawner spawner) {
+        this.sync(() -> this.databaseConnector.connect(connection -> {
+            String createSpawner = "INSERT INTO " + this.getTablePrefix() + "placed_spawners (spawn_count, placed_by, world, x, y, z) VALUES (?, ?, ?, ?, ?, ?)";
+            try (PreparedStatement statement = connection.prepareStatement(createSpawner)) {
+                statement.setInt(1, spawner.getSpawnCount());
+                statement.setString(2,
+                        spawner.getPlacedBy() == null ? null : spawner.getPlacedBy().getUniqueId().toString());
 
-            statement.setString(3, spawner.getWorld().getName());
-            statement.setInt(4, spawner.getX());
-            statement.setInt(5, spawner.getY());
-            statement.setInt(6, spawner.getZ());
-            statement.executeUpdate();
-        }
-
-        int spawnerId = this.lastInsertedId(connection);
-        this.sync(() -> spawner.setId(spawnerId));
-
-        String createSpawnerStack = "INSERT INTO " + this.getTablePrefix() + "spawner_stacks (spawner_id, data_type, amount) VALUES (?, ?, ?)";
-        try (PreparedStatement statement = connection.prepareStatement(createSpawnerStack)) {
-            for (SpawnerStack stack : spawner.getSpawnerStacks()) {
-                statement.setInt(1, spawnerId);
-                statement.setString(2, stack.getSpawnerData().getIdentifyingName());
-                statement.setInt(3, stack.getStackSize());
-                statement.addBatch();
+                statement.setString(3, spawner.getWorld().getName());
+                statement.setInt(4, spawner.getX());
+                statement.setInt(5, spawner.getY());
+                statement.setInt(6, spawner.getZ());
+                statement.executeUpdate();
             }
-            statement.executeBatch();
-        }
+
+            int spawnerId = this.lastInsertedId(connection, "placed_spawners");
+            spawner.setId(spawnerId);
+
+            String createSpawnerStack = "INSERT INTO " + this.getTablePrefix() + "spawner_stacks (spawner_id, data_type, amount) VALUES (?, ?, ?)";
+            try (PreparedStatement statement = connection.prepareStatement(createSpawnerStack)) {
+                for (SpawnerStack stack : spawner.getSpawnerStacks()) {
+                    statement.setInt(1, spawnerId);
+                    statement.setString(2, stack.getSpawnerData().getIdentifyingName());
+                    statement.setInt(3, stack.getStackSize());
+                    statement.addBatch();
+                }
+                statement.executeBatch();
+            }
+        }), "create");
     }
 
     public void createSpawnerStack(SpawnerStack stack) {

@@ -35,8 +35,9 @@ public class SpawnerStack {
     }
 
 
-    public void setSpawnerData(SpawnerData spawnerData) {
+    public SpawnerStack setSpawnerData(SpawnerData spawnerData) {
         this.spawnerData = spawnerData;
+        return this;
     }
 
 

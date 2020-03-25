@@ -86,6 +86,7 @@ public class EpicSpawners extends SongodaPlugin {
         this.saveToFile();
         this.particleTask.cancel();
         this.spawnerCustomSpawnTask.cancel();
+        this.databaseConnector.closeConnection();
         HologramManager.removeAllHolograms();
     }
 
@@ -154,11 +155,6 @@ public class EpicSpawners extends SongodaPlugin {
         this.appearanceTask = AppearanceTask.startTask(this);
 
 
-        // Load Crafting recipes.
-        Bukkit.getScheduler().runTaskLater(this, () -> {
-            System.out.println("[" + getDescription().getName() + "] Loading Crafting Recipes");
-            this.enabledRecipe();
-        }, 30);
 
         // ShopGUI+ support
         if (Bukkit.getPluginManager().isPluginEnabled("ShopGUIPlus")) {
@@ -176,11 +172,14 @@ public class EpicSpawners extends SongodaPlugin {
             File folder = getDataFolder();
             File dataFile = new File(folder, "data.yml");
 
+            boolean converted = false;
             if (dataFile.exists()) {
                 Storage storage = new StorageYaml(this);
 
                 // Adding in spawners
                 if (storage.containsGroup("spawners")) {
+                    converted = true;
+                    console.sendMessage("[" + getDescription().getName() + "] " + ChatColor.RED + "Conversion process starting DO NOT turn off your server...");
                     List<Spawner> spawners = new ArrayList<>();
                     for (StorageRow row : storage.getRowsByGroup("spawners")) {
                         try {
@@ -295,19 +294,28 @@ public class EpicSpawners extends SongodaPlugin {
                 dataFile.delete();
             }
 
-            // Load data from DB
-            this.dataManager.getSpawners((spawners) -> {
-                this.spawnerManager.addSpawners(spawners);
-                loadHolograms();
-                this.dataManager.getBoosts((boosts) -> this.boostManager.addBoosts(boosts));
-                this.dataManager.getEntityKills((kills) -> {
-                    for (Map.Entry<UUID, Map<EntityType, Integer>> entry : kills.entrySet()) {
-                        PlayerData playerData = this.playerActionManager.getPlayerData(entry.getKey());
-                        for (Map.Entry<EntityType, Integer> entry2 : entry.getValue().entrySet())
-                            playerData.addKilledEntity(entry2.getKey(), entry2.getValue());
-                    }
+            final boolean convrted = converted;
+            getDataManager().sync(() -> {
+                if (convrted)
+                    console.sendMessage("[" + getDescription().getName() + "] " + ChatColor.GREEN + "Conversion complete :)");
+                // Load data from DB
+                this.dataManager.getSpawners((spawners) -> {
+                    this.spawnerManager.addSpawners(spawners);
+                    loadHolograms();
+                    this.dataManager.getBoosts((boosts) -> this.boostManager.addBoosts(boosts));
+                    this.dataManager.getEntityKills((kills) -> {
+                        for (Map.Entry<UUID, Map<EntityType, Integer>> entry : kills.entrySet()) {
+                            PlayerData playerData = this.playerActionManager.getPlayerData(entry.getKey());
+                            for (Map.Entry<EntityType, Integer> entry2 : entry.getValue().entrySet())
+                                playerData.addKilledEntity(entry2.getKey(), entry2.getValue());
+
+                            System.out.println("[" + getDescription().getName() + "] Loading Crafting Recipes");
+                            this.enabledRecipe();
+                        }
+                    });
                 });
-            });
+            }, "create");
+
         }, 20);
 
         // Database stuff, go!
