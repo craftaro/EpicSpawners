@@ -227,36 +227,6 @@ public class Methods {
     }
 
     /**
-     * Serializes the location of the block specified.
-     *
-     * @param b The block whose location is to be saved.
-     * @return The serialized data.
-     */
-    public static String serializeLocation(Block b) {
-        if (b == null)
-            return "";
-        return serializeLocation(b.getLocation());
-    }
-
-    /**
-     * Serializes the location specified.
-     *
-     * @param location The location that is to be saved.
-     * @return The serialized data.
-     */
-    public static String serializeLocation(Location location) {
-        if (location == null)
-            return "";
-        String w = location.getWorld().getName();
-        double x = location.getBlockX();
-        double y = location.getBlockY();
-        double z = location.getBlockZ();
-        String str = w + ":" + x + ":" + y + ":" + z;
-        str = str.replace(".0", "").replace("/", "");
-        return str;
-    }
-
-    /**
      * Deserializes a location from the string.
      *
      * @param str The string to parse.

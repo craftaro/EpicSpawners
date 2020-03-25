@@ -135,7 +135,8 @@ public class InteractListeners implements Listener {
                     .processPlaceholder("type", blockType.getIdentifyingName()).sendPrefixedMessage(player);
             return;
         }
-        spawner.getFirstStack().setSpawnerData(plugin.getSpawnerManager().getSpawnerData(itype));
+        SpawnerStack stack = spawner.getFirstStack().setSpawnerData(plugin.getSpawnerManager().getSpawnerData(itype));
+        plugin.getDataManager().updateSpawnerStack(stack);
         try {
             spawner.getCreatureSpawner().setSpawnedType(EntityType.valueOf(plugin.getSpawnerManager().getSpawnerData(itype).getIdentifyingName().toUpperCase()));
         } catch (Exception e2) {
