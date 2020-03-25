@@ -155,7 +155,6 @@ public class EpicSpawners extends SongodaPlugin {
         this.appearanceTask = AppearanceTask.startTask(this);
 
 
-
         // ShopGUI+ support
         if (Bukkit.getPluginManager().isPluginEnabled("ShopGUIPlus")) {
             try {
@@ -174,107 +173,84 @@ public class EpicSpawners extends SongodaPlugin {
 
             boolean converted = false;
             if (dataFile.exists()) {
+                converted = true;
                 Storage storage = new StorageYaml(this);
 
-                // Adding in spawners
-                if (storage.containsGroup("spawners")) {
-                    converted = true;
-                    console.sendMessage("[" + getDescription().getName() + "] " + ChatColor.RED + "Conversion process starting DO NOT turn off your server...");
-                    List<Spawner> spawners = new ArrayList<>();
-                    for (StorageRow row : storage.getRowsByGroup("spawners")) {
-                        try {
-                            if (row.get("location") == null) continue;
-                            Location location = Methods.unserializeLocation(row.getKey());
+                getDataManager().sync(() -> {
+                    // Adding in spawners
+                    if (storage.containsGroup("spawners")) {
+                        console.sendMessage("[" + getDescription().getName() + "] " + ChatColor.RED + "Conversion process starting DO NOT turn off your server... " +
+                                "EpicSpawners hasn't fully loaded yet so its best users don't interact with the plugin until conversion completes.");
+                        List<Spawner> spawners = new ArrayList<>();
+                        for (StorageRow row : storage.getRowsByGroup("spawners")) {
+                            try {
+                                if (row.get("location") == null) continue;
+                                Location location = Methods.unserializeLocation(row.getKey());
+                                if (location == null || location.getWorld() == null) continue;
 
-                            Spawner spawner = new Spawner(location);
+                                Spawner spawner = new Spawner(location);
 
-                            for (String stackKey : row.get("stacks").asString().split(";")) {
-                                if (stackKey == null) continue;
-                                String[] stack = stackKey.split(":");
-                                if (!spawnerManager.isSpawnerData(stack[0].toLowerCase())) continue;
-                                spawner.addSpawnerStack(new SpawnerStack(spawnerManager.getSpawnerData(stack[0]), Integer.parseInt(stack[1])));
+                                for (String stackKey : row.get("stacks").asString().split(";")) {
+                                    if (stackKey == null) continue;
+                                    String[] stack = stackKey.split(":");
+                                    if (!spawnerManager.isSpawnerData(stack[0].toLowerCase())) continue;
+                                    spawner.addSpawnerStack(new SpawnerStack(spawnerManager.getSpawnerData(stack[0]), Integer.parseInt(stack[1])));
+                                }
+
+                                if (row.getItems().containsKey("placedby"))
+                                    spawner.setPlacedBy(UUID.fromString(row.get("placedby").asString()));
+
+                                spawner.setSpawnCount(row.get("spawns").asInt());
+                                spawners.add(spawner);
+                            } catch (Exception e) {
+                                System.out.println("Failed to load spawner.");
+                                e.printStackTrace();
+                            }
+                        }
+                        dataManager.createSpawners(spawners);
+                    }
+
+                    // Adding in Boosts
+                    if (storage.containsGroup("boosts")) {
+                        for (StorageRow row : storage.getRowsByGroup("boosts")) {
+                            if (row.get("boosttype").asObject() == null)
+                                continue;
+
+                            int amount = row.get("amount").asInt();
+                            long endTime = Long.parseLong(row.getKey());
+
+                            Boosted boosted = null;
+
+                            if (row.get("boosttype").asString().equalsIgnoreCase("PLAYER"))
+                                boosted = new BoostedPlayer(UUID.fromString(row.get("data").asString()), amount, endTime);
+                            else if (row.get("boosttype").asString().equalsIgnoreCase("LOCATION")) {
+
+                                String locationStr = row.get("data").asString();
+
+                                String[] locationArray = locationStr.replace("Location", "")
+                                        .replace("{", "")
+                                        .replace("}", "")
+                                        .replace("world=CraftWorld", "").split(",");
+
+                                World world = Bukkit.getWorld(locationArray[0].split("=")[1]);
+
+                                if (world == null) continue;
+
+                                Location location = new Location(world,
+                                        Double.parseDouble(locationArray[1].split("=")[1]),
+                                        Double.parseDouble(locationArray[2].split("=")[1]),
+                                        Double.parseDouble(locationArray[3].split("=")[1]));
+
+                                boosted = new BoostedSpawner(location, amount, endTime);
                             }
 
-                            if (row.getItems().containsKey("placedby"))
-                                spawner.setPlacedBy(UUID.fromString(row.get("placedby").asString()));
+                            if (boosted == null)
+                                continue;
 
-                            spawner.setSpawnCount(row.get("spawns").asInt());
-                            spawners.add(spawner);
-                        } catch (Exception e) {
-                            System.out.println("Failed to load spawner.");
-                            e.printStackTrace();
+                            getDataManager().createBoost(boosted);
                         }
                     }
-                    dataManager.createSpawners(spawners);
-                }
-
-                // Adding in spawners.
-                if (storage.containsGroup("spawners")) {
-                    for (StorageRow row : storage.getRowsByGroup("spawners")) {
-                        try {
-                            if (row.get("location") == null) continue;
-                            Location location = Methods.unserializeLocation(row.getKey());
-
-                            Spawner spawner = new Spawner(location);
-
-                            for (String stackKey : row.get("stacks").asString().split(";")) {
-                                if (stackKey == null) continue;
-                                String[] stack = stackKey.split(":");
-                                if (!spawnerManager.isSpawnerData(stack[0].toLowerCase())) continue;
-                                spawner.addSpawnerStack(new SpawnerStack(spawnerManager.getSpawnerData(stack[0]), Integer.parseInt(stack[1])));
-                            }
-
-                            if (row.getItems().containsKey("placedby"))
-                                spawner.setPlacedBy(UUID.fromString(row.get("placedby").asString()));
-
-                            spawner.setSpawnCount(row.get("spawns").asInt());
-                            this.spawnerManager.addSpawnerToWorld(location, spawner);
-                        } catch (Exception e) {
-                            System.out.println("Failed to load spawner.");
-                            e.printStackTrace();
-                        }
-                    }
-                }
-                // Adding in Boosts
-                if (storage.containsGroup("boosts")) {
-                    for (StorageRow row : storage.getRowsByGroup("boosts")) {
-                        if (row.get("boosttype").asObject() == null)
-                            continue;
-
-                        int amount = row.get("amount").asInt();
-                        long endTime = Long.parseLong(row.getKey());
-
-                        Boosted boosted = null;
-
-                        if (row.get("boosttype").asString().equalsIgnoreCase("PLAYER"))
-                            boosted = new BoostedPlayer(UUID.fromString(row.get("data").asString()), amount, endTime);
-                        else if (row.get("boosttype").asString().equalsIgnoreCase("LOCATION")) {
-
-                            String locationStr = row.get("data").asString();
-
-                            String[] locationArray = locationStr.replace("Location", "")
-                                    .replace("{", "")
-                                    .replace("}", "")
-                                    .replace("world=CraftWorld", "").split(",");
-
-                            World world = Bukkit.getWorld(locationArray[0].split("=")[1]);
-
-                            if (world == null) continue;
-
-                            Location location = new Location(world,
-                                    Double.parseDouble(locationArray[1].split("=")[1]),
-                                    Double.parseDouble(locationArray[2].split("=")[1]),
-                                    Double.parseDouble(locationArray[3].split("=")[1]));
-
-                            boosted = new BoostedSpawner(location, amount, endTime);
-                        }
-
-                        if (boosted == null)
-                            continue;
-
-                        getDataManager().createBoost(boosted);
-                    }
-                }
+                }, "create");
 
                 // Adding in Players
                 if (storage.containsGroup("players")) {
@@ -308,11 +284,11 @@ public class EpicSpawners extends SongodaPlugin {
                             PlayerData playerData = this.playerActionManager.getPlayerData(entry.getKey());
                             for (Map.Entry<EntityType, Integer> entry2 : entry.getValue().entrySet())
                                 playerData.addKilledEntity(entry2.getKey(), entry2.getValue());
-
-                            System.out.println("[" + getDescription().getName() + "] Loading Crafting Recipes");
-                            this.enabledRecipe();
                         }
                     });
+
+                    System.out.println("[" + getDescription().getName() + "] Loading Crafting Recipes");
+                    this.enabledRecipe();
                 });
             }, "create");
 
