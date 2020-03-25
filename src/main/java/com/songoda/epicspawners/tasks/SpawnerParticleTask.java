@@ -31,7 +31,7 @@ public class SpawnerParticleTask extends BukkitRunnable {
     public static SpawnerParticleTask startTask(EpicSpawners plugin) {
         if (instance == null) {
             instance = new SpawnerParticleTask(plugin);
-            instance.runTaskTimerAsynchronously(plugin, 0, 1);
+            instance.runTaskTimerAsynchronously(plugin, 50L, 1);
         }
 
         return instance;
@@ -47,7 +47,7 @@ public class SpawnerParticleTask extends BukkitRunnable {
             if (data == null) return;
 
             ParticleEffect effect = data.getParticleEffect();
-            if (effect == null || effect == ParticleEffect.NONE || (data.isParticleEffectBoostedOnly() && spawner.getBoost() == 0))
+            if (effect == null || effect == ParticleEffect.NONE || (data.isParticleEffectBoostedOnly() && spawner.getBoosts().isEmpty()))
                 continue;
 
             Location centre = spawner.getLocation().add(0.5, 0.5, 0.5);

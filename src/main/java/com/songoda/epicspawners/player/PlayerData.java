@@ -20,12 +20,7 @@ public class PlayerData {
         return Bukkit.getOfflinePlayer(playerUUID);
     }
 
-    public int addKilledEntity(EntityType type) {
-        return addKilledEntity(type, 1);
-    }
-
     public int addKilledEntity(EntityType type, int amount) {
-        if (entityKills == null) entityKills = new EnumMap<>(EntityType.class);
         return entityKills.merge(type, amount, Integer::sum);
     }
 
@@ -35,10 +30,6 @@ public class PlayerData {
 
     public Map<EntityType, Integer> getEntityKills() {
         return Collections.unmodifiableMap(entityKills);
-    }
-
-    public void setEntityKills(Map<EntityType, Integer> entityKills) {
-        this.entityKills = entityKills;
     }
 
     @Override

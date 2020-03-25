@@ -1,6 +1,7 @@
 package com.songoda.epicspawners.spawners.spawner.option;
 
 import com.songoda.epicspawners.EpicSpawners;
+import com.songoda.epicspawners.boost.types.Boosted;
 import com.songoda.epicspawners.spawners.spawner.Spawner;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.spawners.spawner.SpawnerStack;
@@ -37,7 +38,8 @@ public class SpawnOptionCommand implements SpawnOption {
         Location location = spawner.getLocation();
         if (location == null || location.getWorld() == null) return;
 
-        int spawnerBoost = spawner.getBoost();
+        int spawnerBoost = spawner.getBoosts().stream().mapToInt(Boosted::getAmountBoosted).sum();
+
         for (int i = 0; i < spawner.getSpawnerDataCount() + spawnerBoost; i++) {
             for (String command : commands) {
                 String finalCommand = command;
@@ -48,6 +50,7 @@ public class SpawnOptionCommand implements SpawnOption {
                     int searchIndex = 0;
                     while (searchIndex++ <= MAX_SEARCH_COUNT) {
                         spawner.setSpawnCount(spawner.getSpawnCount() + 1);
+                        EpicSpawners.getInstance().getDataManager().updateSpawner(spawner);
                         double xOffset = random.nextInt((SPAWN_RADIUS * 2) + 1) - SPAWN_RADIUS;
                         double yOffset = random.nextInt((SPAWN_RADIUS * 2) + 1) - SPAWN_RADIUS;
                         double zOffset = random.nextInt((SPAWN_RADIUS * 2) + 1) - SPAWN_RADIUS;

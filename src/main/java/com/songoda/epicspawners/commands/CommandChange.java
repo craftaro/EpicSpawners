@@ -48,9 +48,6 @@ public class CommandChange extends AbstractCommand {
                 data = spawnerData;
         }
 
-        EntityType type = EntityType.valueOf("PIG");
-
-
         if (data == null) {
             player.sendMessage("This type does not exist.");
             return ReturnType.FAILURE;

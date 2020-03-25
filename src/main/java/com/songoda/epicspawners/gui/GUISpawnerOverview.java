@@ -2,6 +2,7 @@ package com.songoda.epicspawners.gui;
 
 import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.epicspawners.EpicSpawners;
+import com.songoda.epicspawners.boost.types.Boosted;
 import com.songoda.epicspawners.settings.Settings;
 import com.songoda.epicspawners.spawners.condition.SpawnCondition;
 import com.songoda.epicspawners.spawners.spawner.Spawner;
@@ -191,27 +192,34 @@ public class GUISpawnerOverview extends AbstractGUI {
         if (player.hasPermission("epicspawners.canboost")) {
             lore.clear();
 
-            if (spawner.getBoost() != 0) {
+            List<Boosted> boosts = spawner.getBoosts();
+            int boostTotal = boosts.stream().mapToInt(Boosted::getAmountBoosted).sum();
+            long boostEnd = 0;
+            for (Boosted boost : boosts)
+                if (boost.getEndTime() > boostEnd)
+                    boostEnd = boost.getEndTime();
+
+            if (!boosts.isEmpty()) {
 
                 // ToDo: Make it display all boosts.
                 String[] parts = plugin.getLocale().getMessage("interface.spawner.boostedstats")
-                        .processPlaceholder("amount", Integer.toString(spawner.getBoost()))
+                        .processPlaceholder("amount", Integer.toString(boostTotal))
                         .processPlaceholder("type", spawner.getIdentifyingData().getIdentifyingName())
-                        .processPlaceholder("time", spawner.getBoostEnd().toEpochMilli() == Long.MAX_VALUE
+                        .processPlaceholder("time", boostEnd == Long.MAX_VALUE
                                 ? plugin.getLocale().getMessage("interface.spawner.boostednever")
-                                : Methods.makeReadable(spawner.getBoostEnd().toEpochMilli() - System.currentTimeMillis()))
+                                : Methods.makeReadable(boostEnd - System.currentTimeMillis()))
                         .getMessage().split("\\|");
 
                 for (String line : parts)
                     lore.add(Methods.formatText(line));
-            }
-
-            createButton(22, Settings.BOOST_ICON.getMaterial().getMaterial(), spawner.getBoost() == 0 ? plugin.getLocale().getMessage("interface.spawner.boost").getMessage() : plugin.getLocale().getMessage("interface.spawner.cantboost").getMessage(), lore);
-
-
-            if (spawner.getBoost() == 0)
+            } else
                 registerClickable(22, (player, inventory, cursor, slot, type) ->
                         new GUISpawnerBoost(plugin, spawner, player));
+
+            createButton(22, Settings.BOOST_ICON.getMaterial().getMaterial(),
+                    spawner.getBoosts().stream().mapToInt(Boosted::getAmountBoosted).sum() == 0
+                            ? plugin.getLocale().getMessage("interface.spawner.boost").getMessage()
+                            : plugin.getLocale().getMessage("interface.spawner.cantboost").getMessage(), lore);
         }
 
         if (Settings.DISPLAY_HELP_BUTTON.getBoolean()) {

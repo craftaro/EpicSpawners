@@ -122,7 +122,8 @@ public class BlockListeners implements Listener {
             if (spawnerData == null) return;
 
             int spawnerStackSize = Methods.getStackSizeFromItem(event.getItemInHand());
-            spawner.addSpawnerStack(new SpawnerStack(spawnerData, spawnerStackSize));
+            SpawnerStack spawnerStack = spawner.addSpawnerStack(new SpawnerStack(spawnerData, spawnerStackSize));
+            EpicSpawners.getInstance().getDataManager().createSpawnerStack(spawnerStack);
 
             Player player = event.getPlayer();
 
@@ -164,20 +165,20 @@ public class BlockListeners implements Listener {
                 Methods.takeItem(player, 1);
 
             CreatureSpawner creatureSpawner = spawner.getCreatureSpawner();
-            if (creatureSpawner == null) return;
-
-            try {
-                creatureSpawner.setSpawnedType(EntityType.valueOf(spawnerData.getIdentifyingName().toUpperCase().replace(" ", "_")));
-            } catch (Exception ex) {
-                creatureSpawner.setSpawnedType(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9) ? EntityType.EGG : EntityType.DROPPED_ITEM);
+            if (creatureSpawner != null) {
+                try {
+                    creatureSpawner.setSpawnedType(EntityType.valueOf(spawnerData.getIdentifyingName().toUpperCase().replace(" ", "_")));
+                } catch (Exception ex) {
+                    creatureSpawner.setSpawnedType(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9) ? EntityType.EGG : EntityType.DROPPED_ITEM);
+                }
             }
             spawner.updateDelay();
             spawner.setPlacedBy(player);
+            EpicSpawners.getInstance().getDataManager().createSpawner(spawner);
 
             plugin.processChange(event.getBlock());
             plugin.updateHologram(spawner);
             plugin.getAppearanceTask().updateDisplayItem(spawner, spawnerData);
-
             return;
         }
 
@@ -211,6 +212,7 @@ public class BlockListeners implements Listener {
 
                 spawner.addSpawnerStack(new SpawnerStack(plugin.getSpawnerManager().getSpawnerData(creatureSpawner.getSpawnedType())));
                 plugin.getSpawnerManager().addSpawnerToWorld(location, spawner);
+                EpicSpawners.getInstance().getDataManager().createSpawner(spawner);
             }
 
             Spawner spawner = plugin.getSpawnerManager().getSpawnerFromWorld(location);

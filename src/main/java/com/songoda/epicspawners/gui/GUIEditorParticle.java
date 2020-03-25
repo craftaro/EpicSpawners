@@ -179,7 +179,7 @@ public class GUIEditorParticle extends AbstractGUI {
     protected void registerOnCloses() {
 
         registerOnClose(((player1, inventory1) -> {
-            plugin.getSpawnerManager().saveSpawnersToFile();
+            plugin.getSpawnerManager().saveSpawnerDataToFile();
         }));
     }
 }

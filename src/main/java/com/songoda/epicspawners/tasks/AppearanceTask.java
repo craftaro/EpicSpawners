@@ -31,7 +31,7 @@ public class AppearanceTask extends BukkitRunnable {
     public static AppearanceTask startTask(EpicSpawners plugin) {
         if (instance == null) {
             instance = new AppearanceTask(plugin);
-            instance.runTaskTimer(plugin, 0, 60);
+            instance.runTaskTimer(plugin, 50L, 60);
         }
 
         return instance;

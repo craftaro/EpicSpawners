@@ -4,7 +4,6 @@ import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.utils.Methods;
-import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.epicspawners.utils.gui.AbstractGUI;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
@@ -25,7 +24,7 @@ public class GUISpawnerStats extends AbstractGUI {
 
         int size = 0;
 
-        for (Map.Entry<EntityType, Integer> entry : plugin.getPlayerActionManager().getPlayerAction(player).getEntityKills().entrySet()) {
+        for (Map.Entry<EntityType, Integer> entry : plugin.getPlayerDataManager().getPlayerData(player).getEntityKills().entrySet()) {
             if (plugin.getSpawnerManager().getSpawnerData(entry.getKey()).isActive())
                 size++;
         }
@@ -59,7 +58,7 @@ public class GUISpawnerStats extends AbstractGUI {
 
         //ToDo: When this gui is converted to core we need a page system for this.
         short place = 9;
-        for (Map.Entry<EntityType, Integer> entry : plugin.getPlayerActionManager().getPlayerAction(player).getEntityKills().entrySet()) {
+        for (Map.Entry<EntityType, Integer> entry : plugin.getPlayerDataManager().getPlayerData(player).getEntityKills().entrySet()) {
             int goal = plugin.getConfig().getInt("Spawner Drops.Kills Needed for Drop");
             SpawnerData spawnerData = plugin.getSpawnerManager().getSpawnerData(entry.getKey());
 

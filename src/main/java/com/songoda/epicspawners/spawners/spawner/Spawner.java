@@ -1,5 +1,6 @@
 package com.songoda.epicspawners.spawners.spawner;
 
+import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.core.compatibility.CompatibleParticleHandler;
 import com.songoda.core.compatibility.CompatibleSound;
 import com.songoda.core.compatibility.ServerVersion;
@@ -7,8 +8,9 @@ import com.songoda.core.hooks.EconomyManager;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.api.events.SpawnerChangeEvent;
 import com.songoda.epicspawners.api.events.SpawnerDropEvent;
-import com.songoda.epicspawners.api.events.SpawnerPlaceEvent;
-import com.songoda.epicspawners.boost.BoostData;
+import com.songoda.epicspawners.boost.types.Boosted;
+import com.songoda.epicspawners.boost.types.BoostedPlayer;
+import com.songoda.epicspawners.boost.types.BoostedSpawner;
 import com.songoda.epicspawners.gui.GUISpawnerOverview;
 import com.songoda.epicspawners.particles.ParticleType;
 import com.songoda.epicspawners.settings.Settings;
@@ -25,10 +27,12 @@ import org.bukkit.inventory.ItemStack;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
-import java.time.Instant;
 import java.util.*;
 
 public class Spawner {
+
+    // Id for database use.
+    private int id;
 
     private static ScriptEngine engine = null;
     //Holds the different types of spawners contained by this creatureSpawner.
@@ -46,7 +50,6 @@ public class Spawner {
             engine = mgr.getEngineByName("JavaScript");
         }
     }
-
 
     public boolean spawn() {
         EpicSpawners instance = EpicSpawners.getInstance();
@@ -81,7 +84,8 @@ public class Spawner {
             location.getWorld().playSound(location, ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13)
                     ? Sound.ENTITY_GENERIC_EXPLODE : Sound.valueOf("EXPLODE"), 10, 10);
 
-            instance.getSpawnerManager().removeSpawnerFromWorld(location);
+            instance.getSpawnerManager().removeSpawnerFromWorld(this);
+            EpicSpawners.getInstance().getDataManager().deleteSpawner(this);
             instance.clearHologram(this);
             return true;
         }
@@ -93,8 +97,10 @@ public class Spawner {
     }
 
 
-    public void addSpawnerStack(SpawnerStack spawnerStack) {
+    public SpawnerStack addSpawnerStack(SpawnerStack spawnerStack) {
         this.spawnerStacks.addFirst(spawnerStack);
+        spawnerStack.setSpawner(this);
+        return spawnerStack;
     }
 
 
@@ -127,8 +133,9 @@ public class Spawner {
         if (!getWorld().isChunkLoaded(getX() >> 4, getZ() >> 4))
             return null;
         if (creatureSpawner == null) {
-            if (location.getBlock().getType() != (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER"))) {
-                EpicSpawners.getInstance().getSpawnerManager().removeSpawnerFromWorld(location);
+            if (location.getBlock().getType() != CompatibleMaterial.SPAWNER.getMaterial()) {
+                EpicSpawners.getInstance().getSpawnerManager().removeSpawnerFromWorld(this);
+                EpicSpawners.getInstance().getDataManager().deleteSpawner(this);
                 return null;
             }
             this.creatureSpawner = (CreatureSpawner) location.getBlock().getState();
@@ -181,7 +188,7 @@ public class Spawner {
         double price = type.getConvertPrice() * getSpawnerDataCount();
 
         if (!forced && !EconomyManager.hasBalance(player, price)) {
-            EpicSpawners.getInstance().getLocale().getMessage("event.upgrade.cannotafford").sendPrefixedMessage(player);
+            instance.getLocale().getMessage("event.upgrade.cannotafford").sendPrefixedMessage(player);
             return;
         }
 
@@ -191,7 +198,9 @@ public class Spawner {
             return;
         }
 
-        this.spawnerStacks.getFirst().setSpawnerData(type);
+        getFirstStack().setSpawnerData(type);
+        instance.getDataManager().updateSpawnerStack(getFirstStack());
+
         try {
             this.creatureSpawner.setSpawnedType(EntityType.valueOf(type.getIdentifyingName().toUpperCase()));
         } catch (Exception e) {
@@ -199,7 +208,7 @@ public class Spawner {
         }
         this.creatureSpawner.update();
 
-        EpicSpawners.getInstance().getLocale().getMessage("event.convert.success").sendPrefixedMessage(player);
+        instance.getLocale().getMessage("event.convert.success").sendPrefixedMessage(player);
 
         instance.updateHologram(this);
         player.closeInventory();
@@ -238,7 +247,7 @@ public class Spawner {
 
     public boolean unstack(Player player) {
         EpicSpawners instance = EpicSpawners.getInstance();
-        SpawnerStack stack = spawnerStacks.getFirst();
+        SpawnerStack stack = getFirstStack();
 
         int stackSize = 1;
 
@@ -294,15 +303,18 @@ public class Spawner {
 
         if (stack.getStackSize() > 1 && stackSize == 1) {
             stack.setStackSize(stack.getStackSize() - 1);
+            EpicSpawners.getInstance().getDataManager().updateSpawnerStack(stack);
             return true;
         }
 
-        spawnerStacks.removeFirst();
+        spawnerStacks.remove(stack);
+        EpicSpawners.getInstance().getDataManager().deleteSpawnerStack(stack);
 
         if (spawnerStacks.size() != 0) return true;
 
         location.getBlock().setType(Material.AIR);
-        EpicSpawners.getInstance().getSpawnerManager().removeSpawnerFromWorld(location);
+        EpicSpawners.getInstance().getSpawnerManager().removeSpawnerFromWorld(this);
+        EpicSpawners.getInstance().getDataManager().deleteSpawner(this);
         instance.clearHologram(this);
         return true;
     }
@@ -344,6 +356,7 @@ public class Spawner {
         for (SpawnerStack stack : spawnerStacks) {
             if (!stack.getSpawnerData().equals(data)) continue;
             stack.setStackSize(stack.getStackSize() + amount);
+            EpicSpawners.getInstance().getDataManager().updateSpawnerStack(stack);
             upgradeFinal(player);
 
             if (player.getGameMode() != GameMode.CREATIVE || Settings.CHARGE_FOR_CREATIVE.getBoolean())
@@ -422,7 +435,8 @@ public class Spawner {
 
             if (!player.isOp())
                 EconomyManager.withdrawBalance(player, cost);
-            spawnerStacks.getFirst().setStackSize(spawnerStacks.getFirst().getStackSize() + 1);
+            getFirstStack().setStackSize(spawnerStacks.getFirst().getStackSize() + 1);
+            EpicSpawners.getInstance().getDataManager().updateSpawnerStack(getFirstStack());
             upgradeFinal(player);
         } else if (type == CostType.EXPERIENCE) {
 
@@ -433,7 +447,8 @@ public class Spawner {
             if (player.getLevel() >= cost || player.getGameMode() == GameMode.CREATIVE && !Settings.CHARGE_FOR_CREATIVE.getBoolean()) {
                 if (player.getGameMode() != GameMode.CREATIVE || Settings.CHARGE_FOR_CREATIVE.getBoolean())
                     player.setLevel(player.getLevel() - cost);
-                spawnerStacks.getFirst().setStackSize(spawnerStacks.getFirst().getStackSize() + 1);
+                getFirstStack().setStackSize(spawnerStacks.getFirst().getStackSize() + 1);
+                EpicSpawners.getInstance().getDataManager().updateSpawnerStack(getFirstStack());
                 upgradeFinal(player);
             } else {
                 plugin.getLocale().getMessage("event.upgrade.cannotafford").sendPrefixedMessage(player);
@@ -442,63 +457,28 @@ public class Spawner {
     }
 
 
-    public int getBoost() {
+    public List<Boosted> getBoosts() {
         EpicSpawners instance = EpicSpawners.getInstance();
-        if (placedBy == null) return 0;
+        Set<Boosted> boosts = instance.getBoostManager().getBoosts();
 
-        Set<BoostData> boosts = instance.getBoostManager().getBoosts();
-
-        if (boosts.size() == 0) return 0;
-
-        int amountToBoost = 0;
-
-        for (BoostData boostData : boosts) {
-            if (System.currentTimeMillis() >= boostData.getEndTime()) {
-                Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> instance.getBoostManager().removeBoostFromSpawner(boostData), 1);
+        List<Boosted> found = new ArrayList<>();
+        for (Boosted boost : new ArrayList<>(boosts)) {
+            if (boost instanceof BoostedPlayer && placedBy == null) continue;
+            if (System.currentTimeMillis() >= boost.getEndTime()) {
+                instance.getBoostManager().removeBoost(boost);
+                instance.getDataManager().deleteBoost(boost);
                 continue;
             }
 
-            switch (boostData.getBoostType()) {
-                case LOCATION:
-                    if (!location.equals(boostData.getData())) continue;
-                    break;
-                case PLAYER:
-                    if (!placedBy.toString().equals(boostData.getData().toString())) continue;
-                    break;
+            if (boost instanceof BoostedSpawner) {
+                if (!location.equals(((BoostedSpawner) boost).getLocation())) continue;
+            } else if (boost instanceof BoostedPlayer) {
+                if (!placedBy.equals(((BoostedPlayer) boost).getPlayer().getUniqueId())) continue;
             }
-            amountToBoost += boostData.getAmtBoosted();
+            found.add(boost);
         }
-        return amountToBoost;
+        return found;
     }
-
-
-    public Instant getBoostEnd() { //ToDo: Wrong.
-        EpicSpawners instance = EpicSpawners.getInstance();
-
-        Set<BoostData> boosts = instance.getBoostManager().getBoosts();
-
-        if (boosts.size() == 0) return null;
-
-        for (BoostData boostData : boosts) {
-            if (System.currentTimeMillis() >= boostData.getEndTime()) {
-                Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> instance.getBoostManager().removeBoostFromSpawner(boostData), 1);
-                continue;
-            }
-
-            switch (boostData.getBoostType()) {
-                case LOCATION:
-                    if (!location.equals(boostData.getData())) continue;
-                    break;
-                case PLAYER:
-                    if (!placedBy.toString().equals(boostData.getData().toString())) continue;
-                    break;
-            }
-
-            return Instant.ofEpochMilli(boostData.getEndTime());
-        }
-        return null;
-    }
-
 
     public int updateDelay() {
         int max = 0;
@@ -577,6 +557,14 @@ public class Spawner {
         return Bukkit.getOfflinePlayer(placedBy);
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public void setPlacedBy(Player placedBy) {
         this.placedBy = placedBy.getUniqueId();
     }
@@ -593,10 +581,6 @@ public class Spawner {
         this.spawnCount = spawnCount;
     }
 
-    public void addSpawn() {
-        this.spawnCount++;
-    }
-
     public String getOmniState() {
         return omniState;
     }
@@ -607,7 +591,8 @@ public class Spawner {
 
     public void destroy(EpicSpawners plugin) {
         plugin.getAppearanceTask().removeDisplayItem(this);
-        plugin.getSpawnerManager().removeSpawnerFromWorld(location);
+        plugin.getSpawnerManager().removeSpawnerFromWorld(this);
+        EpicSpawners.getInstance().getDataManager().deleteSpawner(this);
         plugin.clearHologram(this);
     }
 

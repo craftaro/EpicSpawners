@@ -4,8 +4,8 @@ import com.songoda.core.compatibility.CompatibleSound;
 import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.core.hooks.EconomyManager;
 import com.songoda.epicspawners.EpicSpawners;
-import com.songoda.epicspawners.boost.BoostData;
-import com.songoda.epicspawners.boost.BoostType;
+import com.songoda.epicspawners.boost.types.Boosted;
+import com.songoda.epicspawners.boost.types.BoostedSpawner;
 import com.songoda.epicspawners.settings.Settings;
 import com.songoda.epicspawners.spawners.spawner.Spawner;
 import com.songoda.epicspawners.utils.Methods;
@@ -228,8 +228,9 @@ public class GUISpawnerBoost extends AbstractGUI {
         c.add(Calendar.MINUTE, time);
 
 
-        BoostData boostData = new BoostData(BoostType.LOCATION, amt, c.getTime().getTime(), location);
-        instance.getBoostManager().addBoostToSpawner(boostData);
+        Boosted boost = new BoostedSpawner(location, amt, c.getTimeInMillis());
+        instance.getBoostManager().addBoost(boost);
+        instance.getDataManager().createBoost(boost);
         plugin.getLocale().getMessage("event.boost.applied").sendPrefixedMessage(player);
         player.playSound(location, CompatibleSound.ENTITY_VILLAGER_YES.getSound(), 1, 1);
     }

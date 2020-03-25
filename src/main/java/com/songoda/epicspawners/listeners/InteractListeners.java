@@ -85,7 +85,7 @@ public class InteractListeners implements Listener {
         SpawnerManager spawnerManager = plugin.getSpawnerManager();
 
         if (!plugin.getSpawnerManager().isSpawner(block.getLocation()))
-            createSpawner(block.getLocation());
+            createMissingSpawner(block.getLocation());
 
         Spawner spawner = spawnerManager.getSpawnerFromWorld(block.getLocation());
 
@@ -172,7 +172,7 @@ public class InteractListeners implements Listener {
 
         if (block.getType() == (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER"))) {
             if (!plugin.getSpawnerManager().isSpawner(location))
-                createSpawner(location);
+                createMissingSpawner(location);
         }
 
         if (event.getClickedBlock() == null
@@ -212,14 +212,14 @@ public class InteractListeners implements Listener {
         }
     }
 
-    public Spawner createSpawner(Location location) {
+    private Spawner createMissingSpawner(Location location) {
         Spawner spawner = new Spawner(location);
-
         CreatureSpawner creatureSpawner = spawner.getCreatureSpawner();
         if (creatureSpawner == null) return null;
 
         spawner.addSpawnerStack(new SpawnerStack(plugin.getSpawnerManager().getSpawnerData(creatureSpawner.getSpawnedType()), 1));
         plugin.getSpawnerManager().addSpawnerToWorld(location, spawner);
+        EpicSpawners.getInstance().getDataManager().createSpawner(spawner);
         return spawner;
     }
 }
