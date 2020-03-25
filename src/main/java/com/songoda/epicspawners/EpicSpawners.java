@@ -171,8 +171,8 @@ public class EpicSpawners extends SongodaPlugin {
             }
         }
 
-        // Legacy Data
         Bukkit.getScheduler().runTaskLater(this, () -> {
+            // Legacy Data
             File folder = getDataFolder();
             File dataFile = new File(folder, "data.yml");
 
@@ -180,6 +180,36 @@ public class EpicSpawners extends SongodaPlugin {
                 Storage storage = new StorageYaml(this);
 
                 // Adding in spawners
+                if (storage.containsGroup("spawners")) {
+                    List<Spawner> spawners = new ArrayList<>();
+                    for (StorageRow row : storage.getRowsByGroup("spawners")) {
+                        try {
+                            if (row.get("location") == null) continue;
+                            Location location = Methods.unserializeLocation(row.getKey());
+
+                            Spawner spawner = new Spawner(location);
+
+                            for (String stackKey : row.get("stacks").asString().split(";")) {
+                                if (stackKey == null) continue;
+                                String[] stack = stackKey.split(":");
+                                if (!spawnerManager.isSpawnerData(stack[0].toLowerCase())) continue;
+                                spawner.addSpawnerStack(new SpawnerStack(spawnerManager.getSpawnerData(stack[0]), Integer.parseInt(stack[1])));
+                            }
+
+                            if (row.getItems().containsKey("placedby"))
+                                spawner.setPlacedBy(UUID.fromString(row.get("placedby").asString()));
+
+                            spawner.setSpawnCount(row.get("spawns").asInt());
+                            spawners.add(spawner);
+                        } catch (Exception e) {
+                            System.out.println("Failed to load spawner.");
+                            e.printStackTrace();
+                        }
+                    }
+                    dataManager.createSpawners(spawners);
+                }
+
+                // Adding in spawners.
                 if (storage.containsGroup("spawners")) {
                     for (StorageRow row : storage.getRowsByGroup("spawners")) {
                         try {
@@ -199,18 +229,16 @@ public class EpicSpawners extends SongodaPlugin {
                                 spawner.setPlacedBy(UUID.fromString(row.get("placedby").asString()));
 
                             spawner.setSpawnCount(row.get("spawns").asInt());
-                            getDataManager().createSpawner(spawner);
+                            this.spawnerManager.addSpawnerToWorld(location, spawner);
                         } catch (Exception e) {
                             System.out.println("Failed to load spawner.");
                             e.printStackTrace();
                         }
                     }
                 }
-
                 // Adding in Boosts
                 if (storage.containsGroup("boosts")) {
                     for (StorageRow row : storage.getRowsByGroup("boosts")) {
-                        System.out.println("test");
                         if (row.get("boosttype").asObject() == null)
                             continue;
 
@@ -266,18 +294,8 @@ public class EpicSpawners extends SongodaPlugin {
                 }
                 dataFile.delete();
             }
-        }, 10);
 
-        // Database stuff, go!
-        this.databaseConnector = new SQLiteConnector(this);
-        this.getLogger().info("Data handler connected using SQLite.");
-
-        this.dataManager = new DataManager(this.databaseConnector, this);
-        this.dataMigrationManager = new DataMigrationManager(this.databaseConnector, this.dataManager,
-                new _1_InitialMigration());
-        this.dataMigrationManager.runMigrations();
-
-        Bukkit.getScheduler().runTaskLater(this, () -> {
+            // Load data from DB
             this.dataManager.getSpawners((spawners) -> {
                 this.spawnerManager.addSpawners(spawners);
                 loadHolograms();
@@ -290,8 +308,16 @@ public class EpicSpawners extends SongodaPlugin {
                     }
                 });
             });
-        }, 20L);
+        }, 20);
 
+        // Database stuff, go!
+        this.databaseConnector = new SQLiteConnector(this);
+        this.getLogger().info("Data handler connected using SQLite.");
+
+        this.dataManager = new DataManager(this.databaseConnector, this);
+        this.dataMigrationManager = new DataMigrationManager(this.databaseConnector, this.dataManager,
+                new _1_InitialMigration());
+        this.dataMigrationManager.runMigrations();
     }
 
 

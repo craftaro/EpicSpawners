@@ -119,7 +119,7 @@ public class SpawnerManager {
     }
 
     public boolean isSpawner(Location location) {
-        return spawnersInWorld.containsKey(roundLocation(location));
+        return spawnersInWorld.containsKey(location);
     }
 
     public boolean isSpawnerData(String type) {
@@ -127,15 +127,15 @@ public class SpawnerManager {
     }
 
     public Spawner getSpawnerFromWorld(Location location) {
-        return spawnersInWorld.get(roundLocation(location));
+        return spawnersInWorld.get(location);
     }
 
     public void addSpawnerToWorld(Location location, Spawner spawner) {
-        spawnersInWorld.put(roundLocation(location), spawner);
+        spawnersInWorld.put(location, spawner);
     }
 
     public Spawner removeSpawnerFromWorld(Location location) {
-        return spawnersInWorld.remove(roundLocation(location));
+        return spawnersInWorld.remove(location);
     }
 
     public Spawner removeSpawnerFromWorld(Spawner spawner) {
@@ -168,7 +168,6 @@ public class SpawnerManager {
     }
 
     private void processDefaultSpawner(String value) {
-        EpicSpawners plugin = EpicSpawners.getInstance();
         FileConfiguration spawnerConfig = this.spawnerConfig.getFileConfig();
 
         String type = Methods.getTypeFromString(value);
@@ -269,14 +268,6 @@ public class SpawnerManager {
         spawnerConfig.addDefault(section + ".Conditions.Storm Only", false);
         spawnerConfig.addDefault(section + ".Conditions.Max Entities Around Spawner", 6);
         spawnerConfig.addDefault(section + ".Conditions.Required Player Distance And Amount", 16 + ":" + 1);
-    }
-
-    private Location roundLocation(Location location) {
-        location = location.clone();
-        location.setX(location.getBlockX());
-        location.setY(location.getBlockY());
-        location.setZ(location.getBlockZ());
-        return location;
     }
 
     @SuppressWarnings("unchecked")
