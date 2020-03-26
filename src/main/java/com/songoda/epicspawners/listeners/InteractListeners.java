@@ -70,8 +70,10 @@ public class InteractListeners implements Listener {
 
         if (item == null || item.getType() == Material.AIR) return;
 
-        if (block.getType() == CompatibleMaterial.SPAWNER.getMaterial()
-                || !item.getType().name().contains(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? "SPAWN_EGG" : "MONSTER_EGG"))
+        CompatibleMaterial egg = CompatibleMaterial.getMaterial(item);
+
+        if (block.getType() != CompatibleMaterial.SPAWNER.getMaterial()
+                || egg.getEggType() == null)
             return;
 
         event.setCancelled(true);
