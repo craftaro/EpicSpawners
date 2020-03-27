@@ -257,6 +257,12 @@ public class DataManager extends DataManagerAbstract {
                 statement.setInt(1, spawner.getId());
                 statement.executeUpdate();
             }
+
+            String deleteSpawnerStack = "DELETE FROM " + this.getTablePrefix() + "spawner_stacks WHERE spawner_id = ?";
+            try (PreparedStatement statement = connection.prepareStatement(deleteSpawnerStack)) {
+                statement.setInt(1, spawner.getId());
+                statement.executeUpdate();
+            }
         }));
     }
 
