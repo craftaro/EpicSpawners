@@ -1,5 +1,6 @@
 package com.songoda.epicspawners.spawners.spawner;
 
+import com.songoda.core.compatibility.CompatibleBiome;
 import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.core.configuration.Config;
@@ -254,7 +255,7 @@ public class SpawnerManager {
 
         if (entityType == EntityType.SLIME) {
             spawnerConfig.addDefault(section + ".Conditions.Biomes",
-                    ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Biome.SWAMP.name() : Biome.valueOf("SWAMPLAND").name());
+                    CompatibleBiome.SWAMP.getBiome().toString());
             spawnerConfig.addDefault(section + ".Conditions.Height", "50:70");
         } else {
             spawnerConfig.addDefault(section + ".Conditions.Biomes", "ALL");
