@@ -272,7 +272,8 @@ public class SpawnerManager {
     }
 
     @SuppressWarnings("unchecked")
-    private void loadSpawnerDataFromFile() {
+    public void loadSpawnerDataFromFile() {
+        registeredSpawnerData.clear();
         // Register spawner data into SpawnerRegistry from configuration.
         FileConfiguration spawnerConfig = this.spawnerConfig.getFileConfig();
         if (!spawnerConfig.contains("Entities")) return;
