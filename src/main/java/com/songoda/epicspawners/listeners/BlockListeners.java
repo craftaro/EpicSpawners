@@ -151,12 +151,16 @@ public class BlockListeners implements Listener {
                 return;
             }
 
+            CreatureSpawner creatureSpawner = spawner.getCreatureSpawner();
+            if (creatureSpawner == null) return;
+
             SpawnerPlaceEvent placeEvent = new SpawnerPlaceEvent(player, spawner);
             Bukkit.getPluginManager().callEvent(placeEvent);
             if (placeEvent.isCancelled()) {
                 event.setCancelled(true);
                 return;
             }
+
 
             plugin.getSpawnerManager().addSpawnerToWorld(location, spawner);
 
@@ -168,14 +172,12 @@ public class BlockListeners implements Listener {
             if (player.getGameMode() == GameMode.CREATIVE && Settings.CHARGE_FOR_CREATIVE.getBoolean())
                 ItemUtils.takeActiveItem(player, CompatibleHand.getHand(event), 1);
 
-            CreatureSpawner creatureSpawner = spawner.getCreatureSpawner();
-            if (creatureSpawner != null) {
-                try {
-                    creatureSpawner.setSpawnedType(EntityType.valueOf(spawnerData.getIdentifyingName().toUpperCase().replace(" ", "_")));
-                } catch (Exception ex) {
-                    creatureSpawner.setSpawnedType(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9) ? EntityType.EGG : EntityType.DROPPED_ITEM);
-                }
+            try {
+                creatureSpawner.setSpawnedType(EntityType.valueOf(spawnerData.getIdentifyingName().toUpperCase().replace(" ", "_")));
+            } catch (Exception ex) {
+                creatureSpawner.setSpawnedType(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9) ? EntityType.EGG : EntityType.DROPPED_ITEM);
             }
+
             spawner.updateDelay();
             spawner.setPlacedBy(player);
             EpicSpawners.getInstance().getDataManager().createSpawner(spawner);
@@ -187,7 +189,9 @@ public class BlockListeners implements Listener {
         }
 
         //ToDo: Probably remove this.
-        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> plugin.processChange(event.getBlock()), 10L);
+        Bukkit.getServer().
+                getScheduler().
+                scheduleSyncDelayedTask(plugin, () -> plugin.processChange(event.getBlock()), 10L);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
