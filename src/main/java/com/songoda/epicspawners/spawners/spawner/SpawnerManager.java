@@ -216,15 +216,13 @@ public class SpawnerManager {
         EntityType entityType = null;
 
         for (EntityType val : EntityType.values()) {
-            if (val.isSpawnable() && val.isAlive()) {
-                if (val.name().equals(value)) {
-                    entityType = val;
-                    List<String> list = new ArrayList<>();
-                    list.add(value);
-                    if (!spawnerConfig.contains(section + ".entities"))
-                        spawnerConfig.addDefault(section + ".entities", list);
-                }
-            }
+            if (!val.isSpawnable()
+                    || !val.isAlive()
+                    || !val.name().equals(value)) continue;
+            entityType = val;
+            if (!spawnerConfig.contains(section + ".entities"))
+                spawnerConfig.addDefault(section
+                        + ".entities", Collections.singletonList(value));
         }
 
         spawnerConfig.addDefault(section + ".Pickup-Cost", 0);
@@ -296,6 +294,15 @@ public class SpawnerManager {
             }
             for (String entity : currentSection.getStringList("entities")) {
                 entities.add(EntityType.valueOf(entity));
+            }
+
+            if (entities.isEmpty()) {
+                for (EntityType val : EntityType.values()) {
+                    if (!val.isSpawnable()
+                            || !val.isAlive()
+                            || !val.name().equals(key.toUpperCase())) continue;
+                    entities.add(val);
+                }
             }
 
             SpawnerDataBuilder dataBuilder = new SpawnerDataBuilder(key).uuid(currentSection.getInt("uuid"))
@@ -371,7 +378,9 @@ public class SpawnerManager {
 
             addSpawnerData(key, data);
         }
+
         reloadSpawnerData();
+
     }
 
     public void reloadSpawnerData() {
