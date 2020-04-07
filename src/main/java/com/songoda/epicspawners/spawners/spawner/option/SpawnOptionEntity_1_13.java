@@ -18,7 +18,6 @@ import org.bukkit.Particle;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
@@ -280,7 +279,7 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
                     craftEntity.setMetadata("mcMMO: Spawned Entity", new FixedMetadataValue(plugin, true));
 
                 if (Settings.NO_AI.getBoolean())
-                    ((LivingEntity) craftEntity).setAI(false);
+                    setUnaware(objEntity, objEntityInsentient);
 
                 Object objBukkitEntity = methodEntityGetBukkitEntity.invoke(objEntity);
                 spot.setYaw(random.nextFloat() * 360.0F);
@@ -325,6 +324,26 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
             e.printStackTrace();
         }
         return false;
+    }
+
+    private Field aware, fromMobSpawner;
+
+    private void setUnaware(Object entity, Object entityInsentient) {
+        try {
+            if (aware == null)
+                aware = clazzEntityInsentient.getField("aware");
+            aware.setBoolean(entityInsentient, false);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            try {
+                if (fromMobSpawner == null)
+                    fromMobSpawner = clazzEntity.getField("fromMobSpawner");
+                fromMobSpawner.setBoolean(entity, true);
+                return;
+            } catch (NoSuchFieldException | IllegalAccessException ee) {
+                ee.printStackTrace();
+            }
+            e.printStackTrace();
+        }
     }
 
 

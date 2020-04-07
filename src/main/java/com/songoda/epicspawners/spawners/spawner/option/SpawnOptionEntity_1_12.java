@@ -20,7 +20,6 @@ import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
@@ -264,8 +263,8 @@ public class SpawnOptionEntity_1_12 implements SpawnOption {
                 if (mcmmo)
                     craftEntity.setMetadata("mcMMO: Spawned Entity", new FixedMetadataValue(plugin, true));
 
-                if (Settings.NO_AI.getBoolean() && ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9))
-                    ((LivingEntity) craftEntity).setAI(false);
+                if (Settings.NO_AI.getBoolean())
+                    setUnaware(objEntity);
 
                 Object objBukkitEntity = methodEntityGetBukkitEntity.invoke(objEntity);
                 spot.setYaw(random.nextFloat() * 360.0F);
@@ -309,6 +308,18 @@ public class SpawnOptionEntity_1_12 implements SpawnOption {
         return false;
     }
 
+    private Field fromMobSpawner;
+
+    private void setUnaware(Object entity) {
+        try {
+            if (fromMobSpawner == null)
+                fromMobSpawner = clazzEntity.getField("fromMobSpawner");
+            fromMobSpawner.setBoolean(entity, true);
+        } catch (NoSuchFieldException | IllegalAccessException ee) {
+            ee.printStackTrace();
+        }
+    }
+
     private boolean isWater(Material type) {
         return type == Material.WATER || type == Material.valueOf("STATIONARY_WATER");
     }
@@ -341,6 +352,7 @@ public class SpawnOptionEntity_1_12 implements SpawnOption {
                 return new Methods.Tuple<>(lower, upper);
             }
         }
+
     }
 
     @Override
