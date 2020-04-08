@@ -283,6 +283,9 @@ public class DataManager extends DataManagerAbstract {
                     int id = result.getInt("id");
                     int spawns = result.getInt("spawn_count");
 
+                    String placedByStr = result.getString("placed_by");
+                    UUID placedBy = placedByStr == null ? null : UUID.fromString(result.getString("placed_by"));
+
                     int x = result.getInt("x");
                     int y = result.getInt("y");
                     int z = result.getInt("z");
@@ -291,6 +294,7 @@ public class DataManager extends DataManagerAbstract {
                     Spawner spawner = new Spawner(location);
                     spawner.setId(id);
                     spawner.setSpawnCount(spawns);
+                    spawner.setPlacedBy(placedBy);
                     spawners.put(id, spawner);
                 }
             }
