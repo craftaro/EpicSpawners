@@ -18,6 +18,7 @@ import org.bukkit.plugin.Plugin;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
 import java.util.function.Consumer;
@@ -71,7 +72,7 @@ public class DataManager extends DataManagerAbstract {
     }
 
     public void createSpawner(Spawner spawner) {
-        this.sync(() -> this.databaseConnector.connect(connection -> {
+        this.queueAsync(() -> this.databaseConnector.connect(connection -> {
             String createSpawner = "INSERT INTO " + this.getTablePrefix() + "placed_spawners (spawn_count, placed_by, world, x, y, z) VALUES (?, ?, ?, ?, ?, ?)";
             try (PreparedStatement statement = connection.prepareStatement(createSpawner)) {
                 statement.setInt(1, spawner.getSpawnCount());

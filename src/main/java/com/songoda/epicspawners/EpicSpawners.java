@@ -5,6 +5,7 @@ import com.songoda.core.SongodaPlugin;
 import com.songoda.core.commands.CommandManager;
 import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.core.configuration.Config;
+import com.songoda.core.database.DataManagerAbstract;
 import com.songoda.core.database.DataMigrationManager;
 import com.songoda.core.database.DatabaseConnector;
 import com.songoda.core.database.SQLiteConnector;
@@ -66,8 +67,6 @@ public class EpicSpawners extends SongodaPlugin {
 
     private Heads heads;
 
-    private Storage storage;
-
     private DatabaseConnector databaseConnector;
     private DataMigrationManager dataMigrationManager;
     private DataManager dataManager;
@@ -119,7 +118,8 @@ public class EpicSpawners extends SongodaPlugin {
                         new CommandEditor(this),
                         new CommandSettings(this),
                         new CommandReload(this),
-                        new CommandChange(this)
+                        new CommandChange(this),
+                        new CommandSpawn(this)
                 );
         this.commandManager.addCommand(new CommandSpawnerStats(this));
         this.commandManager.addCommand(new CommandSpawnerShop(this));
@@ -185,7 +185,7 @@ public class EpicSpawners extends SongodaPlugin {
                         try {
                             if (row.get("location") == null) continue;
                             Location location = Methods.unserializeLocation(row.getKey());
-                                if (location == null || location.getWorld() == null) continue;
+                            if (location == null || location.getWorld() == null) continue;
 
                             Spawner spawner = new Spawner(location);
 
@@ -269,7 +269,7 @@ public class EpicSpawners extends SongodaPlugin {
             }
 
             final boolean convrted = converted;
-            getDataManager().sync(() -> {
+            getDataManager().queueAsync(() -> {
                 if (convrted)
                     console.sendMessage("[" + getDescription().getName() + "] " + ChatColor.GREEN + "Conversion complete :)");
                 // Load data from DB
@@ -352,7 +352,7 @@ public class EpicSpawners extends SongodaPlugin {
 
 
     private void checkStorage() {
-        this.storage = new StorageYaml(this);
+        Storage storage = new StorageYaml(this);
     }
 
     private void saveToFile() {
