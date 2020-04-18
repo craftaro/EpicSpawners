@@ -1,5 +1,6 @@
 package com.songoda.epicspawners.spawners.spawner.option;
 
+import com.songoda.core.utils.EntityUtils;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.api.events.SpawnerSpawnEvent;
 import com.songoda.epicspawners.boost.types.Boosted;
@@ -279,7 +280,7 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
                     craftEntity.setMetadata("mcMMO: Spawned Entity", new FixedMetadataValue(plugin, true));
 
                 if (Settings.NO_AI.getBoolean())
-                    setUnaware(objEntity, objEntityInsentient);
+                    EntityUtils.setUnaware(objEntity);
 
                 Object objBukkitEntity = methodEntityGetBukkitEntity.invoke(objEntity);
                 spot.setYaw(random.nextFloat() * 360.0F);
@@ -325,27 +326,6 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
         }
         return false;
     }
-
-    private Field aware, fromMobSpawner;
-
-    private void setUnaware(Object entity, Object entityInsentient) {
-        try {
-            if (aware == null)
-                aware = clazzEntityInsentient.getField("aware");
-            aware.setBoolean(entityInsentient, false);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            try {
-                if (fromMobSpawner == null)
-                    fromMobSpawner = clazzEntity.getField("fromMobSpawner");
-                fromMobSpawner.setBoolean(entity, true);
-                return;
-            } catch (NoSuchFieldException | IllegalAccessException ee) {
-                ee.printStackTrace();
-            }
-            e.printStackTrace();
-        }
-    }
-
 
     private boolean isWater(Material type) {
         return type == Material.WATER;
