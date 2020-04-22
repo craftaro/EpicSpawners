@@ -336,7 +336,7 @@ public class EpicSpawners extends SongodaPlugin {
 
         int multi = spawner.getSpawnerDataCount();
         if (spawner.getSpawnerStacks().size() == 0) return;
-        String name = Methods.compileName(getSpawnerManager().getSpawnerData(spawner.getIdentifyingName()), multi, false).trim();
+        String name = spawner.getIdentifyingData().getCompiledDisplayName(multi).trim();
 
         // create the hologram
         HologramManager.updateHologram(spawner.getLocation(), name);

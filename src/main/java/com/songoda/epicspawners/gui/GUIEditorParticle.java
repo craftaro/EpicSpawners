@@ -25,7 +25,7 @@ public class GUIEditorParticle extends AbstractGUI {
         this.back = abstractGUI;
         this.spawnerData = spawnerData;
 
-        init(Methods.compileName(spawnerData, 1, false) + " &8Particle &8Settings.", 45);
+        init(spawnerData.getCompiledDisplayName() + " &8Particle &8Settings.", 45);
     }
 
     @Override

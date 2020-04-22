@@ -1,5 +1,6 @@
 package com.songoda.epicspawners.utils.gui;
 
+import com.songoda.core.utils.TextUtils;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.utils.Methods;
 import org.bukkit.Bukkit;
@@ -118,7 +119,7 @@ public abstract class AbstractGUI implements Listener {
                 || inventory.getSize() != slots
                 || ChatColor.translateAlternateColorCodes('&', title) != player.getOpenInventory().getTitle()) {
             this.inventory = Bukkit.getServer().createInventory(new GUIHolder(), slots, Methods.formatTitle(title));
-            this.setTitle = Methods.formatText(title);
+            this.setTitle = TextUtils.formatText(title);
             if (this.clickables.size() == 0)
                 registerClickables();
             if (this.onCloses.size() == 0)

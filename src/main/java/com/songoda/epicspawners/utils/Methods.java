@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.songoda.core.compatibility.ServerVersion;
+import com.songoda.core.utils.TextUtils;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.settings.Settings;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
@@ -11,9 +12,7 @@ import org.apache.commons.lang.WordUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
-import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -40,25 +39,33 @@ public class Methods {
                 continue;
 
             if (line.charAt(n) == ' ') {
-                lore.add(formatText("&" + color + Methods.formatText(line.substring(lastIndex, n))));
+                lore.add(TextUtils.formatText("&" + color + TextUtils.formatText(line.substring(lastIndex, n))));
                 lastIndex = n;
             }
         }
 
         if (lastIndex - line.length() < 25)
-            lore.add(formatText("&" + color + Methods.formatText(line.substring(lastIndex))));
+            lore.add(TextUtils.formatText("&" + color + TextUtils.formatText(line.substring(lastIndex))));
         return lore;
     }
 
+    @Deprecated
     public static int getStackSizeFromItem(ItemStack item) {
         Preconditions.checkNotNull(item, "Cannot get stack size of null item");
         if (!item.hasItemMeta() && !item.getItemMeta().hasDisplayName()) return 1;
 
-        String name = item.getItemMeta().getDisplayName();
-        if (!name.contains(":")) return 1;
+        return EpicSpawners.getInstance().getSpawnerManager().getSpawnerData(item).getStackSize(item);
+    }
 
-        String amount = name.replace(String.valueOf(ChatColor.COLOR_CHAR), "").replace(";", "").split(":")[1];
-        return NumberUtils.toInt(amount, 1);
+    public static String formatTitle(String text) {
+        if (text == null || text.equals(""))
+            return "";
+        if (!ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9)) {
+            if (text.length() > 31)
+                text = text.substring(0, 29) + "...";
+        }
+        text = TextUtils.formatText(text);
+        return text;
     }
 
     public static String getBoostCost(int time, int amount) {
@@ -88,38 +95,9 @@ public class Methods {
         return (int) Math.ceil(NumberUtils.toDouble(multi, 1) * time * amt);
     }
 
-    public static String compileName(SpawnerData data, int multi, boolean full) {
-        String nameFormat = Settings.NAME_FORMAT.getString();
-        String displayName = data.getDisplayName();
-
-        nameFormat = nameFormat.replace("{TYPE}", displayName);
-
-        if ((multi > 1 || Settings.DISPLAY_LEVEL_ONE.getBoolean() || Settings.NAMED_SPAWNER_TIERS.getBoolean()) && multi >= 0) {
-            if (Settings.NAMED_SPAWNER_TIERS.getBoolean() && Settings.TIER_NAMES.getStringList().size() >= multi) {
-                nameFormat = nameFormat.replace("{AMT}", Settings.TIER_NAMES.getStringList().get(multi - 1));
-            } else {
-                nameFormat = nameFormat.replace("{AMT}", Integer.toString(multi));
-            }
-            nameFormat = nameFormat.replace("[", "").replace("]", "");
-        } else {
-            nameFormat = nameFormat.replaceAll("\\[.*?]", "");
-        }
-
-
-        StringBuilder hidden = new StringBuilder();
-        for (char c : String.valueOf(multi).toCharArray()) hidden.append(";").append(c);
-        String multiStr = hidden.toString();
-
-        hidden = new StringBuilder();
-        for (char c : String.valueOf(data.getUUID()).toCharArray()) hidden.append(";").append(c);
-        String uuidStr = hidden.toString();
-
-        String info = "";
-        if (full) {
-            info += convertToInvisibleString(uuidStr + ":" + multiStr + ":");
-        }
-
-        return info + formatText(nameFormat).trim();
+    @Deprecated
+    public static String compileName(SpawnerData data, int multi) {
+        return data.getCompiledDisplayName(multi);
     }
 
     /**
@@ -172,31 +150,6 @@ public class Methods {
 
     public static boolean isAir(Material type) {
         return type == Material.AIR || type.name().contains("PRESSURE");
-    }
-
-    public static String formatText(String text) {
-        if (text == null || text.equals(""))
-            return "";
-        return formatText(text, false);
-    }
-
-    public static String formatText(String text, boolean cap) {
-        if (text == null || text.equals(""))
-            return "";
-        if (cap)
-            text = text.substring(0, 1).toUpperCase() + text.substring(1);
-        return ChatColor.translateAlternateColorCodes('&', text);
-    }
-
-    public static String formatTitle(String text) {
-        if (text == null || text.equals(""))
-            return "";
-        if (!ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9)) {
-            if (text.length() > 31)
-                text = text.substring(0, 29) + "...";
-        }
-        text = formatText(text);
-        return text;
     }
 
     public static String convertToInvisibleString(String s) {
@@ -394,7 +347,7 @@ public class Methods {
 
         return strings.toArray(new String[strings.size()]);
     }
-    
+
     public static <T> List<String> convertToList(Collection<T> collection, ConversionStrategy<T> strategy) {
 
         List<String> converted = new ArrayList<>(collection.size());
@@ -406,7 +359,7 @@ public class Methods {
 
         return converted;
     }
-    
+
     public static interface ConversionStrategy<T> {
 
         public String convertToString(T input);

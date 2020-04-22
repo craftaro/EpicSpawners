@@ -2,6 +2,7 @@ package com.songoda.epicspawners.gui;
 
 import com.songoda.core.gui.AnvilGui;
 import com.songoda.core.input.ChatPrompt;
+import com.songoda.core.utils.TextUtils;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.utils.Methods;
@@ -44,7 +45,7 @@ public class GUIEditorOverview extends AbstractGUI {
             plugin.getSpawnerManager().addSpawnerData(type, this.spawnerData);
         }
 
-        init("&8Editing: " + Methods.compileName(this.spawnerData, 1, false) + "&8.", 54);
+        init("&8Editing: " + spawnerData.getCompiledDisplayName() + "&8.", 54);
     }
 
     @Override
@@ -106,30 +107,30 @@ public class GUIEditorOverview extends AbstractGUI {
 
         ItemMeta itemmeta = item.getItemMeta();
         ArrayList<String> lore = new ArrayList<>();
-        lore.add(Methods.formatText("&7Left-Click to &9Change Spawner Name&7."));
-        lore.add(Methods.formatText("&7Right-Click to &bChange Spawner Display Item&7."));
-        lore.add(Methods.formatText("&6-----------------------------"));
+        lore.add(TextUtils.formatText("&7Left-Click to &9Change Spawner Name&7."));
+        lore.add(TextUtils.formatText("&7Right-Click to &bChange Spawner Display Item&7."));
+        lore.add(TextUtils.formatText("&6-----------------------------"));
 
-        lore.add(Methods.formatText("&6Display Name: &7" + spawnerData.getDisplayName() + "&7."));
+        lore.add(TextUtils.formatText("&6Display Name: &7" + spawnerData.getDisplayName() + "&7."));
         if (spawnerData.getDisplayItem() != null) {
-            lore.add(Methods.formatText("&6Display Item: &7" + spawnerData.getDisplayItem().name() + "&7."));
+            lore.add(TextUtils.formatText("&6Display Item: &7" + spawnerData.getDisplayItem().name() + "&7."));
         } else {
             if (!spawnerData.isCustom()) {
-                lore.add(Methods.formatText("&6Display Item: &7Unavailable&7."));
+                lore.add(TextUtils.formatText("&6Display Item: &7Unavailable&7."));
             } else {
-                lore.add(Methods.formatText("&6Display Item: &7Dirt&7."));
+                lore.add(TextUtils.formatText("&6Display Item: &7Dirt&7."));
             }
         }
-        lore.add(Methods.formatText("&6Config Name: &7" + spawnerData.getIdentifyingName() + "&7."));
+        lore.add(TextUtils.formatText("&6Config Name: &7" + spawnerData.getIdentifyingName() + "&7."));
         itemmeta.setLore(lore);
-        itemmeta.setDisplayName(Methods.compileName(spawnerData, 1, false));
+        itemmeta.setDisplayName(spawnerData.getCompiledDisplayName());
         item.setItemMeta(itemmeta);
         inventory.setItem(11, item);
 
         lore = new ArrayList<>();
-        if (spawnerData.isCustom()) lore.add(Methods.formatText("&7Right-Click to: &cDestroy Spawner"));
-        lore.add(Methods.formatText("&6---------------------------"));
-        lore.add(Methods.formatText(spawnerData.isActive() ? "&6Currently:&a Enabled." : "&6Currently:&c Disabled."));
+        if (spawnerData.isCustom()) lore.add(TextUtils.formatText("&7Right-Click to: &cDestroy Spawner"));
+        lore.add(TextUtils.formatText("&6---------------------------"));
+        lore.add(TextUtils.formatText(spawnerData.isActive() ? "&6Currently:&a Enabled." : "&6Currently:&c Disabled."));
 
         createButton(29, Material.TNT, "&7Left-Click to: " + (!spawnerData.isActive() ? "&cDisable" : "&aEnable") + " Spawner", lore);
 
@@ -158,7 +159,7 @@ public class GUIEditorOverview extends AbstractGUI {
                 player.sendMessage("Type \"yes\" to confirm this action.");
                 ChatPrompt chatPrompt = ChatPrompt.showPrompt(plugin, player, event -> {
                     if (event.getMessage().equalsIgnoreCase("yes")) {
-                        player.sendMessage(Methods.formatText("&6" + spawnerData.getIdentifyingName() + " Spawner &7 has been destroyed successfully"));
+                        player.sendMessage(TextUtils.formatText("&6" + spawnerData.getIdentifyingName() + " Spawner &7 has been destroyed successfully"));
                         plugin.getSpawnerManager().removeSpawnerData(spawnerData.getIdentifyingName());
                     }
                 });
@@ -210,7 +211,7 @@ public class GUIEditorOverview extends AbstractGUI {
 
                     player.closeInventory();
                     player.openInventory(inventory);
-                    init("&8Editing: " + Methods.compileName(spawnerData, 1, false) + "&8.", inventory.getSize());
+                    init("&8Editing: " + spawnerData.getCompiledDisplayName() + "&8.", inventory.getSize());
 
                 });
 

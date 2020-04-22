@@ -1,6 +1,7 @@
 package com.songoda.epicspawners.gui;
 
 import com.songoda.core.compatibility.ServerVersion;
+import com.songoda.core.utils.TextUtils;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.settings.Settings;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
@@ -93,10 +94,10 @@ public class GUISpawnerShop extends AbstractGUI {
             }
 
             ItemMeta itemmeta = item.getItemMeta();
-            String name = Methods.compileName(spawnerData, 1, true);
+            String name = spawnerData.getCompiledDisplayName();
             ArrayList<String> lore = new ArrayList<>();
             double price = spawnerData.getShopPrice();
-            lore.add(Methods.formatText(plugin.getLocale().getMessage("interface.shop.buyprice")
+            lore.add(TextUtils.formatText(plugin.getLocale().getMessage("interface.shop.buyprice")
                     .processPlaceholder("cost", Methods.formatEconomy(price)).getMessage()));
             String loreString = plugin.getLocale().getMessage("interface.shop.lore").getMessage();
             if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {

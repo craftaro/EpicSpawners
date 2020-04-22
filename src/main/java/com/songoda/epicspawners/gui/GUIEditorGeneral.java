@@ -2,6 +2,8 @@ package com.songoda.epicspawners.gui;
 
 import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.core.gui.AnvilGui;
+import com.songoda.core.nms.NmsManager;
+import com.songoda.core.utils.TextUtils;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.utils.Methods;
@@ -22,7 +24,7 @@ public class GUIEditorGeneral extends AbstractGUI {
         this.back = abstractGUI;
         this.spawnerData = spawnerData;
 
-        init(Methods.compileName(spawnerData, 1, false) + " &8Settings.", 45);
+        init(spawnerData.getCompiledDisplayName() + " &8Settings.", 45);
     }
 
     @Override
@@ -142,13 +144,13 @@ public class GUIEditorGeneral extends AbstractGUI {
                     
                     init(setTitle, inventory.getSize());
                 } else {
-                    player.sendMessage(Methods.formatText("&CYou must enter a number."));
+                    player.sendMessage(TextUtils.formatText("&CYou must enter a number."));
                 }
             });
             plugin.getGuiManager().showGUI(player, gui);
 
-            player.sendMessage(Methods.formatText("&7Enter a sale price for &6" + Methods.getTypeFromString(spawnerData.getIdentifyingName()) + "&7."));
-            player.sendMessage(Methods.formatText("&7Example: &619.99&7."));
+            player.sendMessage(TextUtils.formatText("&7Enter a sale price for &6" + Methods.getTypeFromString(spawnerData.getIdentifyingName()) + "&7."));
+            player.sendMessage(TextUtils.formatText("&7Example: &619.99&7."));
         });
 
         registerClickable(24, (player, inventory, cursor, slot, type) -> {
@@ -163,14 +165,14 @@ public class GUIEditorGeneral extends AbstractGUI {
                     
                     init(setTitle, inventory.getSize());
                 } else {
-                    player.sendMessage(Methods.formatText("&CYou must enter a number."));
+                    player.sendMessage(TextUtils.formatText("&CYou must enter a number."));
                 }
             });
             plugin.getGuiManager().showGUI(player, gui);
 
-            player.sendMessage(Methods.formatText("&7Enter a custom eco cost for " + Methods.getTypeFromString(spawnerData.getIdentifyingName()) + "&7."));
-            player.sendMessage(Methods.formatText("&7Use &60 &7to use the default cost."));
-            player.sendMessage(Methods.formatText("&7Example: &619.99&7."));
+            player.sendMessage(TextUtils.formatText("&7Enter a custom eco cost for " + Methods.getTypeFromString(spawnerData.getIdentifyingName()) + "&7."));
+            player.sendMessage(TextUtils.formatText("&7Use &60 &7to use the default cost."));
+            player.sendMessage(TextUtils.formatText("&7Example: &619.99&7."));
         });
 
         registerClickable(25, (player, inventory, cursor, slot, type) -> {
@@ -185,14 +187,14 @@ public class GUIEditorGeneral extends AbstractGUI {
                     
                     init(setTitle, inventory.getSize());
                 } else {
-                    player.sendMessage(Methods.formatText("&CYou must enter a number."));
+                    player.sendMessage(TextUtils.formatText("&CYou must enter a number."));
                 }
             });
             plugin.getGuiManager().showGUI(player, gui);
 
-            player.sendMessage(Methods.formatText("&7Enter a custom xp cost for " + Methods.getTypeFromString(spawnerData.getIdentifyingName()) + "&7."));
-            player.sendMessage(Methods.formatText("&7Use &60 &7to use the default cost."));
-            player.sendMessage(Methods.formatText("&7Example: &625&7."));
+            player.sendMessage(TextUtils.formatText("&7Enter a custom xp cost for " + Methods.getTypeFromString(spawnerData.getIdentifyingName()) + "&7."));
+            player.sendMessage(TextUtils.formatText("&7Use &60 &7to use the default cost."));
+            player.sendMessage(TextUtils.formatText("&7Example: &625&7."));
         });
 
         registerClickable(30, (player, inventory, cursor, slot, type) -> {
@@ -207,14 +209,14 @@ public class GUIEditorGeneral extends AbstractGUI {
                     
                     init(setTitle, inventory.getSize());
                 } else {
-                    player.sendMessage(Methods.formatText("&CYou must enter a number."));
+                    player.sendMessage(TextUtils.formatText("&CYou must enter a number."));
                 }
             });
             plugin.getGuiManager().showGUI(player, gui);
 
-            player.sendMessage(Methods.formatText("&7Enter a custom goal for " + Methods.getTypeFromString(spawnerData.getIdentifyingName()) + "&7."));
-            player.sendMessage(Methods.formatText("&7Use &60 &7to use the default price."));
-            player.sendMessage(Methods.formatText("&7Example: &35&6."));
+            player.sendMessage(TextUtils.formatText("&7Enter a custom goal for " + Methods.getTypeFromString(spawnerData.getIdentifyingName()) + "&7."));
+            player.sendMessage(TextUtils.formatText("&7Use &60 &7to use the default price."));
+            player.sendMessage(TextUtils.formatText("&7Example: &35&6."));
         });
 
         registerClickable(32, (player, inventory, cursor, slot, type) -> {
@@ -229,15 +231,15 @@ public class GUIEditorGeneral extends AbstractGUI {
                     
                     init(setTitle, inventory.getSize());
                 } else {
-                    player.sendMessage(Methods.formatText("&CYou must enter a number."));
+                    player.sendMessage(TextUtils.formatText("&CYou must enter a number."));
                 }
             });
             plugin.getGuiManager().showGUI(player, gui);
 
-            player.sendMessage(Methods.formatText("&7Enter a pickup cost for " + Methods.getTypeFromString(spawnerData.getIdentifyingName()) + "&7."));
-            player.sendMessage(Methods.formatText("&7Use &60 &7to disable."));
-            player.sendMessage(Methods.formatText("&7Example: &719.99&6."));
-            player.sendMessage(Methods.formatText("&7Example: &625&7."));
+            player.sendMessage(TextUtils.formatText("&7Enter a pickup cost for " + Methods.getTypeFromString(spawnerData.getIdentifyingName()) + "&7."));
+            player.sendMessage(TextUtils.formatText("&7Use &60 &7to disable."));
+            player.sendMessage(TextUtils.formatText("&7Example: &719.99&6."));
+            player.sendMessage(TextUtils.formatText("&7Example: &625&7."));
         });
 
         registerClickable(40, (player, inventory, cursor, slot, type) -> {
@@ -252,8 +254,8 @@ public class GUIEditorGeneral extends AbstractGUI {
             });
             plugin.getGuiManager().showGUI(player, gui);
 
-            player.sendMessage(Methods.formatText("&7Enter a tick rate min and max for " + Methods.getTypeFromString(spawnerData.getIdentifyingName()) + "&7."));
-            player.sendMessage(Methods.formatText("&7Example: &3800:200&6."));
+            player.sendMessage(TextUtils.formatText("&7Enter a tick rate min and max for " + Methods.getTypeFromString(spawnerData.getIdentifyingName()) + "&7."));
+            player.sendMessage(TextUtils.formatText("&7Example: &3800:200&6."));
         });
 
         registerClickable(0, (player, inventory, cursor, slot, type) -> {

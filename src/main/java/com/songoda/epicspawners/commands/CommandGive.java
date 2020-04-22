@@ -2,6 +2,7 @@ package com.songoda.epicspawners.commands;
 
 import com.google.common.collect.Iterables;
 import com.songoda.core.commands.AbstractCommand;
+import com.songoda.core.utils.TextUtils;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.settings.Settings;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
@@ -48,7 +49,7 @@ public class CommandGive extends AbstractCommand {
             for (SpawnerData spawnerData : plugin.getSpawnerManager().getAllSpawnerData()) {
                 list.append(spawnerData.getIdentifyingName().toUpperCase().replace(" ", "_")).append("&7, &6");
             }
-            sender.sendMessage(Methods.formatText("&6" + list));
+            sender.sendMessage(TextUtils.formatText("&6" + list));
             return ReturnType.FAILURE;
         }
         if (args[1].equalsIgnoreCase("random")) {
@@ -66,12 +67,12 @@ public class CommandGive extends AbstractCommand {
             if (args[0].toLowerCase().equals("all")) {
                 for (Player pl : Bukkit.getOnlinePlayers()) {
                     pl.getInventory().addItem(spawnerItem);
-                    plugin.getLocale().getMessage("command.give.success").processPlaceholder("amount", amt).processPlaceholder("type", Methods.compileName(data, multi, false)).sendPrefixedMessage(pl);
+                    plugin.getLocale().getMessage("command.give.success").processPlaceholder("amount", amt).processPlaceholder("type", data.getCompiledDisplayName(multi)).sendPrefixedMessage(pl);
                 }
             } else {
                 Player pl = Bukkit.getPlayerExact(args[0]);
                 pl.getInventory().addItem(spawnerItem);
-                plugin.getLocale().getMessage("command.give.success").processPlaceholder("amount", amt).processPlaceholder("type", Methods.compileName(data, multi, false)).sendPrefixedMessage(pl);
+                plugin.getLocale().getMessage("command.give.success").processPlaceholder("amount", amt).processPlaceholder("type", data.getCompiledDisplayName(multi)).sendPrefixedMessage(pl);
 
             }
             return ReturnType.FAILURE;
@@ -97,12 +98,12 @@ public class CommandGive extends AbstractCommand {
         if (args[0].toLowerCase().equals("all")) {
             for (Player pl : Bukkit.getOnlinePlayers()) {
                 pl.getInventory().addItem(spawnerItem);
-                plugin.getLocale().getMessage("command.give.success").processPlaceholder("amount", amt).processPlaceholder("type", Methods.compileName(data, multi, false)).sendPrefixedMessage(pl);
+                plugin.getLocale().getMessage("command.give.success").processPlaceholder("amount", amt).processPlaceholder("type", data.getCompiledDisplayName(multi)).sendPrefixedMessage(pl);
             }
         } else {
             Player pl = Bukkit.getPlayerExact(args[0]);
             pl.getInventory().addItem(spawnerItem);
-            plugin.getLocale().getMessage("command.give.success").processPlaceholder("amount", amt).processPlaceholder("type", Methods.compileName(data, multi, false)).sendPrefixedMessage(pl);
+            plugin.getLocale().getMessage("command.give.success").processPlaceholder("amount", amt).processPlaceholder("type", data.getCompiledDisplayName(multi)).sendPrefixedMessage(pl);
 
         }
         return ReturnType.SUCCESS;

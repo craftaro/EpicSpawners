@@ -2,12 +2,17 @@ package com.songoda.epicspawners.spawners.spawner;
 
 import com.google.common.base.Preconditions;
 import com.songoda.core.compatibility.ServerVersion;
+import com.songoda.core.nms.NmsManager;
+import com.songoda.core.nms.nbt.NBTItem;
+import com.songoda.core.utils.TextUtils;
 import com.songoda.epicspawners.particles.ParticleDensity;
 import com.songoda.epicspawners.particles.ParticleEffect;
 import com.songoda.epicspawners.particles.ParticleType;
+import com.songoda.epicspawners.settings.Settings;
 import com.songoda.epicspawners.spawners.condition.*;
 import com.songoda.epicspawners.spawners.spawner.option.*;
-import com.songoda.epicspawners.utils.Methods;
+import org.apache.commons.lang.math.NumberUtils;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.EntityType;
@@ -20,7 +25,7 @@ public class SpawnerData {
 
     private final String name;
     private int uuid;
-    
+
     private boolean custom = false;
 
     private double pickupCost = 0.0;
@@ -133,10 +138,13 @@ public class SpawnerData {
 
         ItemStack item = new ItemStack(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER"), amount);
         ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName(Methods.compileName(this, stackSize, true));
+        meta.setDisplayName(getCompiledDisplayName(stackSize));
         item.setItemMeta(meta);
 
-        return item;
+        NBTItem nbtItem = NmsManager.getNbt().of(item);
+        nbtItem.set("type", name);
+        nbtItem.set("size", stackSize);
+        return nbtItem.finish();
     }
 
 
@@ -290,6 +298,30 @@ public class SpawnerData {
 
     public String getDisplayName() {
         return displayName;
+    }
+
+    public String getCompiledDisplayName() {
+        return getCompiledDisplayName(1);
+    }
+
+    public String getCompiledDisplayName(int multi) {
+        String nameFormat = Settings.NAME_FORMAT.getString();
+        String displayName = getDisplayName();
+
+        nameFormat = nameFormat.replace("{TYPE}", displayName);
+
+        if ((multi > 1 || Settings.DISPLAY_LEVEL_ONE.getBoolean() || Settings.NAMED_SPAWNER_TIERS.getBoolean()) && multi >= 0) {
+            if (Settings.NAMED_SPAWNER_TIERS.getBoolean() && Settings.TIER_NAMES.getStringList().size() >= multi) {
+                nameFormat = nameFormat.replace("{AMT}", Settings.TIER_NAMES.getStringList().get(multi - 1));
+            } else {
+                nameFormat = nameFormat.replace("{AMT}", Integer.toString(multi));
+            }
+            nameFormat = nameFormat.replace("[", "").replace("]", "");
+        } else {
+            nameFormat = nameFormat.replaceAll("\\[.*?]", "");
+        }
+
+        return TextUtils.formatText(nameFormat).trim();
     }
 
 
@@ -511,5 +543,22 @@ public class SpawnerData {
 
     public String toString() {
         return "SpawnerData:{Name:\"" + name + "\"}";
+    }
+
+    public int getStackSize(ItemStack item) {
+        Preconditions.checkNotNull(item, "Cannot get stack size of null item");
+        NBTItem nbtItem = NmsManager.getNbt().of(item);
+
+        if (nbtItem.has("size"))
+            return nbtItem.getNBTObject("size").asInt();
+
+        // Legacy
+        if (!item.hasItemMeta() && !item.getItemMeta().hasDisplayName()) return 1;
+
+        String name = item.getItemMeta().getDisplayName();
+        if (!name.contains(":")) return 1;
+
+        String amount = name.replace(String.valueOf(ChatColor.COLOR_CHAR), "").replace(";", "").split(":")[1];
+        return NumberUtils.toInt(amount, 1);
     }
 }

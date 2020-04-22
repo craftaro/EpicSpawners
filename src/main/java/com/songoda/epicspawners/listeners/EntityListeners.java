@@ -1,6 +1,11 @@
 package com.songoda.epicspawners.listeners;
 
 import com.songoda.core.compatibility.ServerVersion;
+import com.songoda.core.nms.NmsManager;
+import com.songoda.core.nms.nbt.NBTCompound;
+import com.songoda.core.nms.nbt.NBTCore;
+import com.songoda.core.nms.nbt.NBTItem;
+import com.songoda.core.nms.nbt.NBTObject;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.player.PlayerData;
 import com.songoda.epicspawners.player.PlayerDataManager;
@@ -20,6 +25,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;

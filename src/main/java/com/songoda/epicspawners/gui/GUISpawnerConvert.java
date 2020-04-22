@@ -90,7 +90,7 @@ public class GUISpawnerConvert extends AbstractGUI {
             }
 
             ItemMeta itemmeta = item.getItemMeta();
-            String name = Methods.compileName(spawnerData, 1, true);
+            String name = spawnerData.getCompiledDisplayName();
             ArrayList<String> lore = new ArrayList<>();
             double price = spawnerData.getConvertPrice() * spawner.getSpawnerDataCount();
 
