@@ -1,6 +1,7 @@
 package com.songoda.epicspawners.gui;
 
 import com.songoda.core.compatibility.ServerVersion;
+import com.songoda.core.utils.TextUtils;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.boost.types.Boosted;
 import com.songoda.epicspawners.settings.Settings;
@@ -46,7 +47,7 @@ public class GUISpawnerOverview extends AbstractGUI {
         this.player = player;
         this.plugin = plugin;
 
-        init(Methods.compileName(spawner.getIdentifyingData(), spawner.getSpawnerDataCount(), false), 27);
+        init(spawner.getIdentifyingData().getCompiledDisplayName(spawner.getSpawnerDataCount()), 27);
         runTask();
     }
 
@@ -82,16 +83,16 @@ public class GUISpawnerOverview extends AbstractGUI {
         ArrayList<String> lore = new ArrayList<>();
 
         if (spawner.getSpawnerStacks().size() != 1) {
-            StringBuilder only = new StringBuilder("&6" + Methods.compileName(spawner.getFirstStack().getSpawnerData(), spawner.getFirstStack().getStackSize(), false));
+            StringBuilder only = new StringBuilder("&6" + spawner.getFirstStack().getSpawnerData().getCompiledDisplayName(spawner.getFirstStack().getStackSize()));
 
             int num = 1;
             for (SpawnerStack stack : spawner.getSpawnerStacks()) {
                 if (num != 1)
-                    only.append("&8, &6").append(Methods.compileName(stack.getSpawnerData(), stack.getStackSize(), false));
+                    only.append("&8, &6").append(stack.getSpawnerData().getCompiledDisplayName(stack.getStackSize()));
                 num++;
             }
 
-            lore.add(Methods.formatText(only.toString()));
+            lore.add(TextUtils.formatText(only.toString()));
         }
 
         List<Material> blocks = spawner.getFirstStack().getSpawnerData().getSpawnBlocksList();
@@ -211,7 +212,7 @@ public class GUISpawnerOverview extends AbstractGUI {
                         .getMessage().split("\\|");
 
                 for (String line : parts)
-                    lore.add(Methods.formatText(line));
+                    lore.add(TextUtils.formatText(line));
             } else
                 registerClickable(22, (player, inventory, cursor, slot, type) ->
                         new GUISpawnerBoost(plugin, spawner, player));
@@ -243,7 +244,7 @@ public class GUISpawnerOverview extends AbstractGUI {
                 while (m.find()) {
                     if (li > start) {
                         if (li < start + 15) {
-                            loreO.add(Methods.formatText("&7" + m.group()));
+                            loreO.add(TextUtils.formatText("&7" + m.group()));
                             added++;
                         } else {
                             max = true;
@@ -328,7 +329,7 @@ public class GUISpawnerOverview extends AbstractGUI {
             while (m.find()) {
                 if (li > start) {
                     if (li < start + 15) {
-                        loreO.add(Methods.formatText("&7" + m.group()));
+                        loreO.add(TextUtils.formatText("&7" + m.group()));
                         added++;
                     } else {
                         max = true;

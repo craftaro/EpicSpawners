@@ -30,7 +30,7 @@ public class GUIShopItem extends AbstractGUI {
         this.spawnerData = spawnerData;
 
         init(plugin.getLocale().getMessage("interface.shop.spawnershoptitle")
-                .processPlaceholder("type", Methods.compileName(spawnerData, 1, false))
+                .processPlaceholder("type", spawnerData.getCompiledDisplayName())
                 .getMessage(), 45);
     }
 
@@ -85,7 +85,7 @@ public class GUIShopItem extends AbstractGUI {
 
         item.setAmount(amount);
         ItemMeta itemmeta = item.getItemMeta();
-        String name = Methods.compileName(spawnerData, 1, false);
+        String name = spawnerData.getCompiledDisplayName();
         itemmeta.setDisplayName(name);
         ArrayList<String> lore = new ArrayList<>();
         lore.add(plugin.getLocale().getMessage("interface.shop.buyprice")

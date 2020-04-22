@@ -126,7 +126,7 @@ public class BlockListeners implements Listener {
             SpawnerData spawnerData = plugin.getSpawnerManager().getSpawnerData(event.getItemInHand());
             if (spawnerData == null) return;
 
-            int spawnerStackSize = Methods.getStackSizeFromItem(event.getItemInHand());
+            int spawnerStackSize = spawnerData.getStackSize(event.getItemInHand());
             spawner.addSpawnerStack(new SpawnerStack(spawnerData, spawnerStackSize));
 
             Player player = event.getPlayer();
@@ -166,7 +166,7 @@ public class BlockListeners implements Listener {
 
             if (plugin.getConfig().getBoolean("Main.Alerts On Place And Break"))
                 plugin.getLocale().getMessage("event.block.place")
-                        .processPlaceholder("type", Methods.compileName(spawnerData, spawner.getFirstStack().getStackSize(), false))
+                        .processPlaceholder("type", spawnerData.getCompiledDisplayName(spawner.getFirstStack().getStackSize()))
                         .sendPrefixedMessage(player);
 
             if (player.getGameMode() == GameMode.CREATIVE && Settings.CHARGE_FOR_CREATIVE.getBoolean())
@@ -285,7 +285,7 @@ public class BlockListeners implements Listener {
                     if (spawner.getSpawnerStacks().size() != 0) {
                         plugin.getLocale().getMessage("event.downgrade.success").processPlaceholder("level", Integer.toString(spawner.getSpawnerDataCount())).sendPrefixedMessage(player);
                     } else {
-                        plugin.getLocale().getMessage("event.block.break").processPlaceholder("type", Methods.compileName(firstData, currentStackSize, true)).sendPrefixedMessage(player);
+                        plugin.getLocale().getMessage("event.block.break").processPlaceholder("type", firstData.getCompiledDisplayName(currentStackSize)).sendPrefixedMessage(player);
                     }
                 }
             }

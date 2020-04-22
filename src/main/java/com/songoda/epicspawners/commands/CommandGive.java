@@ -2,6 +2,7 @@ package com.songoda.epicspawners.commands;
 
 import com.google.common.collect.Iterables;
 import com.songoda.core.commands.AbstractCommand;
+import com.songoda.core.utils.TextUtils;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.settings.Settings;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
@@ -48,7 +49,7 @@ public class CommandGive extends AbstractCommand {
             for (SpawnerData spawnerData : plugin.getSpawnerManager().getAllSpawnerData()) {
                 list.append(spawnerData.getIdentifyingName().toUpperCase().replace(" ", "_")).append("&7, &6");
             }
-            sender.sendMessage(Methods.formatText("&6" + list));
+            sender.sendMessage(TextUtils.formatText("&6" + list));
             return ReturnType.FAILURE;
         }
         if (args[1].equalsIgnoreCase("random")) {
@@ -65,13 +66,17 @@ public class CommandGive extends AbstractCommand {
             ItemStack spawnerItem = data.toItemStack(Integer.parseInt(args[2]));
             if (args[0].toLowerCase().equals("all")) {
                 for (Player pl : Bukkit.getOnlinePlayers()) {
-                    pl.getInventory().addItem(spawnerItem);
-                    plugin.getLocale().getMessage("command.give.success").processPlaceholder("amount", amt).processPlaceholder("type", Methods.compileName(data, multi, false)).sendPrefixedMessage(pl);
+                    Map<Integer, ItemStack> overflow = pl.getInventory().addItem(spawnerItem);
+                    for (ItemStack item : overflow.values())
+                        pl.getWorld().dropItemNaturally(pl.getLocation(), item);
+                    plugin.getLocale().getMessage("command.give.success").processPlaceholder("amount", amt).processPlaceholder("type", data.getCompiledDisplayName(multi)).sendPrefixedMessage(pl);
                 }
             } else {
                 Player pl = Bukkit.getPlayerExact(args[0]);
-                pl.getInventory().addItem(spawnerItem);
-                plugin.getLocale().getMessage("command.give.success").processPlaceholder("amount", amt).processPlaceholder("type", Methods.compileName(data, multi, false)).sendPrefixedMessage(pl);
+                Map<Integer, ItemStack> overflow = pl.getInventory().addItem(spawnerItem);
+                for (ItemStack item : overflow.values())
+                    pl.getWorld().dropItemNaturally(pl.getLocation(), item);
+                plugin.getLocale().getMessage("command.give.success").processPlaceholder("amount", amt).processPlaceholder("type", data.getCompiledDisplayName(multi)).sendPrefixedMessage(pl);
 
             }
             return ReturnType.FAILURE;
@@ -97,12 +102,12 @@ public class CommandGive extends AbstractCommand {
         if (args[0].toLowerCase().equals("all")) {
             for (Player pl : Bukkit.getOnlinePlayers()) {
                 pl.getInventory().addItem(spawnerItem);
-                plugin.getLocale().getMessage("command.give.success").processPlaceholder("amount", amt).processPlaceholder("type", Methods.compileName(data, multi, false)).sendPrefixedMessage(pl);
+                plugin.getLocale().getMessage("command.give.success").processPlaceholder("amount", amt).processPlaceholder("type", data.getCompiledDisplayName(multi)).sendPrefixedMessage(pl);
             }
         } else {
             Player pl = Bukkit.getPlayerExact(args[0]);
             pl.getInventory().addItem(spawnerItem);
-            plugin.getLocale().getMessage("command.give.success").processPlaceholder("amount", amt).processPlaceholder("type", Methods.compileName(data, multi, false)).sendPrefixedMessage(pl);
+            plugin.getLocale().getMessage("command.give.success").processPlaceholder("amount", amt).processPlaceholder("type", data.getCompiledDisplayName(multi)).sendPrefixedMessage(pl);
 
         }
         return ReturnType.SUCCESS;
@@ -120,18 +125,19 @@ public class CommandGive extends AbstractCommand {
             return spawners;
         } else if (args.length == 3) {
             int max = Settings.SPAWNERS_MAX.getInt();
-            List<String> values;;
-            
-            if(max <= 0) {
+            List<String> values;
+            ;
+
+            if (max <= 0) {
                 values = new ArrayList<>(1);
                 values.add(String.valueOf(1));
-            }else {
+            } else {
                 values = new ArrayList<>(max);
                 for (int i = 1; i <= max; i++) {
                     values.add(String.valueOf(i));
                 }
             }
-            
+
             return values;
         } else if (args.length == 4) {
             return Arrays.asList("1", "2", "3", "4", "5");

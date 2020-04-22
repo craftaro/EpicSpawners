@@ -3,6 +3,7 @@ package com.songoda.epicspawners.gui;
 import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.core.gui.AnvilGui;
 import com.songoda.core.input.ChatPrompt;
+import com.songoda.core.utils.TextUtils;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.utils.Methods;
@@ -33,7 +34,7 @@ public class GUIEditorEdit extends AbstractGUI {
         this.editType = editType;
         this.spawnerData = spawnerData;
 
-        init(Methods.compileName(spawnerData, 1, false) + "&8 " + editType.getName() + " &8Settings.", 54);
+        init(spawnerData.getCompiledDisplayName() + "&8 " + editType.getName() + " &8Settings.", 54);
     }
 
     @Override
@@ -65,14 +66,14 @@ public class GUIEditorEdit extends AbstractGUI {
                 ItemStack item = plugin.getHeads().addTexture(it,
                         plugin.getSpawnerManager().getSpawnerData(spawnerData.getEntities().get(spot)));
                 ItemMeta meta = item.getItemMeta();
-                meta.setDisplayName(Methods.formatText("&e" + Methods.getTypeFromString(spawnerData.getEntities().get(spot).name())));
+                meta.setDisplayName(TextUtils.formatText("&e" + Methods.getTypeFromString(spawnerData.getEntities().get(spot).name())));
                 item.setItemMeta(meta);
                 inventory.setItem(num, item);
 
             } else if (spawnerData.getCommands().size() >= spot + 1 && editType == EditType.COMMAND) {
                 ItemStack parseStack = new ItemStack(Material.PAPER, 1);
                 ItemMeta meta = parseStack.getItemMeta();
-                meta.setDisplayName(Methods.formatText("&a/" + spawnerData.getCommands().get(spot)));
+                meta.setDisplayName(TextUtils.formatText("&a/" + spawnerData.getCommands().get(spot)));
                 parseStack.setItemMeta(meta);
                 inventory.setItem(num, parseStack);
             } else {
@@ -138,12 +139,12 @@ public class GUIEditorEdit extends AbstractGUI {
 
         if (editType == EditType.COMMAND) {
             registerClickable(39, (player, inventory, cursor, slot, type) -> {
-                player.sendMessage(Methods.formatText("&7Please Type a command. Example: &6eco give @p 1000&7."));
-                player.sendMessage(Methods.formatText("&7You can use @X @Y and @Z for random X Y and Z coordinates around the spawner."));
-                player.sendMessage(Methods.formatText("&7If you need the world name, you can use @W for the current world."));
-                player.sendMessage(Methods.formatText("&7@n will execute the command for the person who originally placed the spawner."));
-                player.sendMessage(Methods.formatText("&7If you're getting command output try &6/gamerule sendCommandFeedback false&7."));
-                player.sendMessage(Methods.formatText("&7do not include a &a/"));
+                player.sendMessage(TextUtils.formatText("&7Please Type a command. Example: &6eco give @p 1000&7."));
+                player.sendMessage(TextUtils.formatText("&7You can use @X @Y and @Z for random X Y and Z coordinates around the spawner."));
+                player.sendMessage(TextUtils.formatText("&7If you need the world name, you can use @W for the current world."));
+                player.sendMessage(TextUtils.formatText("&7@n will execute the command for the person who originally placed the spawner."));
+                player.sendMessage(TextUtils.formatText("&7If you're getting command output try &6/gamerule sendCommandFeedback false&7."));
+                player.sendMessage(TextUtils.formatText("&7do not include a &a/"));
                 ChatPrompt abstractChatConfirm = ChatPrompt.showPrompt(plugin, player, event -> {
                     List<String> commands = new ArrayList<>(spawnerData.getCommands());
                     commands.add(event.getMessage());

@@ -1,6 +1,7 @@
 package com.songoda.epicspawners.gui;
 
 import com.songoda.core.compatibility.CompatibleMaterial;
+import com.songoda.core.utils.TextUtils;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.utils.Methods;
@@ -65,7 +66,7 @@ public class GUISpawnerStats extends AbstractGUI {
             int customGoal = spawnerData.getKillGoal();
             if (customGoal != 0) goal = customGoal;
             if (place >= 54) {
-                player.sendMessage(Methods.formatText("&6" + spawnerData.getDisplayName() + "&7: &e" + entry.getValue() + "&7/&e" + goal));
+                player.sendMessage(TextUtils.formatText("&6" + spawnerData.getDisplayName() + "&7: &e" + entry.getValue() + "&7/&e" + goal));
             } else {
                 ItemStack it = CompatibleMaterial.PLAYER_HEAD.getItem();
                 ItemStack item = plugin.getHeads().addTexture(it, spawnerData);
@@ -73,7 +74,7 @@ public class GUISpawnerStats extends AbstractGUI {
                 ItemMeta itemmeta = item.getItemMeta();
                 ArrayList<String> lore = new ArrayList<>();
                 itemmeta.setLore(lore);
-                itemmeta.setDisplayName(Methods.formatText("&6" + spawnerData.getDisplayName() + "&7: &e" + entry.getValue() + "&7/&e" + goal));
+                itemmeta.setDisplayName(TextUtils.formatText("&6" + spawnerData.getDisplayName() + "&7: &e" + entry.getValue() + "&7/&e" + goal));
                 item.setItemMeta(itemmeta);
                 inventory.setItem(place, item);
             }

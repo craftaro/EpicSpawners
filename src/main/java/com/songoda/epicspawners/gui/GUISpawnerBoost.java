@@ -3,6 +3,7 @@ package com.songoda.epicspawners.gui;
 import com.songoda.core.compatibility.CompatibleSound;
 import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.core.hooks.EconomyManager;
+import com.songoda.core.utils.TextUtils;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.boost.types.Boosted;
 import com.songoda.epicspawners.boost.types.BoostedSpawner;
@@ -128,14 +129,14 @@ public class GUISpawnerBoost extends AbstractGUI {
         ItemStack skull = Methods.addTexture(head, "http://textures.minecraft.net/texture/1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b");
         SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
         skull.setDurability((short) 3);
-        skullMeta.setDisplayName(Methods.formatText("&6&l+1"));
+        skullMeta.setDisplayName(TextUtils.formatText("&6&l+1"));
         skull.setItemMeta(skullMeta);
 
         ItemStack head2 = new ItemStack(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3);
         ItemStack skull2 = Methods.addTexture(head2, "http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23");
         SkullMeta skull2Meta = (SkullMeta) skull2.getItemMeta();
         skull2.setDurability((short) 3);
-        skull2Meta.setDisplayName(Methods.formatText("&6&l-1"));
+        skull2Meta.setDisplayName(TextUtils.formatText("&6&l-1"));
         skull2.setItemMeta(skull2Meta);
 
         if (amount != 1) {

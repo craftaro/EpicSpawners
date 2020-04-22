@@ -4,6 +4,8 @@ import com.songoda.core.compatibility.CompatibleBiome;
 import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.core.configuration.Config;
+import com.songoda.core.nms.NmsManager;
+import com.songoda.core.nms.nbt.NBTItem;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.particles.ParticleDensity;
 import com.songoda.epicspawners.particles.ParticleEffect;
@@ -76,7 +78,11 @@ public class SpawnerManager {
 
         String name = item.hasItemMeta() && item.getItemMeta().hasDisplayName() ? item.getItemMeta().getDisplayName() : null;
 
-        if (name != null && name.contains(":")) {
+        NBTItem nbtItem = NmsManager.getNbt().of(item);
+        if (nbtItem.has("type")) {
+            String type = nbtItem.getNBTObject("type").asString();
+            return getSpawnerData(type);
+        } else if (name != null && name.contains(":")) {
             String[] raw = name.replace(";", "").split(":");
             String value = raw[0].replace(String.valueOf(ChatColor.COLOR_CHAR), "");
             if (Methods.isInt(value)) {

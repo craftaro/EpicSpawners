@@ -78,7 +78,7 @@ public class GUIEditorSelector extends AbstractGUI {
                 item.setType(spawnerData.getDisplayItem());
             }
 
-            String name = Methods.compileName(spawnerData, 1, false);
+            String name = spawnerData.getDisplayName();
 
             createButton(place, icon, Methods.convertToInvisibleString(spawnerData.getIdentifyingName() + ":") + name,
                     "&7Click to &a&lEdit&7.");
