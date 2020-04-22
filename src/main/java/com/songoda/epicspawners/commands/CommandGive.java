@@ -66,12 +66,16 @@ public class CommandGive extends AbstractCommand {
             ItemStack spawnerItem = data.toItemStack(Integer.parseInt(args[2]));
             if (args[0].toLowerCase().equals("all")) {
                 for (Player pl : Bukkit.getOnlinePlayers()) {
-                    pl.getInventory().addItem(spawnerItem);
+                    Map<Integer, ItemStack> overflow = pl.getInventory().addItem(spawnerItem);
+                    for (ItemStack item : overflow.values())
+                        pl.getWorld().dropItemNaturally(pl.getLocation(), item);
                     plugin.getLocale().getMessage("command.give.success").processPlaceholder("amount", amt).processPlaceholder("type", data.getCompiledDisplayName(multi)).sendPrefixedMessage(pl);
                 }
             } else {
                 Player pl = Bukkit.getPlayerExact(args[0]);
-                pl.getInventory().addItem(spawnerItem);
+                Map<Integer, ItemStack> overflow = pl.getInventory().addItem(spawnerItem);
+                for (ItemStack item : overflow.values())
+                    pl.getWorld().dropItemNaturally(pl.getLocation(), item);
                 plugin.getLocale().getMessage("command.give.success").processPlaceholder("amount", amt).processPlaceholder("type", data.getCompiledDisplayName(multi)).sendPrefixedMessage(pl);
 
             }
@@ -121,18 +125,19 @@ public class CommandGive extends AbstractCommand {
             return spawners;
         } else if (args.length == 3) {
             int max = Settings.SPAWNERS_MAX.getInt();
-            List<String> values;;
-            
-            if(max <= 0) {
+            List<String> values;
+            ;
+
+            if (max <= 0) {
                 values = new ArrayList<>(1);
                 values.add(String.valueOf(1));
-            }else {
+            } else {
                 values = new ArrayList<>(max);
                 for (int i = 1; i <= max; i++) {
                     values.add(String.valueOf(i));
                 }
             }
-            
+
             return values;
         } else if (args.length == 4) {
             return Arrays.asList("1", "2", "3", "4", "5");
