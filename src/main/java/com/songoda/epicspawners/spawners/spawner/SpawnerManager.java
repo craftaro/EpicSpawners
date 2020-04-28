@@ -306,7 +306,7 @@ public class SpawnerManager {
                 for (EntityType val : EntityType.values()) {
                     if (!val.isSpawnable()
                             || !val.isAlive()
-                            || !val.name().equals(key.toUpperCase())) continue;
+                            || !val.name().equals(Methods.getTypeFromString(key))) continue;
                     entities.add(val);
                 }
             }
