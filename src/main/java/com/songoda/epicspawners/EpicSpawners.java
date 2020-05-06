@@ -308,7 +308,7 @@ public class EpicSpawners extends SongodaPlugin {
         this.setLocale(Settings.LANGUGE_MODE.getString(), true);
         this.locale.reloadMessages();
         this.blacklistHandler.reload();
-        this.spawnerManager.loadSpawnerDataFromFile();
+        this.spawnerManager.reloadFromFile();
     }
 
     @Override
