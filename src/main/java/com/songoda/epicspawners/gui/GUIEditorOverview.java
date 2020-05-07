@@ -1,12 +1,12 @@
 package com.songoda.epicspawners.gui;
 
+import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.core.gui.AnvilGui;
 import com.songoda.core.input.ChatPrompt;
 import com.songoda.core.utils.TextUtils;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.utils.Methods;
-import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.epicspawners.utils.gui.AbstractGUI;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -38,14 +38,12 @@ public class GUIEditorOverview extends AbstractGUI {
                 }
             }
 
-            this.spawnerData = new SpawnerData(0, type, new ArrayList<>(), new ArrayList<>(),
-                    new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+            this.spawnerData = plugin.getSpawnerManager().addSpawnerData(type, new SpawnerData(type));
             this.spawnerData.addDefaultConditions();
             this.spawnerData.setCustom(true);
-            plugin.getSpawnerManager().addSpawnerData(type, this.spawnerData);
         }
 
-        init("&8Editing: " + spawnerData.getCompiledDisplayName() + "&8.", 54);
+        init("&8Editing: " + this.spawnerData.getCompiledDisplayName() + "&8.", 54);
     }
 
     @Override

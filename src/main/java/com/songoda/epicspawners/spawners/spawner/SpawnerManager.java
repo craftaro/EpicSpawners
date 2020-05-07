@@ -86,7 +86,7 @@ public class SpawnerManager {
             String[] raw = name.replace(";", "").split(":");
             String value = raw[0].replace(String.valueOf(ChatColor.COLOR_CHAR), "");
             if (Methods.isInt(value)) {
-                SpawnerData spawnerData = getSpawnerData(Integer.valueOf(value));
+                SpawnerData spawnerData = getSpawnerData(Integer.parseInt(value));
                 if (Methods.isInt(value) && spawnerData != null) {
                     return spawnerData;
                 }
@@ -102,10 +102,10 @@ public class SpawnerManager {
         return EpicSpawners.getInstance().getSpawnerManager().getSpawnerData(cs.getSpawnedType());
     }
 
-    public void addSpawnerData(String name, SpawnerData spawnerData) {
+    public SpawnerData addSpawnerData(String name, SpawnerData spawnerData) {
         this.registeredSpawnerData.put(name.toLowerCase(), spawnerData);
         spawnerData.reloadSpawnMethods();
-        spawnerData.reloadSpawnMethods();
+        return spawnerData;
     }
 
     public void addSpawnerData(SpawnerData spawnerData) {
@@ -221,16 +221,6 @@ public class SpawnerManager {
 
         EntityType entityType = null;
 
-        for (EntityType val : EntityType.values()) {
-            if (!val.isSpawnable()
-                    || !val.isAlive()
-                    || !val.name().equals(value)) continue;
-            entityType = val;
-            if (!spawnerConfig.contains(section + ".entities"))
-                spawnerConfig.addDefault(section
-                        + ".entities", Collections.singletonList(value));
-        }
-
         spawnerConfig.addDefault(section + ".Pickup-Cost", 0);
         spawnerConfig.addDefault(section + ".custom", false);
         spawnerConfig.addDefault(section + ".Spawn-Block", spawnBlock);
@@ -300,15 +290,6 @@ public class SpawnerManager {
             }
             for (String entity : currentSection.getStringList("entities")) {
                 entities.add(EntityType.valueOf(entity));
-            }
-
-            if (entities.isEmpty()) {
-                for (EntityType val : EntityType.values()) {
-                    if (!val.isSpawnable()
-                            || !val.isAlive()
-                            || !val.name().equals(Methods.getTypeFromString(key))) continue;
-                    entities.add(val);
-                }
             }
 
             SpawnerDataBuilder dataBuilder = new SpawnerDataBuilder(key).uuid(currentSection.getInt("uuid"))
@@ -474,5 +455,10 @@ public class SpawnerManager {
 
     public Config getSpawnerConfig() {
         return spawnerConfig;
+    }
+
+    public void reloadFromFile() {
+        getSpawnerConfig().load();
+        loadSpawnerDataFromFile();
     }
 }
