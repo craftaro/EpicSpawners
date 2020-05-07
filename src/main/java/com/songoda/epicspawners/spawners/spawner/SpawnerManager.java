@@ -102,9 +102,10 @@ public class SpawnerManager {
         return EpicSpawners.getInstance().getSpawnerManager().getSpawnerData(cs.getSpawnedType());
     }
 
-    public void addSpawnerData(String name, SpawnerData spawnerData) {
+    public SpawnerData addSpawnerData(String name, SpawnerData spawnerData) {
         this.registeredSpawnerData.put(name.toLowerCase(), spawnerData);
         spawnerData.reloadSpawnMethods();
+        return spawnerData;
     }
 
     public void addSpawnerData(SpawnerData spawnerData) {
