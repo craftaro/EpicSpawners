@@ -189,6 +189,14 @@ public class SpawnerManager {
             spawnerConfig.set(section + ".Display-Name", type);
         }
 
+        for (EntityType val : EntityType.values()) {
+            if (!val.isSpawnable()
+                    || !val.isAlive()
+                    || !val.name().equals(value)) continue;
+                spawnerConfig.addDefault(section
+                        + ".entities", Collections.singletonList(value));
+        }
+
         String spawnBlock = "AIR";
 
         switch (value.toUpperCase()) {
