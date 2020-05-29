@@ -337,7 +337,7 @@ public class Spawner {
                 && (!Settings.OMNI_SPAWNERS.getBoolean() || !player.hasPermission("epicspawners.omni")))
             return false;
 
-        SpawnerChangeEvent event = new SpawnerChangeEvent(player, this, currentStackSize + 1, currentStackSize);
+        SpawnerChangeEvent event = new SpawnerChangeEvent(player, this, currentStackSize + amount, currentStackSize);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) return false;
 
