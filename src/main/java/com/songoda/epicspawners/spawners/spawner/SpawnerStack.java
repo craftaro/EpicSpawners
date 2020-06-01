@@ -20,11 +20,12 @@ public class SpawnerStack {
     private int stackSize;
 
     //Construct the class and define values.
-    public SpawnerStack(SpawnerData spawnerData) {
-        this(spawnerData, 1);
+    public SpawnerStack(Spawner spawner, SpawnerData spawnerData) {
+        this(spawner, spawnerData, 1);
     }
 
-    public SpawnerStack(SpawnerData spawnerData, int stackSize) {
+    public SpawnerStack(Spawner spawner, SpawnerData spawnerData, int stackSize) {
+        this.spawner = spawner;
         this.spawnerData = spawnerData;
         this.stackSize = stackSize;
     }

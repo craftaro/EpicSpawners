@@ -193,7 +193,7 @@ public class EpicSpawners extends SongodaPlugin {
                                 if (stackKey == null) continue;
                                 String[] stack = stackKey.split(":");
                                 if (!spawnerManager.isSpawnerData(stack[0].toLowerCase())) continue;
-                                spawner.addSpawnerStack(new SpawnerStack(spawnerManager.getSpawnerData(stack[0]), Integer.parseInt(stack[1])));
+                                spawner.addSpawnerStack(new SpawnerStack(spawner, spawnerManager.getSpawnerData(stack[0]), Integer.parseInt(stack[1])));
                             }
 
                             if (row.getItems().containsKey("placedby"))

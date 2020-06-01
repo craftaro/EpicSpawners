@@ -18,7 +18,6 @@ import org.bukkit.plugin.Plugin;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
 import java.util.function.Consumer;
@@ -44,11 +43,11 @@ public class DataManager extends DataManagerAbstract {
 
     public void updateSpawnerStack(SpawnerStack stack) {
         this.async(() -> this.databaseConnector.connect(connection -> {
-            String updateSpawnerStack = "UPDATE " + this.getTablePrefix() + "spawner_stacks SET data_type = ?, amount = ? WHERE spawner_id = ?";
+            String updateSpawnerStack = "UPDATE " + this.getTablePrefix() + "spawner_stacks SET amount = ? WHERE spawner_id = ? AND data_type = ?";
             try (PreparedStatement statement = connection.prepareStatement(updateSpawnerStack)) {
-                statement.setString(1, stack.getSpawnerData().getIdentifyingName());
-                statement.setInt(2, stack.getStackSize());
-                statement.setInt(3, stack.getSpawner().getId());
+                statement.setInt(1, stack.getStackSize());
+                statement.setInt(2, stack.getSpawner().getId());
+                statement.setString(3, stack.getSpawnerData().getIdentifyingName());
                 statement.executeUpdate();
             }
         }));
@@ -311,7 +310,7 @@ public class DataManager extends DataManagerAbstract {
                     String type = result.getString("data_type");
                     int amount = result.getInt("amount");
                     SpawnerData spawnerData = EpicSpawners.getInstance().getSpawnerManager().getSpawnerData(type);
-                    SpawnerStack stack = new SpawnerStack(spawnerData);
+                    SpawnerStack stack = new SpawnerStack(spawner, spawnerData);
                     stack.setStackSize(amount);
                     spawner.addSpawnerStack(stack);
                 }

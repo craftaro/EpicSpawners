@@ -119,7 +119,6 @@ public class EntityListeners implements Listener {
         if (!plugin.getSpawnManager().isNaturalSpawn(event.getEntity().getUniqueId()) && !Settings.COUNT_UNNATURAL_KILLS.getBoolean())
             return;
 
-
         if (!plugin.getSpawnerManager().getSpawnerData(event.getEntityType()).isActive()) return;
 
         SpawnerData spawnerData = plugin.getSpawnerManager().getSpawnerData(event.getEntityType());
