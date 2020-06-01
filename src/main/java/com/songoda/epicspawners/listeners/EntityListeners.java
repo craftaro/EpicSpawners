@@ -135,10 +135,9 @@ public class EntityListeners implements Listener {
         }
         PlayerDataManager playerDataManager = plugin.getPlayerDataManager();
 
-        boolean isPlayerData = playerDataManager.isPlayerData(player);
         PlayerData playerData = playerDataManager.getPlayerData(player);
         int amt = playerData.addKilledEntity(event.getEntityType(), amount);
-        if (isPlayerData)
+        if (amt != amount)
             plugin.getDataManager().updateEntityKill(player, event.getEntity().getType(), amt);
         else
             plugin.getDataManager().createEntityKill(player, event.getEntity().getType(), amt);
