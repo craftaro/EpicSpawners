@@ -1,11 +1,6 @@
 package com.songoda.epicspawners.listeners;
 
 import com.songoda.core.compatibility.ServerVersion;
-import com.songoda.core.nms.NmsManager;
-import com.songoda.core.nms.nbt.NBTCompound;
-import com.songoda.core.nms.nbt.NBTCore;
-import com.songoda.core.nms.nbt.NBTItem;
-import com.songoda.core.nms.nbt.NBTObject;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.player.PlayerData;
 import com.songoda.epicspawners.player.PlayerDataManager;
@@ -13,9 +8,12 @@ import com.songoda.epicspawners.settings.Settings;
 import com.songoda.epicspawners.spawners.spawner.Spawner;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.spawners.spawner.SpawnerStack;
+import com.songoda.lootables.loot.Drop;
+import com.songoda.lootables.loot.DropUtils;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.GameRule;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -25,9 +23,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.MetadataValue;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -99,16 +96,23 @@ public class EntityListeners implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onDeath(EntityDeathEvent event) {
         if (event.getEntity().getType() == EntityType.PLAYER) return;
+
         if (event.getEntity().hasMetadata("ES")) {
-            SpawnerData spawnerData = plugin.getSpawnerManager().getSpawnerData(event.getEntity().getMetadata("ES").get(0).asString());
-            if (!spawnerData.getEntityDroppedItems().isEmpty()) {
-                event.getDrops().clear();
-            }
-            for (ItemStack itemStack : spawnerData.getEntityDroppedItems()) {
-                event.getDrops().add(itemStack);
+            List<MetadataValue> values = event.getEntity().getMetadata("ES");
+            if (!values.isEmpty()) {
+                SpawnerData spawnerData = plugin.getSpawnerManager().getSpawnerData(values.get(0).asString());
+                if (plugin.getLootablesManager().getLootManager().getRegisteredLootables().containsKey(spawnerData.getIdentifyingName())) {
+                    List<Drop> drops = plugin.getLootablesManager().getDrops(event.getEntity(), spawnerData);
+
+                    if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13)
+                            && !event.getEntity().getWorld().getGameRuleValue(GameRule.DO_MOB_LOOT))
+                        drops.clear();
+
+                    DropUtils.processStackedDrop(event.getEntity(), drops, event);
+                }
             }
         }
         if (event.getEntity().getKiller() == null) return;
@@ -118,7 +122,6 @@ public class EntityListeners implements Listener {
 
         if (!plugin.getSpawnManager().isNaturalSpawn(event.getEntity().getUniqueId()) && !Settings.COUNT_UNNATURAL_KILLS.getBoolean())
             return;
-
 
         if (!plugin.getSpawnerManager().getSpawnerData(event.getEntityType()).isActive()) return;
 
@@ -136,10 +139,9 @@ public class EntityListeners implements Listener {
         }
         PlayerDataManager playerDataManager = plugin.getPlayerDataManager();
 
-        boolean isPlayerData = playerDataManager.isPlayerData(player);
         PlayerData playerData = playerDataManager.getPlayerData(player);
         int amt = playerData.addKilledEntity(event.getEntityType(), amount);
-        if (isPlayerData)
+        if (amt != amount)
             plugin.getDataManager().updateEntityKill(player, event.getEntity().getType(), amt);
         else
             plugin.getDataManager().createEntityKill(player, event.getEntity().getType(), amt);

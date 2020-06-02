@@ -96,7 +96,7 @@ public class Spawner {
 
 
     public SpawnerStack addSpawnerStack(SpawnerStack spawnerStack) {
-        this.spawnerStacks.addFirst(spawnerStack);
+        this.spawnerStacks.push(spawnerStack);
         spawnerStack.setSpawner(this);
         return spawnerStack;
     }
@@ -337,7 +337,7 @@ public class Spawner {
                 && (!Settings.OMNI_SPAWNERS.getBoolean() || !player.hasPermission("epicspawners.omni")))
             return false;
 
-        SpawnerChangeEvent event = new SpawnerChangeEvent(player, this, currentStackSize + 1, currentStackSize);
+        SpawnerChangeEvent event = new SpawnerChangeEvent(player, this, currentStackSize + amount, currentStackSize);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) return false;
 
@@ -365,8 +365,9 @@ public class Spawner {
             return true;
         }
 
-        SpawnerStack stack = new SpawnerStack(data, amount);
-        spawnerStacks.push(stack);
+        SpawnerStack stack = new SpawnerStack(this, data, amount);
+        addSpawnerStack(stack);
+        EpicSpawners.getInstance().getDataManager().createSpawnerStack(stack);
 
         if (player.getGameMode() != GameMode.CREATIVE || Settings.CHARGE_FOR_CREATIVE.getBoolean())
             ItemUtils.takeActiveItem(player, hand, 1);

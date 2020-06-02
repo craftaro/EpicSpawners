@@ -207,7 +207,7 @@ public class InteractListeners implements Listener {
         CreatureSpawner creatureSpawner = spawner.getCreatureSpawner();
         if (creatureSpawner == null) return null;
 
-        spawner.addSpawnerStack(new SpawnerStack(plugin.getSpawnerManager().getSpawnerData(creatureSpawner.getSpawnedType()), 1));
+        spawner.addSpawnerStack(new SpawnerStack(spawner, plugin.getSpawnerManager().getSpawnerData(creatureSpawner.getSpawnedType()), 1));
         plugin.getSpawnerManager().addSpawnerToWorld(location, spawner);
         EpicSpawners.getInstance().getDataManager().createSpawner(spawner);
         return spawner;

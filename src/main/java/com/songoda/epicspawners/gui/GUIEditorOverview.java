@@ -8,6 +8,7 @@ import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.utils.Methods;
 import com.songoda.epicspawners.utils.gui.AbstractGUI;
+import com.songoda.lootables.gui.GuiEditor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -179,7 +180,7 @@ public class GUIEditorOverview extends AbstractGUI {
                 new GUIEditorEdit(plugin, this, spawnerData, GUIEditorEdit.EditType.COMMAND, player)));
 
         registerClickable(24, ((player1, inventory1, cursor, slot, type) ->
-                new GUIEditorEdit(plugin, this, spawnerData, GUIEditorEdit.EditType.DROPS, player)));
+                plugin.getGuiManager().showGUI(player, new GUIEditorDrops(plugin, spawnerData, this))));
 
         registerClickable(25, ((player1, inventory1, cursor, slot, type) ->
                 new GUIEditorEdit(plugin, this, spawnerData, GUIEditorEdit.EditType.ENTITY, player)));

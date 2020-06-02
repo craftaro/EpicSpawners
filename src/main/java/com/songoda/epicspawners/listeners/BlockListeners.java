@@ -127,7 +127,7 @@ public class BlockListeners implements Listener {
             if (spawnerData == null) return;
 
             int spawnerStackSize = spawnerData.getStackSize(event.getItemInHand());
-            spawner.addSpawnerStack(new SpawnerStack(spawnerData, spawnerStackSize));
+            spawner.addSpawnerStack(new SpawnerStack(spawner, spawnerData, spawnerStackSize));
 
             Player player = event.getPlayer();
 
@@ -218,7 +218,7 @@ public class BlockListeners implements Listener {
                 CreatureSpawner creatureSpawner = spawner.getCreatureSpawner();
                 if (creatureSpawner == null) return;
 
-                spawner.addSpawnerStack(new SpawnerStack(plugin.getSpawnerManager().getSpawnerData(creatureSpawner.getSpawnedType())));
+                spawner.addSpawnerStack(new SpawnerStack(spawner, plugin.getSpawnerManager().getSpawnerData(creatureSpawner.getSpawnedType())));
                 plugin.getSpawnerManager().addSpawnerToWorld(location, spawner);
                 EpicSpawners.getInstance().getDataManager().createSpawner(spawner);
             }

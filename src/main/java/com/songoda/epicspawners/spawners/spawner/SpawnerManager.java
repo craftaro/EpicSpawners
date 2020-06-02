@@ -285,7 +285,6 @@ public class SpawnerManager {
             List<EntityType> entities = new ArrayList<>();
             List<Material> blocks = new ArrayList<>();
             List<Material> spawnBlocks = new ArrayList<>();
-            List<ItemStack> itemDrops = (List<ItemStack>) currentSection.getList("itemDrops", new ArrayList<>());
             List<ItemStack> items = (List<ItemStack>) currentSection.getList("items", new ArrayList<>());
             List<String> commands = currentSection.getStringList("command");
 
@@ -301,7 +300,7 @@ public class SpawnerManager {
             }
 
             SpawnerDataBuilder dataBuilder = new SpawnerDataBuilder(key).uuid(currentSection.getInt("uuid"))
-                    .entities(entities).blocks(blocks).items(items).entityDroppedItems(itemDrops).commands(commands)
+                    .entities(entities).blocks(blocks).items(items).commands(commands)
                     .spawnBlocks(spawnBlocks)
                     .active(currentSection.getBoolean("Allowed"))
                     .spawnOnFire(currentSection.getBoolean("Spawn-On-Fire"))
@@ -403,7 +402,6 @@ public class SpawnerManager {
 
             currentSection.set("blocks", Methods.getStrings(spawnerData.getBlocks()));
             currentSection.set("entities", Methods.getStrings(spawnerData.getEntities()));
-            currentSection.set("itemDrops", spawnerData.getEntityDroppedItems());
             currentSection.set("items", spawnerData.getItems());
             currentSection.set("command", spawnerData.getCommands());
 

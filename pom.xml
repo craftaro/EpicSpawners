@@ -2,7 +2,7 @@
     <groupId>com.songoda</groupId>
     <artifactId>EpicSpawners</artifactId>
     <modelVersion>4.0.0</modelVersion>
-    <version>6.3.14</version>
+    <version>6.3.15</version>
     <build>
         <defaultGoal>clean install</defaultGoal>
         <finalName>EpicSpawners-${project.version}</finalName>
@@ -55,6 +55,7 @@
                             <artifactSet>
                                 <includes>
                                     <include>com.songoda:SongodaCore</include>
+                                    <include>com.songoda:Lootables</include>
                                 </includes>
                             </artifactSet>
                             <filters>
@@ -119,6 +120,11 @@
             <groupId>com.github.brcdev-minecraft</groupId>
             <artifactId>shopgui-api</artifactId>
             <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.songoda</groupId>
+            <artifactId>Lootables</artifactId>
+            <version>1.0.7</version>
         </dependency>
     </dependencies>
 </project>

@@ -22,6 +22,7 @@ import com.songoda.epicspawners.commands.*;
 import com.songoda.epicspawners.database.DataManager;
 import com.songoda.epicspawners.database.migrations._1_InitialMigration;
 import com.songoda.epicspawners.listeners.*;
+import com.songoda.epicspawners.lootables.LootablesManager;
 import com.songoda.epicspawners.player.PlayerData;
 import com.songoda.epicspawners.player.PlayerDataManager;
 import com.songoda.epicspawners.settings.Settings;
@@ -58,6 +59,7 @@ public class EpicSpawners extends SongodaPlugin {
     private SpawnerManager spawnerManager;
     private BoostManager boostManager;
     private CommandManager commandManager;
+    private LootablesManager lootablesManager;
 
     private BlacklistHandler blacklistHandler;
 
@@ -132,6 +134,9 @@ public class EpicSpawners extends SongodaPlugin {
         this.blacklistHandler = new BlacklistHandler();
         this.playerActionManager = new PlayerDataManager();
 
+        this.lootablesManager = new LootablesManager();
+        this.lootablesManager.getLootManager().loadLootables();
+
         this.checkStorage();
 
         PluginManager pluginManager = Bukkit.getPluginManager();
@@ -193,7 +198,7 @@ public class EpicSpawners extends SongodaPlugin {
                                 if (stackKey == null) continue;
                                 String[] stack = stackKey.split(":");
                                 if (!spawnerManager.isSpawnerData(stack[0].toLowerCase())) continue;
-                                spawner.addSpawnerStack(new SpawnerStack(spawnerManager.getSpawnerData(stack[0]), Integer.parseInt(stack[1])));
+                                spawner.addSpawnerStack(new SpawnerStack(spawner, spawnerManager.getSpawnerData(stack[0]), Integer.parseInt(stack[1])));
                             }
 
                             if (row.getItems().containsKey("placedby"))
@@ -449,5 +454,9 @@ public class EpicSpawners extends SongodaPlugin {
 
     public DataManager getDataManager() {
         return dataManager;
+    }
+
+    public LootablesManager getLootablesManager() {
+        return lootablesManager;
     }
 }
