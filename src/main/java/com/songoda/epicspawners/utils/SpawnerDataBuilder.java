@@ -221,18 +221,6 @@ public final class SpawnerDataBuilder {
     }
 
 
-    public SpawnerDataBuilder entityDroppedItems(Collection<ItemStack> items) {
-        this.spawnerData.setEntityDroppedItems(new ArrayList<>(items));
-        return this;
-    }
-
-
-    public SpawnerDataBuilder entityDroppedItems(ItemStack... items) {
-        this.spawnerData.setEntityDroppedItems(Arrays.asList(items));
-        return this;
-    }
-
-
     public SpawnerDataBuilder tickRate(String tickRate) {
         this.spawnerData.setTickRate(tickRate);
         return this;

@@ -55,9 +55,7 @@ public class GUIEditorEdit extends AbstractGUI {
             if (num == 17)
                 num = num + 2;
 
-            if (spawnerData.getEntityDroppedItems().size() >= spot + 1 && editType == EditType.DROPS) {
-                inventory.setItem(num, spawnerData.getEntityDroppedItems().get(spot));
-            } else if (spawnerData.getItems().size() >= spot + 1 && editType == EditType.ITEM) {
+            if (spawnerData.getItems().size() >= spot + 1 && editType == EditType.ITEM) {
                 inventory.setItem(num, spawnerData.getItems().get(spot));
             } else if (spawnerData.getBlocks().size() >= spot + 1 && editType == EditType.BLOCK) {
                 inventory.setItem(num, new ItemStack(spawnerData.getBlocks().get(spot)));
@@ -109,7 +107,7 @@ public class GUIEditorEdit extends AbstractGUI {
                 plugin.getLocale().getMessage("general.nametag.back").getMessage());
 
 
-        if (editType != EditType.ITEM && editType != EditType.BLOCK && editType != EditType.DROPS) {
+        if (editType != EditType.ITEM && editType != EditType.BLOCK) {
             ItemStack add;
             String addName;
             if (editType == EditType.COMMAND) {
@@ -211,8 +209,6 @@ public class GUIEditorEdit extends AbstractGUI {
     private void save(Player player, List<ItemStack> items) {
         if (editType == EditType.ITEM) {
             spawnerData.setItems(items);
-        } else if (editType == EditType.DROPS) {
-            spawnerData.setEntityDroppedItems(items);
         } else if (editType == EditType.BLOCK) {
             List<Material> list = new ArrayList<>();
             for (ItemStack item : items) {
@@ -243,8 +239,7 @@ public class GUIEditorEdit extends AbstractGUI {
         ENTITY("Entity"),
         ITEM("Item"),
         COMMAND("Command"),
-        BLOCK("Block"),
-        DROPS("Drops");
+        BLOCK("Block");
 
         private final String name;
 

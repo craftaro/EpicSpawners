@@ -22,6 +22,7 @@ import com.songoda.epicspawners.commands.*;
 import com.songoda.epicspawners.database.DataManager;
 import com.songoda.epicspawners.database.migrations._1_InitialMigration;
 import com.songoda.epicspawners.listeners.*;
+import com.songoda.epicspawners.lootables.LootablesManager;
 import com.songoda.epicspawners.player.PlayerData;
 import com.songoda.epicspawners.player.PlayerDataManager;
 import com.songoda.epicspawners.settings.Settings;
@@ -58,6 +59,7 @@ public class EpicSpawners extends SongodaPlugin {
     private SpawnerManager spawnerManager;
     private BoostManager boostManager;
     private CommandManager commandManager;
+    private LootablesManager lootablesManager;
 
     private BlacklistHandler blacklistHandler;
 
@@ -131,6 +133,9 @@ public class EpicSpawners extends SongodaPlugin {
         this.spawnerManager = new SpawnerManager(this);
         this.blacklistHandler = new BlacklistHandler();
         this.playerActionManager = new PlayerDataManager();
+
+        this.lootablesManager = new LootablesManager();
+        this.lootablesManager.getLootManager().loadLootables();
 
         this.checkStorage();
 
@@ -449,5 +454,9 @@ public class EpicSpawners extends SongodaPlugin {
 
     public DataManager getDataManager() {
         return dataManager;
+    }
+
+    public LootablesManager getLootablesManager() {
+        return lootablesManager;
     }
 }

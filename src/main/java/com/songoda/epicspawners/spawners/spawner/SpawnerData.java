@@ -57,7 +57,6 @@ public class SpawnerData {
 
     private boolean particleEffectBoostedOnly = true;
 
-    private List<ItemStack> itemDrops;
     private List<EntityType> entities;
     private List<Material> blocks;
     private List<ItemStack> items;
@@ -67,7 +66,7 @@ public class SpawnerData {
 
     private List<SpawnCondition> spawnConditions = new ArrayList<>();
 
-    public SpawnerData(int uuid, String name, List<EntityType> entities, List<Material> blocks, List<ItemStack> items, List<ItemStack> itemDrops, List<String> commands) {
+    public SpawnerData(int uuid, String name, List<EntityType> entities, List<Material> blocks, List<ItemStack> items, List<String> commands) {
         Preconditions.checkNotNull(name, "Name cannot be null");
 
         this.uuid = uuid == 0 ? (new Random()).nextInt(9999) : uuid;
@@ -77,13 +76,12 @@ public class SpawnerData {
         this.entities = entities;
         this.blocks = blocks;
         this.items = items;
-        this.itemDrops = itemDrops;
         this.commands = commands;
         reloadSpawnMethods();
     }
 
     public SpawnerData(String name) {
-        this(0, name, Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
+        this(0, name, Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
     }
 
     public void addDefaultConditions() {
@@ -363,17 +361,6 @@ public class SpawnerData {
     public void setBlocks(List<Material> blocks) {
         this.blocks = blocks;
     }
-
-
-    public List<ItemStack> getEntityDroppedItems() {
-        return itemDrops;
-    }
-
-
-    public void setEntityDroppedItems(List<ItemStack> itemDrops) {
-        this.itemDrops = itemDrops;
-    }
-
 
     public List<ItemStack> getItems() {
         return Collections.unmodifiableList(items);
