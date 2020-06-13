@@ -79,6 +79,7 @@ public class LootablesManager {
         }
         return lootManager.runLoot(modify,
                 entity.getFireTicks() > 0,
+                entity instanceof Creeper && ((Creeper)entity).isPowered(),
                 entity.getKiller() != null ? entity.getKiller().getItemInHand() : null,
                 killer,
                 loot,
