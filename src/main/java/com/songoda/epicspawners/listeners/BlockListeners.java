@@ -5,6 +5,7 @@ import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.core.hooks.EconomyManager;
 import com.songoda.core.utils.ItemUtils;
+import com.songoda.core.utils.PlayerUtils;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.api.events.SpawnerBreakEvent;
 import com.songoda.epicspawners.api.events.SpawnerChangeEvent;
@@ -100,21 +101,9 @@ public class BlockListeners implements Listener {
         return false;
     }
 
-    private int maxSpawners(Player player) {
-        int limit = -1;
-        for (PermissionAttachmentInfo permissionAttachmentInfo : player.getEffectivePermissions()) {
-            if (!permissionAttachmentInfo.getPermission().toLowerCase().startsWith("epicspawners.limit")) continue;
-            int num = Integer.parseInt(permissionAttachmentInfo.getPermission().split("\\.")[2]);
-            if (num > limit)
-                limit = num;
-        }
-        if (limit == -1) limit = plugin.getConfig().getInt("Main.Max Spawners Per Player");
-        return limit;
-    }
-
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onSpawnerPlace(BlockPlaceEvent event) {
-        //We are ignoring canceled inside the event so that it will still remove holograms when the event is canceled.
+        // We are ignoring canceled inside the event so that it will still remove holograms when the event is canceled.
         if (!event.isCancelled()) {
             if (event.getBlock().getType() != (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER"))
                     || ((CreatureSpawner) event.getBlock().getState()).getSpawnedType() == EntityType.FIREWORK) return;
@@ -142,7 +131,8 @@ public class BlockListeners implements Listener {
             }
 
             int amountPlaced = plugin.getSpawnerManager().getAmountPlaced(player);
-            int maxSpawners = maxSpawners(player);
+            int maxSpawners = PlayerUtils.getNumberFromPermission(player, "epicspawners.limit",
+                    plugin.getConfig().getInt("Main.Max Spawners Per Player"));
 
             if (maxSpawners != -1 && amountPlaced > maxSpawners) {
                 player.sendMessage(plugin.getLocale().getMessage("event.spawner.toomany")

@@ -1,5 +1,6 @@
 package com.songoda.epicspawners.spawners.spawner.option;
 
+import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.core.utils.EntityUtils;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.api.events.SpawnerSpawnEvent;
@@ -50,7 +51,7 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
 
     private Map<String, Integer> cache = new HashMap<>();
     private Class<?> clazzMobSpawnerData, clazzEnumMobSpawn, clazzWorldServer, clazzGeneratorAccess, clazzEntityTypes, clazzNBTTagCompound, clazzCraftWorld, clazzWorld, clazzChunkRegionLoader, clazzEntity, clazzCraftEntity, clazzEntityInsentient, clazzGroupDataEntity, clazzDifficultyDamageScaler, clazzBlockPosition, clazzIWorldReader, clazzICollisionAccess, clazzAxisAlignedBB;
-    private Method methodGetEntity, methodSetString, methodSetPosition, methodA, methodAddEntity, methodGetHandle, methodChunkRegionLoaderA, methodEntityGetBukkitEntity, methodCraftEntityTeleport, methodEntityInsentientPrepare, methodChunkRegionLoaderA2, methodGetDamageScaler, methodGetCubes, methodGetBoundingBox;
+    private Method methodGetEntity, methodgetChunkCoordinates, methodSetString, methodSetPosition, methodA, methodAddEntity, methodGetHandle, methodChunkRegionLoaderA, methodEntityGetBukkitEntity, methodCraftEntityTeleport, methodEntityInsentientPrepare, methodChunkRegionLoaderA2, methodGetDamageScaler, methodGetCubes, methodGetBoundingBox;
     private Field fieldWorldRandom;
 
     public SpawnOptionEntity_1_13(EntityType... types) {
@@ -84,6 +85,9 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
             clazzIWorldReader = Class.forName("net.minecraft.server." + ver + ".IWorldReader");
             clazzAxisAlignedBB = Class.forName("net.minecraft.server." + ver + ".AxisAlignedBB");
             clazzEntityTypes = Class.forName("net.minecraft.server." + ver + ".EntityTypes");
+
+            if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_16))
+                methodgetChunkCoordinates = clazzEntity.getMethod("getChunkCoordinates");
 
             try {
                 clazzICollisionAccess = Class.forName("net.minecraft.server." + ver + ".ICollisionAccess");
@@ -182,7 +186,9 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
         spawnCount = Math.min(maxEntitiesAllowed - size, spawnCount) + spawner.getBoosts().stream().mapToInt(Boosted::getAmountBoosted).sum();
 
         // Check to make sure we're not spawning a stack smaller than the minimum stack size.
-        boolean useUltimateStacker = this.useUltimateStacker
+        boolean useUltimateStacker = this.useUltimateStacker && com.songoda.ultimatestacker.settings
+                .Settings.DISABLED_WORLDS.getStringList().stream()
+                .anyMatch(worldStr -> location.getWorld().getName().equalsIgnoreCase(worldStr))
                 && spawnCount >= com.songoda.ultimatestacker.settings.Settings.MIN_STACK_ENTITIES.getInt();
 
         int spawnCountUsed = useUltimateStacker ? 1 : spawnCount;
@@ -233,7 +239,11 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
                     methodSetPosition.invoke(objEntity, x, y, z);
                 }
 
-                Object objBlockPosition = clazzBlockPosition.getConstructor(clazzEntity).newInstance(objEntity);
+                Object objBlockPosition;
+                if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_16))
+                    objBlockPosition = methodgetChunkCoordinates.invoke(objEntity);
+                else
+                    objBlockPosition = clazzBlockPosition.getConstructor(clazzEntity).newInstance(objEntity);
                 Object objDamageScaler = methodGetDamageScaler.invoke(objWorld, objBlockPosition);
 
                 Object objEntityInsentient = clazzEntityInsentient.isInstance(objEntity) ? clazzEntityInsentient.cast(objEntity) : null;

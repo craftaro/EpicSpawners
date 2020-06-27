@@ -296,7 +296,10 @@ public class SpawnerManager {
                 spawnBlocks.add(Material.matchMaterial(block.toUpperCase().trim()));
             }
             for (String entity : currentSection.getStringList("entities")) {
-                entities.add(EntityType.valueOf(entity));
+                try {
+                    entities.add(EntityType.valueOf(entity));
+                } catch (IllegalArgumentException ignored) {
+                }
             }
 
             SpawnerDataBuilder dataBuilder = new SpawnerDataBuilder(key).uuid(currentSection.getInt("uuid"))

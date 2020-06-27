@@ -1,5 +1,7 @@
 package com.songoda.epicspawners.utils;
 
+import org.bukkit.entity.EntityType;
+
 /**
  * Created by songoda on 3/20/2017.
  */
@@ -71,7 +73,11 @@ public enum HeadType {
     PILLAGER("http://textures.minecraft.net/texture/63550f89aea88665804c2fd1b6682930c23233184fdc060991305718ed660597"),
     RAVAGER("http://textures.minecraft.net/texture/d91a9d864e36fbec19b584bcb71292530755b10c4e60784fec92b51f8189363c"),
     TRADER_LLAMA("http://textures.minecraft.net/texture/6bc438fc1fbbaea2289aabecedd3fdf269ddc979bf8b5c6a8fc4bb8dcd4e1fe"),
-    BEE("http://textures.minecraft.net/texture/5162dd0b9f65b58a1e70f81d8e03e8ff6c53e4e985bdbe0186558d8a69a81189");
+    BEE("http://textures.minecraft.net/texture/5162dd0b9f65b58a1e70f81d8e03e8ff6c53e4e985bdbe0186558d8a69a81189"),
+    PIGLIN("http://textures.minecraft.net/texture/8ed4c6c5e8ba2c3ab05cb47258a4fe95bd3b92ba0a68db6d6e961d830baa0179"),
+    HOGLIN("http://textures.minecraft.net/texture/6c8c7fb74e69885f294ca6652553dd5938dac1164f652d4843abe0e891453da4"),
+    STRIDER("http://textures.minecraft.net/texture/16a9186a317e31e77b85a625f9d0b1cf1809f9d46a4aa153e639b60d30743fcf"),
+    ZOMBIFIED_PIGLIN("http://textures.minecraft.net/texture/f05e06b1d1357a3574268a5189615983ceffc185993047da47ac947f3b7507f3");
 
     private final String url;
 
