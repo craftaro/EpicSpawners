@@ -14,7 +14,6 @@ import com.songoda.epicspawners.settings.Settings;
 import com.songoda.epicspawners.spawners.spawner.Spawner;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.spawners.spawner.SpawnerStack;
-import com.songoda.epicspawners.utils.Methods;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -29,7 +28,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.permissions.PermissionAttachmentInfo;
 
 /**
  * Created by songoda on 2/25/2017.
@@ -87,12 +85,12 @@ public class BlockListeners implements Listener {
                     || !plugin.getConfig().getBoolean("Main.OmniSpawners Enabled") && spawner.getSpawnerStacks().size() != 1) {
                 continue;
             }
-
+            
+            CompatibleHand hand = CompatibleHand.getHand(event);
             if (plugin.getConfig().getBoolean("Main.Deny Place On Force Combine"))
                 plugin.getLocale().getMessage("event.block.forcedeny").sendPrefixedMessage(player);
-            else if (spawner.stack(player, placedSpawner.getFirstStack().getSpawnerData(), placedSpawner.getSpawnerDataCount())) {
+            else if (spawner.stack(player, placedSpawner.getFirstStack().getSpawnerData(), placedSpawner.getSpawnerDataCount(), hand)) {
                 plugin.getLocale().getMessage("event.block.mergedistance").sendPrefixedMessage(player);
-                CompatibleHand hand = CompatibleHand.getHand(event);
                 if (hand == CompatibleHand.OFF_HAND)
                     ItemUtils.takeActiveItem(player, hand);
             }

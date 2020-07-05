@@ -184,7 +184,7 @@ public class InteractListeners implements Listener {
             if (!player.isSneaking()) {
                 SpawnerData spawnerData = plugin.getSpawnerManager().getSpawnerData(item);
                 if (player.hasPermission("epicspawners.stack." + spawnerData.getIdentifyingName()) || player.hasPermission("epicspawners.stack.*")) {
-                    spawner.preStack(player, item);
+                    spawner.preStack(player, item, CompatibleHand.getHand(event));
                     plugin.updateHologram(spawner);
                     event.setCancelled(true);
                 }
