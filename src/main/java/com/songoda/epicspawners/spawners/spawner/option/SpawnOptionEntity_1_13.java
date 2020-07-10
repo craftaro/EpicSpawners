@@ -188,7 +188,7 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
         // Check to make sure we're not spawning a stack smaller than the minimum stack size.
         boolean useUltimateStacker = this.useUltimateStacker && com.songoda.ultimatestacker.settings
                 .Settings.DISABLED_WORLDS.getStringList().stream()
-                .anyMatch(worldStr -> location.getWorld().getName().equalsIgnoreCase(worldStr))
+                .noneMatch(worldStr -> location.getWorld().getName().equalsIgnoreCase(worldStr))
                 && spawnCount >= com.songoda.ultimatestacker.settings.Settings.MIN_STACK_ENTITIES.getInt();
 
         int spawnCountUsed = useUltimateStacker ? 1 : spawnCount;

@@ -165,7 +165,9 @@ public class SpawnOptionEntity_1_12 implements SpawnOption {
         spawnCount = Math.min(maxEntitiesAllowed - size, spawnCount) + spawner.getBoosts().stream().mapToInt(Boosted::getAmountBoosted).sum();
 
         // Check to make sure we're not spawning a stack smaller than the minimum stack size.
-        boolean useUltimateStacker = this.useUltimateStacker
+        boolean useUltimateStacker = this.useUltimateStacker && com.songoda.ultimatestacker.settings
+                .Settings.DISABLED_WORLDS.getStringList().stream()
+                .noneMatch(worldStr -> location.getWorld().getName().equalsIgnoreCase(worldStr))
                 && spawnCount >= com.songoda.ultimatestacker.settings.Settings.MIN_STACK_ENTITIES.getInt();
 
         int spawnCountUsed = useUltimateStacker ? 1 : spawnCount;
