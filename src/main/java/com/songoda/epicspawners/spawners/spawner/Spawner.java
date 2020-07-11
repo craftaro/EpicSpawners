@@ -26,6 +26,7 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import java.util.*;
+import org.bukkit.inventory.EquipmentSlot;
 
 public class Spawner {
 
@@ -317,12 +318,12 @@ public class Spawner {
         return true;
     }
 
-    public boolean preStack(Player player, ItemStack itemStack) {
+    public boolean preStack(Player player, ItemStack itemStack, CompatibleHand hand) {
         SpawnerData spawnerData = EpicSpawners.getInstance().getSpawnerManager().getSpawnerData(itemStack);
-        return stack(player, spawnerData, spawnerData.getStackSize(itemStack));
+        return stack(player, spawnerData, spawnerData.getStackSize(itemStack), hand);
     }
 
-    public boolean stack(Player player, SpawnerData data, int amount) {
+    public boolean stack(Player player, SpawnerData data, int amount, CompatibleHand hand) {
         EpicSpawners instance = EpicSpawners.getInstance();
 
         int max = Settings.SPAWNERS_MAX.getInt();
@@ -350,8 +351,6 @@ public class Spawner {
 
             amount = max - currentStackSize;
         }
-
-        CompatibleHand hand = CompatibleHand.getHand(event);
 
         for (SpawnerStack stack : spawnerStacks) {
             if (!stack.getSpawnerData().equals(data)) continue;
