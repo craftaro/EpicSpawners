@@ -36,7 +36,6 @@ public class SpawnerSpawnTask extends BukkitRunnable {
         new ArrayList<>(manager.getSpawners()).forEach(spawner -> {
             try {
                 if (spawner.getWorld() == null
-                        || spawner.getWorld() == null
                         || !spawner.getWorld().isChunkLoaded(spawner.getX() >> 4, spawner.getZ() >> 4)) return;
 
                 if (spawner.getLocation().getBlock().getType() != CompatibleMaterial.SPAWNER.getMaterial()
@@ -48,7 +47,7 @@ public class SpawnerSpawnTask extends BukkitRunnable {
                 if (spawner.getSpawnerDataCount() == 0
                         || !spawner.checkConditions()
                         || (spawner.getPlacedBy() == null && Settings.DISABLE_NATURAL_SPAWNERS.getBoolean())) return;
-
+                        
                 CreatureSpawner cSpawner = spawner.getCreatureSpawner();
                 if (cSpawner == null) return;
                 int delay = spawner.getCreatureSpawner().getDelay();

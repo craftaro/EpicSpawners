@@ -495,7 +495,7 @@ public class Spawner {
                 min = tickMin;
                 continue;
             }
-            if ((max + min) < (tickMax + min)) {
+            if ((max + min) < (tickMax + min)) { //TODO shouldn't that be tickMin instead of min?
                 max = tickMax;
                 min = tickMin;
             }
@@ -504,7 +504,7 @@ public class Spawner {
 
         if (getSpawnerDataCount() == 0) return 0;
 
-        int delay = (int) (Math.random() * max + min) + extraTicks;
+        int delay = (int) (Math.random() * (max - min)) + min + extraTicks;
 
         getCreatureSpawner().setDelay(delay);
         getCreatureSpawner().update();
