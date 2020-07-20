@@ -55,7 +55,7 @@ public class SpawnOptionEntity_1_12 implements SpawnOption {
 
     public SpawnOptionEntity_1_12(EntityType... types) {
         this.types = types;
-        this.mgr = new ScriptEngineManager();
+        this.mgr = new ScriptEngineManager(null);
         this.engine = mgr.getEngineByName("JavaScript");
         if (Bukkit.getPluginManager().isPluginEnabled("UltimateStacker")) {
             this.useUltimateStacker = ((Plugin) com.songoda.ultimatestacker.UltimateStacker.getInstance()).getConfig().getBoolean("Entities.Enabled");

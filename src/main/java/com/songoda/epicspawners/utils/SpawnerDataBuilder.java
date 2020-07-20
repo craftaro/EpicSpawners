@@ -59,6 +59,12 @@ public final class SpawnerDataBuilder {
     }
 
 
+    public SpawnerDataBuilder pickDamage(int damage) {
+        this.spawnerData.setPickDamage((short)damage);
+        return this;
+    }
+
+
     public SpawnerDataBuilder spawnBlocks(Collection<Material> spawnBlocks) {
         this.spawnerData.setSpawnBlocks(new ArrayList<>(spawnBlocks));
         return this;

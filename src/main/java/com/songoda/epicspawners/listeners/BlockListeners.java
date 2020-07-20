@@ -85,7 +85,7 @@ public class BlockListeners implements Listener {
                     || !plugin.getConfig().getBoolean("Main.OmniSpawners Enabled") && spawner.getSpawnerStacks().size() != 1) {
                 continue;
             }
-            
+
             CompatibleHand hand = CompatibleHand.getHand(event);
             if (plugin.getConfig().getBoolean("Main.Deny Place On Force Combine"))
                 plugin.getLocale().getMessage("event.block.forcedeny").sendPrefixedMessage(player);
@@ -264,6 +264,10 @@ public class BlockListeners implements Listener {
             }
 
             SpawnerData firstData = spawner.getFirstStack().getSpawnerData();
+
+            CompatibleHand hand = CompatibleHand.getHand(event);
+            if (hand.getItem(player).getType().name().endsWith("PICKAXE") && !player.hasPermission("epicspawners.nopickdamage"))
+                hand.damageItem(player, spawner.getFirstStack().getSpawnerData().getPickDamage());
 
             if (spawner.unstack(event.getPlayer())) {
                 if (event.getBlock().getType() != Material.AIR)

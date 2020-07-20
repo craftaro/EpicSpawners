@@ -2,10 +2,13 @@ package com.songoda.epicspawners.blacklist;
 
 import com.songoda.core.configuration.Config;
 import com.songoda.epicspawners.EpicSpawners;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by songoda on 2/25/2017.
@@ -13,29 +16,30 @@ import java.util.List;
 public class BlacklistHandler {
 
     private Config blackConfig = new Config(EpicSpawners.getInstance(), "blacklist.yml");
+    private List<String> list;
 
     public BlacklistHandler() {
         blackConfig.load();
         loadBlacklistFile();
+        list = blackConfig.getStringList("settings.blacklist")
+                .stream().map(String::toLowerCase).collect(Collectors.toList());
     }
 
     public boolean isBlacklisted(Player player, boolean notify) {
-        List<String> list = blackConfig.getStringList("settings.blacklist");
-        String cWorld = player.getWorld().getName();
-        for (String world : list) {
-            if (!cWorld.equalsIgnoreCase(world)) continue;
-            if (notify) EpicSpawners.getInstance().getLocale().getMessage("event.block.blacklisted").sendPrefixedMessage(player);
+        if (list.contains(player.getWorld().getName().toLowerCase())) {
+            if (notify)
+                EpicSpawners.getInstance().getLocale().getMessage("event.block.blacklisted").sendPrefixedMessage(player);
             return true;
         }
         return false;
     }
 
+    public boolean isBlacklisted(World world) {
+        return list.contains(world.getName().toLowerCase());
+    }
+
     private void loadBlacklistFile() {
-        List<String> list = new ArrayList<>();
-        list.add("world2");
-        list.add("world3");
-        list.add("world4");
-        list.add("world5");
+        List<String> list = new ArrayList<>(Arrays.asList("world2", "world3", "world4", "world5"));
         blackConfig.addDefault("settings.blacklist", list);
 
         blackConfig.options().copyDefaults(true);

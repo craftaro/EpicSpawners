@@ -244,6 +244,7 @@ public class SpawnerManager {
         spawnerConfig.addDefault(section + ".Custom-ECO-Cost", 0);
         spawnerConfig.addDefault(section + ".Custom-XP-Cost", 0);
         spawnerConfig.addDefault(section + ".Spawn-Limit", -1);
+        spawnerConfig.addDefault(section + ".Pick-Damage", 1);
         spawnerConfig.addDefault(section + ".Tick-Rate", "800:200");
         spawnerConfig.addDefault(section + ".Spawn-Effect", "NONE");
         spawnerConfig.addDefault(section + ".Spawn-Effect-Particle", "REDSTONE");
@@ -312,6 +313,7 @@ public class SpawnerManager {
                     .convertRatio(currentSection.getString("Convert-Ratio"))
                     .inShop(currentSection.getBoolean("In-Shop"))
                     .pickupCost(currentSection.getDouble("Pickup-Cost"))
+                    .pickDamage(currentSection.getInt("Pick-Damage"))
                     .craftable(currentSection.getBoolean("Craftable"))
                     .recipe(currentSection.getString("Recipe-Layout"))
                     .recipeIngredients(currentSection.getStringList("Recipe-Ingredients"))
@@ -426,6 +428,7 @@ public class SpawnerManager {
             currentSection.set("Craftable", spawnerData.isCraftable());
             currentSection.set("Recipe-Layout", spawnerData.getRecipe());
             currentSection.set("Recipe-Ingredients", spawnerData.getRecipeIngredients());
+            currentSection.set("Pick-Damage", spawnerData.getPickDamage());
 
             currentSection.set("Spawn-Effect", spawnerData.getParticleEffect().name());
             currentSection.set("Spawn-Effect-Particle", spawnerData.getSpawnEffectParticle().name());

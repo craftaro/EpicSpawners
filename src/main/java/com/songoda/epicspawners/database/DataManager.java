@@ -1,5 +1,6 @@
 package com.songoda.epicspawners.database;
 
+import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.core.database.DataManagerAbstract;
 import com.songoda.core.database.DatabaseConnector;
 import com.songoda.epicspawners.EpicSpawners;
@@ -9,10 +10,7 @@ import com.songoda.epicspawners.boost.types.BoostedSpawner;
 import com.songoda.epicspawners.spawners.spawner.Spawner;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.spawners.spawner.SpawnerStack;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.EntityType;
 import org.bukkit.plugin.Plugin;
 
@@ -221,7 +219,10 @@ public class DataManager extends DataManagerAbstract {
                 ResultSet result = statement.executeQuery(selectEntityKills);
                 while (result.next()) {
                     UUID player = UUID.fromString(result.getString("player"));
-                    EntityType type = EntityType.valueOf(result.getString("entity_type"));
+                    String typeStr = result.getString("entity_type");
+                    EntityType type = typeStr.equals("PIG_ZOMBIE")
+                            && ServerVersion.isServerVersionAtLeast(ServerVersion.V1_16)
+                            ? EntityType.valueOf("ZOMBIFIED_PIGLIN") : EntityType.valueOf(typeStr);
                     int count = result.getInt("count");
                     if (!entityKills.containsKey(player))
                         entityKills.put(player, new HashMap<>());
