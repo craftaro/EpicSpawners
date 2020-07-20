@@ -103,7 +103,7 @@
         <dependency>
             <groupId>com.songoda</groupId>
             <artifactId>SongodaCore</artifactId> 
-            <version>maven-version-number</version>
+            <version>LATEST</version>
         </dependency>
         <dependency>
             <groupId>com.songoda</groupId>
