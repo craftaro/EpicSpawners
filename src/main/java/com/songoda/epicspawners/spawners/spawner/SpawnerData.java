@@ -39,6 +39,7 @@ public class SpawnerData {
     private int upgradeCostExperience = 0;
     private int killGoal = 0;
     private int spawnLimit = -1;
+    private short pickDamage = 1;
     private String displayName;
     private Material displayItem = null;
 
@@ -381,6 +382,13 @@ public class SpawnerData {
         this.commands = commands;
     }
 
+    public short getPickDamage() {
+        return pickDamage;
+    }
+
+    public void setPickDamage(short pickDamage) {
+        this.pickDamage = pickDamage;
+    }
 
     public String getTickRate() {
         return tickRate;
