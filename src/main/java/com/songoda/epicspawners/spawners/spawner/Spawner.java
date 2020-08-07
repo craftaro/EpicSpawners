@@ -285,7 +285,7 @@ public class Spawner {
 
                 double rand = Math.random() * 100;
 
-                if (rand - ch < 0 || ch == 100) {
+                if ((rand - ch < 0 || ch == 100) && ch != 0) {
                     SpawnerDropEvent placeEvent = new SpawnerDropEvent(player, this);
                     Bukkit.getPluginManager().callEvent(placeEvent);
                     if (placeEvent.isCancelled()) {
