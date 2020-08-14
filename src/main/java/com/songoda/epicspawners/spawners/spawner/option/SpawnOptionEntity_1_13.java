@@ -50,7 +50,7 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
     private boolean mcmmo;
 
     private Map<String, Integer> cache = new HashMap<>();
-    private Class<?> clazzMobSpawnerData, clazzEnumMobSpawn, clazzWorldServer, clazzGeneratorAccess, clazzEntityTypes, clazzNBTTagCompound, clazzCraftWorld, clazzWorld, clazzChunkRegionLoader, clazzEntity, clazzCraftEntity, clazzEntityInsentient, clazzGroupDataEntity, clazzDifficultyDamageScaler, clazzBlockPosition, clazzIWorldReader, clazzICollisionAccess, clazzAxisAlignedBB;
+    private Class<?> clazzMobSpawnerData, clazzEnumMobSpawn, clazzWorldServer, clazzWorldAccess, clazzGeneratorAccess, clazzEntityTypes, clazzNBTTagCompound, clazzCraftWorld, clazzWorld, clazzChunkRegionLoader, clazzEntity, clazzCraftEntity, clazzEntityInsentient, clazzGroupDataEntity, clazzDifficultyDamageScaler, clazzBlockPosition, clazzIWorldReader, clazzICollisionAccess, clazzAxisAlignedBB;
     private Method methodGetEntity, methodgetChunkCoordinates, methodSetString, methodSetPosition, methodA, methodAddEntity, methodGetHandle, methodChunkRegionLoaderA, methodEntityGetBukkitEntity, methodCraftEntityTeleport, methodEntityInsentientPrepare, methodChunkRegionLoaderA2, methodGetDamageScaler, methodGetCubes, methodGetBoundingBox;
     private Field fieldWorldRandom;
 
@@ -97,7 +97,10 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
                 methodGetCubes = clazzIWorldReader.getDeclaredMethod("getCubes", clazzEntity, clazzAxisAlignedBB);
             }
 
-            clazzGeneratorAccess = Class.forName("net.minecraft.server." + ver + ".GeneratorAccess");
+            if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_16) && ver.equals("v1_16_R1"))
+                clazzGeneratorAccess = Class.forName("net.minecraft.server." + ver + ".GeneratorAccess");
+            else
+                clazzWorldAccess = Class.forName("net.minecraft.server." + ver + ".WorldAccess");
 
             try {
                 methodGetEntity = clazzMobSpawnerData.getDeclaredMethod("getEntity");
@@ -127,7 +130,7 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
 
                 clazzWorldServer = Class.forName("net.minecraft.server." + ver + ".WorldServer");
 
-                methodEntityInsentientPrepare = clazzEntityInsentient.getDeclaredMethod("prepare", clazzGeneratorAccess, clazzDifficultyDamageScaler, clazzEnumMobSpawn, clazzGroupDataEntity, clazzNBTTagCompound);
+                methodEntityInsentientPrepare = clazzEntityInsentient.getDeclaredMethod("prepare", clazzGeneratorAccess == null ? clazzWorldAccess : clazzGeneratorAccess, clazzDifficultyDamageScaler, clazzEnumMobSpawn, clazzGroupDataEntity, clazzNBTTagCompound);
                 methodAddEntity = clazzWorldServer.getDeclaredMethod("addEntity", clazzEntity, Class.forName("org.bukkit.event.entity.CreatureSpawnEvent$SpawnReason"));
             }
 
