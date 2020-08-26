@@ -21,6 +21,7 @@ import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
@@ -178,7 +179,7 @@ public class SpawnOptionEntity_1_12 implements SpawnOption {
             if (entity != null) {
                 // If we're using UltimateStacker and this entity is indeed stackable then spawn a single stack with the desired stack size.
                 if (useUltimateStacker && com.songoda.ultimatestacker.UltimateStacker.getInstance().getMobFile().getBoolean("Mobs." + entity.getType().name() + ".Enabled"))
-                    com.songoda.ultimatestacker.UltimateStacker.getInstance().getEntityStackManager().addStack(entity.getUniqueId(), spawnCount);
+                    com.songoda.ultimatestacker.UltimateStacker.getInstance().getEntityStackManager().addStack((LivingEntity)entity, spawnCount);
                 spawner.setSpawnCount(spawner.getSpawnCount() + (useUltimateStacker ? spawnCount : 1));
                 EpicSpawners.getInstance().getDataManager().updateSpawner(spawner);
             }
