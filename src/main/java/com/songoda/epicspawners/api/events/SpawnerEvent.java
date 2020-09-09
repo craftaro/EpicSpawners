@@ -19,7 +19,7 @@ public abstract class SpawnerEvent extends PlayerEvent {
 
     /**
      * Get the {@link Spawner} involved in this event
-     * 
+     *
      * @return the broken spawner
      */
     public Spawner getSpawner() {

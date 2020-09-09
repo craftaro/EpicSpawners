@@ -31,7 +31,12 @@ import javax.script.ScriptException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class SpawnOptionEntity_1_13 implements SpawnOption {
@@ -204,7 +209,7 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
             if (entity != null) {
                 // If we're using UltimateStacker and this entity is indeed stackable then spawn a single stack with the desired stack size.
                 if (useUltimateStacker && com.songoda.ultimatestacker.UltimateStacker.getInstance().getMobFile().getBoolean("Mobs." + entity.getType().name() + ".Enabled"))
-                    com.songoda.ultimatestacker.UltimateStacker.getInstance().getEntityStackManager().addStack((LivingEntity)entity, spawnCount);
+                    com.songoda.ultimatestacker.UltimateStacker.getInstance().getEntityStackManager().addStack((LivingEntity) entity, spawnCount);
                 spawner.setSpawnCount(spawner.getSpawnCount() + (useUltimateStacker ? spawnCount : 1));
                 EpicSpawners.getInstance().getDataManager().updateSpawner(spawner);
             }

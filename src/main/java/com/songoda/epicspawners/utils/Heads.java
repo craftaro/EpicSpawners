@@ -14,15 +14,15 @@ public class Heads {
     private final Map<HeadType, String> textureURL = new EnumMap<>(HeadType.class);
 
     public Heads() {
-            for (HeadType type : HeadType.values()) {
-                this.textureURL.put(type, type.getUrl());
-            }
+        for (HeadType type : HeadType.values()) {
+            this.textureURL.put(type, type.getUrl());
+        }
     }
 
     public ItemStack addTexture(ItemStack item, SpawnerData spawnerData) {
-            String headURL = textureURL.get(getHeadTypeOrDefault(spawnerData.getIdentifyingName().toUpperCase().replace(" ", "_")));
+        String headURL = textureURL.get(getHeadTypeOrDefault(spawnerData.getIdentifyingName().toUpperCase().replace(" ", "_")));
 
-            return Methods.addTexture(item, headURL);
+        return Methods.addTexture(item, headURL);
     }
 
     private HeadType getHeadTypeOrDefault(String name) {

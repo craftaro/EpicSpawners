@@ -70,7 +70,7 @@ public class SpawnerChangeEvent extends SpawnerEvent implements Cancellable {
      * Get the new stack size of the spawner after this event completes. If this
      * event is not to do with stack size changing, this method simply returns
      * the spawner's current stack size
-     * 
+     *
      * @return the new stack size
      */
     public int getStackSize() {
@@ -81,7 +81,7 @@ public class SpawnerChangeEvent extends SpawnerEvent implements Cancellable {
      * Get the old stack size of the spawner from before this event was called. If
      * this event is not to do with stack size changing, this method simply returns
      * the spawner's current stack size
-     * 
+     *
      * @return the old stack size
      */
     public int getOldStackSize() {
@@ -91,7 +91,7 @@ public class SpawnerChangeEvent extends SpawnerEvent implements Cancellable {
     /**
      * Get the new spawner data after this event completes. If this event is not
      * to do with the spawner data changing, this method simply returns null
-     * 
+     *
      * @return the new spawner data
      */
     public SpawnerData getSpawnerData() {
@@ -101,7 +101,7 @@ public class SpawnerChangeEvent extends SpawnerEvent implements Cancellable {
     /**
      * Get the old spawner data from before this event was called. If this event
      * is not to do with the spawner data changing, this method simply returns null
-     * 
+     *
      * @return the old spawner data
      */
     public SpawnerData getOldSpawnerData() {
@@ -110,7 +110,7 @@ public class SpawnerChangeEvent extends SpawnerEvent implements Cancellable {
 
     /**
      * Get the type of change performed in this event
-     * 
+     *
      * @return the change type
      */
     public ChangeType getChange() {
@@ -138,9 +138,8 @@ public class SpawnerChangeEvent extends SpawnerEvent implements Cancellable {
 
     /**
      * The spawner's multiplier (stack size)
-     * 
+     *
      * @return the stack size
-     * 
      * @deprecated see {@link #getStackSize()}
      */
     @Deprecated
@@ -150,9 +149,8 @@ public class SpawnerChangeEvent extends SpawnerEvent implements Cancellable {
 
     /**
      * Get the old stack size
-     * 
+     *
      * @return the old stack size
-     * 
      * @deprecated see {@link #getOldStackSize()}
      */
     @Deprecated
@@ -162,9 +160,8 @@ public class SpawnerChangeEvent extends SpawnerEvent implements Cancellable {
 
     /**
      * Get the new spawner data type
-     * 
+     *
      * @return the spawner type
-     * 
      * @deprecated see {@link #getSpawnerData()}
      */
     @Deprecated
@@ -174,9 +171,8 @@ public class SpawnerChangeEvent extends SpawnerEvent implements Cancellable {
 
     /**
      * Get the old spawner data type
-     * 
+     *
      * @return the spawner type
-     * 
      * @deprecated see {@link #getOldSpawnerData()}
      */
     @Deprecated

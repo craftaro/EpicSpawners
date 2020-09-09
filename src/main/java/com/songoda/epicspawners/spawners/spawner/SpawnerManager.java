@@ -10,7 +10,13 @@ import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.particles.ParticleDensity;
 import com.songoda.epicspawners.particles.ParticleEffect;
 import com.songoda.epicspawners.particles.ParticleType;
-import com.songoda.epicspawners.spawners.condition.*;
+import com.songoda.epicspawners.spawners.condition.SpawnCondition;
+import com.songoda.epicspawners.spawners.condition.SpawnConditionBiome;
+import com.songoda.epicspawners.spawners.condition.SpawnConditionHeight;
+import com.songoda.epicspawners.spawners.condition.SpawnConditionLightDark;
+import com.songoda.epicspawners.spawners.condition.SpawnConditionNearbyEntities;
+import com.songoda.epicspawners.spawners.condition.SpawnConditionNearbyPlayers;
+import com.songoda.epicspawners.spawners.condition.SpawnConditionStorm;
 import com.songoda.epicspawners.utils.Methods;
 import com.songoda.epicspawners.utils.SpawnerDataBuilder;
 import org.bukkit.ChatColor;
@@ -193,8 +199,8 @@ public class SpawnerManager {
             if (!val.isSpawnable()
                     || !val.isAlive()
                     || !val.name().equals(value)) continue;
-                spawnerConfig.addDefault(section
-                        + ".entities", Collections.singletonList(value));
+            spawnerConfig.addDefault(section
+                    + ".entities", Collections.singletonList(value));
         }
 
         String spawnBlock = "AIR";

@@ -1,11 +1,11 @@
 package com.songoda.epicspawners.spawners.spawner.option;
 
+import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.boost.types.Boosted;
 import com.songoda.epicspawners.spawners.spawner.Spawner;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.spawners.spawner.SpawnerStack;
-import com.songoda.core.compatibility.ServerVersion;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;

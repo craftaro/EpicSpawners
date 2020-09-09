@@ -151,7 +151,7 @@ public abstract class AbstractGUI implements Listener {
         if (lore != null && lore.length != 0) {
             List<String> newLore = new ArrayList<>();
 
-            for (int i = 0; i < lore.length; i ++) {
+            for (int i = 0; i < lore.length; i++) {
                 if (name == null && i == 0) continue;
                 newLore.add(ChatColor.translateAlternateColorCodes('&', lore[i]));
             }

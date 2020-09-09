@@ -1,13 +1,13 @@
 package com.songoda.epicspawners.tasks;
 
 import com.songoda.core.compatibility.CompatibleParticleHandler;
+import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.particles.ParticleDensity;
 import com.songoda.epicspawners.particles.ParticleEffect;
 import com.songoda.epicspawners.particles.ParticleType;
 import com.songoda.epicspawners.spawners.spawner.Spawner;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
-import com.songoda.core.compatibility.ServerVersion;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;

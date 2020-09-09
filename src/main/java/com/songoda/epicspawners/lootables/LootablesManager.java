@@ -11,7 +11,13 @@ import com.songoda.lootables.loot.Loot;
 import com.songoda.lootables.loot.LootManager;
 import com.songoda.lootables.loot.Lootable;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Ageable;
+import org.bukkit.entity.Creeper;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Projectile;
+import org.bukkit.entity.Sheep;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 import java.io.File;
@@ -79,7 +85,7 @@ public class LootablesManager {
         }
         return lootManager.runLoot(modify,
                 entity.getFireTicks() > 0,
-                entity instanceof Creeper && ((Creeper)entity).isPowered(),
+                entity instanceof Creeper && ((Creeper) entity).isPowered(),
                 entity.getKiller() != null ? entity.getKiller().getItemInHand() : null,
                 killer,
                 loot,

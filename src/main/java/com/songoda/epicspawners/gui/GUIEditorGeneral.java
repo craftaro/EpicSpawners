@@ -2,7 +2,6 @@ package com.songoda.epicspawners.gui;
 
 import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.core.gui.AnvilGui;
-import com.songoda.core.nms.NmsManager;
 import com.songoda.core.utils.TextUtils;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
@@ -116,19 +115,19 @@ public class GUIEditorGeneral extends AbstractGUI {
     protected void registerClickables() {
         registerClickable(13, (player, inventory, cursor, slot, type) -> {
             spawnerData.setUpgradeable(!spawnerData.isUpgradeable());
-            
+
             constructGUI();
         });
 
         registerClickable(20, (player, inventory, cursor, slot, type) -> {
             spawnerData.setInShop(!spawnerData.isInShop());
-            
+
             constructGUI();
         });
 
         registerClickable(22, (player, inventory, cursor, slot, type) -> {
             spawnerData.setSpawnOnFire(!spawnerData.isSpawnOnFire());
-            
+
             constructGUI();
         });
 
@@ -141,7 +140,7 @@ public class GUIEditorGeneral extends AbstractGUI {
                     spawnerData.setShopPrice(Double.parseDouble(msg));
                     player.closeInventory();
                     player.openInventory(inventory);
-                    
+
                     init(setTitle, inventory.getSize());
                 } else {
                     player.sendMessage(TextUtils.formatText("&CYou must enter a number."));
@@ -162,7 +161,7 @@ public class GUIEditorGeneral extends AbstractGUI {
                     spawnerData.setUpgradeCostEconomy(Double.parseDouble(msg));
                     player.closeInventory();
                     player.openInventory(inventory);
-                    
+
                     init(setTitle, inventory.getSize());
                 } else {
                     player.sendMessage(TextUtils.formatText("&CYou must enter a number."));
@@ -184,7 +183,7 @@ public class GUIEditorGeneral extends AbstractGUI {
                     spawnerData.setUpgradeCostExperience(Integer.parseInt(msg));
                     player.closeInventory();
                     player.openInventory(inventory);
-                    
+
                     init(setTitle, inventory.getSize());
                 } else {
                     player.sendMessage(TextUtils.formatText("&CYou must enter a number."));
@@ -206,7 +205,7 @@ public class GUIEditorGeneral extends AbstractGUI {
                     spawnerData.setKillGoal(Integer.parseInt(msg));
                     player.closeInventory();
                     player.openInventory(inventory);
-                    
+
                     init(setTitle, inventory.getSize());
                 } else {
                     player.sendMessage(TextUtils.formatText("&CYou must enter a number."));
@@ -228,7 +227,7 @@ public class GUIEditorGeneral extends AbstractGUI {
                     spawnerData.setPickupCost(Double.parseDouble(msg));
                     player.closeInventory();
                     player.openInventory(inventory);
-                    
+
                     init(setTitle, inventory.getSize());
                 } else {
                     player.sendMessage(TextUtils.formatText("&CYou must enter a number."));
@@ -249,7 +248,7 @@ public class GUIEditorGeneral extends AbstractGUI {
                 spawnerData.setTickRate(gui.getInputText().trim());
                 player.closeInventory();
                 player.openInventory(inventory);
-                
+
                 init(setTitle, inventory.getSize());
             });
             plugin.getGuiManager().showGUI(player, gui);

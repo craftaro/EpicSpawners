@@ -60,7 +60,7 @@ public final class SpawnerDataBuilder {
 
 
     public SpawnerDataBuilder pickDamage(int damage) {
-        this.spawnerData.setPickDamage((short)damage);
+        this.spawnerData.setPickDamage((short) damage);
         return this;
     }
 

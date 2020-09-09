@@ -8,7 +8,6 @@ import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 

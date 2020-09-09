@@ -1,9 +1,9 @@
 package com.songoda.epicspawners.gui;
 
+import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.utils.Methods;
-import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.epicspawners.utils.gui.AbstractGUI;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -26,7 +26,7 @@ public class GUIEditorSelector extends AbstractGUI {
         this.plugin = plugin;
         setUp();
     }
-    
+
     private void setUp() {
         int show = 0;
         int start = (page - 1) * 32;

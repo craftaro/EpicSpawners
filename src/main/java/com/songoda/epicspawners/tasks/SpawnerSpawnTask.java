@@ -48,7 +48,7 @@ public class SpawnerSpawnTask extends BukkitRunnable {
                 if (spawner.getSpawnerDataCount() == 0
                         || !spawner.checkConditions()
                         || (spawner.getPlacedBy() == null && Settings.DISABLE_NATURAL_SPAWNERS.getBoolean())) return;
-                        
+
                 CreatureSpawner cSpawner = spawner.getCreatureSpawner();
                 if (cSpawner == null) return;
                 int delay = spawner.getCreatureSpawner().getDelay();

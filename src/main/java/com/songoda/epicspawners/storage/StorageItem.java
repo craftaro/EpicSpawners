@@ -29,7 +29,7 @@ public class StorageItem {
         this.key = key;
         this.object = builder.toString();
     }
-    
+
     public StorageItem(String key, Map<EntityType, Integer> entityKills) {
         String object;
 

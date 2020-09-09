@@ -1,12 +1,12 @@
 package com.songoda.epicspawners.gui;
 
+import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.particles.ParticleDensity;
 import com.songoda.epicspawners.particles.ParticleEffect;
 import com.songoda.epicspawners.particles.ParticleType;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.utils.Methods;
-import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.epicspawners.utils.gui.AbstractGUI;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
