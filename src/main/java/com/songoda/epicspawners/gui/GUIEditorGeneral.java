@@ -16,7 +16,7 @@ public class GUIEditorGeneral extends AbstractGUI {
 
     private final EpicSpawners plugin;
     private final AbstractGUI back;
-    private SpawnerData spawnerData;
+    private final SpawnerData spawnerData;
 
     public GUIEditorGeneral(EpicSpawners plugin, AbstractGUI abstractGUI, SpawnerData spawnerData, Player player) {
         super(player);

@@ -17,7 +17,7 @@ public class GUIEditorParticle extends AbstractGUI {
 
     private final EpicSpawners plugin;
     private final AbstractGUI back;
-    private SpawnerData spawnerData;
+    private final SpawnerData spawnerData;
 
     public GUIEditorParticle(EpicSpawners plugin, AbstractGUI abstractGUI, SpawnerData spawnerData, Player player) {
         super(player);
