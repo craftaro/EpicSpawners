@@ -98,7 +98,8 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
                 methodGetCubes = clazzIWorldReader.getDeclaredMethod("getCubes", clazzEntity, clazzAxisAlignedBB);
             }
 
-            if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_16) && ver.equals("v1_16_R1"))
+            if (ServerVersion.isServerVersionBelow(ServerVersion.V1_16)
+                    || ServerVersion.isServerVersionAtLeast(ServerVersion.V1_16) && ver.equals("v1_16_R1"))
                 clazzGeneratorAccess = Class.forName("net.minecraft.server." + ver + ".GeneratorAccess");
             else
                 clazzWorldAccess = Class.forName("net.minecraft.server." + ver + ".WorldAccess");
