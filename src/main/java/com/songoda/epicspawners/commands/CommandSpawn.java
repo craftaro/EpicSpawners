@@ -1,19 +1,14 @@
 package com.songoda.epicspawners.commands;
 
-import com.google.common.collect.Iterables;
 import com.songoda.core.commands.AbstractCommand;
 import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.epicspawners.EpicSpawners;
-import com.songoda.epicspawners.settings.Settings;
-import com.songoda.epicspawners.spawners.spawner.SpawnerData;
-import com.songoda.epicspawners.utils.Methods;
-import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
 
 public class CommandSpawn extends AbstractCommand {
 

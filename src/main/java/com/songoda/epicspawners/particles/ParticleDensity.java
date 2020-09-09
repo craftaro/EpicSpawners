@@ -40,7 +40,7 @@ public enum ParticleDensity {
     /**
      * Get the amount of particles to be displayed when a spawner spawns
      * an objects
-     * 
+     *
      * @return the amount of particles
      */
     public int getSpawnerSpawn() {
@@ -50,7 +50,7 @@ public enum ParticleDensity {
     /**
      * Get the amount of particles to be displayed when a spawner spawns
      * entities
-     * 
+     *
      * @return the amount of particles
      */
     public int getEntitySpawn() {
@@ -60,9 +60,8 @@ public enum ParticleDensity {
     /**
      * Get the amount of particles to be displayed when a spawner has a special
      * effect playing around it
-     * 
+     *
      * @return the amount of particles
-     * 
      * @see ParticleEffect
      */
     public int getEffect() {

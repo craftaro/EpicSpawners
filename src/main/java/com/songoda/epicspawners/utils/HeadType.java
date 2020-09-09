@@ -1,7 +1,5 @@
 package com.songoda.epicspawners.utils;
 
-import org.bukkit.entity.EntityType;
-
 /**
  * Created by songoda on 3/20/2017.
  */

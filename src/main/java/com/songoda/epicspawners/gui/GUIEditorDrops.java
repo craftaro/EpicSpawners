@@ -18,14 +18,12 @@ import org.bukkit.inventory.ItemStack;
 public class GUIEditorDrops extends Gui {
 
     private final EpicSpawners plugin;
-    private final AbstractGUI back;
     private final SpawnerData spawnerData;
 
 
     public GUIEditorDrops(EpicSpawners plugin, SpawnerData spawnerData, AbstractGUI back) {
         super(3);
         this.plugin = plugin;
-        this.back = back;
         this.spawnerData = spawnerData;
 
         ItemStack glass1 = GuiUtils.getBorderItem(Methods.getGlass());

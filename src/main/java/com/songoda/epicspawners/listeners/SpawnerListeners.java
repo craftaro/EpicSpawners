@@ -1,11 +1,11 @@
 package com.songoda.epicspawners.listeners;
 
+import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.spawners.spawner.Spawner;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.spawners.spawner.SpawnerStack;
 import com.songoda.epicspawners.utils.Methods;
-import com.songoda.core.compatibility.ServerVersion;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -59,10 +59,10 @@ public class SpawnerListeners implements Listener {
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onTarget(EntityTargetLivingEntityEvent event) {
         if (EpicSpawners.getInstance().getConfig().getBoolean("entity.Hostile Mobs Attack Second")) {
-                if (event.getEntity().getLastDamageCause() != null && event.getEntity().getLastDamageCause().getCause().name().equals("ENTITY_ATTACK")) {
-                    return;
-                }
-                event.setCancelled(true);
+            if (event.getEntity().getLastDamageCause() != null && event.getEntity().getLastDamageCause().getCause().name().equals("ENTITY_ATTACK")) {
+                return;
             }
+            event.setCancelled(true);
+        }
     }
 }

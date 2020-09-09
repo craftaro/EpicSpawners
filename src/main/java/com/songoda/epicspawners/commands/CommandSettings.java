@@ -1,7 +1,6 @@
 package com.songoda.epicspawners.commands;
 
 import com.songoda.core.commands.AbstractCommand;
-import com.songoda.core.configuration.editor.ConfigEditorGui;
 import com.songoda.core.configuration.editor.PluginConfigGui;
 import com.songoda.epicspawners.EpicSpawners;
 import org.bukkit.command.CommandSender;

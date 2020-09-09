@@ -22,7 +22,7 @@ public class Reflection {
         return null;
     }
 
- 
+
     public static Object getNBTTagCompound(Object nmsitem) {
         Class<?> c = nmsitem.getClass();
         java.lang.reflect.Method method;

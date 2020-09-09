@@ -7,6 +7,7 @@ general:
     next: '&9Next'
     back: '&9Back'
     confirm: '&a&lConfirm'
+    currency: '$'
 
 # Interface Messages
 
