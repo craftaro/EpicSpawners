@@ -1,5 +1,6 @@
 package com.songoda.epicspawners.spawners.spawner.option;
 
+import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.core.utils.EntityUtils;
 import com.songoda.epicspawners.EpicSpawners;
@@ -326,11 +327,11 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
 
             Material[] spawnBlocks = data.getSpawnBlocks();
 
-            Material spawnedIn = location.getBlock().getType();
+            CompatibleMaterial spawnedIn = CompatibleMaterial.getMaterial(location.getBlock());
             Material spawnedOn = location.getBlock().getRelative(BlockFace.DOWN).getType();
 
-            if (!Methods.isAir(spawnedIn)
-                    && !isWater(spawnedIn)
+            if (!spawnedIn.isAir()
+                    && !spawnedIn.isWater()
                     && !spawnedIn.name().contains("PRESSURE")
                     && !spawnedIn.name().contains("SLAB")) {
                 return false;
@@ -338,17 +339,14 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
 
             for (Material material : spawnBlocks) {
                 if (material == null) continue;
-                if (spawnedOn == material)
+                if (spawnedOn == material
+                        || material == Material.AIR && CompatibleMaterial.getMaterial(material).isAir())
                     return true;
             }
         } catch (InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
         }
         return false;
-    }
-
-    private boolean isWater(Material type) {
-        return type == Material.WATER;
     }
 
 
