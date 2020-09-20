@@ -160,10 +160,6 @@ public class Methods {
         return (type != null) ? type.replace(" ", "_").toUpperCase() : null;
     }
 
-    public static boolean isAir(Material type) {
-        return type == Material.AIR || type.name().contains("PRESSURE");
-    }
-
     public static String convertToInvisibleString(String s) {
         if (s == null || s.equals(""))
             return "";

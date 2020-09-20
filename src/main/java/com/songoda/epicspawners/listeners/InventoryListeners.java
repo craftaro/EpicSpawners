@@ -15,12 +15,6 @@ import org.bukkit.inventory.ItemStack;
  */
 public class InventoryListeners implements Listener {
 
-    private EpicSpawners plugin;
-
-    public InventoryListeners(EpicSpawners plugin) {
-        this.plugin = plugin;
-    }
-
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         if (event.getCurrentItem() == null) return;
