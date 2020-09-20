@@ -1,5 +1,6 @@
 package com.songoda.epicspawners.gui;
 
+import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.core.hooks.EconomyManager;
 import com.songoda.epicspawners.EpicSpawners;
@@ -168,7 +169,7 @@ public class GUIShopItem extends AbstractGUI {
             });
         }
 
-        createButton(8, Material.valueOf(Settings.EXIT_ICON.getString()), plugin.getLocale().getMessage("general.nametag.exit").getMessage());
+        createButton(8, Settings.EXIT_ICON.getMaterial().getMaterial(), plugin.getLocale().getMessage("general.nametag.exit").getMessage());
 
         ItemStack skull = Methods.addTexture(new ItemStack(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13)
                         ? Material.PLAYER_HEAD : Material.valueOf("SKULL_ITEM"), 1, (byte) 3),
