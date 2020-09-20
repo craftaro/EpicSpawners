@@ -169,7 +169,7 @@ public class EpicSpawners extends SongodaPlugin {
         pluginManager.registerEvents(new BlockListeners(this), this);
         pluginManager.registerEvents(new EntityListeners(this), this);
         pluginManager.registerEvents(new InteractListeners(this), this);
-        pluginManager.registerEvents(new InventoryListeners(this), this);
+        pluginManager.registerEvents(new InventoryListeners(), this);
         pluginManager.registerEvents(new SpawnerListeners(this), this);
 
         AbstractGUI.initializeListeners(this);

@@ -20,7 +20,7 @@ import org.bukkit.event.entity.SpawnerSpawnEvent;
  */
 public class SpawnerListeners implements Listener {
 
-    private EpicSpawners plugin;
+    private final EpicSpawners plugin;
 
     public SpawnerListeners(EpicSpawners plugin) {
         this.plugin = plugin;
