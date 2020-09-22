@@ -13,11 +13,11 @@
 
 ## Table of Contents 
 
-* [Introduction](#introduction)
-* [Marketplace](#marketplace)
-* [Documentation](#documentation)
-* [Support](#support)
-* [Suggestions](#suggestions)
+*  [Introduction](#introduction)
+*  [Marketplace](#marketplace)
+*  [Documentation](#documentation)
+*  [Support](#support)
+*  [Suggestions](#suggestions)
 
 ## Introduction
 EpicSpawners is a high configurable spawner plugin, that also offers a GUI based system that can be used to easily configure the plugin and customize spawners in-game. Epicspawners allows you to combine spawners into powerful stacked spawners, while giving you the option to customize the interval between spawn attempts, the block that the mob will spawn on (doesn't need to follow the vanilla rules), the conditions required fot the spawner to attempt to spawn an entity, what the mobs that are spawned by the spawner will drop when killed, the different particle effects that will be shown when the spawner attempts to spawn an entity. EpicSpawners also allows you to create your own custom spawners, while giving you the freedom to customize the spawner to your own specifications, making it unique to your own server. Ever wanted to have a single spawner that can spawn multiple mobs at a time? Now you can, using omnispawners, which allows you to combine multiple entity spawners into a single spawner. EpicSpawner also offers a built-in, fully customizable spawnershop that can be easily accessed and used by your players. 
