@@ -1,22 +1,34 @@
 <p align="center">
-<img alt="EpicSpawners" src="https://proxy.songoda.com/200/https://cdn2.songoda.com/products/epicspawners/5vteSKAGiFo6ElBhkFqUuKO13ggH28GDO3tundgK.png">
+<img alt="EpicSpawners"
+    src="https://proxy.songoda.com/200/https://cdn2.songoda.com/products/epicspawners/5vteSKAGiFo6ElBhkFqUuKO13ggH28GDO3tundgK.png">
 </p>
 
 <h1 align="center">EpicSpawners</h1>
 
 <p align="center">
-  <b>The simple and easy to use spawner plugin that allows you to customize everything about spawners and make them unique to your server.</b>
+  <b>
+      The simple and easy to use spawner plugin that allows you to customize everything
+      about spawners and make them unique to your server.
+  </b>
 </p>
 
 <p align="center">
-    <img alt="Discord" src="https://img.shields.io/discord/293212540723396608?color=7289DA&label=Discord&logo=discord&logoColor=7289DA&link=https://discord.gg/songoda">
-    <img alt="Patreon" src="https://img.shields.io/badge/-Support_on_Patreon-F96854.svg?logo=patreon&style=flat&logoColor=white&link=https://wwww.patreon.com/songoda"> 
-    <br/>
+    <a href="https://discord.gg/songoda">
+        <img alt="Discord" src="https://img.shields.io/discord/293212540723396608?color=7289DA&label=Discord&logo=discord&logoColor=7289DA">
+    </a>
+    <a href="https://www.patreon.com/songoda">
+        <img alt="Patreon" src="https://img.shields.io/badge/-Support_on_Patreon-F96854.svg?logo=patreon&style=flat&logoColor=white">
+    </a> 
+    <br>
     <img alt="Latest" src="https://img.shields.io/badge/-ver_6.4.5-4078C0.svg?logo=github&style=flat&logoColor=white&color=blue&label=Latest&labelColor=black">
-    <img alt="quality" src="https://img.shields.io/codacy/grade/1538be190da6406aa6a2bc711b2478a2">
+    <a href="https://app.codacy.com/gh/songoda/EpicSpawners/dashboard">
+        <img alt="quality" src="https://img.shields.io/codacy/grade/1538be190da6406aa6a2bc711b2478a2">
+    </a>
     <img alt="Last Updated" src="https://img.shields.io/github/last-commit/songoda/EpicSpawners">
-    <br/>
-    <img alt="Servers" src="https://img.shields.io/bstats/servers/4181">
+    <br>
+    <a href="https://bstats.org/plugin/bukkit/EpicSpawners/4181">
+        <img alt="Servers" src="https://img.shields.io/bstats/servers/4181">
+    </a>
     <img alt="Maintained" src="https://img.shields.io/maintenance/yes/2020"> 
 </p>
 
