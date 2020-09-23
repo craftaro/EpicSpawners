@@ -45,11 +45,9 @@ public class GUISpawnerConvert extends AbstractGUI {
                     || !spawnerData.isConvertible()
                     || !player.hasPermission("epicspawners.convert." + spawnerData.getIdentifyingName().replace(" ", "_")))
                 continue;
-            if (totalAmount >= start) {
-                if (show <= 32) {
-                    entities.add(spawnerData);
-                    show++;
-                }
+            if (totalAmount >= start && show <= 32) {
+                entities.add(spawnerData);
+                show++;
             }
             totalAmount++;
         }
