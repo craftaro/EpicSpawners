@@ -40,7 +40,8 @@ public class SpawnerParticleTask extends BukkitRunnable {
     @Override
     public void run() {
         for (Spawner spawner : new ArrayList<>(plugin.getSpawnerManager().getSpawners())) {
-            if (spawner == null || spawner.getLocation() == null || spawner.getSpawnerDataCount() == 0 || spawner.getFirstStack().getSpawnerData() == null)
+            if (spawner == null || spawner.getLocation() == null ||
+                    spawner.getSpawnerDataCount() == 0 || spawner.getFirstStack().getSpawnerData() == null)
                 continue;
 
             SpawnerData data = spawner.getFirstStack().getSpawnerData();
@@ -63,11 +64,7 @@ public class SpawnerParticleTask extends BukkitRunnable {
                 double z = HALO_RADIUS * Math.sin(theta);
 
                 centre.add(x, 0.2, z);
-                if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13))
-                    centre.getWorld().spawnParticle(Particle.valueOf(particle.getEffect()), centre, density.getEffect(), 0, 0, 0, 0, Particle.valueOf(particle.getEffect()) == org.bukkit.Particle.REDSTONE ? new org.bukkit.Particle.DustOptions(Color.RED, 1) : null);
-                else
-                    CompatibleParticleHandler.spawnParticles(CompatibleParticleHandler.ParticleType.getParticle(particle.getEffect()),
-                            centre, density.getEffect(), 0, 0, 0, 0);
+                spawnParticles(centre, particle, density);
             } else if (effect == ParticleEffect.TARGET) {
                 for (int i = 0; i < 360; i += 10) {
                     double angle = Math.toRadians(i);
@@ -77,22 +74,14 @@ public class SpawnerParticleTask extends BukkitRunnable {
                     double x = 1.2 * cosAngle, z = 1.2 * sinAngle;
                     centre.add(x, -0.2, z);
 
-                    if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13))
-                        centre.getWorld().spawnParticle(Particle.valueOf(particle.getEffect()), centre, density.getEffect(), 0, 0, 0, 0, Particle.valueOf(particle.getEffect()) == org.bukkit.Particle.REDSTONE ? new org.bukkit.Particle.DustOptions(Color.RED, 1) : null);
-                    else
-                        CompatibleParticleHandler.spawnParticles(CompatibleParticleHandler.ParticleType.getParticle(particle.getEffect()),
-                                centre, density.getEffect(), 0, 0, 0, 0);
+                    spawnParticles(centre, particle, density);
                     centre.subtract(x, -0.2, z);
 
                     // Inner circle
                     x = 0.8 * cosAngle;
                     z = 0.8 * sinAngle;
                     centre.add(x, 0, z);
-                    if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13))
-                        centre.getWorld().spawnParticle(Particle.valueOf(particle.getEffect()), centre, density.getEffect(), 0, 0, 0, 0, Particle.valueOf(particle.getEffect()) == org.bukkit.Particle.REDSTONE ? new org.bukkit.Particle.DustOptions(Color.RED, 1) : null);
-                    else
-                        CompatibleParticleHandler.spawnParticles(CompatibleParticleHandler.ParticleType.getParticle(particle.getEffect()),
-                                centre, density.getEffect(), 0, 0, 0, 0);
+                    spawnParticles(centre, particle, density);
                     centre.subtract(x, 0, z);
                 }
             }
@@ -100,6 +89,17 @@ public class SpawnerParticleTask extends BukkitRunnable {
 
         if ((theta += THETA_INCREMENT) > 360) {
             this.theta = 0;
+        }
+    }
+
+    private void spawnParticles(Location location, ParticleType type, ParticleDensity density) {
+        if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13)) {
+            location.getWorld().spawnParticle(Particle.valueOf(type.getEffect()), location,
+                    density.getEffect(), 0, 0, 0, 0,
+                    Particle.valueOf(type.getEffect()) == Particle.REDSTONE ? new Particle.DustOptions(Color.RED, 1) : null);
+        } else {
+            CompatibleParticleHandler.spawnParticles(CompatibleParticleHandler.ParticleType.getParticle(type.getEffect()),
+                    location, density.getEffect(), 0, 0, 0, 0);
         }
     }
 }
