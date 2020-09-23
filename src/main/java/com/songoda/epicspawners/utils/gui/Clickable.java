@@ -7,5 +7,5 @@ import org.bukkit.inventory.ItemStack;
 
 public interface Clickable {
 
-    void Clickable(Player player, Inventory inventory, ItemStack cursor, int slot, ClickType type);
+    void onClick(Player player, Inventory inventory, ItemStack cursor, int slot, ClickType type);
 }
