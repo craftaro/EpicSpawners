@@ -19,8 +19,8 @@ import com.songoda.epicspawners.spawners.condition.SpawnConditionStorm;
 import com.songoda.epicspawners.spawners.spawner.option.SpawnOption;
 import com.songoda.epicspawners.spawners.spawner.option.SpawnOptionBlock;
 import com.songoda.epicspawners.spawners.spawner.option.SpawnOptionCommand;
-import com.songoda.epicspawners.spawners.spawner.option.SpawnOptionEntity_1_12;
-import com.songoda.epicspawners.spawners.spawner.option.SpawnOptionEntity_1_13;
+import com.songoda.epicspawners.spawners.spawner.option.spawnOptionEntity_1_12;
+import com.songoda.epicspawners.spawners.spawner.option.spawnOptionEntity_1_13;
 import com.songoda.epicspawners.spawners.spawner.option.SpawnOptionItem;
 import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.ChatColor;
@@ -115,9 +115,9 @@ public class SpawnerData {
     public void reloadSpawnMethods() {
         spawnOptions.clear();
         if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13)) {
-            if (!entities.isEmpty()) spawnOptions.add(new SpawnOptionEntity_1_13(entities));
+            if (!entities.isEmpty()) spawnOptions.add(new spawnOptionEntity_1_13(entities));
         } else {
-            if (!entities.isEmpty()) spawnOptions.add(new SpawnOptionEntity_1_12(entities));
+            if (!entities.isEmpty()) spawnOptions.add(new spawnOptionEntity_1_12(entities));
         }
         if (!blocks.isEmpty()) spawnOptions.add(new SpawnOptionBlock(blocks));
         if (!items.isEmpty()) spawnOptions.add(new SpawnOptionItem(items));
