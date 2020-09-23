@@ -45,7 +45,7 @@ public class SpawnerParticleTask extends BukkitRunnable {
                 continue;
 
             SpawnerData data = spawner.getFirstStack().getSpawnerData();
-            if (data == null) return;
+            if (data == null) continue;
 
             ParticleEffect effect = data.getParticleEffect();
             if (effect == null || effect == ParticleEffect.NONE || (data.isParticleEffectBoostedOnly() && spawner.getBoosts().isEmpty()))
@@ -54,9 +54,9 @@ public class SpawnerParticleTask extends BukkitRunnable {
             Location centre = spawner.getLocation().add(0.5, 0.5, 0.5);
 
             ParticleType particle = data.getSpawnEffectParticle();
-            if (particle == null || particle.getEffect() == null) return;
+            if (particle == null || particle.getEffect() == null) continue;
             ParticleDensity density = data.getParticleDensity();
-            if (density == null) return;
+            if (density == null) continue;
 
             // Particle effects
             if (effect == ParticleEffect.HALO) {
