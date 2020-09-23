@@ -34,11 +34,11 @@
 
 ## Table of Contents 
 
- * [Introduction](#introduction)
- * [Marketplace](#marketplace)
- * [Documentation](#documentation)
- * [Support](#support)
- * [Suggestions](#suggestions)
+*   [Introduction](#introduction)
+*   [Marketplace](#marketplace)
+*   [Documentation](#documentation)
+*   [Support](#support)
+*   [Suggestions](#suggestions)
 
 ## Introduction
 EpicSpawners is a high configurable spawner plugin, that also offers a GUI based system that can be used
