@@ -1,6 +1,7 @@
 package com.songoda.epicspawners.spawners.spawner.option;
 
 import com.songoda.core.compatibility.CompatibleMaterial;
+import com.songoda.core.compatibility.CompatibleParticleHandler;
 import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.core.utils.EntityUtils;
 import com.songoda.epicspawners.EpicSpawners;
@@ -13,10 +14,11 @@ import com.songoda.epicspawners.spawners.condition.SpawnConditionNearbyEntities;
 import com.songoda.epicspawners.spawners.spawner.Spawner;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.spawners.spawner.SpawnerStack;
+import com.songoda.epicspawners.utils.Methods;
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Particle;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -35,119 +37,102 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class SpawnOptionEntity_1_13 implements SpawnOption {
+public class spawnOptionEntity_1_12 implements SpawnOption {
 
     private final EntityType[] types;
 
-    private final ScriptEngineManager mgr;
-
     private final ScriptEngine engine;
 
-    private EpicSpawners plugin = EpicSpawners.getInstance();
+    private final EpicSpawners plugin = EpicSpawners.getInstance();
 
     private boolean useUltimateStacker;
 
-    private Enum<?> SpawnerEnum;
-
     private boolean mcmmo;
 
-    private Map<String, Integer> cache = new HashMap<>();
-    private Class<?> clazzMobSpawnerData, clazzEnumMobSpawn, clazzWorldServer, clazzWorldAccess, clazzGeneratorAccess, clazzEntityTypes, clazzNBTTagCompound, clazzCraftWorld, clazzWorld, clazzChunkRegionLoader, clazzEntity, clazzCraftEntity, clazzEntityInsentient, clazzGroupDataEntity, clazzDifficultyDamageScaler, clazzBlockPosition, clazzIWorldReader, clazzICollisionAccess, clazzAxisAlignedBB;
-    private Method methodGetEntity, methodgetChunkCoordinates, methodSetString, methodSetPosition, methodA, methodAddEntity, methodGetHandle, methodChunkRegionLoaderA, methodEntityGetBukkitEntity, methodCraftEntityTeleport, methodEntityInsentientPrepare, methodChunkRegionLoaderA2, methodGetDamageScaler, methodGetCubes, methodGetBoundingBox;
+    private final Map<String, Integer> cache = new HashMap<>();
+    private Class<?> clazzMobSpawnerData,
+            clazzCraftWorld,
+            clazzWorld,
+            clazzEntity,
+            clazzEntityInsentient,
+            clazzBlockPosition;
+    private Method methodAddEntity,
+            methodCreateEntityByName,
+            methodSetPositionRotation,
+            methodB,
+            methodSetString,
+            methodGetHandle,
+            methodEntityInsentientPrepare,
+            methodChunkRegionLoaderA,
+            methodEntityGetBukkitEntity,
+            methodCraftEntityTeleport,
+            methodEntityInsentientCanSpawn,
+            methodChunkRegionLoaderA2,
+            methodGetDamageScaler;
     private Field fieldWorldRandom;
 
-    public SpawnOptionEntity_1_13(EntityType... types) {
+    public spawnOptionEntity_1_12(EntityType... types) {
         this.types = types;
-        this.mgr = new ScriptEngineManager(null);
-        this.engine = mgr.getEngineByName("JavaScript");
+        this.engine = new ScriptEngineManager(null).getEngineByName("JavaScript");
+
         if (Bukkit.getPluginManager().isPluginEnabled("UltimateStacker")) {
             this.useUltimateStacker = ((Plugin) com.songoda.ultimatestacker.UltimateStacker.getInstance()).getConfig().getBoolean("Entities.Enabled");
         }
+
         init();
     }
 
-    public SpawnOptionEntity_1_13(Collection<EntityType> entities) {
-        this(entities.toArray(new EntityType[entities.size()]));
+    public spawnOptionEntity_1_12(Collection<EntityType> entities) {
+        this(entities.toArray(new EntityType[0]));
     }
 
     private void init() {
         try {
             String ver = Bukkit.getServer().getClass().getPackage().getName().substring(23);
-            clazzMobSpawnerData = Class.forName("net.minecraft.server." + ver + ".MobSpawnerData");
-            clazzNBTTagCompound = Class.forName("net.minecraft.server." + ver + ".NBTTagCompound");
-            clazzCraftWorld = Class.forName("org.bukkit.craftbukkit." + ver + ".CraftWorld");
+
+            Class<?> clazzChunkRegionLoader = Class.forName("net.minecraft.server." + ver + ".ChunkRegionLoader");
+            Class<?> clazzCraftEntity = Class.forName("org.bukkit.craftbukkit." + ver + ".entity.CraftEntity");
+            Class<?> clazzSpawnReason = Class.forName("org.bukkit.event.entity.CreatureSpawnEvent$SpawnReason");
+            Class<?> clazzGroupDataEntity = Class.forName("net.minecraft.server." + ver + ".GroupDataEntity");
+            Class<?> clazzDifficultyDamageScaler = Class.forName("net.minecraft.server." + ver + ".DifficultyDamageScaler");
+
             clazzWorld = Class.forName("net.minecraft.server." + ver + ".World");
-            clazzChunkRegionLoader = Class.forName("net.minecraft.server." + ver + ".ChunkRegionLoader");
             clazzEntity = Class.forName("net.minecraft.server." + ver + ".Entity");
-            clazzCraftEntity = Class.forName("org.bukkit.craftbukkit." + ver + ".entity.CraftEntity");
+            clazzCraftWorld = Class.forName("org.bukkit.craftbukkit." + ver + ".CraftWorld");
             clazzEntityInsentient = Class.forName("net.minecraft.server." + ver + ".EntityInsentient");
-            clazzGroupDataEntity = Class.forName("net.minecraft.server." + ver + ".GroupDataEntity");
-            clazzDifficultyDamageScaler = Class.forName("net.minecraft.server." + ver + ".DifficultyDamageScaler");
             clazzBlockPosition = Class.forName("net.minecraft.server." + ver + ".BlockPosition");
-            clazzIWorldReader = Class.forName("net.minecraft.server." + ver + ".IWorldReader");
-            clazzAxisAlignedBB = Class.forName("net.minecraft.server." + ver + ".AxisAlignedBB");
-            clazzEntityTypes = Class.forName("net.minecraft.server." + ver + ".EntityTypes");
 
-            if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_16))
-                methodgetChunkCoordinates = clazzEntity.getMethod("getChunkCoordinates");
+            if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9)) {
+                clazzMobSpawnerData = Class.forName("net.minecraft.server." + ver + ".MobSpawnerData");
+                Class<?> clazzNBTTagCompound = Class.forName("net.minecraft.server." + ver + ".NBTTagCompound");
 
-            try {
-                clazzICollisionAccess = Class.forName("net.minecraft.server." + ver + ".ICollisionAccess");
-                methodGetCubes = clazzICollisionAccess.getDeclaredMethod("getCubes", clazzEntity, clazzAxisAlignedBB);
-            } catch (ClassNotFoundException e) {
-                clazzIWorldReader = Class.forName("net.minecraft.server." + ver + ".IWorldReader");
-                methodGetCubes = clazzIWorldReader.getDeclaredMethod("getCubes", clazzEntity, clazzAxisAlignedBB);
-            }
+                methodB = clazzMobSpawnerData.getDeclaredMethod("b");
+                methodSetString = clazzNBTTagCompound.getDeclaredMethod("setString", String.class, String.class);
 
-            if (ServerVersion.isServerVersionBelow(ServerVersion.V1_16)
-                    || ServerVersion.isServerVersionAtLeast(ServerVersion.V1_16) && ver.equals("v1_16_R1"))
-                clazzGeneratorAccess = Class.forName("net.minecraft.server." + ver + ".GeneratorAccess");
-            else
-                clazzWorldAccess = Class.forName("net.minecraft.server." + ver + ".WorldAccess");
+                methodGetDamageScaler = clazzWorld.getDeclaredMethod("D", clazzBlockPosition);
 
-            try {
-                methodGetEntity = clazzMobSpawnerData.getDeclaredMethod("getEntity");
-            } catch (NoSuchMethodException e) {
-                methodGetEntity = clazzMobSpawnerData.getDeclaredMethod("b");
-            }
-            methodSetString = clazzNBTTagCompound.getDeclaredMethod("setString", String.class, String.class);
-
-            methodGetBoundingBox = clazzEntity.getDeclaredMethod("getBoundingBox");
-            methodSetPosition = clazzEntity.getDeclaredMethod("setPosition", double.class, double.class, double.class);
-            methodGetHandle = clazzCraftWorld.getDeclaredMethod("getHandle");
-            try {
                 methodChunkRegionLoaderA = clazzChunkRegionLoader.getDeclaredMethod("a", clazzNBTTagCompound, clazzWorld, double.class, double.class, double.class, boolean.class);
-                methodEntityInsentientPrepare = clazzEntityInsentient.getDeclaredMethod("prepare", clazzDifficultyDamageScaler, clazzGroupDataEntity, clazzNBTTagCompound);
-                methodChunkRegionLoaderA2 = clazzChunkRegionLoader.getDeclaredMethod("a", clazzEntity, clazzGeneratorAccess, Class.forName("org.bukkit.event.entity.CreatureSpawnEvent$SpawnReason"));
-            } catch (NoSuchMethodException e) {
-                methodA = clazzEntityTypes.getDeclaredMethod("a", clazzNBTTagCompound, clazzWorld);
-
-                clazzEnumMobSpawn = Class.forName("net.minecraft.server." + ver + ".EnumMobSpawn");
-                for (Object enumValue : clazzEnumMobSpawn.getEnumConstants()) {
-                    Enum<?> mobSpawnEnum = (Enum<?>) enumValue;
-                    if (mobSpawnEnum.name().equals("SPAWNER")) {
-                        this.SpawnerEnum = mobSpawnEnum;
-                        break;
-                    }
-                }
-
-                clazzWorldServer = Class.forName("net.minecraft.server." + ver + ".WorldServer");
-
-                methodEntityInsentientPrepare = clazzEntityInsentient.getDeclaredMethod("prepare", clazzGeneratorAccess == null ? clazzWorldAccess : clazzGeneratorAccess, clazzDifficultyDamageScaler, clazzEnumMobSpawn, clazzGroupDataEntity, clazzNBTTagCompound);
-                methodAddEntity = clazzWorldServer.getDeclaredMethod("addEntity", clazzEntity, Class.forName("org.bukkit.event.entity.CreatureSpawnEvent$SpawnReason"));
+                methodChunkRegionLoaderA2 = clazzChunkRegionLoader.getDeclaredMethod("a", clazzEntity, clazzWorld, clazzSpawnReason);
+            } else {
+                Class<?> clazzEntityTypes = Class.forName("net.minecraft.server." + ver + ".EntityTypes");
+                methodCreateEntityByName = clazzEntityTypes.getDeclaredMethod("createEntityByName", String.class, clazzWorld);
+                methodSetPositionRotation = clazzEntity.getDeclaredMethod("setPositionRotation", double.class, double.class, double.class, float.class, float.class);
+                methodAddEntity = clazzWorld.getDeclaredMethod("addEntity", clazzEntity, clazzSpawnReason);
+                methodGetDamageScaler = clazzWorld.getDeclaredMethod("E", clazzBlockPosition);
             }
+
+            methodGetHandle = clazzCraftWorld.getDeclaredMethod("getHandle");
 
             methodEntityGetBukkitEntity = clazzEntity.getDeclaredMethod("getBukkitEntity");
             methodCraftEntityTeleport = clazzCraftEntity.getDeclaredMethod("teleport", Location.class);
-            methodGetDamageScaler = clazzWorld.getDeclaredMethod("getDamageScaler", clazzBlockPosition);
+            methodEntityInsentientCanSpawn = clazzEntityInsentient.getDeclaredMethod("canSpawn");
+            methodEntityInsentientPrepare = clazzEntityInsentient.getDeclaredMethod("prepare", clazzDifficultyDamageScaler, clazzGroupDataEntity);
 
             fieldWorldRandom = clazzWorld.getDeclaredField("random");
             fieldWorldRandom.setAccessible(true);
-
         } catch (NoSuchFieldException | NoSuchMethodException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -218,54 +203,59 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
 
     private Entity spawnEntity(EntityType type, Spawner spawner, SpawnerData data) {
         try {
-            Object objMobSpawnerData = clazzMobSpawnerData.newInstance();
-            Object objNTBTagCompound = methodGetEntity.invoke(objMobSpawnerData);
+            Object objMobSpawnerData = null;
+            Object objNBTTagCompound;
 
-            String name = type.name().toLowerCase().replace("pig_zombie", "zombie_pigman").replace("snowman", "snow_golem").replace("mushroom_cow", "mooshroom");
-            methodSetString.invoke(objNTBTagCompound, "id", "minecraft:" + name);
+            Methods.Tuple<String, String> typeTranslation = TypeTranslations.fromType(type);
 
-            short spawnRange = 4;
-            for (int i = 0; i < 50; i++) {
-                Object objNBTTagCompound = methodGetEntity.invoke(objMobSpawnerData);
+            if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9)) {
+                objMobSpawnerData = clazzMobSpawnerData.newInstance();
+                objNBTTagCompound = methodB.invoke(objMobSpawnerData);
+
+                methodSetString.invoke(objNBTTagCompound, "id", ServerVersion.isServerVersionAtLeast(ServerVersion.V1_11) ? "minecraft:" + typeTranslation.getKey().replace(" ", "_") : typeTranslation.getValue());
+            }
+
+            int spawnRange = 4;
+            for (int i = 0; i < 25; i++) {
                 Object objCraftWorld = clazzCraftWorld.cast(spawner.getWorld());
                 objCraftWorld = methodGetHandle.invoke(objCraftWorld);
                 Object objWorld = clazzWorld.cast(objCraftWorld);
 
                 Random random = (Random) fieldWorldRandom.get(objWorld);
                 double x = (double) spawner.getX() + (random.nextDouble() - random.nextDouble()) * (double) spawnRange + 0.5D;
-                double y = (double) (spawner.getY() + random.nextInt(3) - 1);
+                double y = spawner.getY() + random.nextInt(3) - 1;
                 double z = (double) spawner.getZ() + (random.nextDouble() - random.nextDouble()) * (double) spawnRange + 0.5D;
 
                 Object objEntity;
-                if (methodChunkRegionLoaderA != null) {
+                if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9)) {
+                    objNBTTagCompound = methodB.invoke(objMobSpawnerData);
                     objEntity = methodChunkRegionLoaderA.invoke(null, objNBTTagCompound, objWorld, x, y, z, false);
                 } else {
-                    Optional optional = (Optional) methodA.invoke(null, objNBTTagCompound, objWorld);
-
-                    if (!optional.isPresent()) continue;
-
-                    objEntity = optional.get();
-
-                    methodSetPosition.invoke(objEntity, x, y, z);
+                    objEntity = methodCreateEntityByName.invoke(null, typeTranslation.getValue(), objWorld);
+                    methodSetPositionRotation.invoke(
+                            objEntity, x, y, z, 360.0F, 0.0F);
                 }
-
-                Object objBlockPosition;
-                if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_16))
-                    objBlockPosition = methodgetChunkCoordinates.invoke(objEntity);
-                else
-                    objBlockPosition = clazzBlockPosition.getConstructor(clazzEntity).newInstance(objEntity);
-                Object objDamageScaler = methodGetDamageScaler.invoke(objWorld, objBlockPosition);
-
-                Object objEntityInsentient = clazzEntityInsentient.isInstance(objEntity) ? clazzEntityInsentient.cast(objEntity) : null;
+                Object objEntityInsentient = null;
+                if (clazzEntityInsentient.isInstance(objEntity))
+                    objEntityInsentient = clazzEntityInsentient.cast(objEntity);
 
                 Location spot = new Location(spawner.getWorld(), x, y, z);
-                if (!canSpawn(objWorld, objEntityInsentient, data, spot))
+                if (!canSpawn(objEntityInsentient, data, spot))
                     continue;
 
-                if (methodChunkRegionLoaderA != null) {
-                    methodEntityInsentientPrepare.invoke(objEntity, objDamageScaler, null, null);
-                } else {
-                    methodEntityInsentientPrepare.invoke(objEntity, objWorld, objDamageScaler, SpawnerEnum, null, null);
+                Object objBlockPosition = clazzBlockPosition.getConstructor(clazzEntity).newInstance(objEntity);
+                Object objDamageScaler = methodGetDamageScaler.invoke(objWorld, objBlockPosition);
+
+                methodEntityInsentientPrepare.invoke(objEntity, objDamageScaler, null);
+
+                ParticleType particleType = data.getEntitySpawnParticle();
+
+                if (particleType != ParticleType.NONE) {
+                    float xx = (float) (0 + (Math.random() * 1));
+                    float yy = (float) (0 + (Math.random() * 2));
+                    float zz = (float) (0 + (Math.random() * 1));
+                    CompatibleParticleHandler.spawnParticles(CompatibleParticleHandler.ParticleType.getParticle(particleType.getEffect()),
+                            spot, 5, xx, yy, zz, 0);
                 }
 
                 Entity craftEntity = (Entity) methodEntityGetBukkitEntity.invoke(objEntity);
@@ -277,19 +267,10 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
                     return null;
                 }
 
-                ParticleType particleType = data.getEntitySpawnParticle();
-
-                if (particleType != ParticleType.NONE) {
-                    float xx = (float) (0 + (Math.random() * 1));
-                    float yy = (float) (0 + (Math.random() * 2));
-                    float zz = (float) (0 + (Math.random() * 1));
-                    spot.getWorld().spawnParticle(Particle.valueOf(particleType.getEffect()), spot, 5, xx, yy, zz, 0);
-                }
-
-                if (methodChunkRegionLoaderA != null) {
+                if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9)) {
                     methodChunkRegionLoaderA2.invoke(null, objEntity, objWorld, CreatureSpawnEvent.SpawnReason.SPAWNER);
                 } else {
-                    methodAddEntity.invoke(clazzWorldServer.cast(objWorld), objEntity, CreatureSpawnEvent.SpawnReason.SPAWNER);
+                    methodAddEntity.invoke(objWorld, objEntity, CreatureSpawnEvent.SpawnReason.SPAWNER);
                 }
 
                 if (data.isSpawnOnFire()) craftEntity.setFireTicks(160);
@@ -307,21 +288,18 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
                 methodCraftEntityTeleport.invoke(objBukkitEntity, spot);
 
                 plugin.getSpawnManager().addUnnaturalSpawn(craftEntity.getUniqueId());
-
                 return craftEntity;
-
             }
         } catch (IllegalAccessException | InvocationTargetException | InstantiationException | NoSuchMethodException e) {
             e.printStackTrace();
         }
+
         return null;
     }
 
-    private boolean canSpawn(Object objWorld, Object objEntityInsentient, SpawnerData data, Location location) {
+    private boolean canSpawn(Object objEntityInsentient, SpawnerData data, Location location) {
         try {
-            Object objIWR = clazzIWorldReader == null ? clazzICollisionAccess.cast(objWorld) : clazzIWorldReader.cast(objWorld);
-
-            if (!(boolean) methodGetCubes.invoke(objIWR, objEntityInsentient, methodGetBoundingBox.invoke(objEntityInsentient)))
+            if (!(boolean) methodEntityInsentientCanSpawn.invoke(objEntityInsentient))
                 return false;
 
             Material[] spawnBlocks = data.getSpawnBlocks();
@@ -338,7 +316,8 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
 
             for (Material material : spawnBlocks) {
                 if (material == null) continue;
-                if (spawnedOn == material
+
+                if (spawnedOn.equals(material)
                         || material == Material.AIR && CompatibleMaterial.getMaterial(material).isAir())
                     return true;
             }
@@ -348,6 +327,35 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
         return false;
     }
 
+    public enum TypeTranslations {
+        VINDICATOR("vindication illager", "VindicationIllager"),
+        SNOWMAN("snowman", "SnowMan"),
+        PIG_ZOMBIE("zombie_pigman", "PigZombie"),
+        EVOKER("evocation_illager", "EvocationIllager"),
+        ILLUSIONER("illusion_illager", "IllusionIllager"),
+        IRON_GOLEM("villager_golem", "VillagerGolem"),
+        MUSHROOM_COW("mooshroom", "MushroomCow"),
+        MAGMA_CUBE("magma_cube", "LavaSlime");
+
+        private final String lower;
+        private final String upper;
+
+        TypeTranslations(String lower, String upper) {
+            this.lower = lower;
+            this.upper = upper;
+        }
+
+        public static Methods.Tuple<String, String> fromType(EntityType type) {
+            try {
+                TypeTranslations typeTranslation = valueOf(type.name());
+                return new Methods.Tuple<>(typeTranslation.lower, typeTranslation.upper);
+            } catch (Exception e) {
+                String lower = type.name().toLowerCase();
+                String upper = WordUtils.capitalize(lower.replace("_", " ")).replace(" ", "");
+                return new Methods.Tuple<>(lower, upper);
+            }
+        }
+    }
 
     @Override
     public SpawnOptionType getType() {
@@ -356,16 +364,15 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
 
     @Override
     public int hashCode() {
-        return 31 * (types != null ? types.hashCode() : 0);
+        return 31 * (types != null ? Arrays.hashCode(types) : 0);
     }
 
     @Override
     public boolean equals(Object object) {
         if (object == this) return true;
-        if (!(object instanceof SpawnOptionEntity_1_13)) return false;
+        if (!(object instanceof spawnOptionEntity_1_12)) return false;
 
-        SpawnOptionEntity_1_13 other = (SpawnOptionEntity_1_13) object;
+        spawnOptionEntity_1_12 other = (spawnOptionEntity_1_12) object;
         return Arrays.equals(types, other.types);
     }
-
 }
