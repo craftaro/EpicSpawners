@@ -39,7 +39,7 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class spawnOptionEntity_1_13 implements SpawnOption {
+public class SpawnOptionEntity_1_13 implements SpawnOption {
 
     private final EntityType[] types;
 
@@ -82,7 +82,7 @@ public class spawnOptionEntity_1_13 implements SpawnOption {
             methodGetBoundingBox;
     private Field fieldWorldRandom;
 
-    public spawnOptionEntity_1_13(EntityType... types) {
+    public SpawnOptionEntity_1_13(EntityType... types) {
         this.types = types;
         this.engine = new ScriptEngineManager(null).getEngineByName("JavaScript");
 
@@ -93,7 +93,7 @@ public class spawnOptionEntity_1_13 implements SpawnOption {
         init();
     }
 
-    public spawnOptionEntity_1_13(Collection<EntityType> entities) {
+    public SpawnOptionEntity_1_13(Collection<EntityType> entities) {
         this(entities.toArray(new EntityType[0]));
     }
 
@@ -385,9 +385,9 @@ public class spawnOptionEntity_1_13 implements SpawnOption {
     @Override
     public boolean equals(Object object) {
         if (object == this) return true;
-        if (!(object instanceof spawnOptionEntity_1_13)) return false;
+        if (!(object instanceof SpawnOptionEntity_1_13)) return false;
 
-        spawnOptionEntity_1_13 other = (spawnOptionEntity_1_13) object;
+        SpawnOptionEntity_1_13 other = (SpawnOptionEntity_1_13) object;
         return Arrays.equals(types, other.types);
     }
 }
