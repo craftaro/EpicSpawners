@@ -1,7 +1,6 @@
 package com.songoda.epicspawners.listeners;
 
 import com.songoda.core.compatibility.ServerVersion;
-import com.songoda.epicspawners.EpicSpawners;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
