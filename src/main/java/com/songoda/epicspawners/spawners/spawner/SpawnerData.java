@@ -48,8 +48,11 @@ public class SpawnerData {
 
     private double pickupCost = 0.0;
     private List<Material> spawnBlocks = Collections.singletonList(Material.AIR);
-    private boolean active = true, inShop = true;
-    private boolean spawnOnFire = false, upgradeable = true, convertible = true;
+    private boolean active = true,
+            inShop = true;
+    private boolean spawnOnFire = false,
+            upgradeable = true,
+            convertible = true;
     private double shopPrice = 1000.0;
     private int shopOrder = 0;
     private String convertRatio = "45%";
@@ -81,9 +84,9 @@ public class SpawnerData {
     private List<ItemStack> items;
     private List<String> commands;
 
-    private Set<SpawnOption> spawnOptions = new HashSet<>();
+    private final Set<SpawnOption> spawnOptions = new HashSet<>();
 
-    private List<SpawnCondition> spawnConditions = new ArrayList<>();
+    private final List<SpawnCondition> spawnConditions = new ArrayList<>();
 
     public SpawnerData(int uuid, String name, List<EntityType> entities, List<Material> blocks, List<ItemStack> items, List<String> commands) {
         Preconditions.checkNotNull(name, "Name cannot be null");
@@ -134,21 +137,17 @@ public class SpawnerData {
         return uuid;
     }
 
-
     public void setUUID(int uuid) {
         this.uuid = uuid;
     }
-
 
     public ItemStack toItemStack() {
         return toItemStack(1);
     }
 
-
     public ItemStack toItemStack(int amount) {
         return toItemStack(amount, 1);
     }
-
 
     public ItemStack toItemStack(int amount, int stackSize) {
         Preconditions.checkArgument(stackSize >= 0, "Stack size must be greater than or equal to 0");
@@ -164,21 +163,17 @@ public class SpawnerData {
         return nbtItem.finish();
     }
 
-
     public String getIdentifyingName() {
         return name;
     }
-
 
     public double getPickupCost() {
         return pickupCost;
     }
 
-
     public void setPickupCost(double pickupCost) {
         this.pickupCost = pickupCost;
     }
-
 
     public Material[] getSpawnBlocks() {
         return spawnBlocks.toArray(new Material[spawnBlocks.size()]);
@@ -192,126 +187,101 @@ public class SpawnerData {
         }
     }
 
-
     public void setSpawnBlocks(List<Material> spawnBlock) {
         this.spawnBlocks = spawnBlock;
     }
-
 
     public List<Material> getSpawnBlocksList() {
         return Collections.unmodifiableList(spawnBlocks);
     }
 
-
     public boolean isActive() {
         return active;
     }
-
 
     public void setActive(boolean active) {
         this.active = active;
     }
 
-
     public boolean isInShop() {
         return inShop;
     }
-
 
     public int getShopOrder() {
         return shopOrder;
     }
 
-
     public void setShopOrder(int slot) {
         this.shopOrder = slot;
     }
-
 
     public void setInShop(boolean inShop) {
         this.inShop = inShop;
     }
 
-
     public boolean isSpawnOnFire() {
         return spawnOnFire;
     }
-
 
     public void setSpawnOnFire(boolean spawnOnFire) {
         this.spawnOnFire = spawnOnFire;
     }
 
-
     public boolean isUpgradeable() {
         return upgradeable;
     }
-
 
     public void setUpgradeable(boolean upgradeable) {
         this.upgradeable = upgradeable;
     }
 
-
     public boolean isConvertible() {
         return convertible;
     }
-
 
     public void setConvertible(boolean convertible) {
         this.convertible = convertible;
     }
 
-
     public double getShopPrice() {
         return shopPrice;
     }
-
 
     public void setShopPrice(double shopPrice) {
         this.shopPrice = shopPrice;
     }
 
-
     public String getConvertRatio() {
         return convertRatio;
     }
-
 
     public void setConvertRatio(String convertRatio) {
         this.convertRatio = convertRatio;
     }
 
-
     public double getUpgradeCostEconomy() {
         return upgradeCostEconomy;
     }
-
 
     public void setUpgradeCostEconomy(double upgradeCostEconomy) {
         this.upgradeCostEconomy = upgradeCostEconomy;
     }
 
-
     public int getUpgradeCostExperience() {
         return upgradeCostExperience;
     }
-
 
     public void setUpgradeCostExperience(int upgradeCostExperience) {
         this.upgradeCostExperience = upgradeCostExperience;
     }
 
-
     public int getKillGoal() {
         return killGoal;
     }
 
-
     public void setKillGoal(int killGoal) {
         this.killGoal = killGoal;
     }
-
 
     public String getDisplayName() {
         return displayName;
@@ -341,41 +311,33 @@ public class SpawnerData {
         return TextUtils.formatText(nameFormat).trim();
     }
 
-
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
     }
-
 
     public Material getDisplayItem() {
         return displayItem == null ? Material.AIR : displayItem;
     }
 
-
     public void setDisplayItem(Material displayItem) {
         this.displayItem = displayItem;
     }
-
 
     public List<EntityType> getEntities() {
         return Collections.unmodifiableList(entities);
     }
 
-
     public void setEntities(List<EntityType> entities) {
         this.entities = entities;
     }
 
-
     public double getConvertPrice() {
-        return (int) (shopPrice * (Double.valueOf(convertRatio.substring(0, convertRatio.length() - 1)) / 100.0f));
+        return (int) (shopPrice * (Double.parseDouble(convertRatio.substring(0, convertRatio.length() - 1)) / 100.0f));
     }
-
 
     public List<Material> getBlocks() {
         return Collections.unmodifiableList(blocks);
     }
-
 
     public void setBlocks(List<Material> blocks) {
         this.blocks = blocks;
@@ -385,16 +347,13 @@ public class SpawnerData {
         return Collections.unmodifiableList(items);
     }
 
-
     public void setItems(List<ItemStack> items) {
         this.items = items;
     }
 
-
     public List<String> getCommands() {
         return Collections.unmodifiableList(commands);
     }
-
 
     public void setCommands(List<String> commands) {
         this.commands = commands;
@@ -412,26 +371,21 @@ public class SpawnerData {
         return tickRate;
     }
 
-
     public void setTickRate(String tickRate) {
         this.tickRate = tickRate;
     }
-
 
     public ParticleEffect getParticleEffect() {
         return particleEffect;
     }
 
-
     public void setParticleEffect(ParticleEffect particleEffect) {
         this.particleEffect = particleEffect;
     }
 
-
     public ParticleType getSpawnEffectParticle() {
         return spawnEffectParticle;
     }
-
 
     public void setSpawnEffectParticle(ParticleType spawnEffectParticle) {
         this.spawnEffectParticle = spawnEffectParticle;
@@ -449,101 +403,81 @@ public class SpawnerData {
         return entitySpawnParticle;
     }
 
-
     public void setEntitySpawnParticle(ParticleType entitySpawnParticle) {
         this.entitySpawnParticle = entitySpawnParticle;
     }
-
 
     public ParticleType getSpawnerSpawnParticle() {
         return spawnerSpawnParticle;
     }
 
-
     public void setSpawnerSpawnParticle(ParticleType spawnerSpawnParticle) {
         this.spawnerSpawnParticle = spawnerSpawnParticle;
     }
-
 
     public ParticleDensity getParticleDensity() {
         return particleDensity;
     }
 
-
     public void setParticleDensity(ParticleDensity particleDensity) {
         this.particleDensity = particleDensity;
     }
-
 
     public boolean isParticleEffectBoostedOnly() {
         return particleEffectBoostedOnly;
     }
 
-
     public void setParticleEffectBoostedOnly(boolean particleEffectBoostedOnly) {
         this.particleEffectBoostedOnly = particleEffectBoostedOnly;
     }
-
 
     public boolean isCustom() {
         return custom;
     }
 
-
     public void setCustom(boolean custom) {
         this.custom = custom;
     }
-
 
     public void addCondition(SpawnCondition spawnCondition) {
         spawnConditions.add(spawnCondition);
     }
 
-
     public void removeCondition(SpawnCondition spawnCondition) {
         spawnConditions.remove(spawnCondition);
     }
-
 
     public List<SpawnCondition> getConditions() {
         return Collections.unmodifiableList(spawnConditions);
     }
 
-
     public boolean isCraftable() {
         return craftable;
     }
-
 
     public void setCraftable(boolean craftable) {
         this.craftable = craftable;
     }
 
-
     public String getRecipe() {
         return recipe;
     }
-
 
     public void setRecipe(String recipe) {
         this.recipe = recipe;
     }
 
-
     public List<String> getRecipeIngredients() {
         return recipeIngredients;
     }
-
 
     public void setRecipeIngredients(List<String> recipeIngredients) {
         this.recipeIngredients = recipeIngredients;
     }
 
-
     public int hashCode() {
         return 31 * name.hashCode();
     }
-
 
     public boolean equals(Object object) {
         if (object == this) return true;
@@ -552,7 +486,6 @@ public class SpawnerData {
         SpawnerData other = (SpawnerData) object;
         return Objects.equals(name, other.name);
     }
-
 
     public String toString() {
         return "SpawnerData:{Name:\"" + name + "\"}";

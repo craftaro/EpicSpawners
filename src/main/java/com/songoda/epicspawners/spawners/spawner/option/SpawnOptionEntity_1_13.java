@@ -362,7 +362,7 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
 
             for (Material material : spawnBlocks) {
                 if (material == null) continue;
-                if (spawnedOn == material
+                if (spawnedOn.equals(material)
                         || material == Material.AIR && CompatibleMaterial.getMaterial(material).isAir())
                     return true;
             }
