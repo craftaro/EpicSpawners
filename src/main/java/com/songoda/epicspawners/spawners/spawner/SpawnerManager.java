@@ -6,6 +6,7 @@ import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.core.configuration.Config;
 import com.songoda.core.nms.NmsManager;
 import com.songoda.core.nms.nbt.NBTItem;
+import com.songoda.core.utils.NumberUtils;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.particles.ParticleDensity;
 import com.songoda.epicspawners.particles.ParticleEffect;
@@ -91,9 +92,9 @@ public class SpawnerManager {
         } else if (name != null && name.contains(":")) {
             String[] raw = name.replace(";", "").split(":");
             String value = raw[0].replace(String.valueOf(ChatColor.COLOR_CHAR), "");
-            if (Methods.isInt(value)) {
+            if (NumberUtils.isInt(value)) {
                 SpawnerData spawnerData = getSpawnerData(Integer.parseInt(value));
-                if (Methods.isInt(value) && spawnerData != null) {
+                if (NumberUtils.isInt(value) && spawnerData != null) {
                     return spawnerData;
                 }
             }

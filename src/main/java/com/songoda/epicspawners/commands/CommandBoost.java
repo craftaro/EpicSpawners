@@ -1,6 +1,7 @@
 package com.songoda.epicspawners.commands;
 
 import com.songoda.core.commands.AbstractCommand;
+import com.songoda.core.utils.NumberUtils;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.boost.types.BoostedPlayer;
 import com.songoda.epicspawners.utils.Methods;
@@ -27,7 +28,7 @@ public class CommandBoost extends AbstractCommand {
             plugin.getLocale().newMessage("&7Syntax error...").sendPrefixedMessage(sender);
             return ReturnType.SYNTAX_ERROR;
         }
-        if (!Methods.isInt(args[1])) {
+        if (!NumberUtils.isInt(args[1])) {
             plugin.getLocale().newMessage("&6" + args[1] + " &7is not a number...").sendPrefixedMessage(sender);
             return ReturnType.SYNTAX_ERROR;
         }

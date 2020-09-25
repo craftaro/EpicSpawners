@@ -2,6 +2,7 @@ package com.songoda.epicspawners.gui;
 
 import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.core.gui.AnvilGui;
+import com.songoda.core.utils.NumberUtils;
 import com.songoda.core.utils.TextUtils;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
@@ -136,7 +137,7 @@ public class GUIEditorGeneral extends AbstractGUI {
             gui.setTitle("Goal: Ex. 19.99");
             gui.setAction(event -> {
                 String msg = gui.getInputText().trim();
-                if (Methods.isNumeric(msg)) {
+                if (NumberUtils.isNumeric(msg)) {
                     spawnerData.setShopPrice(Double.parseDouble(msg));
                     player.closeInventory();
                     player.openInventory(inventory);
@@ -157,7 +158,7 @@ public class GUIEditorGeneral extends AbstractGUI {
             gui.setTitle("Goal: Ex. 19.99");
             gui.setAction(event -> {
                 String msg = gui.getInputText().trim();
-                if (Methods.isNumeric(msg)) {
+                if (NumberUtils.isNumeric(msg)) {
                     spawnerData.setUpgradeCostEconomy(Double.parseDouble(msg));
                     player.closeInventory();
                     player.openInventory(inventory);
@@ -179,7 +180,7 @@ public class GUIEditorGeneral extends AbstractGUI {
             gui.setTitle("Goal: Ex. 25");
             gui.setAction(event -> {
                 String msg = gui.getInputText().trim();
-                if (Methods.isInt(msg)) {
+                if (NumberUtils.isInt(msg)) {
                     spawnerData.setUpgradeCostExperience(Integer.parseInt(msg));
                     player.closeInventory();
                     player.openInventory(inventory);
@@ -201,7 +202,7 @@ public class GUIEditorGeneral extends AbstractGUI {
             gui.setTitle("Goal: Ex. 5");
             gui.setAction(event -> {
                 String msg = gui.getInputText().trim();
-                if (Methods.isInt(msg)) {
+                if (NumberUtils.isInt(msg)) {
                     spawnerData.setKillGoal(Integer.parseInt(msg));
                     player.closeInventory();
                     player.openInventory(inventory);
@@ -223,7 +224,7 @@ public class GUIEditorGeneral extends AbstractGUI {
             gui.setTitle("Goal: Ex. 719.99");
             gui.setAction(event -> {
                 String msg = gui.getInputText().trim();
-                if (Methods.isNumeric(msg)) {
+                if (NumberUtils.isNumeric(msg)) {
                     spawnerData.setPickupCost(Double.parseDouble(msg));
                     player.closeInventory();
                     player.openInventory(inventory);

@@ -218,30 +218,6 @@ public class Methods {
         return location;
     }
 
-    public static boolean isInt(String number) {
-        if (number == null || number.equals(""))
-            return false;
-        try {
-            Integer.parseInt(number);
-        } catch (NumberFormatException e) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Determines if the provided string is a valid number (int, double, float, or otherwise).
-     *
-     * @param s The string to check.
-     *
-     * @return <code>true</code> if the string is numeric, otherwise <code>false</code>
-     */
-    public static boolean isNumeric(String s) {
-        if (s == null || s.equals(""))
-            return false;
-        return s.matches("[-+]?\\d*\\.?\\d+");
-    }
-
     public static void removeFromInventory(Inventory inventory, ItemStack item) {
         int amt = item.getAmount();
         ItemStack[] items = inventory.getContents();
