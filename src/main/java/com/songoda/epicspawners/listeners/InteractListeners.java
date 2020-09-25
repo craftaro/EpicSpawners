@@ -41,7 +41,7 @@ public class InteractListeners implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void PlayerInteractEventEgg(PlayerInteractEvent event) {
+    public void playerInteractEventEgg(PlayerInteractEvent event) {
         if (!event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
             return;
         }
@@ -151,14 +151,14 @@ public class InteractListeners implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void PlayerInteractEvent(PlayerArmorStandManipulateEvent event) {
+    public void playerInteractEvent(PlayerArmorStandManipulateEvent event) {
         if (plugin.getSpawnerManager().isSpawner(event.getRightClicked().getLocation().getBlock().getRelative(BlockFace.UP).getLocation())) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void PlayerInteractEvent(PlayerInteractEvent event) {
+    public void playerInteractEvent(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         Block block = event.getClickedBlock();
         if (block == null) return;

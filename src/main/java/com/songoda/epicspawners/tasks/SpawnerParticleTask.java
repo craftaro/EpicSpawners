@@ -68,10 +68,12 @@ public class SpawnerParticleTask extends BukkitRunnable {
             } else if (effect == ParticleEffect.TARGET) {
                 for (int i = 0; i < 360; i += 10) {
                     double angle = Math.toRadians(i);
-                    double cosAngle = Math.cos(angle), sinAngle = Math.sin(angle);
+                    double cosAngle = Math.cos(angle),
+                            sinAngle = Math.sin(angle);
 
                     // Outer circle
-                    double x = 1.2 * cosAngle, z = 1.2 * sinAngle;
+                    double x = 1.2 * cosAngle,
+                            z = 1.2 * sinAngle;
                     centre.add(x, -0.2, z);
 
                     spawnParticles(centre, particle, density);

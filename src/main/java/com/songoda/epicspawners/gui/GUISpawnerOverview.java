@@ -443,17 +443,13 @@ public class GUISpawnerOverview extends AbstractGUI {
                 }
                 nu++;
             }
-
         }
-        text = text.replaceAll("[\\[\\]\\{\\}]", ""); // [, ], { or }
+        text = text.replaceAll("[\\[\\]{}]", ""); // [, ], { or }
         return text;
     }
 
     private String a(int a, String text) {
-        if (a != 0) {
-            text = ", " + text;
-        }
-        return text;
+        return (a != 0 ? ", " : "") + text;
     }
 
     @Override

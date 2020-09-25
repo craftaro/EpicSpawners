@@ -182,7 +182,6 @@ public class EpicSpawners extends SongodaPlugin {
         this.spawnerCustomSpawnTask = SpawnerSpawnTask.startTask(this);
         this.appearanceTask = AppearanceTask.startTask(this);
 
-
         // ShopGUI+ support
         if (Bukkit.getPluginManager().isPluginEnabled("ShopGUIPlus")) {
             try {
@@ -330,7 +329,6 @@ public class EpicSpawners extends SongodaPlugin {
         }, "create");
     }
 
-
     @Override
     public void onConfigReload() {
         this.setLocale(Settings.LANGUGE_MODE.getString(), true);
@@ -344,7 +342,7 @@ public class EpicSpawners extends SongodaPlugin {
         return Arrays.asList(spawnerManager.getSpawnerConfig(), blacklistHandler.getBlackConfig());
     }
 
-    void loadHolograms() {
+    private void loadHolograms() {
         Collection<Spawner> spawners = getSpawnerManager().getSpawners();
         if (spawners.size() == 0) return;
 
@@ -378,9 +376,8 @@ public class EpicSpawners extends SongodaPlugin {
                 updateHologram(spawner), 1L);
     }
 
-
     private void checkStorage() {
-        Storage storage = new StorageYaml(this);
+        new StorageYaml(this);
     }
 
     private void saveToFile() {

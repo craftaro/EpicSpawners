@@ -85,7 +85,6 @@ public class GUIEditorSelector extends AbstractGUI {
 
             registerClickable(place, ((player1, inventory1, cursor, slot, type) -> {
                 new GUIEditorOverview(plugin, this, spawnerData, player);
-
             }));
 
             place++;
@@ -100,7 +99,8 @@ public class GUIEditorSelector extends AbstractGUI {
             inventory.setItem(i, glass);
         }
 
-        ItemStack glassType2 = Methods.getBackgroundGlass(true), glassType3 = Methods.getBackgroundGlass(false);
+        ItemStack glassType2 = Methods.getBackgroundGlass(true),
+                glassType3 = Methods.getBackgroundGlass(false);
         inventory.setItem(0, glassType2);
         inventory.setItem(1, glassType2);
         inventory.setItem(9, glassType2);
@@ -132,7 +132,6 @@ public class GUIEditorSelector extends AbstractGUI {
                     "http://textures.minecraft.net/texture/1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b"),
                     plugin.getLocale().getMessage("general.nametag.next").getMessage());
         }
-
 
         createButton(slots - 4, Material.PAPER, "&9&lNew Spawner");
     }

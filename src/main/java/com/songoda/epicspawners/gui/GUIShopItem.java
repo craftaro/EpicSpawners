@@ -93,7 +93,6 @@ public class GUIShopItem extends AbstractGUI {
         item.setItemMeta(itemmeta);
         inventory.setItem(22, item);
 
-
         ItemStack plus = new ItemStack(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.LIME_STAINED_GLASS_PANE : Material.valueOf("STAINED_GLASS_PANE"), 1, (short) 5);
         ItemMeta plusmeta = plus.getItemMeta();
         plusmeta.setDisplayName(plugin.getLocale().getMessage("interface.shop.add1").getMessage());
