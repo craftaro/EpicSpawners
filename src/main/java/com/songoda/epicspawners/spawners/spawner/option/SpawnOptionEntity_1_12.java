@@ -15,7 +15,7 @@ import com.songoda.epicspawners.spawners.spawner.Spawner;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.spawners.spawner.SpawnerStack;
 import com.songoda.epicspawners.utils.Methods;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -44,74 +44,85 @@ public class SpawnOptionEntity_1_12 implements SpawnOption {
 
     private final EntityType[] types;
 
-    private final ScriptEngineManager mgr;
-
     private final ScriptEngine engine;
 
-    private EpicSpawners plugin = EpicSpawners.getInstance();
+    private final EpicSpawners plugin = EpicSpawners.getInstance();
 
     private boolean useUltimateStacker;
 
     private boolean mcmmo;
 
-    private Map<String, Integer> cache = new HashMap<>();
-    private Class<?> clazzEntityTypes, clazzMobSpawnerData, clazzNBTTagCompound, clazzNBTTagList, clazzCraftWorld, clazzWorld, clazzChunkRegionLoader, clazzEntity, clazzCraftEntity, clazzEntityInsentient, clazzGroupDataEntity, clazzDifficultyDamageScaler, clazzBlockPosition, clazzAxisAlignedBB;
-    private Method methodAddEntity, methodCreateEntityByName, methodSetPositionRotation, methodB, methodSetString, methodNTBTagListSize, methodGetHandle, methodTBNTagListK, methodEntityInsentientPrepare, methodChunkRegionLoaderA, methodEntityGetBukkitEntity, methodCraftEntityTeleport, methodEntityInsentientCanSpawn, methodChunkRegionLoaderA2, methodGetDamageScaler, methodGetCubes, methodGetBoundingBox;
+    private final Map<String, Integer> cache = new HashMap<>();
+    private Class<?> clazzMobSpawnerData,
+            clazzCraftWorld,
+            clazzWorld,
+            clazzEntity,
+            clazzEntityInsentient,
+            clazzBlockPosition;
+    private Method methodAddEntity,
+            methodCreateEntityByName,
+            methodSetPositionRotation,
+            methodB,
+            methodSetString,
+            methodGetHandle,
+            methodEntityInsentientPrepare,
+            methodChunkRegionLoaderA,
+            methodEntityGetBukkitEntity,
+            methodCraftEntityTeleport,
+            methodEntityInsentientCanSpawn,
+            methodChunkRegionLoaderA2,
+            methodGetDamageScaler;
     private Field fieldWorldRandom;
 
     public SpawnOptionEntity_1_12(EntityType... types) {
         this.types = types;
-        this.mgr = new ScriptEngineManager(null);
-        this.engine = mgr.getEngineByName("JavaScript");
+        this.engine = new ScriptEngineManager(null).getEngineByName("JavaScript");
+
         if (Bukkit.getPluginManager().isPluginEnabled("UltimateStacker")) {
             this.useUltimateStacker = ((Plugin) com.songoda.ultimatestacker.UltimateStacker.getInstance()).getConfig().getBoolean("Entities.Enabled");
         }
+
         init();
     }
 
     public SpawnOptionEntity_1_12(Collection<EntityType> entities) {
-        this(entities.toArray(new EntityType[entities.size()]));
+        this(entities.toArray(new EntityType[0]));
     }
 
     private void init() {
         try {
             String ver = Bukkit.getServer().getClass().getPackage().getName().substring(23);
+
+            Class<?> clazzChunkRegionLoader = Class.forName("net.minecraft.server." + ver + ".ChunkRegionLoader");
+            Class<?> clazzCraftEntity = Class.forName("org.bukkit.craftbukkit." + ver + ".entity.CraftEntity");
+            Class<?> clazzSpawnReason = Class.forName("org.bukkit.event.entity.CreatureSpawnEvent$SpawnReason");
+            Class<?> clazzGroupDataEntity = Class.forName("net.minecraft.server." + ver + ".GroupDataEntity");
+            Class<?> clazzDifficultyDamageScaler = Class.forName("net.minecraft.server." + ver + ".DifficultyDamageScaler");
+
             clazzWorld = Class.forName("net.minecraft.server." + ver + ".World");
             clazzEntity = Class.forName("net.minecraft.server." + ver + ".Entity");
-            clazzNBTTagList = Class.forName("net.minecraft.server." + ver + ".NBTTagList");
             clazzCraftWorld = Class.forName("org.bukkit.craftbukkit." + ver + ".CraftWorld");
-            clazzChunkRegionLoader = Class.forName("net.minecraft.server." + ver + ".ChunkRegionLoader");
-            clazzCraftEntity = Class.forName("org.bukkit.craftbukkit." + ver + ".entity.CraftEntity");
             clazzEntityInsentient = Class.forName("net.minecraft.server." + ver + ".EntityInsentient");
             clazzBlockPosition = Class.forName("net.minecraft.server." + ver + ".BlockPosition");
-            Class<?> clazzSpawnReason = Class.forName("org.bukkit.event.entity.CreatureSpawnEvent$SpawnReason");
-            clazzGroupDataEntity = Class.forName("net.minecraft.server." + ver + ".GroupDataEntity");
-            clazzDifficultyDamageScaler = Class.forName("net.minecraft.server." + ver + ".DifficultyDamageScaler");
-            clazzAxisAlignedBB = Class.forName("net.minecraft.server." + ver + ".AxisAlignedBB");
 
             if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9)) {
                 clazzMobSpawnerData = Class.forName("net.minecraft.server." + ver + ".MobSpawnerData");
-                clazzNBTTagCompound = Class.forName("net.minecraft.server." + ver + ".NBTTagCompound");
+                Class<?> clazzNBTTagCompound = Class.forName("net.minecraft.server." + ver + ".NBTTagCompound");
 
                 methodB = clazzMobSpawnerData.getDeclaredMethod("b");
                 methodSetString = clazzNBTTagCompound.getDeclaredMethod("setString", String.class, String.class);
 
-                methodTBNTagListK = clazzNBTTagList.getDeclaredMethod("f", int.class);
                 methodGetDamageScaler = clazzWorld.getDeclaredMethod("D", clazzBlockPosition);
 
                 methodChunkRegionLoaderA = clazzChunkRegionLoader.getDeclaredMethod("a", clazzNBTTagCompound, clazzWorld, double.class, double.class, double.class, boolean.class);
                 methodChunkRegionLoaderA2 = clazzChunkRegionLoader.getDeclaredMethod("a", clazzEntity, clazzWorld, clazzSpawnReason);
             } else {
-                clazzEntityTypes = Class.forName("net.minecraft.server." + ver + ".EntityTypes");
+                Class<?> clazzEntityTypes = Class.forName("net.minecraft.server." + ver + ".EntityTypes");
                 methodCreateEntityByName = clazzEntityTypes.getDeclaredMethod("createEntityByName", String.class, clazzWorld);
                 methodSetPositionRotation = clazzEntity.getDeclaredMethod("setPositionRotation", double.class, double.class, double.class, float.class, float.class);
                 methodAddEntity = clazzWorld.getDeclaredMethod("addEntity", clazzEntity, clazzSpawnReason);
                 methodGetDamageScaler = clazzWorld.getDeclaredMethod("E", clazzBlockPosition);
             }
-
-
-            methodGetBoundingBox = clazzEntity.getDeclaredMethod("getBoundingBox");
-            methodGetCubes = clazzWorld.getDeclaredMethod("getCubes", clazzEntity, clazzAxisAlignedBB);
 
             methodGetHandle = clazzCraftWorld.getDeclaredMethod("getHandle");
 
@@ -122,7 +133,6 @@ public class SpawnOptionEntity_1_12 implements SpawnOption {
 
             fieldWorldRandom = clazzWorld.getDeclaredField("random");
             fieldWorldRandom.setAccessible(true);
-
         } catch (NoSuchFieldException | NoSuchMethodException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -196,7 +206,6 @@ public class SpawnOptionEntity_1_12 implements SpawnOption {
             Object objMobSpawnerData = null;
             Object objNBTTagCompound;
 
-
             Methods.Tuple<String, String> typeTranslation = TypeTranslations.fromType(type);
 
             if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9)) {
@@ -212,10 +221,9 @@ public class SpawnOptionEntity_1_12 implements SpawnOption {
                 objCraftWorld = methodGetHandle.invoke(objCraftWorld);
                 Object objWorld = clazzWorld.cast(objCraftWorld);
 
-
                 Random random = (Random) fieldWorldRandom.get(objWorld);
                 double x = (double) spawner.getX() + (random.nextDouble() - random.nextDouble()) * (double) spawnRange + 0.5D;
-                double y = (double) (spawner.getY() + random.nextInt(3) - 1);
+                double y = spawner.getY() + random.nextInt(3) - 1;
                 double z = (double) spawner.getZ() + (random.nextDouble() - random.nextDouble()) * (double) spawnRange + 0.5D;
 
                 Object objEntity;
@@ -281,11 +289,11 @@ public class SpawnOptionEntity_1_12 implements SpawnOption {
 
                 plugin.getSpawnManager().addUnnaturalSpawn(craftEntity.getUniqueId());
                 return craftEntity;
-
             }
         } catch (IllegalAccessException | InvocationTargetException | InstantiationException | NoSuchMethodException e) {
             e.printStackTrace();
         }
+
         return null;
     }
 
@@ -308,7 +316,8 @@ public class SpawnOptionEntity_1_12 implements SpawnOption {
 
             for (Material material : spawnBlocks) {
                 if (material == null) continue;
-                if (spawnedOn == material
+
+                if (spawnedOn.equals(material)
                         || material == Material.AIR && CompatibleMaterial.getMaterial(material).isAir())
                     return true;
             }
@@ -342,11 +351,10 @@ public class SpawnOptionEntity_1_12 implements SpawnOption {
                 return new Methods.Tuple<>(typeTranslation.lower, typeTranslation.upper);
             } catch (Exception e) {
                 String lower = type.name().toLowerCase();
-                String upper = StringUtils.capitaliseAllWords(lower.replace("_", " ")).replace(" ", "");
+                String upper = WordUtils.capitalize(lower.replace("_", " ")).replace(" ", "");
                 return new Methods.Tuple<>(lower, upper);
             }
         }
-
     }
 
     @Override
@@ -356,7 +364,7 @@ public class SpawnOptionEntity_1_12 implements SpawnOption {
 
     @Override
     public int hashCode() {
-        return 31 * (types != null ? types.hashCode() : 0);
+        return 31 * (types != null ? Arrays.hashCode(types) : 0);
     }
 
     @Override
@@ -367,5 +375,4 @@ public class SpawnOptionEntity_1_12 implements SpawnOption {
         SpawnOptionEntity_1_12 other = (SpawnOptionEntity_1_12) object;
         return Arrays.equals(types, other.types);
     }
-
 }

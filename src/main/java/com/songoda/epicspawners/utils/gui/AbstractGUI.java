@@ -85,7 +85,7 @@ public abstract class AbstractGUI implements Listener {
                     if (range.isBottom() && !bottom || !range.isBottom() && bottom || range.getClickType() != null && range.getClickType() != event.getClick())
                         continue;
                     if (event.getSlot() >= range.getMin() && event.getSlot() <= range.getMax()) {
-                        entry.getValue().Clickable(player, inventory, event.getCursor(), event.getSlot(), event.getClick());
+                        entry.getValue().onClick(player, inventory, event.getCursor(), event.getSlot(), event.getClick());
                         player.playSound(player.getLocation(), entry.getKey().getOnClickSound(), 1F, 1F);
                     }
                 }

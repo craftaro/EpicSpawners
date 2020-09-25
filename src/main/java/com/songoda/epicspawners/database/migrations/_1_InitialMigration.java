@@ -27,7 +27,9 @@ public class _1_InitialMigration extends DataMigration {
                     "world TEXT NOT NULL, " +
                     "x DOUBLE NOT NULL, " +
                     "y DOUBLE NOT NULL, " +
-                    "z DOUBLE NOT NULL " +
+                    "z DOUBLE NOT NULL, " +
+                    "UNIQUE (world,x,y,z) " +
+                    "ON CONFLICT REPLACE" +
                     ")");
         }
 

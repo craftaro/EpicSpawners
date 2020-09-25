@@ -1,6 +1,5 @@
 package com.songoda.epicspawners.gui;
 
-import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.core.hooks.EconomyManager;
 import com.songoda.epicspawners.EpicSpawners;
@@ -93,7 +92,6 @@ public class GUIShopItem extends AbstractGUI {
         itemmeta.setLore(lore);
         item.setItemMeta(itemmeta);
         inventory.setItem(22, item);
-
 
         ItemStack plus = new ItemStack(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.LIME_STAINED_GLASS_PANE : Material.valueOf("STAINED_GLASS_PANE"), 1, (short) 5);
         ItemMeta plusmeta = plus.getItemMeta();

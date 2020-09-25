@@ -2,7 +2,7 @@
     <groupId>com.songoda</groupId>
     <artifactId>EpicSpawners</artifactId>
     <modelVersion>4.0.0</modelVersion>
-    <version>6.4.7</version>
+    <version>6.4.8</version>
     <build>
         <defaultGoal>clean install</defaultGoal>
         <finalName>EpicSpawners-${project.version}</finalName>
@@ -83,11 +83,11 @@
     <repositories>
         <repository>
             <id>private</id>
-            <url>https://repo.songoda.com/artifactory/private/</url>
+            <url>https://repo.songoda.com/repository/private/</url>
         </repository>
         <repository>
             <id>public</id>
-            <url>https://repo.songoda.com/artifactory/public/</url>
+            <url>https://repo.songoda.com/repository/public/</url>
         </repository>
         <repository>
             <id>jitpack.io</id>
@@ -124,7 +124,7 @@
         <dependency>
             <groupId>com.songoda</groupId>
             <artifactId>Lootables</artifactId>
-            <version>1.0.7</version>
+            <version>LATEST</version>
         </dependency>
     </dependencies>
 </project>

@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 public class Settings {
 
-    static final Config config = EpicSpawners.getInstance().getCoreConfig();
+    private static final Config config = EpicSpawners.getInstance().getCoreConfig();
 
     public static final ConfigSetting SPAWNERS_MAX = new ConfigSetting(config, "Main.Spawner Max Upgrade", 5,
             "The maximum level a spawner can be upgraded to.");

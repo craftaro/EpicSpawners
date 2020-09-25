@@ -2,6 +2,7 @@ package com.songoda.epicspawners.commands;
 
 import com.google.common.collect.Iterables;
 import com.songoda.core.commands.AbstractCommand;
+import com.songoda.core.utils.NumberUtils;
 import com.songoda.core.utils.TextUtils;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.settings.Settings;
@@ -64,7 +65,7 @@ public class CommandGive extends AbstractCommand {
             data = Iterables.get(list, rand.nextInt(list.size()));
         }
         if (args.length == 3) {
-            if (!Methods.isInt(args[2])) {
+            if (!NumberUtils.isInt(args[2])) {
                 plugin.getLocale().newMessage("&6" + args[2] + "&7 is not a number.").sendPrefixedMessage(sender);
                 return ReturnType.SYNTAX_ERROR;
             }
@@ -87,11 +88,11 @@ public class CommandGive extends AbstractCommand {
             }
             return ReturnType.FAILURE;
         }
-        if (!Methods.isInt(args[2])) {
+        if (!NumberUtils.isInt(args[2])) {
             plugin.getLocale().newMessage("&6" + args[2] + "&7 is not a number.").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
-        if (!Methods.isInt(args[3])) {
+        if (!NumberUtils.isInt(args[3])) {
             plugin.getLocale().newMessage("&6" + args[3] + "&7 is not a number.").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }

@@ -41,7 +41,7 @@ import java.util.concurrent.TimeUnit;
 @SuppressWarnings("deprecation")
 public class Methods {
 
-    private static Map<String, Location> serializeCache = new HashMap<>();
+    private static final Map<String, Location> serializeCache = new HashMap<>();
 
     public static List<String> wrap(String color, String line) {
         List<String> lore = new ArrayList<>();
@@ -70,14 +70,13 @@ public class Methods {
     }
 
     public static String formatTitle(String text) {
-        if (text == null || text.equals(""))
-            return "";
+        if (text == null || text.equals("")) return "";
+
         if (!ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9)) {
             if (text.length() > 31)
-                text = text.substring(0, 29) + "...";
+                return TextUtils.formatText(text.substring(0, 29) + "...");
         }
-        text = TextUtils.formatText(text);
-        return text;
+        return TextUtils.formatText(text);
     }
 
     public static String getBoostCost(int time, int amount) {
@@ -116,6 +115,7 @@ public class Methods {
      * Formats the specified double into the Economy format specified in the Arconix config.
      *
      * @param amt The double to format.
+     *
      * @return The economy formatted double.
      */
     public static String formatEconomy(double amt) {
@@ -172,7 +172,7 @@ public class Methods {
         SkullMeta meta = (SkullMeta) item.getItemMeta();
 
         GameProfile profile = new GameProfile(UUID.randomUUID(), null);
-        byte[] encodedData = Base64.getEncoder().encode(String.format("{textures:{SKIN:{url:\"%s\"}}}", new Object[]{headURL}).getBytes());
+        byte[] encodedData = Base64.getEncoder().encode(String.format("{textures:{SKIN:{url:\"%s\"}}}", new Object[] {headURL}).getBytes());
         profile.getProperties().put("textures", new Property("textures", new String(encodedData)));
 
         Field profileField;
@@ -191,48 +191,32 @@ public class Methods {
      * Deserializes a location from the string.
      *
      * @param str The string to parse.
+     *
      * @return The location that was serialized in the string.
      */
     public static Location unserializeLocation(String str) {
-        if (str == null || str.equals(""))
-            return null;
+        if (str == null || str.equals("")) return null;
+
         if (serializeCache.containsKey(str)) {
             return serializeCache.get(str).clone();
         }
+
         String cacheKey = str;
-        str = str.replace("y:", ":").replace("z:", ":").replace("w:", "").replace("x:", ":").replace("/", ".");
+        str = str.replace("y:", ":")
+                .replace("z:", ":")
+                .replace("w:", "")
+                .replace("x:", ":")
+                .replace("/", ".");
         List<String> args = Arrays.asList(str.split("\\s*:\\s*"));
 
         World world = Bukkit.getWorld(args.get(0));
-        double x = Double.parseDouble(args.get(1)), y = Double.parseDouble(args.get(2)), z = Double.parseDouble(args.get(3));
+        double x = Double.parseDouble(args.get(1)),
+                y = Double.parseDouble(args.get(2)),
+                z = Double.parseDouble(args.get(3));
         Location location = new Location(world, x, y, z, 0, 0);
         serializeCache.put(cacheKey, location.clone());
         return location;
     }
-
-    public static boolean isInt(String number) {
-        if (number == null || number.equals(""))
-            return false;
-        try {
-            Integer.parseInt(number);
-        } catch (NumberFormatException e) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Determines if the provided string is a valid number (int, double, float, or otherwise).
-     *
-     * @param s The string to check.
-     * @return <code>true</code> if the string is numeric, otherwise <code>false</code>
-     */
-    public static boolean isNumeric(String s) {
-        if (s == null || s.equals(""))
-            return false;
-        return s.matches("[-+]?\\d*\\.?\\d+");
-    }
-
 
     public static void removeFromInventory(Inventory inventory, ItemStack item) {
         int amt = item.getAmount();
@@ -302,7 +286,6 @@ public class Methods {
         return sb.toString().trim();
     }
 
-
     public static long parseTime(String input) {
         long result = 0;
         StringBuilder number = new StringBuilder();
@@ -328,8 +311,9 @@ public class Methods {
                 return value * 1000 * 60;
             case 's':
                 return value * 1000;
+            default:
+                return 0;
         }
-        return 0;
     }
 
     public static <T extends Enum<T>> String[] getStrings(List<T> mats) {
@@ -343,7 +327,7 @@ public class Methods {
             }
         }
 
-        return strings.toArray(new String[strings.size()]);
+        return strings.toArray(new String[0]);
     }
 
     public static String[] getStrings(Set<Biome> biomes) {
@@ -353,7 +337,7 @@ public class Methods {
             strings.add(biome.name());
         }
 
-        return strings.toArray(new String[strings.size()]);
+        return strings.toArray(new String[0]);
     }
 
     public static <T> List<String> convertToList(Collection<T> collection, ConversionStrategy<T> strategy) {
@@ -368,10 +352,8 @@ public class Methods {
         return converted;
     }
 
-    public static interface ConversionStrategy<T> {
-
-        public String convertToString(T input);
-
+    public interface ConversionStrategy<T> {
+        String convertToString(T input);
     }
 
     public static class Tuple<key, value> {

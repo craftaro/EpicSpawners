@@ -22,15 +22,13 @@ import java.util.List;
 public class AppearanceTask extends BukkitRunnable {
 
     private static AppearanceTask instance;
-    private final EpicSpawners plugin;
 
-    private AppearanceTask(EpicSpawners plugin) {
-        this.plugin = plugin;
+    private AppearanceTask() {
     }
 
     public static AppearanceTask startTask(EpicSpawners plugin) {
         if (instance == null) {
-            instance = new AppearanceTask(plugin);
+            instance = new AppearanceTask();
             instance.runTaskTimer(plugin, 50L, 60);
         }
 

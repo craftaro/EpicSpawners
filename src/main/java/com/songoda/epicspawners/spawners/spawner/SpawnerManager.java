@@ -6,6 +6,7 @@ import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.core.configuration.Config;
 import com.songoda.core.nms.NmsManager;
 import com.songoda.core.nms.nbt.NBTItem;
+import com.songoda.core.utils.NumberUtils;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.particles.ParticleDensity;
 import com.songoda.epicspawners.particles.ParticleEffect;
@@ -48,7 +49,7 @@ public class SpawnerManager {
     // This is the map that holds the cooldowns for picking up stuffs
     private final List<Spawner> pickingUp = new ArrayList<>();
 
-    private Config spawnerConfig = new Config(EpicSpawners.getInstance(), "spawners.yml");
+    private final Config spawnerConfig = new Config(EpicSpawners.getInstance(), "spawners.yml");
 
     public SpawnerManager(EpicSpawners plugin) {
         this.plugin = plugin;
@@ -91,9 +92,9 @@ public class SpawnerManager {
         } else if (name != null && name.contains(":")) {
             String[] raw = name.replace(";", "").split(":");
             String value = raw[0].replace(String.valueOf(ChatColor.COLOR_CHAR), "");
-            if (Methods.isInt(value)) {
+            if (NumberUtils.isInt(value)) {
                 SpawnerData spawnerData = getSpawnerData(Integer.parseInt(value));
-                if (Methods.isInt(value) && spawnerData != null) {
+                if (NumberUtils.isInt(value) && spawnerData != null) {
                     return spawnerData;
                 }
             }
@@ -230,6 +231,8 @@ public class SpawnerManager {
             case "OCELOT":
                 spawnBlock = ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? "GRASS_BLOCK, JUNGLE_LEAVES, " +
                         "ACACIA_LEAVES, BIRCH_LEAVES, DARK_OAK_LEAVES, OAK_LEAVES, SPRUCE_LEAVES" : "GRASS, LEAVES";
+                break;
+            default:
                 break;
         }
 
@@ -385,7 +388,6 @@ public class SpawnerManager {
         }
 
         reloadSpawnerData();
-
     }
 
     public void reloadSpawnerData() {
@@ -442,7 +444,6 @@ public class SpawnerManager {
             currentSection.set("Spawner-Spawn-Particle", spawnerData.getSpawnerSpawnParticle().name());
             currentSection.set("Particle-Amount", spawnerData.getParticleDensity().name());
             currentSection.set("Particle-Effect-Boosted-Only", spawnerData.isParticleEffectBoostedOnly());
-
 
             for (SpawnCondition spawnCondition : spawnerData.getConditions()) {
                 if (spawnCondition instanceof SpawnConditionBiome) {
