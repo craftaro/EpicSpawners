@@ -243,7 +243,7 @@ public class BlockListeners implements Listener {
             if (spawner.getFirstStack().getSpawnerData().getPickupCost() != 0 && (!naturalOnly || spawner.getPlacedBy() == null)) {
                 if (!plugin.getSpawnerManager().hasCooldown(spawner)) {
                     plugin.getLocale().getMessage("event.block.chargebreak")
-                            .processPlaceholder("cost", spawner.getFirstStack().getSpawnerData().getPickupCost())
+                            .processPlaceholder("cost", EconomyManager.formatEconomy(spawner.getFirstStack().getSpawnerData().getPickupCost()))
                             .sendPrefixedMessage(player);
                     plugin.getSpawnerManager().addCooldown(spawner);
                     Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> plugin.getSpawnerManager().removeCooldown(spawner), 300L);
