@@ -107,9 +107,9 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
                     clazzGroupDataEntity = Class.forName("net.minecraft.server." + ver + ".GroupDataEntity"),
                     clazzDifficultyDamageScaler = Class.forName("net.minecraft.server." + ver + ".DifficultyDamageScaler"),
                     clazzAxisAlignedBB = Class.forName("net.minecraft.server." + ver + ".AxisAlignedBB"),
-                    clazzEntityTypes = Class.forName("net.minecraft.server." + ver + ".EntityTypes"),
-                    clazzMobSpawnerData = Class.forName("net.minecraft.server." + ver + ".MobSpawnerData");
+                    clazzEntityTypes = Class.forName("net.minecraft.server." + ver + ".EntityTypes");
 
+            clazzMobSpawnerData = Class.forName("net.minecraft.server." + ver + ".MobSpawnerData");
             clazzCraftWorld = Class.forName("org.bukkit.craftbukkit." + ver + ".CraftWorld");
             clazzWorld = Class.forName("net.minecraft.server." + ver + ".World");
             clazzEntity = Class.forName("net.minecraft.server." + ver + ".Entity");

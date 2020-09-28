@@ -1,6 +1,7 @@
 package com.songoda.epicspawners.gui;
 
 import com.songoda.core.compatibility.ServerVersion;
+import com.songoda.core.hooks.EconomyManager;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.spawners.spawner.Spawner;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
@@ -92,7 +93,7 @@ public class GUISpawnerConvert extends AbstractGUI {
             ArrayList<String> lore = new ArrayList<>();
             double price = spawnerData.getConvertPrice() * spawner.getSpawnerDataCount();
 
-            lore.add(plugin.getLocale().getMessage("interface.shop.buyprice").processPlaceholder("cost", Methods.formatEconomy(price)).getMessage());
+            lore.add(plugin.getLocale().getMessage("interface.shop.buyprice").processPlaceholder("cost", EconomyManager.formatEconomy(price)).getMessage());
             String loreString = plugin.getLocale().getMessage("interface.convert.lore").getMessage();
             if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
                 loreString = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, loreString.replace(" ", "_")).replace("_", " ");

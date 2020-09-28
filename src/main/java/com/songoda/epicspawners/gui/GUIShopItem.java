@@ -88,7 +88,7 @@ public class GUIShopItem extends AbstractGUI {
         itemmeta.setDisplayName(name);
         ArrayList<String> lore = new ArrayList<>();
         lore.add(plugin.getLocale().getMessage("interface.shop.buyprice")
-                .processPlaceholder("cost", Methods.formatEconomy(price)).getMessage());
+                .processPlaceholder("cost", EconomyManager.formatEconomy(price)).getMessage());
         itemmeta.setLore(lore);
         item.setItemMeta(itemmeta);
         inventory.setItem(22, item);
