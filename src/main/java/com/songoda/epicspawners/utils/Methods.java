@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.songoda.core.compatibility.ServerVersion;
+import com.songoda.core.hooks.EconomyManager;
 import com.songoda.core.utils.TextUtils;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.settings.Settings;
@@ -94,7 +95,7 @@ public class Methods {
                 cost.append('s');
             }
         } else if (type.equals("ECO")) {
-            cost.append('$').append(formatEconomy(co));
+            cost.append('$').append(EconomyManager.formatEconomy(co));
         } else if (type.equals("XP")) {
             cost.append(co).append(" &7Levels");
         }
@@ -109,18 +110,6 @@ public class Methods {
     @Deprecated
     public static String compileName(SpawnerData data, int multi) {
         return data.getCompiledDisplayName(multi);
-    }
-
-    /**
-     * Formats the specified double into the Economy format specified in the Arconix config.
-     *
-     * @param amt The double to format.
-     *
-     * @return The economy formatted double.
-     */
-    public static String formatEconomy(double amt) {
-        DecimalFormat formatter = new DecimalFormat(amt == Math.ceil(amt) ? "#,###" : "#,###.00");
-        return formatter.format(amt);
     }
 
     public static ItemStack getGlass() {

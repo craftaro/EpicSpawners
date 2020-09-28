@@ -1,6 +1,7 @@
 package com.songoda.epicspawners.gui;
 
 import com.songoda.core.compatibility.ServerVersion;
+import com.songoda.core.hooks.EconomyManager;
 import com.songoda.core.utils.TextUtils;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.boost.types.Boosted;
@@ -157,7 +158,7 @@ public class GUISpawnerOverview extends AbstractGUI {
         ArrayList<String> loreECO = new ArrayList<>();
         if (!maxed)
             loreECO.add(plugin.getLocale().getMessage("interface.spawner.upgradewitheconomylore")
-                    .processPlaceholder("cost", Methods.formatEconomy(ecoCost)).getMessage());
+                    .processPlaceholder("cost", EconomyManager.formatEconomy(ecoCost)).getMessage());
         else
             loreECO.add(plugin.getLocale().getMessage("event.upgrade.maxed").getMessage());
         itemmetaECO.setLore(loreECO);
