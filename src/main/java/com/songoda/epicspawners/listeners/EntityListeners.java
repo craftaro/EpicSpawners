@@ -69,7 +69,7 @@ public class EntityListeners implements Listener {
 
                 String chance = "";
                 if (event.getEntity() instanceof Creeper)
-                    chance = Settings.EXPLOSION_DROP_CHANCE_TNT.getString();
+                    chance = Settings.EXPLOSION_DROP_CHANCE_CREEPER.getString();
                 else if (event.getEntity() instanceof TNTPrimed)
                     chance = Settings.EXPLOSION_DROP_CHANCE_TNT.getString();
                 int ch = Integer.parseInt(chance.replace("%", ""));
@@ -136,7 +136,7 @@ public class EntityListeners implements Listener {
         int amount = 1;
 
         if (ultimateStacker != null) {
-            boolean killAll = ultimateStacker.getConfig().getBoolean("Entities.Kill Whole Stack On Death");
+            boolean killAll = com.songoda.ultimatestacker.settings.Settings.KILL_WHOLE_STACK_ON_DEATH.getBoolean();
             if (ultimateStacker.getEntityStackManager().isStacked(event.getEntity().getUniqueId()) && killAll) {
                 amount = ultimateStacker.getEntityStackManager().getStack(event.getEntity().getUniqueId()).getAmount();
             }

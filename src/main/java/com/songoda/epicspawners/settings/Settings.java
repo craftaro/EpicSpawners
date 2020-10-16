@@ -24,6 +24,10 @@ public class Settings {
             "Spawners placed next to each other within this radius will automatically",
             "combine with each other.");
 
+    public static final ConfigSetting MAX_SPAWNERS_PER_CHUNK = new ConfigSetting(config, "Main.Max Spawners Per Chunk", -1,
+            "What should be the maximum amount of placed spawners in a chunk?",
+            "Setting this to -1 will disable the function.");
+
     public static final ConfigSetting FORCE_COMBINE_DENY = new ConfigSetting(config, "Main.Deny Place On Force Combine", false,
             "Prevent spawners from being placed next to each other within the specified radius.");
 
@@ -158,10 +162,6 @@ public class Settings {
 
     public static final ConfigSetting MAX_PLAYER_BOOST = new ConfigSetting(config, "Spawner Boosting.Max Multiplier For A Spawner Boost", 5,
             "The highest multiplier a spawner can be boosted to.");
-
-    public static final ConfigSetting ALWAYS_REMEMBER_PLACER = new ConfigSetting(config, "Main.Always Remember Placer", true,
-            "Should the person who placed a spawner be remembered under every",
-            "circumstance? Disabling this can greatly decrease save file size.");
 
     public static final ConfigSetting BOOST_COST = new ConfigSetting(config, "Spawner Boosting.Item Charged For A Boost", "DIAMOND:2",
             "The cost required when a player boosts their own spawner.",

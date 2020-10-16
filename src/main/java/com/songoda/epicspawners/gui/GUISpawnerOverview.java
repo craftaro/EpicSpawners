@@ -137,10 +137,10 @@ public class GUISpawnerOverview extends AbstractGUI {
         int ecoCost = spawner.getUpgradeCost(CostType.ECONOMY);
 
         boolean maxed = false;
-        if (spawner.getSpawnerDataCount() == plugin.getConfig().getInt("Main.Spawner Max Upgrade"))
+        if (spawner.getSpawnerDataCount() == Settings.SPAWNERS_MAX.getInt())
             maxed = true;
 
-        ItemStack itemXP = new ItemStack(Material.valueOf(plugin.getConfig().getString("Interfaces.XP Icon")), 1);
+        ItemStack itemXP = Settings.XP_ICON.getMaterial().getItem();
         ItemMeta itemmetaXP = itemXP.getItemMeta();
         itemmetaXP.setDisplayName(plugin.getLocale().getMessage("interface.spawner.upgradewithxp").getMessage());
         ArrayList<String> loreXP = new ArrayList<>();
@@ -152,7 +152,7 @@ public class GUISpawnerOverview extends AbstractGUI {
         itemmetaXP.setLore(loreXP);
         itemXP.setItemMeta(itemmetaXP);
 
-        ItemStack itemECO = new ItemStack(Material.valueOf(plugin.getConfig().getString("Interfaces.Economy Icon")), 1);
+        ItemStack itemECO = Settings.ECO_ICON.getMaterial().getItem();
         ItemMeta itemmetaECO = itemECO.getItemMeta();
         itemmetaECO.setDisplayName(plugin.getLocale().getMessage("interface.spawner.upgradewitheconomy").getMessage());
         ArrayList<String> loreECO = new ArrayList<>();

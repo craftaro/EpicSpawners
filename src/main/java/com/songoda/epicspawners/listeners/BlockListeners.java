@@ -47,7 +47,7 @@ public class BlockListeners implements Listener {
     }
 
     private boolean doLiquidRepel(Block block, boolean from) {
-        int radius = plugin.getConfig().getInt("Main.Spawner Repel Liquid Radius");
+        int radius = Settings.LIQUID_REPEL_RADIUS.getInt();
         if (radius == 0) return false;
         if (!from) radius++;
         int bx = block.getX();
@@ -56,18 +56,15 @@ public class BlockListeners implements Listener {
         for (int fx = -radius; fx <= radius; fx++) {
             for (int fy = -radius; fy <= radius; fy++) {
                 for (int fz = -radius; fz <= radius; fz++) {
-                    Block b2 = block.getWorld().getBlockAt(bx + fx, by + fy, bz + fz);
+                    Block foundBlock = block.getWorld().getBlockAt(bx + fx, by + fy, bz + fz);
 
                     if (from) {
-                        if ((b2.getType().equals(Material.LAVA) || b2.getType().equals(Material.LAVA))
-                                || (b2.getType().equals(Material.WATER) || b2.getType().equals(Material.WATER))) {
-                            b2.setType(Material.AIR);
+                        if ((foundBlock.getType().equals(Material.LAVA) || foundBlock.getType().equals(Material.LAVA))
+                                || (foundBlock.getType().equals(Material.WATER) || foundBlock.getType().equals(Material.WATER))) {
+                            foundBlock.setType(Material.AIR);
                         }
-                    } else {
-                        if (b2.getType().equals(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER"))) {
-                            return true;
-                        }
-                    }
+                    } else if (CompatibleMaterial.getMaterial(foundBlock) == CompatibleMaterial.SPAWNER)
+                        return true;
                 }
             }
         }
@@ -75,19 +72,20 @@ public class BlockListeners implements Listener {
     }
 
     private boolean doForceCombine(Player player, Spawner placedSpawner, BlockPlaceEvent event) {
-        if (plugin.getConfig().getInt("Main.Force Combine Radius") == 0) return false;
+        int forceCombineRadius = Settings.FORCE_COMBINE_RADIUS.getInt();
+        if (forceCombineRadius == 0) return false;
 
         for (Spawner spawner : plugin.getSpawnerManager().getSpawners()) {
             if (spawner.getLocation().getWorld() == null
                     || spawner.getLocation().getWorld() != placedSpawner.getLocation().getWorld()
                     || spawner.getLocation() == placedSpawner.getLocation()
-                    || spawner.getLocation().distance(placedSpawner.getLocation()) > plugin.getConfig().getInt("Main.Force Combine Radius")
-                    || !plugin.getConfig().getBoolean("Main.OmniSpawners Enabled") && spawner.getSpawnerStacks().size() != 1) {
+                    || spawner.getLocation().distance(placedSpawner.getLocation()) > forceCombineRadius
+                    || !Settings.OMNI_SPAWNERS.getBoolean() && spawner.getSpawnerStacks().size() != 1) {
                 continue;
             }
 
             CompatibleHand hand = CompatibleHand.getHand(event);
-            if (plugin.getConfig().getBoolean("Main.Deny Place On Force Combine"))
+            if (Settings.FORCE_COMBINE_DENY.getBoolean())
                 plugin.getLocale().getMessage("event.block.forcedeny").sendPrefixedMessage(player);
             else if (spawner.stack(player, placedSpawner.getFirstStack().getSpawnerData(), placedSpawner.getSpawnerDataCount(), hand)) {
                 plugin.getLocale().getMessage("event.block.mergedistance").sendPrefixedMessage(player);
@@ -99,16 +97,29 @@ public class BlockListeners implements Listener {
         return false;
     }
 
+    private int getAmountInChunk(Block spawnerBlock) {
+        int amountFound = 0;
+        int chunkX = spawnerBlock.getX() >> 4;
+        int chunkZ = spawnerBlock.getZ() >> 4;
+        for (Spawner spawner : plugin.getSpawnerManager().getSpawners()) {
+            if (spawner.getWorld() != spawnerBlock.getWorld()
+                    || spawner.getX() >> 4 != chunkX
+                    || spawner.getZ() >> 4 != chunkZ) continue;
+            amountFound++;
+        }
+        return amountFound;
+    }
+
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onSpawnerPlace(BlockPlaceEvent event) {
         // We are ignoring canceled inside the event so that it will still remove holograms when the event is canceled.
         if (!event.isCancelled()) {
-            if (event.getBlock().getType() != (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER"))
-                    || ((CreatureSpawner) event.getBlock().getState()).getSpawnedType() == EntityType.FIREWORK) return;
+            Block block = event.getBlock();
+            if (CompatibleMaterial.getMaterial(block) != CompatibleMaterial.SPAWNER
+                    || ((CreatureSpawner) block.getState()).getSpawnedType() == EntityType.FIREWORK) return;
 
-
-            Location location = event.getBlock().getLocation();
-            Spawner spawner = new Spawner(event.getBlock().getLocation());
+            Location location = block.getLocation();
+            Spawner spawner = new Spawner(block.getLocation());
 
             SpawnerData spawnerData = plugin.getSpawnerManager().getSpawnerData(event.getItemInHand());
             if (spawnerData == null) return;
@@ -118,8 +129,7 @@ public class BlockListeners implements Listener {
 
             Player player = event.getPlayer();
 
-            doLiquidRepel(event.getBlock(), true);
-
+            doLiquidRepel(block, true);
 
             if (plugin.getBlacklistHandler().isBlacklisted(player, true)
                     || !player.hasPermission("epicspawners.place." + spawnerData.getIdentifyingName().replace(" ", "_"))
@@ -128,9 +138,17 @@ public class BlockListeners implements Listener {
                 return;
             }
 
+            int maxPerChunk = Settings.MAX_SPAWNERS_PER_CHUNK.getInt();
+            if (maxPerChunk != -1 && getAmountInChunk(block) >= maxPerChunk) {
+                plugin.getLocale().getMessage("event.block.chunklimit")
+                        .processPlaceholder("amount", maxPerChunk)
+                        .sendPrefixedMessage(player);
+                event.setCancelled(true);
+                return;
+            }
+
             int amountPlaced = plugin.getSpawnerManager().getAmountPlaced(player);
-            int maxSpawners = PlayerUtils.getNumberFromPermission(player, "epicspawners.limit",
-                    plugin.getConfig().getInt("Main.Max Spawners Per Player"));
+            int maxSpawners = PlayerUtils.getNumberFromPermission(player, "epicspawners.limit", Settings.MAX_SPAWNERS.getInt());
 
             if (maxSpawners != -1 && amountPlaced > maxSpawners) {
                 player.sendMessage(plugin.getLocale().getMessage("event.spawner.toomany")
@@ -152,7 +170,7 @@ public class BlockListeners implements Listener {
 
             plugin.getSpawnerManager().addSpawnerToWorld(location, spawner);
 
-            if (plugin.getConfig().getBoolean("Main.Alerts On Place And Break"))
+            if (Settings.ALERT_PLACE_BREAK.getBoolean())
                 plugin.getLocale().getMessage("event.block.place")
                         .processPlaceholder("type", spawnerData.getCompiledDisplayName(spawner.getFirstStack().getStackSize()))
                         .sendPrefixedMessage(player);
@@ -170,7 +188,7 @@ public class BlockListeners implements Listener {
             spawner.setPlacedBy(player);
             EpicSpawners.getInstance().getDataManager().createSpawner(spawner);
 
-            plugin.processChange(event.getBlock());
+            plugin.processChange(block);
             plugin.updateHologram(spawner);
             plugin.getAppearanceTask().updateDisplayItem(spawner, spawnerData);
             return;
@@ -185,20 +203,20 @@ public class BlockListeners implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     //Leave this on high or WorldGuard will not work...
     public void onBlockBreak(BlockBreakEvent event) {
+        Player player = event.getPlayer();
+        Block block = event.getBlock();
+
         //We are ignoring canceled inside the event so that it will still remove holograms when the event is canceled.
         if (!event.isCancelled()) {
-
-            Player player = event.getPlayer();
-
-            if (CompatibleMaterial.getMaterial(event.getBlock().getType()) != CompatibleMaterial.SPAWNER
-                    || ((CreatureSpawner) event.getBlock().getState()).getSpawnedType() == EntityType.FIREWORK) return;
+            if (CompatibleMaterial.getMaterial(block) != CompatibleMaterial.SPAWNER
+                    || ((CreatureSpawner) block.getState()).getSpawnedType() == EntityType.FIREWORK) return;
 
             if (plugin.getBlacklistHandler().isBlacklisted(event.getPlayer(), true)) {
                 event.setCancelled(true);
                 return;
             }
 
-            Location location = event.getBlock().getLocation();
+            Location location = block.getLocation();
 
             if (!plugin.getSpawnerManager().isSpawner(location)) {
                 Spawner spawner = new Spawner(location);
@@ -214,7 +232,7 @@ public class BlockListeners implements Listener {
             Spawner spawner = plugin.getSpawnerManager().getSpawnerFromWorld(location);
 
             if (spawner.getFirstStack().getSpawnerData() == null) {
-                event.getBlock().setType(Material.AIR);
+                block.setType(Material.AIR);
                 System.out.println("A corrupted spawner has been removed as its Type no longer exists.");
                 spawner.destroy(plugin);
                 return;
@@ -243,7 +261,7 @@ public class BlockListeners implements Listener {
             if (spawner.getFirstStack().getSpawnerData().getPickupCost() != 0 && (!naturalOnly || spawner.getPlacedBy() == null)) {
                 if (!plugin.getSpawnerManager().hasCooldown(spawner)) {
                     plugin.getLocale().getMessage("event.block.chargebreak")
-                            .processPlaceholder("cost", spawner.getFirstStack().getSpawnerData().getPickupCost())
+                            .processPlaceholder("cost", EconomyManager.formatEconomy(spawner.getFirstStack().getSpawnerData().getPickupCost()))
                             .sendPrefixedMessage(player);
                     plugin.getSpawnerManager().addCooldown(spawner);
                     Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> plugin.getSpawnerManager().removeCooldown(spawner), 300L);
@@ -270,10 +288,10 @@ public class BlockListeners implements Listener {
                 hand.damageItem(player, spawner.getFirstStack().getSpawnerData().getPickDamage());
 
             if (spawner.unstack(event.getPlayer())) {
-                if (event.getBlock().getType() != Material.AIR)
+                if (block.getType() != Material.AIR)
                     event.setCancelled(true);
 
-                if (plugin.getConfig().getBoolean("Main.Alerts On Place And Break")) {
+                if (Settings.ALERT_PLACE_BREAK.getBoolean()) {
                     if (spawner.getSpawnerStacks().size() != 0) {
                         plugin.getLocale().getMessage("event.downgrade.success").processPlaceholder("level", Integer.toString(spawner.getSpawnerDataCount())).sendPrefixedMessage(player);
                     } else {
@@ -290,6 +308,6 @@ public class BlockListeners implements Listener {
         }
 
         //ToDo: Probably remove this.
-        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> plugin.processChange(event.getBlock()), 10L);
+        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> plugin.processChange(block), 10L);
     }
 }
