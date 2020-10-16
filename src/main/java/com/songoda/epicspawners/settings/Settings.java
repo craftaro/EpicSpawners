@@ -159,10 +159,6 @@ public class Settings {
     public static final ConfigSetting MAX_PLAYER_BOOST = new ConfigSetting(config, "Spawner Boosting.Max Multiplier For A Spawner Boost", 5,
             "The highest multiplier a spawner can be boosted to.");
 
-    public static final ConfigSetting ALWAYS_REMEMBER_PLACER = new ConfigSetting(config, "Main.Always Remember Placer", true,
-            "Should the person who placed a spawner be remembered under every",
-            "circumstance? Disabling this can greatly decrease save file size.");
-
     public static final ConfigSetting BOOST_COST = new ConfigSetting(config, "Spawner Boosting.Item Charged For A Boost", "DIAMOND:2",
             "The cost required when a player boosts their own spawner.",
             "If you would rather charge experience or economy then enter respectively",
