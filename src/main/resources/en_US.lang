@@ -89,6 +89,7 @@ event:
     omnitake: '&7You took a &6%type%&7 from the OmniSpawner.'
     forcedeny: '&cThis spawner is too close to another spawner.'
     mergedistance: '&7This spawner has been combined with another spawner close by.'
+    chunklimit: '&cNo more than &4%amount% spawners &ccan be placed in this chunk.'
     cannotbreak: '&7You cannot afford to break this spawner.'
   goal:
     alert: '&7You need &6%goal% &7more kills to get a &6%type% Spawner&7.'
@@ -111,4 +112,4 @@ event:
   combine:
     onlyone: '&cYou can only combine one spawner at a time.'
   spawner:
-    toomany: '&cYou can only place %amount% spawners...'
+    toomany: '&cYou can only place &4%amount% &cspawners...'
