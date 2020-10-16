@@ -47,7 +47,7 @@ public class BlockListeners implements Listener {
     }
 
     private boolean doLiquidRepel(Block block, boolean from) {
-        int radius = plugin.getConfig().getInt("Main.Spawner Repel Liquid Radius");
+        int radius = Settings.LIQUID_REPEL_RADIUS.getInt();
         if (radius == 0) return false;
         if (!from) radius++;
         int bx = block.getX();
@@ -75,19 +75,20 @@ public class BlockListeners implements Listener {
     }
 
     private boolean doForceCombine(Player player, Spawner placedSpawner, BlockPlaceEvent event) {
-        if (plugin.getConfig().getInt("Main.Force Combine Radius") == 0) return false;
+        int forceCombineRadius = Settings.FORCE_COMBINE_RADIUS.getInt();
+        if (forceCombineRadius == 0) return false;
 
         for (Spawner spawner : plugin.getSpawnerManager().getSpawners()) {
             if (spawner.getLocation().getWorld() == null
                     || spawner.getLocation().getWorld() != placedSpawner.getLocation().getWorld()
                     || spawner.getLocation() == placedSpawner.getLocation()
-                    || spawner.getLocation().distance(placedSpawner.getLocation()) > plugin.getConfig().getInt("Main.Force Combine Radius")
-                    || !plugin.getConfig().getBoolean("Main.OmniSpawners Enabled") && spawner.getSpawnerStacks().size() != 1) {
+                    || spawner.getLocation().distance(placedSpawner.getLocation()) > forceCombineRadius
+                    || !Settings.OMNI_SPAWNERS.getBoolean() && spawner.getSpawnerStacks().size() != 1) {
                 continue;
             }
 
             CompatibleHand hand = CompatibleHand.getHand(event);
-            if (plugin.getConfig().getBoolean("Main.Deny Place On Force Combine"))
+            if (Settings.FORCE_COMBINE_DENY.getBoolean())
                 plugin.getLocale().getMessage("event.block.forcedeny").sendPrefixedMessage(player);
             else if (spawner.stack(player, placedSpawner.getFirstStack().getSpawnerData(), placedSpawner.getSpawnerDataCount(), hand)) {
                 plugin.getLocale().getMessage("event.block.mergedistance").sendPrefixedMessage(player);
@@ -129,8 +130,7 @@ public class BlockListeners implements Listener {
             }
 
             int amountPlaced = plugin.getSpawnerManager().getAmountPlaced(player);
-            int maxSpawners = PlayerUtils.getNumberFromPermission(player, "epicspawners.limit",
-                    plugin.getConfig().getInt("Main.Max Spawners Per Player"));
+            int maxSpawners = PlayerUtils.getNumberFromPermission(player, "epicspawners.limit", Settings.MAX_SPAWNERS.getInt());
 
             if (maxSpawners != -1 && amountPlaced > maxSpawners) {
                 player.sendMessage(plugin.getLocale().getMessage("event.spawner.toomany")
@@ -152,7 +152,7 @@ public class BlockListeners implements Listener {
 
             plugin.getSpawnerManager().addSpawnerToWorld(location, spawner);
 
-            if (plugin.getConfig().getBoolean("Main.Alerts On Place And Break"))
+            if (Settings.ALERT_PLACE_BREAK.getBoolean())
                 plugin.getLocale().getMessage("event.block.place")
                         .processPlaceholder("type", spawnerData.getCompiledDisplayName(spawner.getFirstStack().getStackSize()))
                         .sendPrefixedMessage(player);
@@ -273,7 +273,7 @@ public class BlockListeners implements Listener {
                 if (event.getBlock().getType() != Material.AIR)
                     event.setCancelled(true);
 
-                if (plugin.getConfig().getBoolean("Main.Alerts On Place And Break")) {
+                if (Settings.ALERT_PLACE_BREAK.getBoolean()) {
                     if (spawner.getSpawnerStacks().size() != 0) {
                         plugin.getLocale().getMessage("event.downgrade.success").processPlaceholder("level", Integer.toString(spawner.getSpawnerDataCount())).sendPrefixedMessage(player);
                     } else {
