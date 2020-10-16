@@ -69,7 +69,7 @@ public class EntityListeners implements Listener {
 
                 String chance = "";
                 if (event.getEntity() instanceof Creeper)
-                    chance = Settings.EXPLOSION_DROP_CHANCE_TNT.getString();
+                    chance = Settings.EXPLOSION_DROP_CHANCE_CREEPER.getString();
                 else if (event.getEntity() instanceof TNTPrimed)
                     chance = Settings.EXPLOSION_DROP_CHANCE_TNT.getString();
                 int ch = Integer.parseInt(chance.replace("%", ""));
