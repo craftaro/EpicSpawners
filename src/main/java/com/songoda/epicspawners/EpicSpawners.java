@@ -29,7 +29,6 @@ import com.songoda.epicspawners.commands.CommandSpawnerStats;
 import com.songoda.epicspawners.database.DataManager;
 import com.songoda.epicspawners.database.migrations._1_InitialMigration;
 import com.songoda.epicspawners.listeners.BlockListeners;
-import com.songoda.epicspawners.listeners.EntityListeners;
 import com.songoda.epicspawners.listeners.InteractListeners;
 import com.songoda.epicspawners.listeners.InventoryListeners;
 import com.songoda.epicspawners.listeners.SpawnerListeners;
@@ -48,6 +47,11 @@ import com.songoda.epicspawners.storage.types.StorageYaml;
 import com.songoda.epicspawners.tasks.AppearanceTask;
 import com.songoda.epicspawners.tasks.SpawnerParticleTask;
 import com.songoda.epicspawners.tasks.SpawnerSpawnTask;
+import com.songoda.epicspawners.tiers.CommandTierEditor;
+import com.songoda.epicspawners.tiers.storage.TierDataManager;
+import com.songoda.epicspawners.tiers.TierMobListener;
+import com.songoda.epicspawners.tiers.storage.TierSQLManager;
+import com.songoda.epicspawners.tiers.storage.TierYMLManager;
 import com.songoda.epicspawners.utils.Heads;
 import com.songoda.epicspawners.utils.Methods;
 import com.songoda.epicspawners.utils.gui.AbstractGUI;
@@ -62,6 +66,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -94,6 +99,11 @@ public class EpicSpawners extends SongodaPlugin {
     private DatabaseConnector databaseConnector;
     private DataMigrationManager dataMigrationManager;
     private DataManager dataManager;
+
+    /** Shit that I added */
+    private TierDataManager tierDataManager;
+    private TierYMLManager tierYMLManager;
+    private TierSQLManager tierSQLManager;
 
     public static EpicSpawners getInstance() {
         return INSTANCE;
@@ -144,7 +154,8 @@ public class EpicSpawners extends SongodaPlugin {
                         new CommandSettings(this),
                         new CommandReload(this),
                         new CommandChange(this),
-                        new CommandSpawn(this)
+                        new CommandSpawn(this),
+                        new CommandTierEditor(this)
                 );
         this.commandManager.addCommand(new CommandSpawnerStats(this));
         this.commandManager.addCommand(new CommandSpawnerShop(this));
@@ -157,8 +168,12 @@ public class EpicSpawners extends SongodaPlugin {
         this.blacklistHandler = new BlacklistHandler();
         this.playerActionManager = new PlayerDataManager();
 
-        this.lootablesManager = new LootablesManager();
-        this.lootablesManager.getLootManager().loadLootables();
+        this.tierDataManager = new TierDataManager();
+        this.tierDataManager.clearTask();
+        this.tierYMLManager = new TierYMLManager();
+
+        //this.lootablesManager = new LootablesManager();
+        //this.lootablesManager.getLootManager().loadLootables();
 
         this.checkStorage();
 
@@ -167,10 +182,11 @@ public class EpicSpawners extends SongodaPlugin {
         // Listeners
         guiManager.init();
         pluginManager.registerEvents(new BlockListeners(this), this);
-        pluginManager.registerEvents(new EntityListeners(this), this);
+        //pluginManager.registerEvents(new EntityListeners(this), this);
         pluginManager.registerEvents(new InteractListeners(this), this);
         pluginManager.registerEvents(new InventoryListeners(), this);
         pluginManager.registerEvents(new SpawnerListeners(this), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new TierMobListener(), this);
 
         AbstractGUI.initializeListeners(this);
 
@@ -195,12 +211,25 @@ public class EpicSpawners extends SongodaPlugin {
 
         // Database stuff, go!
         this.databaseConnector = new SQLiteConnector(this);
-        this.getLogger().info("Data handler connected using SQLite.");
+        this.getLogger().info("Data handler connected using SQLite");
 
         this.dataManager = new DataManager(this.databaseConnector, this);
-        this.dataMigrationManager = new DataMigrationManager(this.databaseConnector, this.dataManager,
-                new _1_InitialMigration());
+        this.dataMigrationManager = new DataMigrationManager(this.databaseConnector, this.dataManager, new _1_InitialMigration());
         this.dataMigrationManager.runMigrations();
+
+        // I have this running later so that it
+        // runs after the tiers have been created
+        this.tierSQLManager = new TierSQLManager(databaseConnector, this);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                // Creating table (if it needs to be)
+                getTierSQLManager().createTierMobTable();
+
+                // Creating and gettings mobs (if the feature is enabled)
+                getTierSQLManager().getTierMobs();
+            }
+        }.runTaskLater(this, 10L);
     }
 
     @Override
@@ -303,6 +332,7 @@ public class EpicSpawners extends SongodaPlugin {
                     }
                 }
             }
+
             dataFile.delete();
         }
 
@@ -335,6 +365,7 @@ public class EpicSpawners extends SongodaPlugin {
         this.locale.reloadMessages();
         this.blacklistHandler.reload();
         this.spawnerManager.reloadFromFile();
+        this.tierYMLManager.updateTierConfig(true);
     }
 
     @Override
@@ -479,4 +510,8 @@ public class EpicSpawners extends SongodaPlugin {
     public LootablesManager getLootablesManager() {
         return lootablesManager;
     }
+
+    public TierDataManager getTierDataManager() { return this.tierDataManager; }
+    public TierYMLManager getTierYMLManager() { return this.tierYMLManager; }
+    public TierSQLManager getTierSQLManager() { return this.tierSQLManager; }
 }
