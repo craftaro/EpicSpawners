@@ -1,5 +1,6 @@
 package com.songoda.epicspawners.utils;
 
+import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import org.bukkit.inventory.ItemStack;
 
@@ -19,10 +20,14 @@ public class Heads {
         }
     }
 
-    public ItemStack addTexture(ItemStack item, SpawnerData spawnerData) {
-        String headURL = textureURL.get(getHeadTypeOrDefault(spawnerData.getIdentifyingName().toUpperCase().replace(" ", "_")));
+    public ItemStack addTexture(ItemStack item, String name) {
+        String headURL = textureURL.get(getHeadTypeOrDefault(name.toUpperCase().replace(" ", "_")));
 
         return Methods.addTexture(item, headURL);
+    }
+
+    public ItemStack addTexture(ItemStack item, SpawnerData spawnerData) {
+        return addTexture(item, spawnerData.getIdentifyingName());
     }
 
     private HeadType getHeadTypeOrDefault(String name) {
@@ -31,5 +36,9 @@ public class Heads {
         } catch (IllegalArgumentException e) {
             return HeadType.DROPPED_ITEM;
         }
+    }
+
+    public ItemStack getTexturedSkull(SpawnerData spawnerData) {
+        return addTexture(CompatibleMaterial.PLAYER_HEAD.getItem(), spawnerData);
     }
 }
