@@ -1,12 +1,12 @@
 package com.songoda.epicspawners.spawners.spawner.option;
 
-import com.songoda.epicspawners.spawners.spawner.Spawner;
-import com.songoda.epicspawners.spawners.spawner.SpawnerData;
+import com.songoda.epicspawners.spawners.spawner.PlacedSpawner;
 import com.songoda.epicspawners.spawners.spawner.SpawnerStack;
+import com.songoda.epicspawners.spawners.spawner.SpawnerTier;
 
 public interface SpawnOption {
 
-    void spawn(SpawnerData data, SpawnerStack stack, Spawner spawner);
+    void spawn(SpawnerTier data, SpawnerStack stack, PlacedSpawner spawner);
 
     SpawnOptionType getType();
 

@@ -13,6 +13,6 @@ public enum CostType {
     /**
      * A purchase made with a player's experience levels
      */
-    EXPERIENCE
+    LEVELS
 
 }

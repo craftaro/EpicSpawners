@@ -11,9 +11,9 @@ import com.songoda.epicspawners.api.events.SpawnerBreakEvent;
 import com.songoda.epicspawners.api.events.SpawnerChangeEvent;
 import com.songoda.epicspawners.api.events.SpawnerPlaceEvent;
 import com.songoda.epicspawners.settings.Settings;
-import com.songoda.epicspawners.spawners.spawner.Spawner;
-import com.songoda.epicspawners.spawners.spawner.SpawnerData;
+import com.songoda.epicspawners.spawners.spawner.PlacedSpawner;
 import com.songoda.epicspawners.spawners.spawner.SpawnerStack;
+import com.songoda.epicspawners.spawners.spawner.SpawnerTier;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -71,11 +71,11 @@ public class BlockListeners implements Listener {
         return false;
     }
 
-    private boolean doForceCombine(Player player, Spawner placedSpawner, BlockPlaceEvent event) {
+    private boolean doForceCombine(Player player, PlacedSpawner placedSpawner, BlockPlaceEvent event) {
         int forceCombineRadius = Settings.FORCE_COMBINE_RADIUS.getInt();
         if (forceCombineRadius == 0) return false;
 
-        for (Spawner spawner : plugin.getSpawnerManager().getSpawners()) {
+        for (PlacedSpawner spawner : plugin.getSpawnerManager().getSpawners()) {
             if (spawner.getLocation().getWorld() == null
                     || spawner.getLocation().getWorld() != placedSpawner.getLocation().getWorld()
                     || spawner.getLocation() == placedSpawner.getLocation()
@@ -87,7 +87,7 @@ public class BlockListeners implements Listener {
             CompatibleHand hand = CompatibleHand.getHand(event);
             if (Settings.FORCE_COMBINE_DENY.getBoolean())
                 plugin.getLocale().getMessage("event.block.forcedeny").sendPrefixedMessage(player);
-            else if (spawner.stack(player, placedSpawner.getFirstStack().getSpawnerData(), placedSpawner.getSpawnerDataCount(), hand)) {
+            else if (spawner.stack(player, plugin.getSpawnerManager().getSpawnerTier(hand.getItem(player)), placedSpawner.getStackSize(), hand)) {
                 plugin.getLocale().getMessage("event.block.mergedistance").sendPrefixedMessage(player);
                 if (hand == CompatibleHand.OFF_HAND)
                     ItemUtils.takeActiveItem(player, hand);
@@ -101,7 +101,7 @@ public class BlockListeners implements Listener {
         int amountFound = 0;
         int chunkX = spawnerBlock.getX() >> 4;
         int chunkZ = spawnerBlock.getZ() >> 4;
-        for (Spawner spawner : plugin.getSpawnerManager().getSpawners()) {
+        for (PlacedSpawner spawner : plugin.getSpawnerManager().getSpawners()) {
             if (spawner.getWorld() != spawnerBlock.getWorld()
                     || spawner.getX() >> 4 != chunkX
                     || spawner.getZ() >> 4 != chunkZ) continue;
@@ -119,20 +119,20 @@ public class BlockListeners implements Listener {
                     || ((CreatureSpawner) block.getState()).getSpawnedType() == EntityType.FIREWORK) return;
 
             Location location = block.getLocation();
-            Spawner spawner = new Spawner(block.getLocation());
+            PlacedSpawner spawner = new PlacedSpawner(block.getLocation());
 
-            SpawnerData spawnerData = plugin.getSpawnerManager().getSpawnerData(event.getItemInHand());
-            if (spawnerData == null) return;
+            SpawnerTier spawnerTier = plugin.getSpawnerManager().getSpawnerTier(event.getItemInHand());
+            if (spawnerTier == null) return;
 
-            int spawnerStackSize = spawnerData.getStackSize(event.getItemInHand());
-            spawner.addSpawnerStack(new SpawnerStack(spawner, spawnerData, spawnerStackSize));
+            int spawnerStackSize = spawnerTier.getStackSize(event.getItemInHand());
+            spawner.addSpawnerStack(new SpawnerStack(spawner, spawnerTier, spawnerStackSize));
 
             Player player = event.getPlayer();
 
             doLiquidRepel(block, true);
 
             if (plugin.getBlacklistHandler().isBlacklisted(player, true)
-                    || !player.hasPermission("epicspawners.place." + spawnerData.getIdentifyingName().replace(" ", "_"))
+                    || !player.hasPermission("epicspawners.place." + spawnerTier.getIdentifyingName().replace(" ", "_"))
                     || doForceCombine(player, spawner, event)) {
                 event.setCancelled(true);
                 return;
@@ -172,14 +172,14 @@ public class BlockListeners implements Listener {
 
             if (Settings.ALERT_PLACE_BREAK.getBoolean())
                 plugin.getLocale().getMessage("event.block.place")
-                        .processPlaceholder("type", spawnerData.getCompiledDisplayName(spawner.getFirstStack().getStackSize()))
+                        .processPlaceholder("type", spawnerTier.getCompiledDisplayName(false, spawner.getFirstStack().getStackSize()))
                         .sendPrefixedMessage(player);
 
             if (player.getGameMode() == GameMode.CREATIVE && Settings.CHARGE_FOR_CREATIVE.getBoolean())
                 ItemUtils.takeActiveItem(player, CompatibleHand.getHand(event), 1);
 
             try {
-                creatureSpawner.setSpawnedType(EntityType.valueOf(spawnerData.getIdentifyingName().toUpperCase().replace(" ", "_")));
+                creatureSpawner.setSpawnedType(spawnerTier.getEntities().get(0));
             } catch (Exception ex) {
                 creatureSpawner.setSpawnedType(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9) ? EntityType.EGG : EntityType.DROPPED_ITEM);
             }
@@ -190,7 +190,7 @@ public class BlockListeners implements Listener {
 
             plugin.processChange(block);
             plugin.updateHologram(spawner);
-            plugin.getAppearanceTask().updateDisplayItem(spawner, spawnerData);
+            plugin.getAppearanceTask().updateDisplayItem(spawner, spawnerTier);
             return;
         }
 
@@ -219,17 +219,17 @@ public class BlockListeners implements Listener {
             Location location = block.getLocation();
 
             if (!plugin.getSpawnerManager().isSpawner(location)) {
-                Spawner spawner = new Spawner(location);
+                PlacedSpawner spawner = new PlacedSpawner(location);
 
                 CreatureSpawner creatureSpawner = spawner.getCreatureSpawner();
                 if (creatureSpawner == null) return;
 
-                spawner.addSpawnerStack(new SpawnerStack(spawner, plugin.getSpawnerManager().getSpawnerData(creatureSpawner.getSpawnedType())));
+                spawner.addSpawnerStack(new SpawnerStack(spawner, plugin.getSpawnerManager().getSpawnerData(creatureSpawner.getSpawnedType()).getFirstTier()));
                 plugin.getSpawnerManager().addSpawnerToWorld(location, spawner);
                 EpicSpawners.getInstance().getDataManager().createSpawner(spawner);
             }
 
-            Spawner spawner = plugin.getSpawnerManager().getSpawnerFromWorld(location);
+            PlacedSpawner spawner = plugin.getSpawnerManager().getSpawnerFromWorld(location);
 
             if (spawner.getFirstStack().getSpawnerData() == null) {
                 block.setType(Material.AIR);
@@ -238,7 +238,7 @@ public class BlockListeners implements Listener {
                 return;
             }
 
-            int currentStackSize = spawner.getSpawnerDataCount();
+            int currentStackSize = spawner.getStackSize();
             boolean destroyWholeStack = player.isSneaking() && Settings.SNEAK_FOR_STACK.getBoolean() || Settings.ONLY_DROP_STACKED.getBoolean();
             if (currentStackSize - 1 == 0 || destroyWholeStack) {
                 SpawnerBreakEvent breakEvent = new SpawnerBreakEvent(player, spawner);
@@ -258,10 +258,11 @@ public class BlockListeners implements Listener {
 
             boolean naturalOnly = Settings.ONLY_CHARGE_NATURAL.getBoolean();
 
-            if (spawner.getFirstStack().getSpawnerData().getPickupCost() != 0 && (!naturalOnly || spawner.getPlacedBy() == null)) {
+            double cost = spawner.getFirstStack().getCurrentTier().getPickupCost();
+            if (cost != 0.0 && (!naturalOnly || spawner.getPlacedBy() == null)) {
                 if (!plugin.getSpawnerManager().hasCooldown(spawner)) {
                     plugin.getLocale().getMessage("event.block.chargebreak")
-                            .processPlaceholder("cost", EconomyManager.formatEconomy(spawner.getFirstStack().getSpawnerData().getPickupCost()))
+                            .processPlaceholder("cost", EconomyManager.formatEconomy(spawner.getFirstStack().getCurrentTier().getPickupCost()))
                             .sendPrefixedMessage(player);
                     plugin.getSpawnerManager().addCooldown(spawner);
                     Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> plugin.getSpawnerManager().removeCooldown(spawner), 300L);
@@ -270,7 +271,6 @@ public class BlockListeners implements Listener {
                 }
 
                 plugin.getSpawnerManager().removeCooldown(spawner);
-                double cost = spawner.getFirstStack().getSpawnerData().getPickupCost();
 
                 if (EconomyManager.hasBalance(player, cost)) {
                     EconomyManager.withdrawBalance(player, cost);
@@ -281,11 +281,11 @@ public class BlockListeners implements Listener {
                 }
             }
 
-            SpawnerData firstData = spawner.getFirstStack().getSpawnerData();
+            SpawnerTier firstTier = spawner.getFirstStack().getCurrentTier();
 
             CompatibleHand hand = CompatibleHand.getHand(event);
             if (hand.getItem(player).getType().name().endsWith("PICKAXE") && !player.hasPermission("epicspawners.nopickdamage"))
-                hand.damageItem(player, spawner.getFirstStack().getSpawnerData().getPickDamage());
+                hand.damageItem(player, spawner.getFirstStack().getCurrentTier().getPickDamage());
 
             if (spawner.unstack(event.getPlayer())) {
                 if (block.getType() != Material.AIR)
@@ -293,9 +293,9 @@ public class BlockListeners implements Listener {
 
                 if (Settings.ALERT_PLACE_BREAK.getBoolean()) {
                     if (spawner.getSpawnerStacks().size() != 0) {
-                        plugin.getLocale().getMessage("event.downgrade.success").processPlaceholder("level", Integer.toString(spawner.getSpawnerDataCount())).sendPrefixedMessage(player);
+                        plugin.getLocale().getMessage("event.downgrade.success").processPlaceholder("size", Integer.toString(spawner.getStackSize())).sendPrefixedMessage(player);
                     } else {
-                        plugin.getLocale().getMessage("event.block.break").processPlaceholder("type", firstData.getCompiledDisplayName(currentStackSize)).sendPrefixedMessage(player);
+                        plugin.getLocale().getMessage("event.block.break").processPlaceholder("type", firstTier.getCompiledDisplayName(false, currentStackSize)).sendPrefixedMessage(player);
                     }
                 }
             }

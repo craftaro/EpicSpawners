@@ -1,28 +1,28 @@
 package com.songoda.epicspawners.api.events;
 
-import com.songoda.epicspawners.spawners.spawner.Spawner;
+import com.songoda.epicspawners.spawners.spawner.PlacedSpawner;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerEvent;
 
 /**
- * Represents an abstract {@link Event} given a {@link Player} and {@link Spawner} instance
+ * Represents an abstract {@link Event} given a {@link Player} and {@link PlacedSpawner} instance
  */
 public abstract class SpawnerEvent extends PlayerEvent {
 
-    protected final Spawner spawner;
+    protected final PlacedSpawner spawner;
 
-    public SpawnerEvent(Player who, Spawner spawner) {
+    public SpawnerEvent(Player who, PlacedSpawner spawner) {
         super(who);
         this.spawner = spawner;
     }
 
     /**
-     * Get the {@link Spawner} involved in this event
+     * Get the {@link PlacedSpawner} involved in this event
      *
      * @return the broken spawner
      */
-    public Spawner getSpawner() {
+    public PlacedSpawner getSpawner() {
         return spawner;
     }
 

@@ -3,7 +3,7 @@ package com.songoda.epicspawners.lootables;
 import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.epicspawners.EpicSpawners;
-import com.songoda.epicspawners.spawners.spawner.SpawnerData;
+import com.songoda.epicspawners.spawners.spawner.SpawnerTier;
 import com.songoda.lootables.Lootables;
 import com.songoda.lootables.Modify;
 import com.songoda.lootables.loot.Drop;
@@ -37,13 +37,13 @@ public class LootablesManager {
         this.lootManager = new LootManager(lootables);
     }
 
-    public List<Drop> getDrops(LivingEntity entity, SpawnerData spawnerData) {
+    public List<Drop> getDrops(LivingEntity entity, SpawnerTier spawnerTier) {
         List<Drop> toDrop = new ArrayList<>();
 
         if (entity instanceof Ageable && !((Ageable) entity).isAdult()
-                || !lootManager.getRegisteredLootables().containsKey(spawnerData.getIdentifyingName())) return toDrop;
+                || !lootManager.getRegisteredLootables().containsKey(spawnerTier.getFullyIdentifyingName())) return toDrop;
 
-        Lootable lootable = lootManager.getRegisteredLootables().get(spawnerData.getIdentifyingName());
+        Lootable lootable = lootManager.getRegisteredLootables().get(spawnerTier.getFullyIdentifyingName());
         int looting = entity.getKiller() != null
                 && entity.getKiller().getItemInHand().containsEnchantment(Enchantment.LOOT_BONUS_MOBS)
                 ? entity.getKiller().getItemInHand().getEnchantmentLevel(Enchantment.LOOT_BONUS_MOBS)

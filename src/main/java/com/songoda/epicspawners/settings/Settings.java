@@ -7,15 +7,14 @@ import com.songoda.core.hooks.EconomyManager;
 import com.songoda.core.hooks.HologramManager;
 import com.songoda.epicspawners.EpicSpawners;
 
-import java.util.Arrays;
 import java.util.stream.Collectors;
 
 public class Settings {
 
     private static final Config config = EpicSpawners.getInstance().getCoreConfig();
 
-    public static final ConfigSetting SPAWNERS_MAX = new ConfigSetting(config, "Main.Spawner Max Upgrade", 5,
-            "The maximum level a spawner can be upgraded to.");
+    public static final ConfigSetting SPAWNERS_MAX = new ConfigSetting(config, "Main.Spawner Max Stack", 5,
+            "The maximum stack size a spawner can be stacked to.");
 
     public static final ConfigSetting NAME_FORMAT = new ConfigSetting(config, "Main.Spawner Name Format", "&e{TYPE} &fSpawner [&c{AMT}x]",
             "The text displayed in the hologram positioned above every spawner.");
@@ -60,8 +59,8 @@ public class Settings {
     public static final ConfigSetting SOUNDS_ENABLED = new ConfigSetting(config, "Main.Sounds Enabled", true,
             "Toggles various sound effects used throughout the plugin.");
 
-    public static final ConfigSetting DISPLAY_LEVEL_ONE = new ConfigSetting(config, "Main.Display Level In Spawner Title If Level 1", false,
-            "Should a spawners hologram display its level if it's level one?");
+    public static final ConfigSetting DISPLAY_TIER_ONE = new ConfigSetting(config, "Main.Display Tier In Spawner Title If Tier 1", false,
+            "Should a spawners hologram display its tier if it's tier one?");
 
     public static final ConfigSetting OMNI_SPAWNERS = new ConfigSetting(config, "Main.OmniSpawners Enabled", true,
             "Should spawners of different mob types be stackable into a single spawner?");
@@ -69,20 +68,11 @@ public class Settings {
     public static final ConfigSetting EGGS_CONVERT_SPAWNERS = new ConfigSetting(config, "Main.Convert Spawners With Eggs", true,
             "Ability to change mob spawner type with spawn eggs.");
 
-    public static final ConfigSetting UPGRADE_WITH_ECO_ENABLED = new ConfigSetting(config, "Main.Upgrade With Economy", true,
+    public static final ConfigSetting UPGRADE_WITH_ECONOMY_ENABLED = new ConfigSetting(config, "Main.Upgrade With Economy", true,
             "Can spawners be upgraded with money?");
 
-    public static final ConfigSetting UPGRADE_WITH_XP_ENABLED = new ConfigSetting(config, "Main.Upgrade With XP", true,
-            "Can spawners be upgraded with XP levels?");
-
-    public static final ConfigSetting UPGRADE_COST_ECONOMY = new ConfigSetting(config, "Main.Cost To Upgrade With Economy", 10000,
-            "Cost to upgrade a spawners level.");
-
-    public static final ConfigSetting UPGRADE_COST_EXPERIANCE = new ConfigSetting(config, "Main.Cost To Upgrade With XP", 50,
-            "Experience cost to upgrade a spawners level.");
-
-    public static final ConfigSetting USE_CUSTOM_UPGRADE_EQUATION = new ConfigSetting(config, "Main.Use Custom Equations for Upgrade Costs", false,
-            "Should custom equations be used to generate upgrade costs?");
+    public static final ConfigSetting UPGRADE_WITH_LEVELS_ENABLED = new ConfigSetting(config, "Main.Upgrade With Levels", true,
+            "Can spawners be upgraded with Levels?");
 
     public static final ConfigSetting LIQUID_REPEL_RADIUS = new ConfigSetting(config, "Main.Spawner Repel Liquid Radius", 1,
             "Prevent water from flowing next to or on top of a spawner within the here declared radius.",
@@ -125,12 +115,6 @@ public class Settings {
     public static final ConfigSetting NO_AI = new ConfigSetting(config, "Main.Nerf Spawner Mobs", false,
             "If enabled mobs spawned by spawners will not move or attack.");
 
-    public static final ConfigSetting COST_EQUATION_EXPERIANCE = new ConfigSetting(config, "Main.Equations.Calculate XP Upgrade Cost", "{XPCost} * {Level}",
-            "The equation used to calculate the experience upgrade cost.");
-
-    public static final ConfigSetting COST_EQUATION_ECONOMY = new ConfigSetting(config, "Main.Equations.Calculate Economy Upgrade Cost", "{ECOCost} * {Level}",
-            "The equation used to calculate the economy upgrade cost.");
-
     public static final ConfigSetting SPAWNER_SPAWN_EQUATION = new ConfigSetting(config, "Main.Equations.Mobs Spawned Per Single Spawn", "{RAND}",
             "The equation that defines the amount of mobs a spawner will spawn each time it is triggered.",
             "This is ran once for each spawner in the stack then summed up after. You may use the variable {STACK_SIZE}",
@@ -140,13 +124,6 @@ public class Settings {
     public static final ConfigSetting RANDOM_LOW_HIGH = new ConfigSetting(config, "Main.Equations.Random Amount Variable", "1:4",
             "This value depicts the variable {RAND} in equations used by this plugin",
             "It generates a random number between (by default) 1 and 4.");
-
-    public static final ConfigSetting NAMED_SPAWNER_TIERS = new ConfigSetting(config, "Main.Named Spawners Tiers", false,
-            "Whether or not spawners will have names rather than numbers.");
-
-    public static final ConfigSetting TIER_NAMES = new ConfigSetting(config, "Main.Tier Names", Arrays.asList("&7Common", "&6Uncommon", "&4Rare", "&5Mythic"),
-            "The names of each spawner tier.",
-            "Where one spawner is common, two is uncommon, three is rare, and four is mythic.");
 
     public static final ConfigSetting ECONOMY_PLUGIN = new ConfigSetting(config, "Main.Economy", EconomyManager.getEconomy() == null ? "Vault" : EconomyManager.getEconomy().getName(),
             "Which economy plugin should be used?",
@@ -220,10 +197,9 @@ public class Settings {
 
     public static final ConfigSetting BOOST_ICON = new ConfigSetting(config, "Interfaces.Boost Icon", "BLAZE_POWDER");
 
-    public static final ConfigSetting GLASS_TYPE_1 = new ConfigSetting(config, "Interfaces.Glass Type 1", 7);
-    public static final ConfigSetting GLASS_TYPE_2 = new ConfigSetting(config, "Interfaces.Glass Type 2", 11);
-    public static final ConfigSetting GLASS_TYPE_3 = new ConfigSetting(config, "Interfaces.Glass Type 3", 3);
-    public static final ConfigSetting RAINBOW_GLASS = new ConfigSetting(config, "Interfaces.Replace Glass Type 1 With Rainbow Glass", false);
+    public static final ConfigSetting GLASS_TYPE_1 = new ConfigSetting(config, "Interfaces.Glass Type 1", "GRAY_STAINED_GLASS_PANE");
+    public static final ConfigSetting GLASS_TYPE_2 = new ConfigSetting(config, "Interfaces.Glass Type 2", "BLUE_STAINED_GLASS_PANE");
+    public static final ConfigSetting GLASS_TYPE_3 = new ConfigSetting(config, "Interfaces.Glass Type 3", "LIGHT_BLUE_STAINED_GLASS_PANE");
 
     public static final ConfigSetting LANGUGE_MODE = new ConfigSetting(config, "System.Language Mode", "en_US",
             "The enabled language file.",

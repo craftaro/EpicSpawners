@@ -1,7 +1,7 @@
 package com.songoda.epicspawners.spawners.condition;
 
 import com.songoda.epicspawners.EpicSpawners;
-import com.songoda.epicspawners.spawners.spawner.Spawner;
+import com.songoda.epicspawners.spawners.spawner.PlacedSpawner;
 
 public class SpawnConditionHeight implements SpawnCondition {
 
@@ -26,7 +26,7 @@ public class SpawnConditionHeight implements SpawnCondition {
     }
 
     @Override
-    public boolean isMet(Spawner spawner) {
+    public boolean isMet(PlacedSpawner spawner) {
         double y = spawner.getLocation().getY();
         return y >= min && y <= max;
     }

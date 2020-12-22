@@ -1,7 +1,7 @@
 package com.songoda.epicspawners.spawners.condition;
 
 import com.songoda.epicspawners.EpicSpawners;
-import com.songoda.epicspawners.spawners.spawner.Spawner;
+import com.songoda.epicspawners.spawners.spawner.PlacedSpawner;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 
@@ -29,7 +29,7 @@ public class SpawnConditionNearbyPlayers implements SpawnCondition {
     }
 
     @Override
-    public boolean isMet(Spawner spawner) {
+    public boolean isMet(PlacedSpawner spawner) {
         Location location = spawner.getLocation().add(0.5, 0.5, 0.5);
 
         int size = Math.toIntExact(location.getWorld().getNearbyEntities(location, distance, distance, distance)

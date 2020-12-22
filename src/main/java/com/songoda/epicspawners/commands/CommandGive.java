@@ -7,7 +7,7 @@ import com.songoda.core.utils.TextUtils;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.settings.Settings;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
-import com.songoda.epicspawners.utils.Methods;
+import com.songoda.epicspawners.spawners.spawner.SpawnerTier;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -18,8 +18,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 public class CommandGive extends AbstractCommand {
 
@@ -32,14 +32,14 @@ public class CommandGive extends AbstractCommand {
 
     @Override
     protected AbstractCommand.ReturnType runCommand(CommandSender sender, String... args) {
-        if (args.length <= 2 || args.length > 4) {
+        if (args.length < 2 || args.length > 5) {
             return ReturnType.SYNTAX_ERROR;
         }
+
         if (Bukkit.getPlayerExact(args[0]) == null && !args[0].toLowerCase().equals("all")) {
             plugin.getLocale().newMessage("&cThat username does not exist, or the user is not online!").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
-        int multi = 1;
 
         SpawnerData data = null;
         for (SpawnerData spawnerData : plugin.getSpawnerManager().getAllSpawnerData()) {
@@ -53,87 +53,104 @@ public class CommandGive extends AbstractCommand {
             plugin.getLocale().newMessage("&7The entity Type &6" + args[1] + " &7does not exist. Try one of these:").sendPrefixedMessage(sender);
             StringBuilder list = new StringBuilder();
 
-            for (SpawnerData spawnerData : plugin.getSpawnerManager().getAllSpawnerData()) {
+            for (SpawnerData spawnerData : plugin.getSpawnerManager().getAllSpawnerData())
                 list.append(spawnerData.getIdentifyingName().toUpperCase().replace(" ", "_")).append("&7, &6");
-            }
+
             sender.sendMessage(TextUtils.formatText("&6" + list));
             return ReturnType.FAILURE;
         }
+
         if (args[1].equalsIgnoreCase("random")) {
             Collection<SpawnerData> list = plugin.getSpawnerManager().getAllEnabledSpawnerData();
             Random rand = new Random();
             data = Iterables.get(list, rand.nextInt(list.size()));
         }
+
+        if (args.length == 2) {
+            giveSpawner(args[0], data.getFirstTier(), 1, 1);
+            return ReturnType.SUCCESS;
+        }
+
+        SpawnerTier tier = data.getFirstTier();
+        SpawnerTier foundTier = data.getTier(args[2].trim());
+        if (foundTier != null)
+            tier = foundTier;
+
         if (args.length == 3) {
-            if (!NumberUtils.isInt(args[2])) {
-                plugin.getLocale().newMessage("&6" + args[2] + "&7 is not a number.").sendPrefixedMessage(sender);
-                return ReturnType.SYNTAX_ERROR;
-            }
-            int amt = Integer.parseInt(args[2]);
-            ItemStack spawnerItem = data.toItemStack(Integer.parseInt(args[2]));
-            if (args[0].toLowerCase().equals("all")) {
-                for (Player pl : Bukkit.getOnlinePlayers()) {
-                    Map<Integer, ItemStack> overflow = pl.getInventory().addItem(spawnerItem);
-                    for (ItemStack item : overflow.values())
-                        pl.getWorld().dropItemNaturally(pl.getLocation(), item);
-                    plugin.getLocale().getMessage("command.give.success").processPlaceholder("amount", amt).processPlaceholder("type", data.getCompiledDisplayName(multi)).sendPrefixedMessage(pl);
-                }
+            giveSpawner(args[0], tier, 1, 1);
+            return ReturnType.SUCCESS;
+        }
+
+        int amount;
+        int stackSize = 1;
+
+            if (!NumberUtils.isInt(args[3])) {
+                plugin.getLocale().newMessage("&6" + args[3] + "&7 is not a number.").sendPrefixedMessage(sender);
+                return ReturnType.FAILURE;
             } else {
-                Player pl = Bukkit.getPlayerExact(args[0]);
-                Map<Integer, ItemStack> overflow = pl.getInventory().addItem(spawnerItem);
-                for (ItemStack item : overflow.values())
-                    pl.getWorld().dropItemNaturally(pl.getLocation(), item);
-                plugin.getLocale().getMessage("command.give.success").processPlaceholder("amount", amt).processPlaceholder("type", data.getCompiledDisplayName(multi)).sendPrefixedMessage(pl);
-
+                amount = Integer.parseInt(args[3]);
             }
-            return ReturnType.FAILURE;
-        }
-        if (!NumberUtils.isInt(args[2])) {
-            plugin.getLocale().newMessage("&6" + args[2] + "&7 is not a number.").sendPrefixedMessage(sender);
-            return ReturnType.FAILURE;
-        }
-        if (!NumberUtils.isInt(args[3])) {
-            plugin.getLocale().newMessage("&6" + args[3] + "&7 is not a number.").sendPrefixedMessage(sender);
-            return ReturnType.FAILURE;
-        }
-        int amt = Integer.parseInt(args[2]);
 
-        multi = Integer.parseInt(args[3]);
-        ItemStack spawnerItem = data.toItemStack(amt, Math.max(0, multi));
+        if (args.length > 4)
+            if (!NumberUtils.isInt(args[4])) {
+                plugin.getLocale().newMessage("&6" + args[4] + "&7 is not a number.").sendPrefixedMessage(sender);
+                return ReturnType.FAILURE;
+            } else {
+                stackSize = Integer.parseInt(args[4]);
+            }
 
-        if (multi > Settings.SPAWNERS_MAX.getInt()) {
-            plugin.getLocale().newMessage("&7 The multiplier &6" + multi + "&7 is above this spawner types maximum stack size.").sendPrefixedMessage(sender);
+        if (stackSize > Settings.SPAWNERS_MAX.getInt()) {
+            plugin.getLocale().newMessage("&7The stack size &6" + stackSize + "&7 is above this spawner types maximum.").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
 
-        if (args[0].toLowerCase().equals("all")) {
+        giveSpawner(args[0], tier, stackSize, amount);
+        return ReturnType.SUCCESS;
+    }
+
+    private void giveSpawner(String who, SpawnerTier tier, int stackSize, int amt) {
+        ItemStack spawnerItem = tier.toItemStack(amt, Math.max(1, stackSize));
+        if (who.toLowerCase().equals("all")) {
             for (Player pl : Bukkit.getOnlinePlayers()) {
                 pl.getInventory().addItem(spawnerItem);
-                plugin.getLocale().getMessage("command.give.success").processPlaceholder("amount", amt).processPlaceholder("type", data.getCompiledDisplayName(multi)).sendPrefixedMessage(pl);
+                plugin.getLocale().getMessage("command.give.success").processPlaceholder("amount", amt).processPlaceholder("type", tier.getCompiledDisplayName(false, stackSize)).sendPrefixedMessage(pl);
             }
         } else {
-            Player pl = Bukkit.getPlayerExact(args[0]);
+            Player pl = Bukkit.getPlayerExact(who);
             pl.getInventory().addItem(spawnerItem);
-            plugin.getLocale().getMessage("command.give.success").processPlaceholder("amount", amt).processPlaceholder("type", data.getCompiledDisplayName(multi)).sendPrefixedMessage(pl);
+            plugin.getLocale().getMessage("command.give.success").processPlaceholder("amount", amt).processPlaceholder("type", tier.getCompiledDisplayName(false, stackSize)).sendPrefixedMessage(pl);
 
         }
-        return ReturnType.SUCCESS;
     }
 
     @Override
     protected List<String> onTab(CommandSender sender, String... args) {
         if (args.length == 1) {
-            List<String> players = Methods.convertToList(Bukkit.getOnlinePlayers(), Player::getName);
+            List<String> players = Bukkit.getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList());
             players.add("All");
             return players;
         } else if (args.length == 2) {
-            List<String> spawners = Methods.convertToList(plugin.getSpawnerManager().getAllSpawnerData(), (spawnerData) -> spawnerData.getIdentifyingName().replace(" ", "_"));
+            List<String> spawners = plugin.getSpawnerManager().getAllSpawnerData().stream()
+                    .map(spawnerData -> spawnerData.getIdentifyingName().replace(" ", "_"))
+                    .collect(Collectors.toList());
             spawners.add("random");
             return spawners;
         } else if (args.length == 3) {
+            SpawnerData data = null;
+            for (SpawnerData spawnerData : plugin.getSpawnerManager().getAllSpawnerData()) {
+                String input = args[1].toUpperCase().replace("_", "").replace(" ", "");
+                String compare = spawnerData.getIdentifyingName().toUpperCase().replace("_", "").replace(" ", "");
+                if (input.equals(compare))
+                    data = spawnerData;
+            }
+
+            if (data == null) return Collections.emptyList();
+            return data.getTiers().stream()
+                    .map(spawnerTier -> spawnerTier.getIdentifyingName().replace(" ", "_"))
+                    .collect(Collectors.toList());
+        } else if (args.length == 4) {
             int max = Settings.SPAWNERS_MAX.getInt();
             List<String> values;
-            ;
 
             if (max <= 0) {
                 values = new ArrayList<>(1);
@@ -146,7 +163,7 @@ public class CommandGive extends AbstractCommand {
             }
 
             return values;
-        } else if (args.length == 4) {
+        } else if (args.length == 5) {
             return Arrays.asList("1", "2", "3", "4", "5");
         }
         return Collections.emptyList();
@@ -159,7 +176,7 @@ public class CommandGive extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "give [player/all] [spawnertype/random] [amount] [stack-size]";
+        return "give [player/all] [spawnertype/random] [tier] [amount] [stack-size]";
     }
 
     @Override

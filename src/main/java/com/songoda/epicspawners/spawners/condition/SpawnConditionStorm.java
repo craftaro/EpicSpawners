@@ -1,6 +1,6 @@
 package com.songoda.epicspawners.spawners.condition;
 
-import com.songoda.epicspawners.spawners.spawner.Spawner;
+import com.songoda.epicspawners.spawners.spawner.PlacedSpawner;
 
 public class SpawnConditionStorm implements SpawnCondition {
 
@@ -21,7 +21,7 @@ public class SpawnConditionStorm implements SpawnCondition {
     }
 
     @Override
-    public boolean isMet(Spawner spawner) {
+    public boolean isMet(PlacedSpawner spawner) {
         return !stormOnly || spawner.getLocation().getWorld().hasStorm();
     }
 

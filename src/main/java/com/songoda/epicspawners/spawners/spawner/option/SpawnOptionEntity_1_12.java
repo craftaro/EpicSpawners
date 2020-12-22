@@ -11,14 +11,12 @@ import com.songoda.epicspawners.particles.ParticleType;
 import com.songoda.epicspawners.settings.Settings;
 import com.songoda.epicspawners.spawners.condition.SpawnCondition;
 import com.songoda.epicspawners.spawners.condition.SpawnConditionNearbyEntities;
-import com.songoda.epicspawners.spawners.spawner.Spawner;
-import com.songoda.epicspawners.spawners.spawner.SpawnerData;
+import com.songoda.epicspawners.spawners.spawner.PlacedSpawner;
 import com.songoda.epicspawners.spawners.spawner.SpawnerStack;
-import com.songoda.epicspawners.utils.Methods;
+import com.songoda.epicspawners.spawners.spawner.SpawnerTier;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -140,7 +138,7 @@ public class SpawnOptionEntity_1_12 implements SpawnOption {
     }
 
     @Override
-    public void spawn(SpawnerData data, SpawnerStack stack, Spawner spawner) {
+    public void spawn(SpawnerTier data, SpawnerStack stack, PlacedSpawner spawner) {
         Location location = spawner.getLocation();
         location.add(.5, .5, .5);
         if (location.getWorld() == null) return;
@@ -201,18 +199,19 @@ public class SpawnOptionEntity_1_12 implements SpawnOption {
         }
     }
 
-    private Entity spawnEntity(EntityType type, Spawner spawner, SpawnerData data) {
+    private Entity spawnEntity(EntityType type, PlacedSpawner spawner, SpawnerTier tier) {
         try {
             Object objMobSpawnerData = null;
             Object objNBTTagCompound;
 
-            Methods.Tuple<String, String> typeTranslation = TypeTranslations.fromType(type);
+            String typeTranslationUpper = TypeTranslations.getUpperFromType(type);
+            String typeTranslationLower = TypeTranslations.getLowerFromType(type);
 
             if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9)) {
                 objMobSpawnerData = clazzMobSpawnerData.newInstance();
                 objNBTTagCompound = methodB.invoke(objMobSpawnerData);
 
-                methodSetString.invoke(objNBTTagCompound, "id", ServerVersion.isServerVersionAtLeast(ServerVersion.V1_11) ? "minecraft:" + typeTranslation.getKey().replace(" ", "_") : typeTranslation.getValue());
+                methodSetString.invoke(objNBTTagCompound, "id", ServerVersion.isServerVersionAtLeast(ServerVersion.V1_11) ? "minecraft:" + typeTranslationLower : typeTranslationUpper);
             }
 
             int spawnRange = 4;
@@ -231,16 +230,15 @@ public class SpawnOptionEntity_1_12 implements SpawnOption {
                     objNBTTagCompound = methodB.invoke(objMobSpawnerData);
                     objEntity = methodChunkRegionLoaderA.invoke(null, objNBTTagCompound, objWorld, x, y, z, false);
                 } else {
-                    objEntity = methodCreateEntityByName.invoke(null, typeTranslation.getValue(), objWorld);
-                    methodSetPositionRotation.invoke(
-                            objEntity, x, y, z, 360.0F, 0.0F);
+                    objEntity = methodCreateEntityByName.invoke(null, typeTranslationUpper, objWorld);
+                    methodSetPositionRotation.invoke(objEntity, x, y, z, 360.0F, 0.0F);
                 }
                 Object objEntityInsentient = null;
                 if (clazzEntityInsentient.isInstance(objEntity))
                     objEntityInsentient = clazzEntityInsentient.cast(objEntity);
 
                 Location spot = new Location(spawner.getWorld(), x, y, z);
-                if (!canSpawn(objEntityInsentient, data, spot))
+                if (!canSpawn(objEntityInsentient, tier, spot))
                     continue;
 
                 Object objBlockPosition = clazzBlockPosition.getConstructor(clazzEntity).newInstance(objEntity);
@@ -248,7 +246,7 @@ public class SpawnOptionEntity_1_12 implements SpawnOption {
 
                 methodEntityInsentientPrepare.invoke(objEntity, objDamageScaler, null);
 
-                ParticleType particleType = data.getEntitySpawnParticle();
+                ParticleType particleType = tier.getEntitySpawnParticle();
 
                 if (particleType != ParticleType.NONE) {
                     float xx = (float) (0 + (Math.random() * 1));
@@ -273,9 +271,10 @@ public class SpawnOptionEntity_1_12 implements SpawnOption {
                     methodAddEntity.invoke(objWorld, objEntity, CreatureSpawnEvent.SpawnReason.SPAWNER);
                 }
 
-                if (data.isSpawnOnFire()) craftEntity.setFireTicks(160);
+                if (tier.isSpawnOnFire()) craftEntity.setFireTicks(160);
 
-                craftEntity.setMetadata("ES", new FixedMetadataValue(plugin, data.getIdentifyingName()));
+                craftEntity.setMetadata("ESData", new FixedMetadataValue(plugin, tier.getSpawnerData().getIdentifyingName()));
+                craftEntity.setMetadata("ESTier", new FixedMetadataValue(plugin, tier.getIdentifyingName()));
 
                 if (mcmmo)
                     craftEntity.setMetadata("mcMMO: Spawned Entity", new FixedMetadataValue(plugin, true));
@@ -297,15 +296,15 @@ public class SpawnOptionEntity_1_12 implements SpawnOption {
         return null;
     }
 
-    private boolean canSpawn(Object objEntityInsentient, SpawnerData data, Location location) {
+    private boolean canSpawn(Object objEntityInsentient, SpawnerTier data, Location location) {
         try {
             if (!(boolean) methodEntityInsentientCanSpawn.invoke(objEntityInsentient))
                 return false;
 
-            Material[] spawnBlocks = data.getSpawnBlocks();
+            CompatibleMaterial[] spawnBlocks = data.getSpawnBlocks();
 
             CompatibleMaterial spawnedIn = CompatibleMaterial.getMaterial(location.getBlock());
-            Material spawnedOn = location.getBlock().getRelative(BlockFace.DOWN).getType();
+            CompatibleMaterial spawnedOn = CompatibleMaterial.getMaterial(location.getBlock().getRelative(BlockFace.DOWN));
 
             if (!spawnedIn.isAir()
                     && !spawnedIn.isWater()
@@ -314,11 +313,10 @@ public class SpawnOptionEntity_1_12 implements SpawnOption {
                 return false;
             }
 
-            for (Material material : spawnBlocks) {
+            for (CompatibleMaterial material : spawnBlocks) {
                 if (material == null) continue;
 
-                if (spawnedOn.equals(material)
-                        || material == Material.AIR && CompatibleMaterial.getMaterial(material).isAir())
+                if (spawnedOn.equals(material) || material.isAir())
                     return true;
             }
         } catch (InvocationTargetException | IllegalAccessException e) {
@@ -328,7 +326,7 @@ public class SpawnOptionEntity_1_12 implements SpawnOption {
     }
 
     public enum TypeTranslations {
-        VINDICATOR("vindication illager", "VindicationIllager"),
+        VINDICATOR("vindication_illager", "VindicationIllager"),
         SNOWMAN("snowman", "SnowMan"),
         PIG_ZOMBIE("zombie_pigman", "PigZombie"),
         EVOKER("evocation_illager", "EvocationIllager"),
@@ -345,14 +343,21 @@ public class SpawnOptionEntity_1_12 implements SpawnOption {
             this.upper = upper;
         }
 
-        public static Methods.Tuple<String, String> fromType(EntityType type) {
+        public static String getLowerFromType(EntityType type) {
             try {
                 TypeTranslations typeTranslation = valueOf(type.name());
-                return new Methods.Tuple<>(typeTranslation.lower, typeTranslation.upper);
+                return typeTranslation.lower;
             } catch (Exception e) {
-                String lower = type.name().toLowerCase();
-                String upper = WordUtils.capitalize(lower.replace("_", " ")).replace(" ", "");
-                return new Methods.Tuple<>(lower, upper);
+                return type.name().toLowerCase();
+            }
+        }
+
+        public static String getUpperFromType(EntityType type) {
+            try {
+                TypeTranslations typeTranslation = valueOf(type.name());
+                return typeTranslation.upper;
+            } catch (Exception e) {
+                return WordUtils.capitalize(type.name().toLowerCase()).replace(" ", "");
             }
         }
     }

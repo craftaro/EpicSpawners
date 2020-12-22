@@ -2,7 +2,7 @@ package com.songoda.epicspawners.commands;
 
 import com.songoda.core.commands.AbstractCommand;
 import com.songoda.epicspawners.EpicSpawners;
-import com.songoda.epicspawners.gui.GUIEditorSelector;
+import com.songoda.epicspawners.gui.EditorSelectorGui;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -20,7 +20,7 @@ public class CommandEditor extends AbstractCommand {
 
     @Override
     protected ReturnType runCommand(CommandSender sender, String... args) {
-        new GUIEditorSelector(plugin, (Player) sender);
+        plugin.getGuiManager().showGUI((Player) sender, new EditorSelectorGui(plugin, (Player) sender));
         return ReturnType.SUCCESS;
     }
 

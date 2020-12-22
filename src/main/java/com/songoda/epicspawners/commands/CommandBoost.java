@@ -2,16 +2,18 @@ package com.songoda.epicspawners.commands;
 
 import com.songoda.core.commands.AbstractCommand;
 import com.songoda.core.utils.NumberUtils;
+import com.songoda.core.utils.TimeUtils;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.boost.types.BoostedPlayer;
-import com.songoda.epicspawners.utils.Methods;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CommandBoost extends AbstractCommand {
 
@@ -37,7 +39,7 @@ public class CommandBoost extends AbstractCommand {
 
         if (args.length > 2) {
             for (String line : args) {
-                long time = Methods.parseTime(line);
+                long time = TimeUtils.parseTime(line);
                 duration += time;
 
             }
@@ -52,7 +54,7 @@ public class CommandBoost extends AbstractCommand {
         BoostedPlayer boost = new BoostedPlayer(player, Integer.parseInt(args[1]), duration == 0L ? Long.MAX_VALUE : System.currentTimeMillis() + duration);
         plugin.getBoostManager().addBoost(boost);
         plugin.getLocale()
-                .newMessage("&6" + player.getName() + "&7 has been given a spawner boost of &6" + args[1] + "&7" + (duration == 0L ? "" : (" for " + Methods.makeReadable(duration))) + "&7.")
+                .newMessage("&6" + player.getName() + "&7 has been given a spawner boost of &6" + args[1] + "&7" + (duration == 0L ? "" : (" for " + TimeUtils.makeReadable(duration))) + "&7.")
                 .sendPrefixedMessage(sender);
 
         return ReturnType.SUCCESS;
@@ -61,7 +63,7 @@ public class CommandBoost extends AbstractCommand {
     @Override
     protected List<String> onTab(CommandSender sender, String... args) {
         if (args.length == 1) {
-            return Methods.convertToList(Bukkit.getOnlinePlayers(), Player::getName);
+            return Bukkit.getOnlinePlayers().stream().map(HumanEntity::getName).collect(Collectors.toList());
         } else if (args.length == 2) {
             return Arrays.asList("1", "2", "3", "4", "5");
         } else if (args.length == 3) {

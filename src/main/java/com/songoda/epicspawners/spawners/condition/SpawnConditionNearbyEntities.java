@@ -3,7 +3,7 @@ package com.songoda.epicspawners.spawners.condition;
 import com.songoda.core.hooks.EntityStackerManager;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.settings.Settings;
-import com.songoda.epicspawners.spawners.spawner.Spawner;
+import com.songoda.epicspawners.spawners.spawner.PlacedSpawner;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -33,7 +33,7 @@ public class SpawnConditionNearbyEntities implements SpawnCondition {
     }
 
     @Override
-    public boolean isMet(Spawner spawner) {
+    public boolean isMet(PlacedSpawner spawner) {
         return getEntitiesAroundSpawner(spawner.getLocation().add(0.5, 0.5, 0.5), false) < max;
     }
 

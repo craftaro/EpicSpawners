@@ -1,11 +1,11 @@
 package com.songoda.epicspawners.spawners.condition;
 
-import com.songoda.epicspawners.spawners.spawner.Spawner;
+import com.songoda.epicspawners.spawners.spawner.PlacedSpawner;
 
 import java.util.function.Predicate;
 
 /**
- * A predicate on which to check whether a {@link Spawner} should
+ * A predicate on which to check whether a {@link PlacedSpawner} should
  * be permitted to perform a spawn or not.
  */
 public interface SpawnCondition {
@@ -31,14 +31,14 @@ public interface SpawnCondition {
      * @param spawner the spawner to check
      * @return true if condition is met, false otherwise
      */
-    boolean isMet(Spawner spawner);
+    boolean isMet(PlacedSpawner spawner);
 
     /**
      * Get this SpawnCondition instance as a {@link Predicate}
      *
      * @return this condition as a predicate
      */
-    default Predicate<Spawner> asPredicate() {
+    default Predicate<PlacedSpawner> asPredicate() {
         return this::isMet;
     }
 

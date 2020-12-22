@@ -7,6 +7,7 @@ import com.songoda.core.utils.TextUtils;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.settings.Settings;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
+import com.songoda.epicspawners.utils.HeadUtils;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -50,8 +51,8 @@ public class SpawnerStatsGui extends Gui {
         mirrorFill(0, 1, true, true, glass2);
 
         // enable page event
-        setNextPage(4, 7, GuiUtils.createButtonItem(CompatibleMaterial.ARROW, plugin.getLocale().getMessage("gui.general.next").getMessage()));
-        setPrevPage(4, 1, GuiUtils.createButtonItem(CompatibleMaterial.ARROW, plugin.getLocale().getMessage("gui.general.back").getMessage()));
+        setNextPage(4, 7, GuiUtils.createButtonItem(CompatibleMaterial.ARROW, plugin.getLocale().getMessage("general.nametag.next").getMessage()));
+        setPrevPage(4, 1, GuiUtils.createButtonItem(CompatibleMaterial.ARROW, plugin.getLocale().getMessage("general.nametag.back").getMessage()));
         setOnPage((event) -> showPage());
 
         setButton(8, GuiUtils.createButtonItem(CompatibleMaterial.valueOf(plugin.getConfig().getString("Interfaces.Exit Icon")),
@@ -73,9 +74,9 @@ public class SpawnerStatsGui extends Gui {
             int customGoal = spawnerData.getKillGoal();
             if (customGoal != 0) goal = customGoal;
 
-            setItem(num, GuiUtils.createButtonItem(plugin.getHeads().getTexturedSkull(spawnerData),
-                    TextUtils.formatText("&6" + spawnerData.getDisplayName() + "&7: &e" + entry.getValue() + "&7/&e" + goal)));
-            num ++;
+            setItem(num, GuiUtils.createButtonItem(HeadUtils.getTexturedSkull(spawnerData),
+                    TextUtils.formatText("&6" + spawnerData.getIdentifyingName() + "&7: &e" + entry.getValue() + "&7/&e" + goal)));
+            num++;
         }
     }
 }

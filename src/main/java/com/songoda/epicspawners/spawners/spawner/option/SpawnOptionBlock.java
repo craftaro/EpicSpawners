@@ -1,10 +1,11 @@
 package com.songoda.epicspawners.spawners.spawner.option;
 
+import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.boost.types.Boosted;
-import com.songoda.epicspawners.spawners.spawner.Spawner;
-import com.songoda.epicspawners.spawners.spawner.SpawnerData;
+import com.songoda.epicspawners.spawners.spawner.PlacedSpawner;
 import com.songoda.epicspawners.spawners.spawner.SpawnerStack;
+import com.songoda.epicspawners.spawners.spawner.SpawnerTier;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -19,25 +20,25 @@ public class SpawnOptionBlock implements SpawnOption {
     private static final int SPAWN_RADIUS = 3;
 
     private final Random random;
-    private final Material[] blocks;
+    private final CompatibleMaterial[] blocks;
 
-    public SpawnOptionBlock(Material... blocks) { //ToDo: convertOverview to  MaterialData as to support different types of wool and what not.
+    public SpawnOptionBlock(CompatibleMaterial... blocks) {
         this.blocks = blocks;
         this.random = new Random();
     }
 
-    public SpawnOptionBlock(Collection<Material> blocks) {
-        this(blocks.toArray(new Material[blocks.size()]));
+    public SpawnOptionBlock(Collection<CompatibleMaterial> blocks) {
+        this(blocks.toArray(new CompatibleMaterial[blocks.size()]));
     }
 
     @Override
-    public void spawn(SpawnerData data, SpawnerStack stack, Spawner spawner) {
+    public void spawn(SpawnerTier data, SpawnerStack stack, PlacedSpawner spawner) {
         Location location = spawner.getLocation();
         if (location == null || location.getWorld() == null) return;
 
         int spawnerBoost = spawner.getBoosts().stream().mapToInt(Boosted::getAmountBoosted).sum();
-        for (int i = 0; i < spawner.getSpawnerDataCount() + spawnerBoost; i++) {
-            for (Material material : blocks) {
+        for (int i = 0; i < stack.getStackSize() + spawnerBoost; i++) {
+            for (CompatibleMaterial material : blocks) {
                 int searchIndex = 0;
                 while (searchIndex++ <= MAX_SEARCH_COUNT) {
                     spawner.setSpawnCount(spawner.getSpawnCount() + 1);
@@ -55,7 +56,7 @@ public class SpawnOptionBlock implements SpawnOption {
                     if (spawnBlock.getType() != Material.AIR) continue;
 
                     // Set Type and data for valid air block
-                    spawnBlock.setType(material);
+                    material.applyToBlock(spawnBlock);
                     break;
                 }
             }

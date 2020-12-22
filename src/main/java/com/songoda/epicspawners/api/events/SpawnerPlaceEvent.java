@@ -1,6 +1,6 @@
 package com.songoda.epicspawners.api.events;
 
-import com.songoda.epicspawners.spawners.spawner.Spawner;
+import com.songoda.epicspawners.spawners.spawner.PlacedSpawner;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
@@ -14,7 +14,7 @@ public class SpawnerPlaceEvent extends SpawnerEvent implements Cancellable {
 
     private boolean canceled = false;
 
-    public SpawnerPlaceEvent(Player player, Spawner spawner) {
+    public SpawnerPlaceEvent(Player player, PlacedSpawner spawner) {
         super(player, spawner);
     }
 

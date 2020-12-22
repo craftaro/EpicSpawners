@@ -1,12 +1,12 @@
 package com.songoda.epicspawners.tasks;
 
+import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.settings.Settings;
-import com.songoda.epicspawners.spawners.spawner.Spawner;
-import com.songoda.epicspawners.spawners.spawner.SpawnerData;
+import com.songoda.epicspawners.spawners.spawner.PlacedSpawner;
 import com.songoda.epicspawners.spawners.spawner.SpawnerStack;
-import com.songoda.epicspawners.utils.Methods;
+import com.songoda.epicspawners.spawners.spawner.SpawnerTier;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.CreatureSpawner;
@@ -39,7 +39,7 @@ public class AppearanceTask extends BukkitRunnable {
     public void run() {
         EpicSpawners instance = EpicSpawners.getInstance();
 
-        for (Spawner spawner : new ArrayList<>(instance.getSpawnerManager().getSpawners())) {
+        for (PlacedSpawner spawner : new ArrayList<>(instance.getSpawnerManager().getSpawners())) {
             Location location = spawner.getLocation();
             if (location == null || location.getWorld() == null) continue;
             int destx = location.getBlockX() >> 4;
@@ -47,29 +47,29 @@ public class AppearanceTask extends BukkitRunnable {
             if (!location.getWorld().isChunkLoaded(destx, destz)) {
                 continue;
             }
-            if (location.getBlock().getType() != (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SPAWNER : Material.valueOf("MOB_SPAWNER")))
+            if (CompatibleMaterial.getMaterial(location.getBlock()) != CompatibleMaterial.SPAWNER)
                 continue;
 
             if (spawner.getSpawnerStacks().size() <= 1) {
-                updateDisplayItem(spawner, spawner.getFirstStack().getSpawnerData());
+                updateDisplayItem(spawner, spawner.getFirstStack().getCurrentTier());
                 continue;
             }
 
             if (!Settings.OMNI_SPAWNERS.getBoolean()) continue;
 
             String last = null;
-            SpawnerData next = null;
+            SpawnerTier next = null;
             List<SpawnerStack> list = new ArrayList<>(spawner.getSpawnerStacks());
             for (SpawnerStack stack : list) {
-                if (stack.getSpawnerData().getIdentifyingName().equals(spawner.getOmniState())) {
-                    last = stack.getSpawnerData().getIdentifyingName();
+                if (stack.getCurrentTier().getIdentifyingName().equals(spawner.getOmniState())) {
+                    last = stack.getCurrentTier().getIdentifyingName();
                 } else if (last != null && next == null) {
-                    next = stack.getSpawnerData();
+                    next = stack.getCurrentTier();
                 }
             }
-            if (next == null) {
-                next = list.get(0).getSpawnerData();
-            }
+            if (next == null)
+                next = spawner.getFirstTier();
+
             updateDisplayItem(spawner, next);
             spawner.setOmniState(next.getIdentifyingName());
 
@@ -80,7 +80,7 @@ public class AppearanceTask extends BukkitRunnable {
         }
     }
 
-    public void updateDisplayItem(Spawner spawner, SpawnerData spawnerData) {
+    public void updateDisplayItem(PlacedSpawner spawner, SpawnerTier spawnerTier) {
         Location location = spawner.getLocation();
 
         if (!spawner.getWorld().isChunkLoaded(spawner.getX() >> 4, spawner.getZ() >> 4)) {
@@ -90,8 +90,8 @@ public class AppearanceTask extends BukkitRunnable {
         location.add(.5, -.4, .5);
 
         ItemStack itemStack = new ItemStack(Material.DIRT);
-        if (spawner.getFirstStack().getSpawnerData().getDisplayItem() != null)
-            itemStack.setType(spawnerData.getDisplayItem());
+        if (spawnerTier.getDisplayItem() != null)
+            itemStack = spawnerTier.getDisplayItem().getItem();
 
         List<Entity> entities = getDisplayItem(spawner);
 
@@ -107,11 +107,10 @@ public class AppearanceTask extends BukkitRunnable {
         }
 
         try {
-            EntityType next = EntityType.valueOf(Methods.restoreType(spawnerData.getIdentifyingName()));
+            EntityType next = spawnerTier.getEntities().get(0);
             spawner.getCreatureSpawner().setSpawnedType(next);
         } catch (Exception failure) {
             spawner.getCreatureSpawner().setSpawnedType(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9) ? EntityType.EGG : EntityType.DROPPED_ITEM);
-
             if (itemStack.getType() == Material.AIR) return;
             location.setPitch(-360);
             ArmorStand as = (ArmorStand) location.getWorld().spawnEntity(location, EntityType.ARMOR_STAND);
@@ -126,7 +125,7 @@ public class AppearanceTask extends BukkitRunnable {
         }
     }
 
-    public void removeDisplayItem(Spawner spawner) {
+    public void removeDisplayItem(PlacedSpawner spawner) {
         List<Entity> entites = getDisplayItem(spawner);
         if (entites == null) return;
         for (Entity entity : entites) {
@@ -134,12 +133,11 @@ public class AppearanceTask extends BukkitRunnable {
         }
     }
 
-    private List<Entity> getDisplayItem(Spawner spawner) {
+    private List<Entity> getDisplayItem(PlacedSpawner spawner) {
         Location location = spawner.getLocation();
         location.add(.5, -.4, .5);
 
         List<Entity> near = (List<Entity>) location.getWorld().getNearbyEntities(location, .1, .1, .1);
-        if (near == null) return null;
         near.removeIf(entity -> entity == null || entity.getType() != EntityType.ARMOR_STAND || entity.getCustomName() == null || !entity.getCustomName().equalsIgnoreCase("EpicSpawners-Display"));
         if (near.size() != 0) {
             return near;

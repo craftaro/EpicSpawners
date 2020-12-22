@@ -3,9 +3,9 @@ package com.songoda.epicspawners.spawners.spawner.option;
 import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.boost.types.Boosted;
-import com.songoda.epicspawners.spawners.spawner.Spawner;
-import com.songoda.epicspawners.spawners.spawner.SpawnerData;
+import com.songoda.epicspawners.spawners.spawner.PlacedSpawner;
 import com.songoda.epicspawners.spawners.spawner.SpawnerStack;
+import com.songoda.epicspawners.spawners.spawner.SpawnerTier;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -32,7 +32,7 @@ public class SpawnOptionItem implements SpawnOption {
         this(items.toArray(new ItemStack[items.size()]));
     }
 
-    public void spawn(SpawnerData data, SpawnerStack stack, Spawner spawner) {
+    public void spawn(SpawnerTier data, SpawnerStack stack, PlacedSpawner spawner) {
         Location location = spawner.getLocation();
         if (location == null || location.getWorld() == null) return;
 
@@ -43,7 +43,7 @@ public class SpawnOptionItem implements SpawnOption {
             location.getWorld().playSound(location, Sound.ENTITY_ITEM_PICKUP, 0.1F, 1F);
 
         int spawnerBoost = spawner.getBoosts().stream().mapToInt(Boosted::getAmountBoosted).sum();
-        for (int i = 0; i < spawner.getSpawnerDataCount() + spawnerBoost; i++) {
+        for (int i = 0; i < stack.getStackSize() + spawnerBoost; i++) {
             for (ItemStack item : items) {
                 if (item == null || item.getType() == Material.AIR) continue;
                 Item droppedItem = world.dropItem(spawnLocation, item);

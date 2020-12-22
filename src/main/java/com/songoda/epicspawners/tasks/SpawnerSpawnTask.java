@@ -40,12 +40,12 @@ public class SpawnerSpawnTask extends BukkitRunnable {
                         || !spawner.getWorld().isChunkLoaded(spawner.getX() >> 4, spawner.getZ() >> 4)) return;
 
                 if (spawner.getLocation().getBlock().getType() != CompatibleMaterial.SPAWNER.getMaterial()
-                        || spawner.getFirstStack() == null || spawner.getFirstStack().getSpawnerData() == null) {
+                        || !spawner.isValid()) {
                     spawner.destroy(plugin);
                     return;
                 }
 
-                if (spawner.getSpawnerDataCount() == 0
+                if (spawner.getStackSize() == 0
                         || !spawner.checkConditions()
                         || (spawner.getPlacedBy() == null && Settings.DISABLE_NATURAL_SPAWNERS.getBoolean())) return;
 
