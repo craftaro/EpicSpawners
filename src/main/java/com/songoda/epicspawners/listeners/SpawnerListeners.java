@@ -3,10 +3,9 @@ package com.songoda.epicspawners.listeners;
 import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.settings.Settings;
-import com.songoda.epicspawners.spawners.spawner.Spawner;
+import com.songoda.epicspawners.spawners.spawner.PlacedSpawner;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.spawners.spawner.SpawnerStack;
-import com.songoda.epicspawners.utils.Methods;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -49,10 +48,11 @@ public class SpawnerListeners implements Listener {
         Location location = event.getSpawner().getLocation();
 
         if (!plugin.getSpawnerManager().isSpawner(location)) {
-            Spawner spawner = new Spawner(location);
+            PlacedSpawner spawner = new PlacedSpawner(location);
             plugin.getSpawnerManager().addSpawnerToWorld(location, spawner);
-            SpawnerData spawnerData = plugin.getSpawnerManager().getSpawnerData(Methods.getTypeFromString(event.getEntityType().name()));
-            spawner.addSpawnerStack(new SpawnerStack(spawner, spawnerData, 1));
+            SpawnerData spawnerData = plugin.getSpawnerManager().getSpawnerData(event.getEntityType().name());
+            if (spawnerData == null) return;
+            spawner.addSpawnerStack(new SpawnerStack(spawner, spawnerData.getFirstTier(), 1));
             EpicSpawners.getInstance().getDataManager().createSpawner(spawner);
         }
     }

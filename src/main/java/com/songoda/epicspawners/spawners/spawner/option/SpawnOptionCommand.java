@@ -2,9 +2,9 @@ package com.songoda.epicspawners.spawners.spawner.option;
 
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.boost.types.Boosted;
-import com.songoda.epicspawners.spawners.spawner.Spawner;
-import com.songoda.epicspawners.spawners.spawner.SpawnerData;
+import com.songoda.epicspawners.spawners.spawner.PlacedSpawner;
 import com.songoda.epicspawners.spawners.spawner.SpawnerStack;
+import com.songoda.epicspawners.spawners.spawner.SpawnerTier;
 import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -34,13 +34,13 @@ public class SpawnOptionCommand implements SpawnOption {
     }
 
     @Override
-    public void spawn(SpawnerData data, SpawnerStack stack, Spawner spawner) {
+    public void spawn(SpawnerTier data, SpawnerStack stack, PlacedSpawner spawner) {
         Location location = spawner.getLocation();
         if (location == null || location.getWorld() == null) return;
 
         int spawnerBoost = spawner.getBoosts().stream().mapToInt(Boosted::getAmountBoosted).sum();
 
-        for (int i = 0; i < spawner.getSpawnerDataCount() + spawnerBoost; i++) {
+        for (int i = 0; i < stack.getStackSize() + spawnerBoost; i++) {
             for (String command : commands) {
                 String finalCommand = command;
                 String lowercaseCommand = finalCommand.toLowerCase();

@@ -1,17 +1,14 @@
 package com.songoda.epicspawners.api.events;
 
-import com.songoda.epicspawners.EpicSpawners;
-import com.songoda.epicspawners.spawners.spawner.Spawner;
-import com.songoda.epicspawners.spawners.spawner.SpawnerData;
-import com.songoda.epicspawners.spawners.spawner.SpawnerManager;
-import org.bukkit.Location;
+import com.songoda.epicspawners.spawners.spawner.PlacedSpawner;
+import com.songoda.epicspawners.spawners.spawner.SpawnerTier;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 
 /**
  * Called when a spawner has been changed. This includes changes such as stack size as
- * well as a change in {@link SpawnerData}
+ * well as a change in {@link SpawnerTier}
  */
 public class SpawnerChangeEvent extends SpawnerEvent implements Cancellable {
 
@@ -24,45 +21,24 @@ public class SpawnerChangeEvent extends SpawnerEvent implements Cancellable {
     private boolean canceled = false;
 
     private final int stackSize, oldStackSize;
-    private final SpawnerData spawnerData, oldSpawnerData;
+    private final SpawnerTier spawnerTier, oldSpawnerTier;
     private final ChangeType type;
 
-    public SpawnerChangeEvent(Player player, Spawner spawner, int stackSize, int oldStackSize) {
+    public SpawnerChangeEvent(Player player, PlacedSpawner spawner, int stackSize, int oldStackSize) {
         super(player, spawner);
 
         this.stackSize = stackSize;
         this.oldStackSize = oldStackSize;
-        this.spawnerData = oldSpawnerData = null;
+        this.spawnerTier = oldSpawnerTier = null;
         this.type = ChangeType.STACK_SIZE;
     }
 
-    public SpawnerChangeEvent(Player player, Spawner spawner, SpawnerData data, SpawnerData oldSpawnerData) {
+    public SpawnerChangeEvent(Player player, PlacedSpawner spawner, SpawnerTier data, SpawnerTier oldSpawnerTier) {
         super(player, spawner);
 
-        this.spawnerData = data;
-        this.oldSpawnerData = oldSpawnerData;
-        this.stackSize = oldStackSize = spawner.getSpawnerDataCount();
-        this.type = ChangeType.SPAWNER_DATA;
-    }
-
-    @Deprecated
-    public SpawnerChangeEvent(Location location, Player player, int stackSize, int oldStackSize) {
-        this(player, EpicSpawners.getInstance().getSpawnerManager().getSpawnerFromWorld(location), stackSize, oldStackSize);
-    }
-
-    @Deprecated
-    public SpawnerChangeEvent(Location location, Player player, SpawnerData data, SpawnerData oldSpawnerData) {
-        this(player, EpicSpawners.getInstance().getSpawnerManager().getSpawnerFromWorld(location), data, oldSpawnerData);
-    }
-
-    @Deprecated
-    public SpawnerChangeEvent(Location location, Player player, String type, String oldType) {
-        super(player, EpicSpawners.getInstance().getSpawnerManager().getSpawnerFromWorld(location));
-
-        SpawnerManager spawnerManager = EpicSpawners.getInstance().getSpawnerManager();
-        this.spawnerData = spawnerManager.getSpawnerData(type);
-        this.oldSpawnerData = spawnerManager.getSpawnerData(oldType);
-        this.stackSize = oldStackSize = spawner.getSpawnerDataCount();
+        this.spawnerTier = data;
+        this.oldSpawnerTier = oldSpawnerTier;
+        this.stackSize = oldStackSize = spawner.getStackSize();
         this.type = ChangeType.SPAWNER_DATA;
     }
 
@@ -94,8 +70,8 @@ public class SpawnerChangeEvent extends SpawnerEvent implements Cancellable {
      *
      * @return the new spawner data
      */
-    public SpawnerData getSpawnerData() {
-        return spawnerData;
+    public SpawnerTier getSpawnerTier() {
+        return spawnerTier;
     }
 
     /**
@@ -104,8 +80,8 @@ public class SpawnerChangeEvent extends SpawnerEvent implements Cancellable {
      *
      * @return the old spawner data
      */
-    public SpawnerData getOldSpawnerData() {
-        return oldSpawnerData;
+    public SpawnerTier getOldSpawnerTier() {
+        return oldSpawnerTier;
     }
 
     /**
@@ -162,22 +138,22 @@ public class SpawnerChangeEvent extends SpawnerEvent implements Cancellable {
      * Get the new spawner data type
      *
      * @return the spawner type
-     * @deprecated see {@link #getSpawnerData()}
+     * @deprecated see {@link #getSpawnerTier()}
      */
     @Deprecated
     public String getType() {
-        return spawnerData.getIdentifyingName();
+        return spawnerTier.getIdentifyingName();
     }
 
     /**
      * Get the old spawner data type
      *
      * @return the spawner type
-     * @deprecated see {@link #getOldSpawnerData()}
+     * @deprecated see {@link #getOldSpawnerTier()}
      */
     @Deprecated
     public String getOldType() {
-        return oldSpawnerData.getIdentifyingName();
+        return oldSpawnerTier.getIdentifyingName();
     }
 
 }

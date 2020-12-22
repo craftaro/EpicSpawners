@@ -15,8 +15,8 @@ import java.util.stream.Collectors;
  */
 public class BlacklistHandler {
 
-    private Config blackConfig = new Config(EpicSpawners.getInstance(), "blacklist.yml");
-    private List<String> list;
+    private final Config blackConfig = new Config(EpicSpawners.getInstance(), "blacklist.yml");
+    private final List<String> list;
 
     public BlacklistHandler() {
         blackConfig.load();

@@ -2,7 +2,7 @@ package com.songoda.epicspawners.spawners.condition;
 
 import com.google.common.collect.Iterables;
 import com.songoda.epicspawners.EpicSpawners;
-import com.songoda.epicspawners.spawners.spawner.Spawner;
+import com.songoda.epicspawners.spawners.spawner.PlacedSpawner;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.block.Biome;
 
@@ -36,7 +36,7 @@ public class SpawnConditionBiome implements SpawnCondition {
     }
 
     @Override
-    public boolean isMet(Spawner spawner) {
+    public boolean isMet(PlacedSpawner spawner) {
         return biomes.contains(spawner.getLocation().getBlock().getBiome());
     }
 

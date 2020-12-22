@@ -2,7 +2,7 @@ package com.songoda.epicspawners.commands;
 
 import com.songoda.core.commands.AbstractCommand;
 import com.songoda.epicspawners.EpicSpawners;
-import com.songoda.epicspawners.gui.GUISpawnerStats;
+import com.songoda.epicspawners.gui.SpawnerStatsGui;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -27,8 +27,7 @@ public class CommandSpawnerStats extends AbstractCommand {
             return AbstractCommand.ReturnType.SUCCESS;
         }
 
-
-        new GUISpawnerStats(plugin, player);
+        plugin.getGuiManager().showGUI(player, new SpawnerStatsGui(plugin, player));
 
         return ReturnType.SUCCESS;
     }

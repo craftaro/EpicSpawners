@@ -10,12 +10,11 @@ import com.songoda.epicspawners.particles.ParticleType;
 import com.songoda.epicspawners.settings.Settings;
 import com.songoda.epicspawners.spawners.condition.SpawnCondition;
 import com.songoda.epicspawners.spawners.condition.SpawnConditionNearbyEntities;
-import com.songoda.epicspawners.spawners.spawner.Spawner;
-import com.songoda.epicspawners.spawners.spawner.SpawnerData;
+import com.songoda.epicspawners.spawners.spawner.PlacedSpawner;
 import com.songoda.epicspawners.spawners.spawner.SpawnerStack;
+import com.songoda.epicspawners.spawners.spawner.SpawnerTier;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
@@ -180,7 +179,7 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
     }
 
     @Override
-    public void spawn(SpawnerData data, SpawnerStack stack, Spawner spawner) {
+    public void spawn(SpawnerTier data, SpawnerStack stack, PlacedSpawner spawner) {
         Location location = spawner.getLocation();
         location.add(.5, .5, .5);
         if (location.getWorld() == null) return;
@@ -241,7 +240,7 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
         }
     }
 
-    private Entity spawnEntity(EntityType type, Spawner spawner, SpawnerData data) {
+    private Entity spawnEntity(EntityType type, PlacedSpawner spawner, SpawnerTier tier) {
         try {
             Object objMobSpawnerData = clazzMobSpawnerData.newInstance();
             Object objNTBTagCompound = methodGetEntity.invoke(objMobSpawnerData);
@@ -284,7 +283,7 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
                 Object objEntityInsentient = clazzEntityInsentient.isInstance(objEntity) ? clazzEntityInsentient.cast(objEntity) : null;
 
                 Location spot = new Location(spawner.getWorld(), x, y, z);
-                if (!canSpawn(objWorld, objEntityInsentient, data, spot))
+                if (!canSpawn(objWorld, objEntityInsentient, tier, spot))
                     continue;
 
                 if (methodChunkRegionLoaderA != null) {
@@ -302,7 +301,7 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
                     return null;
                 }
 
-                ParticleType particleType = data.getEntitySpawnParticle();
+                ParticleType particleType = tier.getEntitySpawnParticle();
 
                 if (particleType != ParticleType.NONE) {
                     float xx = (float) (0 + (Math.random() * 1));
@@ -317,9 +316,10 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
                     methodAddEntity.invoke(clazzWorldServer.cast(objWorld), objEntity, CreatureSpawnEvent.SpawnReason.SPAWNER);
                 }
 
-                if (data.isSpawnOnFire()) craftEntity.setFireTicks(160);
+                if (tier.isSpawnOnFire()) craftEntity.setFireTicks(160);
 
-                craftEntity.setMetadata("ES", new FixedMetadataValue(plugin, data.getIdentifyingName()));
+                craftEntity.setMetadata("ESData", new FixedMetadataValue(plugin, tier.getSpawnerData().getIdentifyingName()));
+                craftEntity.setMetadata("ESTier", new FixedMetadataValue(plugin, tier.getIdentifyingName()));
 
                 if (mcmmo)
                     craftEntity.setMetadata("mcMMO: Spawned Entity", new FixedMetadataValue(plugin, true));
@@ -341,17 +341,17 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
         return null;
     }
 
-    private boolean canSpawn(Object objWorld, Object objEntityInsentient, SpawnerData data, Location location) {
+    private boolean canSpawn(Object objWorld, Object objEntityInsentient, SpawnerTier data, Location location) {
         try {
             Object objIWR = clazzIWorldReader == null ? clazzICollisionAccess.cast(objWorld) : clazzIWorldReader.cast(objWorld);
 
             if (!(boolean) methodGetCubes.invoke(objIWR, objEntityInsentient, methodGetBoundingBox.invoke(objEntityInsentient)))
                 return false;
 
-            Material[] spawnBlocks = data.getSpawnBlocks();
+            CompatibleMaterial[] spawnBlocks = data.getSpawnBlocks();
 
             CompatibleMaterial spawnedIn = CompatibleMaterial.getMaterial(location.getBlock());
-            Material spawnedOn = location.getBlock().getRelative(BlockFace.DOWN).getType();
+            CompatibleMaterial spawnedOn = CompatibleMaterial.getMaterial(location.getBlock().getRelative(BlockFace.DOWN));
 
             if (!spawnedIn.isAir()
                     && !spawnedIn.isWater()
@@ -360,10 +360,10 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
                 return false;
             }
 
-            for (Material material : spawnBlocks) {
+            for (CompatibleMaterial material : spawnBlocks) {
                 if (material == null) continue;
-                if (spawnedOn.equals(material)
-                        || material == Material.AIR && CompatibleMaterial.getMaterial(material).isAir())
+
+                if (spawnedOn.equals(material) || material.isAir())
                     return true;
             }
         } catch (InvocationTargetException | IllegalAccessException e) {

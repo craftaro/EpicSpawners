@@ -7,11 +7,10 @@ import com.songoda.core.utils.ItemUtils;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.api.events.SpawnerChangeEvent;
 import com.songoda.epicspawners.settings.Settings;
-import com.songoda.epicspawners.spawners.spawner.Spawner;
-import com.songoda.epicspawners.spawners.spawner.SpawnerData;
+import com.songoda.epicspawners.spawners.spawner.PlacedSpawner;
 import com.songoda.epicspawners.spawners.spawner.SpawnerManager;
 import com.songoda.epicspawners.spawners.spawner.SpawnerStack;
-import com.songoda.epicspawners.utils.Reflection;
+import com.songoda.epicspawners.spawners.spawner.SpawnerTier;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -85,9 +84,9 @@ public class InteractListeners implements Listener {
         if (!plugin.getSpawnerManager().isSpawner(block.getLocation()))
             createMissingSpawner(block.getLocation());
 
-        Spawner spawner = spawnerManager.getSpawnerFromWorld(block.getLocation());
+        PlacedSpawner spawner = spawnerManager.getSpawnerFromWorld(block.getLocation());
 
-        SpawnerData blockType = spawnerManager.getSpawnerData(spawner.getCreatureSpawner().getSpawnedType());
+        SpawnerTier blockType = spawnerManager.getSpawnerData(spawner.getCreatureSpawner().getSpawnedType()).getFirstTier();
 
         if (!Settings.EGGS_CONVERT_SPAWNERS.getBoolean()
                 || !spawner.getFirstStack().getSpawnerData().isActive()
@@ -96,7 +95,7 @@ public class InteractListeners implements Listener {
             return;
         }
 
-        int bmulti = spawner.getSpawnerDataCount();
+        int bmulti = spawner.getStackSize();
         int amt = player.getInventory().getItemInHand().getAmount();
         EntityType itype;
 
@@ -104,18 +103,11 @@ public class InteractListeners implements Listener {
             itype = EntityType.valueOf(item.getType().name().replace("_SPAWN_EGG", "")
                     .replace("MOOSHROOM", "MUSHROOM_COW")
                     .replace("ZOMBIE_PIGMAN", "PIG_ZOMBIE"));
-        } else if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_11)) {
-            String str = Reflection.getNBTTagCompound(Reflection.getNMSItemStack(item)).toString();
-            if (str.contains("minecraft:")) {
-                itype = EntityType.fromName(str.substring(str.indexOf("minecraft:") + 10, str.indexOf("\"}")));
-            } else {
-                itype = EntityType.fromName(str.substring(str.indexOf("EntityTag:{id:") + 15, str.indexOf("\"}")));
-            }
         } else {
             itype = ((SpawnEgg) item.getData()).getSpawnedType();
         }
 
-        SpawnerData itemType = plugin.getSpawnerManager().getSpawnerData(itype);
+        SpawnerTier itemType = plugin.getSpawnerManager().getSpawnerData(itype).getFirstTier();
 
         if (!player.hasPermission("epicspawners.egg." + itype) && !player.hasPermission("epicspawners.egg.*")) {
             event.setCancelled(true);
@@ -137,8 +129,9 @@ public class InteractListeners implements Listener {
                     .processPlaceholder("type", blockType.getIdentifyingName()).sendPrefixedMessage(player);
             return;
         }
-        SpawnerStack stack = spawner.getFirstStack().setSpawnerData(plugin.getSpawnerManager().getSpawnerData(itype));
-        plugin.getDataManager().updateSpawnerStack(stack);
+        String oldTier = spawner.getFirstStack().getCurrentTier().getIdentifyingName();
+        SpawnerStack stack = spawner.getFirstStack().setTier(plugin.getSpawnerManager().getSpawnerData(itype).getFirstTier());
+        plugin.getDataManager().updateSpawnerStack(stack, oldTier);
         try {
             spawner.getCreatureSpawner().setSpawnedType(EntityType.valueOf(plugin.getSpawnerManager().getSpawnerData(itype).getIdentifyingName().toUpperCase()));
         } catch (Exception e2) {
@@ -176,22 +169,22 @@ public class InteractListeners implements Listener {
 
         if (item != null && item.getType().name().contains("SPAWN_EGG") && item.getType().name().equals("MONSTER_EGG"))
             return;
-        if (isSpawner && CompatibleMaterial.SPAWNER.matches(item)) {
-            Spawner spawner = plugin.getSpawnerManager().getSpawnerFromWorld(location);
 
+        if (isSpawner && CompatibleMaterial.SPAWNER.matches(item)) {
+            PlacedSpawner spawner = plugin.getSpawnerManager().getSpawnerFromWorld(location);
             if (spawner.getPlacedBy() == null && Settings.DISABLE_NATURAL_SPAWNERS.getBoolean()) return;
 
             if (!player.isSneaking()) {
-                SpawnerData spawnerData = plugin.getSpawnerManager().getSpawnerData(item);
-                if (player.hasPermission("epicspawners.stack." + spawnerData.getIdentifyingName()) || player.hasPermission("epicspawners.stack.*")) {
-                    spawner.preStack(player, item, CompatibleHand.getHand(event));
+                SpawnerTier spawnerTier = plugin.getSpawnerManager().getSpawnerTier(item);
+                if (player.hasPermission("epicspawners.stack." + spawnerTier.getIdentifyingName()) || player.hasPermission("epicspawners.stack.*")) {
+                    spawner.stack(player, spawnerTier, spawnerTier.getStackSize(item), CompatibleHand.getHand(event));
                     plugin.updateHologram(spawner);
                     event.setCancelled(true);
                 }
             }
         } else if (isSpawner && !plugin.getBlacklistHandler().isBlacklisted(player, false)) {
-            if (!player.isSneaking() || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                Spawner spawner = plugin.getSpawnerManager().getSpawnerFromWorld(location);
+            if (!player.isSneaking() && event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                PlacedSpawner spawner = plugin.getSpawnerManager().getSpawnerFromWorld(location);
 
                 if (spawner.getPlacedBy() == null && Settings.DISABLE_NATURAL_SPAWNERS.getBoolean()) return;
 
@@ -202,12 +195,12 @@ public class InteractListeners implements Listener {
         }
     }
 
-    private Spawner createMissingSpawner(Location location) {
-        Spawner spawner = new Spawner(location);
+    private PlacedSpawner createMissingSpawner(Location location) {
+        PlacedSpawner spawner = new PlacedSpawner(location);
         CreatureSpawner creatureSpawner = spawner.getCreatureSpawner();
         if (creatureSpawner == null) return null;
 
-        spawner.addSpawnerStack(new SpawnerStack(spawner, plugin.getSpawnerManager().getSpawnerData(creatureSpawner.getSpawnedType()), 1));
+        spawner.addSpawnerStack(new SpawnerStack(spawner, plugin.getSpawnerManager().getSpawnerData(creatureSpawner.getSpawnedType()).getFirstTier(), 1));
         plugin.getSpawnerManager().addSpawnerToWorld(location, spawner);
         EpicSpawners.getInstance().getDataManager().createSpawner(spawner);
         return spawner;

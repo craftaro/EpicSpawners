@@ -1,7 +1,7 @@
 package com.songoda.epicspawners.spawners.condition;
 
 import com.songoda.epicspawners.EpicSpawners;
-import com.songoda.epicspawners.spawners.spawner.Spawner;
+import com.songoda.epicspawners.spawners.spawner.PlacedSpawner;
 import org.bukkit.Location;
 
 public class SpawnConditionLightDark implements SpawnCondition {
@@ -30,7 +30,7 @@ public class SpawnConditionLightDark implements SpawnCondition {
     }
 
     @Override
-    public boolean isMet(Spawner spawner) {
+    public boolean isMet(PlacedSpawner spawner) {
         Location location = spawner.getLocation();
         switch (lightDark) {
             case LIGHT:

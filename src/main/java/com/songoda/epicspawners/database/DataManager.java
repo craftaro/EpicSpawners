@@ -7,9 +7,10 @@ import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.boost.types.Boosted;
 import com.songoda.epicspawners.boost.types.BoostedPlayer;
 import com.songoda.epicspawners.boost.types.BoostedSpawner;
-import com.songoda.epicspawners.spawners.spawner.Spawner;
+import com.songoda.epicspawners.spawners.spawner.PlacedSpawner;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
 import com.songoda.epicspawners.spawners.spawner.SpawnerStack;
+import com.songoda.epicspawners.spawners.spawner.SpawnerTier;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
@@ -33,7 +34,7 @@ public class DataManager extends DataManagerAbstract {
         super(databaseConnector, plugin);
     }
 
-    public void updateSpawner(Spawner spawner) {
+    public void updateSpawner(PlacedSpawner spawner) {
         this.async(() -> this.databaseConnector.connect(connection -> {
             String updateSpawner = "UPDATE " + this.getTablePrefix() + "placed_spawners SET spawn_count = ?, placed_by = ? WHERE id = ?";
             try (PreparedStatement statement = connection.prepareStatement(updateSpawner)) {
@@ -46,36 +47,41 @@ public class DataManager extends DataManagerAbstract {
         }));
     }
 
-    public void updateSpawnerStack(SpawnerStack stack) {
+    public void updateSpawnerStack(SpawnerStack spawnerStack) {
+        updateSpawnerStack(spawnerStack, spawnerStack.getCurrentTier().getIdentifyingName());
+    }
+
+    public void updateSpawnerStack(SpawnerStack stack, String tierBeforeUpdate) {
         this.async(() -> this.databaseConnector.connect(connection -> {
-            String updateSpawnerStack = "UPDATE " + this.getTablePrefix() + "spawner_stacks SET amount = ? WHERE spawner_id = ? AND data_type = ?";
+            String updateSpawnerStack = "UPDATE " + this.getTablePrefix() + "spawner_stacks SET amount = ?, tier = ? WHERE spawner_id = ? AND data_type = ? AND tier = ?";
             try (PreparedStatement statement = connection.prepareStatement(updateSpawnerStack)) {
                 statement.setInt(1, stack.getStackSize());
-                statement.setInt(2, stack.getSpawner().getId());
-                statement.setString(3, stack.getSpawnerData().getIdentifyingName());
+                statement.setString(2, stack.getCurrentTier().getIdentifyingName());
+                statement.setInt(3, stack.getSpawner().getId());
+                statement.setString(4, stack.getSpawnerData().getIdentifyingName());
+                statement.setString(5, tierBeforeUpdate);
                 statement.executeUpdate();
             }
         }));
     }
 
     public void deleteSpawnerStack(SpawnerStack stack) {
+        deleteSpawnerStack(stack, stack.getCurrentTier());
+    }
+
+    public void deleteSpawnerStack(SpawnerStack stack, SpawnerTier tier) {
         this.async(() -> this.databaseConnector.connect(connection -> {
-            String deleteSpawnerStacks = "DELETE FROM " + this.getTablePrefix() + "spawner_stacks WHERE spawner_id = ? AND data_type = ?";
+            String deleteSpawnerStacks = "DELETE FROM " + this.getTablePrefix() + "spawner_stacks WHERE spawner_id = ? AND data_type = ? AND tier = ?";
             try (PreparedStatement statement = connection.prepareStatement(deleteSpawnerStacks)) {
                 statement.setInt(1, stack.getSpawner().getId());
                 statement.setString(2, stack.getSpawnerData().getIdentifyingName());
+                statement.setString(3, tier.getIdentifyingName());
                 statement.executeUpdate();
             }
         }));
     }
 
-
-    public void createSpawners(List<Spawner> spawners) {
-        for (Spawner spawner : spawners)
-            createSpawner(spawner);
-    }
-
-    public void createSpawner(Spawner spawner) {
+    public void createSpawner(PlacedSpawner spawner) {
         this.queueAsync(() -> this.databaseConnector.connect(connection -> {
             String createSpawner = "INSERT INTO " + this.getTablePrefix() + "placed_spawners (spawn_count, placed_by, world, x, y, z) VALUES (?, ?, ?, ?, ?, ?)";
             try (PreparedStatement statement = connection.prepareStatement(createSpawner)) {
@@ -93,12 +99,13 @@ public class DataManager extends DataManagerAbstract {
             int spawnerId = this.lastInsertedId(connection, "placed_spawners");
             spawner.setId(spawnerId);
 
-            String createSpawnerStack = "INSERT INTO " + this.getTablePrefix() + "spawner_stacks (spawner_id, data_type, amount) VALUES (?, ?, ?)";
+            String createSpawnerStack = "INSERT INTO " + this.getTablePrefix() + "spawner_stacks (spawner_id, data_type, tier, amount) VALUES (?, ?, ?, ?)";
             try (PreparedStatement statement = connection.prepareStatement(createSpawnerStack)) {
                 for (SpawnerStack stack : spawner.getSpawnerStacks()) {
                     statement.setInt(1, spawnerId);
                     statement.setString(2, stack.getSpawnerData().getIdentifyingName());
-                    statement.setInt(3, stack.getStackSize());
+                    statement.setString(3, stack.getCurrentTier().getIdentifyingName());
+                    statement.setInt(4, stack.getStackSize());
                     statement.addBatch();
                 }
                 statement.executeBatch();
@@ -108,11 +115,12 @@ public class DataManager extends DataManagerAbstract {
 
     public void createSpawnerStack(SpawnerStack stack) {
         this.async(() -> this.databaseConnector.connect(connection -> {
-            String createSpawnerStack = "INSERT INTO " + this.getTablePrefix() + "spawner_stacks (spawner_id, data_type, amount) VALUES (?, ?, ?)";
+            String createSpawnerStack = "INSERT INTO " + this.getTablePrefix() + "spawner_stacks (spawner_id, data_type, tier, amount) VALUES (?, ?, ?, ?)";
             try (PreparedStatement statement = connection.prepareStatement(createSpawnerStack)) {
                 statement.setInt(1, stack.getSpawner().getId());
                 statement.setString(2, stack.getSpawnerData().getIdentifyingName());
-                statement.setInt(3, stack.getStackSize());
+                statement.setString(3, stack.getCurrentTier().getIdentifyingName());
+                statement.setInt(4, stack.getStackSize());
                 statement.executeUpdate();
             }
         }));
@@ -258,7 +266,7 @@ public class DataManager extends DataManagerAbstract {
         }));
     }
 
-    public void deleteSpawner(Spawner spawner) {
+    public void deleteSpawner(PlacedSpawner spawner) {
         this.async(() -> this.databaseConnector.connect(connection -> {
             String deleteSpawner = "DELETE FROM " + this.getTablePrefix() + "placed_spawners WHERE id = ?";
             try (PreparedStatement statement = connection.prepareStatement(deleteSpawner)) {
@@ -274,10 +282,11 @@ public class DataManager extends DataManagerAbstract {
         }));
     }
 
-    public void getSpawners(Consumer<Map<Location, Spawner>> callback) {
+    public void getSpawners(Consumer<Map<Location, PlacedSpawner>> callback) {
         this.async(() -> this.databaseConnector.connect(connection -> {
+            EpicSpawners plugin = EpicSpawners.getInstance();
 
-            Map<Integer, Spawner> spawners = new HashMap<>();
+            Map<Integer, PlacedSpawner> spawners = new HashMap<>();
 
             try (Statement statement = connection.createStatement()) {
                 String selectSpawners = "SELECT * FROM " + this.getTablePrefix() + "placed_spawners";
@@ -299,7 +308,7 @@ public class DataManager extends DataManagerAbstract {
                     int z = result.getInt("z");
                     Location location = new Location(world, x, y, z);
 
-                    Spawner spawner = new Spawner(location);
+                    PlacedSpawner spawner = new PlacedSpawner(location);
                     spawner.setId(id);
                     spawner.setSpawnCount(spawns);
                     spawner.setPlacedBy(placedBy);
@@ -311,21 +320,24 @@ public class DataManager extends DataManagerAbstract {
                 String selectSpawnerStacks = "SELECT * FROM " + this.getTablePrefix() + "spawner_stacks";
                 ResultSet result = statement.executeQuery(selectSpawnerStacks);
                 while (result.next()) {
-                    Spawner spawner = spawners.get(result.getInt("spawner_id"));
+                    PlacedSpawner spawner = spawners.get(result.getInt("spawner_id"));
                     if (spawner == null)
                         continue;
 
                     String type = result.getString("data_type");
+                    String tier = result.getString("tier");
                     int amount = result.getInt("amount");
-                    SpawnerData spawnerData = EpicSpawners.getInstance().getSpawnerManager().getSpawnerData(type);
-                    SpawnerStack stack = new SpawnerStack(spawner, spawnerData);
+                    SpawnerData data = plugin.getSpawnerManager().getSpawnerData(type);
+                    if (data == null) continue;
+                    SpawnerTier spawnerTier = data.getTierOrFirst(tier);
+                    SpawnerStack stack = new SpawnerStack(spawner, spawnerTier);
                     stack.setStackSize(amount);
                     spawner.addSpawnerStack(stack);
                 }
             }
 
-            Map<Location, Spawner> returnableSpawners = new HashMap<>();
-            for (Spawner spawner : spawners.values())
+            Map<Location, PlacedSpawner> returnableSpawners = new HashMap<>();
+            for (PlacedSpawner spawner : spawners.values())
                 returnableSpawners.put(spawner.getLocation(), spawner);
 
             this.sync(() -> callback.accept(returnableSpawners));

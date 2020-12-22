@@ -6,8 +6,8 @@ import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.particles.ParticleDensity;
 import com.songoda.epicspawners.particles.ParticleEffect;
 import com.songoda.epicspawners.particles.ParticleType;
-import com.songoda.epicspawners.spawners.spawner.Spawner;
-import com.songoda.epicspawners.spawners.spawner.SpawnerData;
+import com.songoda.epicspawners.spawners.spawner.PlacedSpawner;
+import com.songoda.epicspawners.spawners.spawner.SpawnerTier;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -39,12 +39,12 @@ public class SpawnerParticleTask extends BukkitRunnable {
 
     @Override
     public void run() {
-        for (Spawner spawner : new ArrayList<>(plugin.getSpawnerManager().getSpawners())) {
+        for (PlacedSpawner spawner : new ArrayList<>(plugin.getSpawnerManager().getSpawners())) {
             if (spawner == null || spawner.getLocation() == null ||
-                    spawner.getSpawnerDataCount() == 0 || spawner.getFirstStack().getSpawnerData() == null)
+                    spawner.getStackSize() == 0 || spawner.getFirstStack().getSpawnerData() == null)
                 continue;
 
-            SpawnerData data = spawner.getFirstStack().getSpawnerData();
+            SpawnerTier data = spawner.getFirstStack().getCurrentTier();
             if (data == null) continue;
 
             ParticleEffect effect = data.getParticleEffect();

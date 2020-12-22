@@ -3,15 +3,15 @@ package com.songoda.epicspawners.commands;
 import com.songoda.core.commands.AbstractCommand;
 import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.epicspawners.EpicSpawners;
-import com.songoda.epicspawners.spawners.spawner.Spawner;
+import com.songoda.epicspawners.spawners.spawner.PlacedSpawner;
 import com.songoda.epicspawners.spawners.spawner.SpawnerData;
-import com.songoda.epicspawners.utils.Methods;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CommandChange extends AbstractCommand {
 
@@ -37,7 +37,12 @@ public class CommandChange extends AbstractCommand {
             return ReturnType.FAILURE;
         }
 
-        Spawner spawner = plugin.getSpawnerManager().getSpawnerFromWorld(block.getLocation());
+        PlacedSpawner spawner = plugin.getSpawnerManager().getSpawnerFromWorld(block.getLocation());
+
+        if (spawner.getSpawnerStacks().size() > 1) {
+            plugin.getLocale().newMessage("&cYou cannot convert an omni spawner...").sendPrefixedMessage(sender);
+            return ReturnType.FAILURE;
+        }
 
         SpawnerData data = null;
         for (SpawnerData spawnerData : plugin.getSpawnerManager().getAllSpawnerData()) {
@@ -52,14 +57,16 @@ public class CommandChange extends AbstractCommand {
             return ReturnType.FAILURE;
         }
 
-        spawner.convert(data, player, sender.hasPermission("epicspawners"));
+        spawner.getFirstStack().convert(data, player, sender.hasPermission("epicspawners"));
         return ReturnType.SUCCESS;
     }
 
     @Override
     protected List<String> onTab(CommandSender sender, String... args) {
         if (args.length == 1) {
-            return Methods.convertToList(plugin.getSpawnerManager().getAllSpawnerData(), (spawnerData) -> spawnerData.getIdentifyingName().replace(" ", "_"));
+            return plugin.getSpawnerManager().getAllSpawnerData().stream()
+                    .map(spawnerData -> spawnerData.getIdentifyingName().replace(" ", "_"))
+                    .collect(Collectors.toList());
         }
         return Collections.emptyList();
     }

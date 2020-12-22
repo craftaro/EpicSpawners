@@ -8,13 +8,14 @@ general:
     back: '&9Back'
     confirm: '&a&lConfirm'
     currency: '$'
+    omni: 'Omni'
 
 # Interface Messages
 
 interface:
   spawner:
-    upgradewithxp: '&aUpgrade with XP'
-    upgradewithxplore: '&7Cost: &a%cost% Levels'
+    upgradewithlevels: '&aUpgrade with Levels'
+    upgradewithlevelslore: '&7Cost: &a%cost% Levels'
     upgradewitheconomy: '&aUpgrade with ECO'
     upgradewitheconomylore: '&7Cost: &a%cost%'
     statstitle: '&6Spawner Stats'
@@ -23,7 +24,7 @@ interface:
     boost: '&7Click to &6Boost'
     cantboost: '&cCannot boost.'
     convert: '&7Click to &6Convert'
-    boostedstats: '&a&lCurrently boosted!|&7Adding &6%amount% &7extra &6%type%''s &7to every spawn.|&7Expires in &6%time%&7.'
+    boostedstats: '&a&lCurrently boosted!|&7Adding &6%amount% &7extra to every spawn.|&7Expires in &6%time%&7.'
     boostednever: never
     tutorialtitle: '&a&lUseful Information'
     tutorial: '{[LEVELUP]You can stack or ''levelup'' this spawner by: [Using another spawner on this spawner][Leveling up with XP][Leveling up with ECONOMY].}|{[DROP]A <TYPE> spawner will drop when you kill <AMT> [natural ]<TYPE>''s}|{[OMNI][Stacking spawners of different types will create an OmniSpawner].}|{[WATER][Spawners will repel water].}|{[REDSTONE][You can disable this spawner by applying redstone power to it.]}'
@@ -38,6 +39,8 @@ interface:
     conditionNearbyEntities: There are more than &6%max%&7 entities around this spawner.
     conditionNearbyPlayers: There are less than &6%amount%&7 players within &6%distance%&7 blocks away from this spawner.
     conditionStorm: There is no storm.
+  tiers:
+    title: 'Omni Spawner'
   convert:
     title: Spawner Convert
     lore: '&7Click here to Convert.'
@@ -74,11 +77,13 @@ event:
     nopermission: '&cYou do not have permission to do that.'
   upgrade:
     cannotafford: '&cYou cannot afford this upgrade.'
-    success: '&7You''ve upgraded this spawner to &6%level%x&7.'
+    success: '&7You''ve upgraded this spawner to &6%size%x&7.'
     maxed: '&7This spawner is maxed out.'
-    successmaxed: '&7You maxed out this spawner at &6%level%x&7.'
+    successmaxed: '&7You maxed out this spawner at &6%size%x&7.'
+  tierup:
+    success: '&7You''ve unlocked the &6%tier%x&7.'
   downgrade:
-    success: '&7You''ve downgraded this spawner to &6%level%x&7.'
+    success: '&7You''ve downgraded this spawner to &6%size%x&7.'
   block:
     place: '&7You placed a &6%type%&7.'
     broken: This spawner type has been removed and you cannot place it.

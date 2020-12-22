@@ -1,7 +1,7 @@
 package com.songoda.epicspawners.utils;
 
 import com.songoda.epicspawners.EpicSpawners;
-import com.songoda.epicspawners.spawners.spawner.SpawnerData;
+import com.songoda.epicspawners.spawners.spawner.SpawnerTier;
 import net.brcdev.shopgui.spawner.external.provider.ExternalSpawnerProvider;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
@@ -22,7 +22,7 @@ public class EpicSpawnerProvider implements ExternalSpawnerProvider {
 
     @Override
     public ItemStack getSpawnerItem(EntityType entityType) {
-        SpawnerData data = this.instance.getSpawnerManager().getSpawnerData(entityType);
+        SpawnerTier data = this.instance.getSpawnerManager().getSpawnerData(entityType).getFirstTier();
         if (data != null)
             return data.toItemStack();
 
@@ -31,7 +31,7 @@ public class EpicSpawnerProvider implements ExternalSpawnerProvider {
 
     @Override
     public EntityType getSpawnerEntityType(ItemStack itemStack) {
-        SpawnerData data = this.instance.getSpawnerManager().getSpawnerData(itemStack);
+        SpawnerTier data = this.instance.getSpawnerManager().getSpawnerTier(itemStack);
         if (data != null && !data.getEntities().isEmpty())
             return data.getEntities().get(0);
 
