@@ -383,6 +383,8 @@ public class SpawnerManager {
             currentSection.set("Custom-Goal", spawnerData.getKillGoal());
             currentSection.set("Convertible", spawnerData.isConvertible());
             currentSection.set("Convert-Ratio", spawnerData.getConvertRatio());
+            currentSection.set("In-Shop", spawnerData.isInShop());
+            currentSection.set("Shop-Order", spawnerData.getShopOrder());
             currentSection.set("Craftable", spawnerData.isCraftable());
             currentSection.set("Recipe-Layout", spawnerData.getRecipe());
             currentSection.set("Recipe-Ingredients", spawnerData.getRecipeIngredients());
