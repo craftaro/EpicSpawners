@@ -1,5 +1,6 @@
 package com.songoda.epicspawners.utils;
 
+import com.songoda.core.gui.CustomizableGui;
 import com.songoda.core.gui.Gui;
 import com.songoda.core.utils.TextUtils;
 import com.songoda.core.utils.TimeUtils;
@@ -15,7 +16,7 @@ import java.util.List;
 
 public class GuiUtils extends com.songoda.core.gui.GuiUtils {
 
-    public static void applyBoosted(int slot, Gui gui, EpicSpawners plugin, Player player, PlacedSpawner spawner) {
+    public static void applyBoosted(int slot, CustomizableGui gui, EpicSpawners plugin, Player player, PlacedSpawner spawner) {
         if (!player.hasPermission("epicspawners.canboost")) return;
 
         List<String> lore = new ArrayList<>();
@@ -39,9 +40,9 @@ public class GuiUtils extends com.songoda.core.gui.GuiUtils {
 
                 lore.addAll(TextUtils.formatText(parts));
 
-                gui.setItem(slot, createButtonItem(Settings.BOOST_ICON.getMaterial(), lore));
+                gui.setItem("boost", slot, createButtonItem(Settings.BOOST_ICON.getMaterial(), lore));
             } else
-                gui.setButton(slot, createButtonItem(Settings.BOOST_ICON.getMaterial(),
+                gui.setButton("boost", slot, createButtonItem(Settings.BOOST_ICON.getMaterial(),
                         spawner.getBoosts().stream().mapToInt(Boosted::getAmountBoosted).sum() == 0
                                 ? plugin.getLocale().getMessage("interface.spawner.boost").getMessage()
                                 : plugin.getLocale().getMessage("interface.spawner.cantboost").getMessage(), lore), event ->
