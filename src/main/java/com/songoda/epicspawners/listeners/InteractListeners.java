@@ -153,6 +153,8 @@ public class InteractListeners implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void playerInteractEvent(PlayerInteractEvent event) {
+        if (CompatibleHand.getHand(event) == CompatibleHand.OFF_HAND) return;
+
         Player player = event.getPlayer();
         Block block = event.getClickedBlock();
         if (block == null) return;
