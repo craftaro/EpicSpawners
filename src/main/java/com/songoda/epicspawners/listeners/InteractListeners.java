@@ -5,6 +5,7 @@ import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.core.utils.ItemUtils;
 import com.songoda.epicspawners.EpicSpawners;
+import com.songoda.epicspawners.api.events.SpawnerAccessEvent;
 import com.songoda.epicspawners.api.events.SpawnerChangeEvent;
 import com.songoda.epicspawners.settings.Settings;
 import com.songoda.epicspawners.spawners.spawner.PlacedSpawner;
@@ -170,8 +171,14 @@ public class InteractListeners implements Listener {
         if (item != null && item.getType().name().contains("SPAWN_EGG") && item.getType().name().equals("MONSTER_EGG"))
             return;
 
+        PlacedSpawner spawner = plugin.getSpawnerManager().getSpawnerFromWorld(location);
+        SpawnerAccessEvent accessEvent = new SpawnerAccessEvent(player, spawner);
+        Bukkit.getPluginManager().callEvent(accessEvent);
+        if (accessEvent.isCancelled()) {
+            return;
+        }
+
         if (isSpawner && CompatibleMaterial.SPAWNER.matches(item)) {
-            PlacedSpawner spawner = plugin.getSpawnerManager().getSpawnerFromWorld(location);
             if (spawner.getPlacedBy() == null && Settings.DISABLE_NATURAL_SPAWNERS.getBoolean()) return;
 
             if (!player.isSneaking()) {
@@ -184,8 +191,6 @@ public class InteractListeners implements Listener {
             }
         } else if (isSpawner && !plugin.getBlacklistHandler().isBlacklisted(player, false)) {
             if (!player.isSneaking() && event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                PlacedSpawner spawner = plugin.getSpawnerManager().getSpawnerFromWorld(location);
-
                 if (spawner.getPlacedBy() == null && Settings.DISABLE_NATURAL_SPAWNERS.getBoolean()) return;
 
                 spawner.overview(player);
