@@ -171,14 +171,9 @@ public class InteractListeners implements Listener {
         if (item != null && item.getType().name().contains("SPAWN_EGG") && item.getType().name().equals("MONSTER_EGG"))
             return;
 
-        PlacedSpawner spawner = plugin.getSpawnerManager().getSpawnerFromWorld(location);
-        SpawnerAccessEvent accessEvent = new SpawnerAccessEvent(player, spawner);
-        Bukkit.getPluginManager().callEvent(accessEvent);
-        if (accessEvent.isCancelled()) {
-            return;
-        }
-
         if (isSpawner && CompatibleMaterial.SPAWNER.matches(item)) {
+            PlacedSpawner spawner = plugin.getSpawnerManager().getSpawnerFromWorld(location);
+
             if (spawner.getPlacedBy() == null && Settings.DISABLE_NATURAL_SPAWNERS.getBoolean()) return;
 
             if (!player.isSneaking()) {
@@ -190,8 +185,15 @@ public class InteractListeners implements Listener {
                 }
             }
         } else if (isSpawner && !plugin.getBlacklistHandler().isBlacklisted(player, false)) {
+            PlacedSpawner spawner = plugin.getSpawnerManager().getSpawnerFromWorld(location);
             if (!player.isSneaking() && event.getAction() == Action.RIGHT_CLICK_BLOCK) {
                 if (spawner.getPlacedBy() == null && Settings.DISABLE_NATURAL_SPAWNERS.getBoolean()) return;
+
+                SpawnerAccessEvent accessEvent = new SpawnerAccessEvent(player, spawner);
+                Bukkit.getPluginManager().callEvent(accessEvent);
+                if (accessEvent.isCancelled()) {
+                    return;
+                }
 
                 spawner.overview(player);
                 plugin.processChange(block);
