@@ -28,6 +28,8 @@ public class SpawnerData {
     private int killGoal = 0,
             shopOrder = 0;
 
+    private double shopPrice = 1000;
+
     private final List<SpawnerTier> spawnerTiers = new LinkedList<>();
 
     private boolean craftable = false;
@@ -88,6 +90,14 @@ public class SpawnerData {
 
     public void setInShop(boolean inShop) {
         this.inShop = inShop;
+    }
+
+    public double getShopPrice() {
+        return shopPrice;
+    }
+
+    public void setShopPrice(double shopPrice) {
+        this.shopPrice = shopPrice;
     }
 
     public boolean isConvertible() {

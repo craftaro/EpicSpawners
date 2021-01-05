@@ -52,15 +52,6 @@ public class EditorGeneralGui extends Gui {
                 plugin.getLocale().getMessage("general.nametag.back").getMessage()),
                 (event) -> guiManager.showGUI(event.player, back));
 
-        setButton(20, GuiUtils.createButtonItem(CompatibleMaterial.SUNFLOWER, TextUtils.formatText("&6&lIn Shop",
-                "&7Currently: &a" + spawnerTier.getSpawnerData().isInShop(),
-                "&7If this is true this spawner",
-                "&7will show up in the shop GUI.")),
-                event -> {
-                    spawnerTier.getSpawnerData().setInShop(!spawnerTier.getSpawnerData().isInShop());
-                    paint();
-                });
-
         setButton(22, GuiUtils.createButtonItem(CompatibleMaterial.FIRE_CHARGE, TextUtils.formatText("&c&lSpawn On Fire",
                 "&7Currently: &a" + spawnerTier.isSpawnOnFire(),
                 "&7If this is true this spawner",
@@ -70,16 +61,7 @@ public class EditorGeneralGui extends Gui {
                     paint();
                 });
 
-        setButton(13, GuiUtils.createButtonItem(CompatibleMaterial.HOPPER, TextUtils.formatText("&5&lUpgradable",
-                "&7Currently: &a" + spawnerTier.getSpawnerData().isUpgradeable(),
-                "&7Setting this to true will define",
-                "&7upgradable.")),
-                event -> {
-                    spawnerTier.getSpawnerData().setUpgradeable(!spawnerTier.getSpawnerData().isUpgradeable());
-                    paint();
-                });
-
-        setButton(24, GuiUtils.createButtonItem(CompatibleMaterial.SUNFLOWER, TextUtils.formatText("&6&lEconomy cost",
+        setButton(20, GuiUtils.createButtonItem(CompatibleMaterial.SUNFLOWER, TextUtils.formatText("&6&lEconomy cost",
                 "&7Currently: &a" + spawnerTier.getCostEconomy(),
                 "&7This is the economy cost",
                 "&7to upgrade or sell this spawner.")),
@@ -103,7 +85,7 @@ public class EditorGeneralGui extends Gui {
                             "&7Example: &619.99&7."));
                 });
 
-        setButton(25, GuiUtils.createButtonItem(CompatibleMaterial.EXPERIENCE_BOTTLE, TextUtils.formatText("&5&lLevels cost",
+        setButton(24, GuiUtils.createButtonItem(CompatibleMaterial.EXPERIENCE_BOTTLE, TextUtils.formatText("&5&lLevels cost",
                 "&7Currently: &a" + spawnerTier.getCostLevels(),
                 "&7This is the custom levels cost",
                 "&7to upgrade this spawner.")),

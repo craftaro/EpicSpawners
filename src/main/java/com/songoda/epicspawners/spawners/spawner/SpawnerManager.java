@@ -271,6 +271,8 @@ public class SpawnerManager {
                     .convertRatio(currentSection.getString("Convert-Ratio"))
                     .setInShop(currentSection.getBoolean("In-Shop", true))
                     .shopOrder(currentSection.getInt("Shop-Order", 0))
+                    .shopPrice(currentSection.getDouble("Shop-Price", 1000))
+
                     .setCraftable(currentSection.getBoolean("Craftable", false))
                     .setRecipe(currentSection.getString("Recipe-Layout", "AAAABAAAA"))
                     .setRecipeIngredients(currentSection.getStringList("Recipe-Ingredients"))
@@ -385,6 +387,7 @@ public class SpawnerManager {
             currentSection.set("Convert-Ratio", spawnerData.getConvertRatio());
             currentSection.set("In-Shop", spawnerData.isInShop());
             currentSection.set("Shop-Order", spawnerData.getShopOrder());
+            currentSection.set("Shop-Price", spawnerData.getShopPrice());
             currentSection.set("Craftable", spawnerData.isCraftable());
             currentSection.set("Recipe-Layout", spawnerData.getRecipe());
             currentSection.set("Recipe-Ingredients", spawnerData.getRecipeIngredients());

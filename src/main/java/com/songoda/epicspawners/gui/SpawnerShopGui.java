@@ -87,7 +87,7 @@ public class SpawnerShopGui extends CustomizableGui {
             ItemMeta itemmeta = item.getItemMeta();
             String name = spawnerData.getFirstTier().getCompiledDisplayName();
             ArrayList<String> lore = new ArrayList<>();
-            double price = spawnerData.getFirstTier().getCostEconomy();
+            double price = spawnerData.getShopPrice();
             lore.add(TextUtils.formatText(plugin.getLocale().getMessage("interface.shop.buyprice")
                     .processPlaceholder("cost", EconomyManager.formatEconomy(price)).getMessage()));
             String loreString = plugin.getLocale().getMessage("interface.shop.lore").getMessage();

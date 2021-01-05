@@ -57,7 +57,7 @@ public class SpawnerShopItemGui extends CustomizableGui {
         mirrorFill("mirrorfill_4", 1, 0, true, true, glass2);
         mirrorFill("mirrorfill_5", 0, 1, true, true, glass2);
 
-        double price = spawnerTier.getCostEconomy() * amount;
+        double price = spawnerData.getShopPrice() * amount;
 
         ItemStack item = HeadUtils.getTexturedSkull(spawnerData);
 
@@ -162,7 +162,7 @@ public class SpawnerShopItemGui extends CustomizableGui {
             return;
         }
 
-        double price = spawnerTier.getCostEconomy() * amount;
+        double price = spawnerData.getShopPrice() * amount;
         if (!EconomyManager.hasBalance(player, price)) {
             plugin.getLocale().getMessage("event.shop.cannotafford").sendPrefixedMessage(player);
             return;

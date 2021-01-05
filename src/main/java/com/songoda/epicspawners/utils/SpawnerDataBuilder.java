@@ -68,7 +68,13 @@ public final class SpawnerDataBuilder {
         return this;
     }
 
+    public SpawnerDataBuilder shopPrice(double shopPrice) {
+        this.spawnerData.setShopPrice(shopPrice);
+        return this;
+    }
+
     public SpawnerData build() {
         return spawnerData;
     }
+
 }
