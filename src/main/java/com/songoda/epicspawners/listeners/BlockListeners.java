@@ -132,7 +132,7 @@ public class BlockListeners implements Listener {
             doLiquidRepel(block, true);
 
             if (plugin.getBlacklistHandler().isBlacklisted(player, true)
-                    || !player.hasPermission("epicspawners.place." + spawnerTier.getIdentifyingName().replace(" ", "_"))
+                    || !player.hasPermission("epicspawners.place." + spawnerTier.getSpawnerData().getIdentifyingName().replace(" ", "_"))
                     || doForceCombine(player, spawner, event)) {
                 event.setCancelled(true);
                 return;
