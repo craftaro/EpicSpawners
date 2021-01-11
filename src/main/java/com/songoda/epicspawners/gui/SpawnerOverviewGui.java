@@ -236,7 +236,7 @@ public class SpawnerOverviewGui extends CustomizableGui {
                         addInfo();
                     });
         }
-        if (!onlyOneTier && data.isUpgradeable()) {
+        if (!onlyOneTier) {
             if (Settings.UPGRADE_WITH_LEVELS_ENABLED.getBoolean())
                 setButton("levels", 11, itemLevels, event -> {
                     stack.upgrade(player, CostType.LEVELS);

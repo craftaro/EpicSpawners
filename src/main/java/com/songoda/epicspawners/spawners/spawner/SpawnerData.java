@@ -21,8 +21,7 @@ public class SpawnerData {
     private final String identifyingName;
 
     private boolean custom = false, active = true,
-            upgradeable = true, inShop = true,
-            convertible = true;
+            inShop = true, convertible = true;
 
     private String convertRatio = "45%";
     private int killGoal = 0,
@@ -126,14 +125,6 @@ public class SpawnerData {
 
     public void setKillGoal(int killGoal) {
         this.killGoal = killGoal;
-    }
-
-    public boolean isUpgradeable() {
-        return upgradeable;
-    }
-
-    public void setUpgradeable(boolean upgradeable) {
-        this.upgradeable = upgradeable;
     }
 
     public int getShopOrder() {

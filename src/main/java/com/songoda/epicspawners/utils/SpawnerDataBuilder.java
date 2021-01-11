@@ -23,11 +23,6 @@ public final class SpawnerDataBuilder {
         return this;
     }
 
-    public SpawnerDataBuilder setUpgradable(boolean upgradable) {
-        this.spawnerData.setUpgradeable(upgradable);
-        return this;
-    }
-
     public SpawnerDataBuilder setKillGoal(int killGoal) {
         this.spawnerData.setKillGoal(killGoal);
         return this;

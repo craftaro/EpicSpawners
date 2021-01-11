@@ -165,7 +165,6 @@ public class SpawnerManager {
 
         SpawnerData spawnerData = new SpawnerDataBuilder(typeString).setCustom(false)
                 .setActive(true)
-                .setUpgradable(true)
                 .setKillGoal(0)
                 .setConvertible(true)
                 .convertRatio("45%")
@@ -265,7 +264,6 @@ public class SpawnerManager {
 
             SpawnerData spawnerData = new SpawnerDataBuilder(key).setCustom(currentSection.getBoolean("Custom", false))
                     .setActive(currentSection.getBoolean("Active", true))
-                    .setUpgradable(currentSection.getBoolean("Upgradable", true))
                     .setKillGoal(currentSection.getInt("Custom-Goal", 0))
                     .setConvertible(currentSection.getBoolean("Convertible"))
                     .convertRatio(currentSection.getString("Convert-Ratio"))
@@ -381,7 +379,6 @@ public class SpawnerManager {
 
             currentSection.set("Allowed", spawnerData.isActive());
             currentSection.set("Custom", spawnerData.isCustom());
-            currentSection.set("Upgradable", spawnerData.isUpgradeable());
             currentSection.set("Custom-Goal", spawnerData.getKillGoal());
             currentSection.set("Convertible", spawnerData.isConvertible());
             currentSection.set("Convert-Ratio", spawnerData.getConvertRatio());

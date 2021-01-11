@@ -105,14 +105,5 @@ public class EditorTierGeneralGui extends Gui {
                             "&7Use &60 &7to use the default cost.",
                             "&7Example: &619.99&7."));
                 });
-
-        setButton(12, GuiUtils.createButtonItem(CompatibleMaterial.HOPPER, TextUtils.formatText("&5&lUpgradable",
-                "&7Currently: &a" + spawnerData.isUpgradeable(),
-                "&7Setting this to true will define",
-                "&7upgradable.")),
-                event -> {
-                    spawnerData.setUpgradeable(!spawnerData.isUpgradeable());
-                    paint();
-                });
     }
 }
