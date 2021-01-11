@@ -33,7 +33,7 @@ public final class SpawnerDataBuilder {
         return this;
     }
 
-    public SpawnerDataBuilder setConvertable(boolean convertible) {
+    public SpawnerDataBuilder setConvertible(boolean convertible) {
         this.spawnerData.setConvertible(convertible);
         return this;
     }
