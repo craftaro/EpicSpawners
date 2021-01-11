@@ -125,6 +125,11 @@ public class Settings {
             "This value depicts the variable {RAND} in equations used by this plugin",
             "It generates a random number between (by default) 1 and 4.");
 
+    public static final ConfigSetting REMOVE_CORRUPTED_SPAWNERS = new ConfigSetting(config, "Main.Remove Corrupted Spawners", true,
+            "Should spawners without valid values be removed?",
+            "This may need to be disabled for compatibility that use",
+            "empty spawners for custom blocks.");
+
     public static final ConfigSetting ECONOMY_PLUGIN = new ConfigSetting(config, "Main.Economy", EconomyManager.getEconomy() == null ? "Vault" : EconomyManager.getEconomy().getName(),
             "Which economy plugin should be used?",
             "Supported plugins you have installed: \"" + EconomyManager.getManager().getRegisteredPlugins().stream().collect(Collectors.joining("\", \"")) + "\".");

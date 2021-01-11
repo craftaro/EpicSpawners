@@ -1,7 +1,7 @@
 package com.songoda.epicspawners.gui;
 
 import com.songoda.core.compatibility.CompatibleMaterial;
-import com.songoda.core.gui.Gui;
+import com.songoda.core.gui.CustomizableGui;
 import com.songoda.core.utils.NumberUtils;
 import com.songoda.core.utils.TextUtils;
 import com.songoda.epicspawners.EpicSpawners;
@@ -17,7 +17,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
-public class SpawnerTiersGui extends Gui {
+public class SpawnerTiersGui extends CustomizableGui {
 
     private final EpicSpawners plugin;
     private final Player player;
@@ -26,7 +26,8 @@ public class SpawnerTiersGui extends Gui {
     private int task;
 
     public SpawnerTiersGui(EpicSpawners plugin, Player player, PlacedSpawner spawner) {
-        super(6);
+        super(plugin, "tiers");
+        setRows(6);
         this.plugin = plugin;
         this.player = player;
         this.spawner = spawner;
@@ -50,13 +51,13 @@ public class SpawnerTiersGui extends Gui {
         ItemStack glass3 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_3.getMaterial(CompatibleMaterial.LIGHT_BLUE_STAINED_GLASS_PANE));
 
         // edges will be type 3
-        mirrorFill(0, 2, true, true, glass3);
-        mirrorFill(1, 1, true, true, glass3);
+        mirrorFill("mirrorfill_1", 0, 2, true, true, glass3);
+        mirrorFill("mirrorfill_2", 1, 1, true, true, glass3);
 
         // decorate corners with type 2
-        mirrorFill(0, 0, true, true, glass2);
-        mirrorFill(1, 0, true, true, glass2);
-        mirrorFill(0, 1, true, true, glass2);
+        mirrorFill("mirrorfill_3", 0, 0, true, true, glass2);
+        mirrorFill("mirrorfill_4", 1, 0, true, true, glass2);
+        mirrorFill("mirrorfill_5", 0, 1, true, true, glass2);
 
         List<SpawnerStack> stacks = spawner.getSpawnerStacks();
 
@@ -84,7 +85,7 @@ public class SpawnerTiersGui extends Gui {
 
         GuiUtils.applyBoosted(5, this, plugin, player, spawner);
 
-        setItem(3, GuiUtils.createButtonItem(CompatibleMaterial.PAPER, plugin.getLocale().getMessage("interface.spawner.statstitle").getMessage(),
+        setItem("stats", 3, GuiUtils.createButtonItem(CompatibleMaterial.PAPER, plugin.getLocale().getMessage("interface.spawner.statstitle").getMessage(),
                 plugin.getLocale().getMessage("interface.spawner.stats")
                         .processPlaceholder("amount", NumberUtils.formatNumber(spawner.getSpawnCount())).getMessage()));
     }

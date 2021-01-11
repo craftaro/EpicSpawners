@@ -115,8 +115,11 @@ public class EditorTiersGui extends Gui {
             }
         }
 
+        setButton(5, 3, GuiUtils.createButtonItem(CompatibleMaterial.FIRE_CHARGE, TextUtils.formatText("&9&lEdit Settings")),
+                (event) -> guiManager.showGUI(player, new EditorTierGeneralGui(plugin, this, spawnerData)));
+
         if (pages == 1)
-            setButton(5, 5, GuiUtils.createButtonItem(CompatibleMaterial.CHEST, TextUtils.formatText("&a&lUnlock Tiers",
+            setButton(5, 4, GuiUtils.createButtonItem(CompatibleMaterial.CHEST, TextUtils.formatText("&a&lUnlock Tiers",
                     "&7Currently: " + (acceptsItems ? "&aUnlocked" : "&cLocked") + "&7.",
                     "&7Re-lock to save changed.")),
                     (event) -> {
@@ -170,9 +173,9 @@ public class EditorTiersGui extends Gui {
                         setAcceptsItems(!acceptsItems);
                         showPage();
                     });
-        else setItem(5, 5, null);
+        else setItem(5, 4, null);
 
-        setButton(5, 6, GuiUtils.createButtonItem(CompatibleMaterial.PAPER, TextUtils.formatText("&9&lNew Tier")),
+        setButton(5, 5, GuiUtils.createButtonItem(CompatibleMaterial.PAPER, TextUtils.formatText("&9&lNew Tier")),
                 (event) -> {
                     spawnerData.addDefaultTier();
                     showPage();

@@ -2,7 +2,7 @@ package com.songoda.epicspawners.gui;
 
 import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.core.compatibility.CompatibleSound;
-import com.songoda.core.gui.Gui;
+import com.songoda.core.gui.CustomizableGui;
 import com.songoda.core.gui.GuiUtils;
 import com.songoda.core.hooks.EconomyManager;
 import com.songoda.core.utils.ItemUtils;
@@ -16,14 +16,13 @@ import org.apache.commons.lang.WordUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Calendar;
 import java.util.Date;
 
-public class SpawnerBoostGui extends Gui {
+public class SpawnerBoostGui extends CustomizableGui {
 
     private final EpicSpawners plugin;
     private final PlacedSpawner spawner;
@@ -31,6 +30,7 @@ public class SpawnerBoostGui extends Gui {
     private int amount = 1;
 
     public SpawnerBoostGui(EpicSpawners plugin, PlacedSpawner spawner, Player player) {
+        super(plugin, "boost");
         this.plugin = plugin;
         this.spawner = spawner;
         this.player = player;
@@ -59,42 +59,42 @@ public class SpawnerBoostGui extends Gui {
 
         setDefaultItem(glass1);
 
-        mirrorFill(0, 0, true, true, glass2);
-        mirrorFill(0, 1, true, true, glass2);
-        mirrorFill(0, 2, true, true, glass3);
-        mirrorFill(1, 0, false, true, glass2);
-        mirrorFill(1, 1, false, true, glass3);
+        mirrorFill("mirrorfill_1", 0, 0, true, true, glass2);
+        mirrorFill("mirrorfill_2", 0, 1, true, true, glass2);
+        mirrorFill("mirrorfill_3", 0, 2, true, true, glass3);
+        mirrorFill("mirrorfill_4", 1, 0, false, true, glass2);
+        mirrorFill("mirrorfill_5", 1, 1, false, true, glass3);
 
-        setButton(10, GuiUtils.createButtonItem(CompatibleMaterial.COAL, plugin.getLocale().getMessage("interface.boost.boostfor")
+        setButton("boost5", 10, GuiUtils.createButtonItem(CompatibleMaterial.COAL, plugin.getLocale().getMessage("interface.boost.boostfor")
                         .processPlaceholder("amount", "5").getMessage(),
                 plugin.getLocale().getMessage("interface.boost.cost")
                         .processPlaceholder("cost", getBoostCost(5, amount)).getMessage()),
                 event -> purchaseBoost(player, 5, amount));
 
-        setButton(12, GuiUtils.createButtonItem(CompatibleMaterial.IRON_INGOT, plugin.getLocale().getMessage("interface.boost.boostfor")
+        setButton("boost15", 12, GuiUtils.createButtonItem(CompatibleMaterial.IRON_INGOT, plugin.getLocale().getMessage("interface.boost.boostfor")
                         .processPlaceholder("amount", "15").getMessage(),
                 plugin.getLocale().getMessage("interface.boost.cost")
                         .processPlaceholder("cost", getBoostCost(15, amount)).getMessage()),
                 event -> purchaseBoost(player, 15, amount));
 
-        setButton(14, GuiUtils.createButtonItem(CompatibleMaterial.DIAMOND, plugin.getLocale().getMessage("interface.boost.boostfor")
+        setButton("boost30", 14, GuiUtils.createButtonItem(CompatibleMaterial.DIAMOND, plugin.getLocale().getMessage("interface.boost.boostfor")
                         .processPlaceholder("amount", "30").getMessage(),
                 plugin.getLocale().getMessage("interface.boost.cost")
                         .processPlaceholder("cost", getBoostCost(30, amount)).getMessage()),
                 event -> purchaseBoost(player, 30, amount));
 
-        setButton(16, GuiUtils.createButtonItem(CompatibleMaterial.EMERALD, plugin.getLocale().getMessage("interface.boost.boostfor")
+        setButton("boost60", 16, GuiUtils.createButtonItem(CompatibleMaterial.EMERALD, plugin.getLocale().getMessage("interface.boost.boostfor")
                         .processPlaceholder("amount", "60").getMessage(),
                 plugin.getLocale().getMessage("interface.boost.cost")
                         .processPlaceholder("cost", getBoostCost(60, amount)).getMessage()),
                 event -> purchaseBoost(player, 60, amount));
 
-        setButton(4, GuiUtils.createButtonItem(Settings.EXIT_ICON.getMaterial(),
+        setButton("back", 4, GuiUtils.createButtonItem(Settings.EXIT_ICON.getMaterial(),
                 plugin.getLocale().getMessage("general.nametag.back").getMessage()),
                 event -> spawner.overview(player));
 
         if (amount != 1)
-            setButton(0, GuiUtils.createButtonItem(ItemUtils.getCustomHead("3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23"),
+            setButton("minus1", 0, GuiUtils.createButtonItem(ItemUtils.getCustomHead("3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23"),
                     TextUtils.formatText("&6&l-1")), event -> {
                 amount--;
                 setUp();
@@ -102,7 +102,7 @@ public class SpawnerBoostGui extends Gui {
             });
 
         if (amount < Settings.MAX_PLAYER_BOOST.getInt())
-            setButton(8, GuiUtils.createButtonItem(ItemUtils.getCustomHead("1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b"),
+            setButton("plus1", 8, GuiUtils.createButtonItem(ItemUtils.getCustomHead("1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b"),
                     TextUtils.formatText("&6&l+1")), event -> {
                 amount++;
                 setUp();

@@ -1,6 +1,7 @@
 package com.songoda.epicspawners.gui;
 
 import com.songoda.core.compatibility.CompatibleMaterial;
+import com.songoda.core.gui.CustomizableGui;
 import com.songoda.core.gui.Gui;
 import com.songoda.core.gui.GuiUtils;
 import com.songoda.core.hooks.EconomyManager;
@@ -17,7 +18,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class SpawnerShopItemGui extends Gui {
+public class SpawnerShopItemGui extends CustomizableGui {
 
     private final EpicSpawners plugin;
     private final SpawnerTier spawnerTier;
@@ -26,7 +27,8 @@ public class SpawnerShopItemGui extends Gui {
     private int amount = 1;
 
     public SpawnerShopItemGui(EpicSpawners plugin, SpawnerTier spawnerTier, Gui back) {
-        super(9);
+        super(plugin, "shopitem");
+        setRows(9);
         this.plugin = plugin;
         this.spawnerTier = spawnerTier;
         this.spawnerData = spawnerTier.getSpawnerData();
@@ -47,15 +49,15 @@ public class SpawnerShopItemGui extends Gui {
         ItemStack glass3 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_3.getMaterial(CompatibleMaterial.LIGHT_BLUE_STAINED_GLASS_PANE));
 
         // edges will be type 3
-        mirrorFill(0, 2, true, true, glass3);
-        mirrorFill(1, 1, true, true, glass3);
+        mirrorFill("mirrorfill_1", 0, 2, true, true, glass3);
+        mirrorFill("mirrorfill_2", 1, 1, true, true, glass3);
 
         // decorate corners with type 2
-        mirrorFill(0, 0, true, true, glass2);
-        mirrorFill(1, 0, true, true, glass2);
-        mirrorFill(0, 1, true, true, glass2);
+        mirrorFill("mirrorfill_3", 0, 0, true, true, glass2);
+        mirrorFill("mirrorfill_4", 1, 0, true, true, glass2);
+        mirrorFill("mirrorfill_5", 0, 1, true, true, glass2);
 
-        double price = spawnerTier.getCostEconomy() * amount;
+        double price = spawnerData.getShopPrice() * amount;
 
         ItemStack item = HeadUtils.getTexturedSkull(spawnerData);
 
@@ -74,14 +76,14 @@ public class SpawnerShopItemGui extends Gui {
                 .processPlaceholder("cost", EconomyManager.formatEconomy(price)).getMessage());
         itemmeta.setLore(lore);
         item.setItemMeta(itemmeta);
-        setItem(22, item);
+        setItem("spawner",22, item);
 
         ItemStack plus = CompatibleMaterial.LIME_STAINED_GLASS_PANE.getItem(1);
         ItemMeta plusmeta = plus.getItemMeta();
         plusmeta.setDisplayName(plugin.getLocale().getMessage("interface.shop.add1").getMessage());
         plus.setItemMeta(plusmeta);
         if (item.getAmount() + 1 <= 64) {
-            setButton(15, plus, event -> {
+            setButton("add1", 15, plus, event -> {
                 this.amount = amount + 1;
                 paint();
             });
@@ -91,7 +93,7 @@ public class SpawnerShopItemGui extends Gui {
         plusmeta.setDisplayName(plugin.getLocale().getMessage("interface.shop.add10").getMessage());
         plus.setItemMeta(plusmeta);
         if (item.getAmount() + 10 <= 64) {
-            setButton(33, plus, event -> {
+            setButton("add10", 33, plus, event -> {
                 this.amount = amount + 10;
                 paint();
             });
@@ -101,7 +103,7 @@ public class SpawnerShopItemGui extends Gui {
         plusmeta.setDisplayName(plugin.getLocale().getMessage("interface.shop.set64").getMessage());
         plus.setItemMeta(plusmeta);
         if (item.getAmount() != 64) {
-            setButton(25, plus, event -> {
+            setButton("set64", 25, plus, event -> {
                 this.amount = 64;
                 paint();
             });
@@ -112,7 +114,7 @@ public class SpawnerShopItemGui extends Gui {
         minusmeta.setDisplayName(plugin.getLocale().getMessage("interface.shop.remove1").getMessage());
         minus.setItemMeta(minusmeta);
         if (item.getAmount() != 1) {
-            setButton(11, minus, event -> {
+            setButton("remove1", 11, minus, event -> {
                 this.amount = amount - 1;
                 paint();
             });
@@ -122,7 +124,7 @@ public class SpawnerShopItemGui extends Gui {
         minusmeta.setDisplayName(plugin.getLocale().getMessage("interface.shop.remove10").getMessage());
         minus.setItemMeta(minusmeta);
         if (item.getAmount() - 10 >= 0) {
-            setButton(29, minus, event -> {
+            setButton("remove10", 29, minus, event -> {
                 this.amount = amount - 10;
                 paint();
             });
@@ -132,20 +134,20 @@ public class SpawnerShopItemGui extends Gui {
         minusmeta.setDisplayName(plugin.getLocale().getMessage("interface.shop.set1").getMessage());
         minus.setItemMeta(minusmeta);
         if (item.getAmount() != 1) {
-            setButton(19, minus, event -> {
+            setButton("set1", 19, minus, event -> {
                 this.amount = 1;
                 paint();
             });
         }
 
-        setButton(8, GuiUtils.createButtonItem(Settings.EXIT_ICON.getMaterial(),
+        setButton("exit", 8, GuiUtils.createButtonItem(Settings.EXIT_ICON.getMaterial(),
                 plugin.getLocale().getMessage("general.nametag.exit").getMessage()), event -> event.player.closeInventory());
 
-        setButton(0, GuiUtils.createButtonItem(ItemUtils.getCustomHead("3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23"),
+        setButton("back", 0, GuiUtils.createButtonItem(ItemUtils.getCustomHead("3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23"),
                 plugin.getLocale().getMessage("general.nametag.back").getMessage()),
                 event -> guiManager.showGUI(event.player, back));
 
-        setButton(40, GuiUtils.createButtonItem(Settings.BUY_ICON.getMaterial(),
+        setButton("buy", 40, GuiUtils.createButtonItem(Settings.BUY_ICON.getMaterial(),
                 plugin.getLocale().getMessage("general.nametag.confirm").getMessage()), event -> {
                     Player player = event.player;
                     confirm(player, amount);
@@ -160,7 +162,7 @@ public class SpawnerShopItemGui extends Gui {
             return;
         }
 
-        double price = spawnerTier.getCostEconomy() * amount;
+        double price = spawnerData.getShopPrice() * amount;
         if (!EconomyManager.hasBalance(player, price)) {
             plugin.getLocale().getMessage("event.shop.cannotafford").sendPrefixedMessage(player);
             return;

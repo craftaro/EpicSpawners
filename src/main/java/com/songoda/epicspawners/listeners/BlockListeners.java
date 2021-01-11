@@ -132,7 +132,7 @@ public class BlockListeners implements Listener {
             doLiquidRepel(block, true);
 
             if (plugin.getBlacklistHandler().isBlacklisted(player, true)
-                    || !player.hasPermission("epicspawners.place." + spawnerTier.getIdentifyingName().replace(" ", "_"))
+                    || !player.hasPermission("epicspawners.place." + spawnerTier.getSpawnerData().getIdentifyingName().replace(" ", "_"))
                     || doForceCombine(player, spawner, event)) {
                 event.setCancelled(true);
                 return;
@@ -232,9 +232,11 @@ public class BlockListeners implements Listener {
             PlacedSpawner spawner = plugin.getSpawnerManager().getSpawnerFromWorld(location);
 
             if (spawner.getFirstStack().getSpawnerData() == null) {
-                block.setType(Material.AIR);
-                System.out.println("A corrupted spawner has been removed as its Type no longer exists.");
-                spawner.destroy(plugin);
+                if (Settings.REMOVE_CORRUPTED_SPAWNERS.getBoolean()) {
+                    block.setType(Material.AIR);
+                    System.out.println("A corrupted spawner has been removed as its Type no longer exists.");
+                    spawner.destroy(plugin);
+                }
                 return;
             }
 

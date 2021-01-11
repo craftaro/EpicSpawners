@@ -5,6 +5,7 @@ import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.core.utils.ItemUtils;
 import com.songoda.epicspawners.EpicSpawners;
+import com.songoda.epicspawners.api.events.SpawnerAccessEvent;
 import com.songoda.epicspawners.api.events.SpawnerChangeEvent;
 import com.songoda.epicspawners.settings.Settings;
 import com.songoda.epicspawners.spawners.spawner.PlacedSpawner;
@@ -152,6 +153,8 @@ public class InteractListeners implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void playerInteractEvent(PlayerInteractEvent event) {
+        if (CompatibleHand.getHand(event) == CompatibleHand.OFF_HAND) return;
+
         Player player = event.getPlayer();
         Block block = event.getClickedBlock();
         if (block == null) return;
@@ -172,6 +175,7 @@ public class InteractListeners implements Listener {
 
         if (isSpawner && CompatibleMaterial.SPAWNER.matches(item)) {
             PlacedSpawner spawner = plugin.getSpawnerManager().getSpawnerFromWorld(location);
+
             if (spawner.getPlacedBy() == null && Settings.DISABLE_NATURAL_SPAWNERS.getBoolean()) return;
 
             if (!player.isSneaking()) {
@@ -183,10 +187,15 @@ public class InteractListeners implements Listener {
                 }
             }
         } else if (isSpawner && !plugin.getBlacklistHandler().isBlacklisted(player, false)) {
+            PlacedSpawner spawner = plugin.getSpawnerManager().getSpawnerFromWorld(location);
             if (!player.isSneaking() && event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                PlacedSpawner spawner = plugin.getSpawnerManager().getSpawnerFromWorld(location);
-
                 if (spawner.getPlacedBy() == null && Settings.DISABLE_NATURAL_SPAWNERS.getBoolean()) return;
+
+                SpawnerAccessEvent accessEvent = new SpawnerAccessEvent(player, spawner);
+                Bukkit.getPluginManager().callEvent(accessEvent);
+                if (accessEvent.isCancelled()) {
+                    return;
+                }
 
                 spawner.overview(player);
                 plugin.processChange(block);

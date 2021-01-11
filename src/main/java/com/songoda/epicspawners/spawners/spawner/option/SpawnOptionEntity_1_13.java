@@ -13,6 +13,7 @@ import com.songoda.epicspawners.spawners.condition.SpawnConditionNearbyEntities;
 import com.songoda.epicspawners.spawners.spawner.PlacedSpawner;
 import com.songoda.epicspawners.spawners.spawner.SpawnerStack;
 import com.songoda.epicspawners.spawners.spawner.SpawnerTier;
+import com.songoda.epicspawners.utils.PaperUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -79,7 +80,8 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
             methodGetDamageScaler,
             methodGetCubes,
             methodGetBoundingBox;
-    private Field fieldWorldRandom;
+    private Field fieldWorldRandom,
+            fieldSpawnReason;
 
     public SpawnOptionEntity_1_13(EntityType... types) {
         this.types = types;
@@ -171,6 +173,10 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
 
             fieldWorldRandom = clazzWorld.getDeclaredField("random");
             fieldWorldRandom.setAccessible(true);
+
+            if (PaperUtils.isPaper()) {
+                fieldSpawnReason = clazzEntity.getDeclaredField("spawnReason");
+            }
         } catch (NoSuchFieldException | NoSuchMethodException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -314,6 +320,10 @@ public class SpawnOptionEntity_1_13 implements SpawnOption {
                     methodChunkRegionLoaderA2.invoke(null, objEntity, objWorld, CreatureSpawnEvent.SpawnReason.SPAWNER);
                 } else {
                     methodAddEntity.invoke(clazzWorldServer.cast(objWorld), objEntity, CreatureSpawnEvent.SpawnReason.SPAWNER);
+                }
+
+                if (fieldSpawnReason != null) {
+                    fieldSpawnReason.set(objEntity, CreatureSpawnEvent.SpawnReason.SPAWNER);
                 }
 
                 if (tier.isSpawnOnFire()) craftEntity.setFireTicks(160);

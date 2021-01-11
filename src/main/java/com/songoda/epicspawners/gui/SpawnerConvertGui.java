@@ -1,7 +1,7 @@
 package com.songoda.epicspawners.gui;
 
 import com.songoda.core.compatibility.CompatibleMaterial;
-import com.songoda.core.gui.Gui;
+import com.songoda.core.gui.CustomizableGui;
 import com.songoda.core.gui.GuiUtils;
 import com.songoda.core.hooks.EconomyManager;
 import com.songoda.epicspawners.EpicSpawners;
@@ -19,7 +19,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class SpawnerConvertGui extends Gui {
+public class SpawnerConvertGui extends CustomizableGui {
 
     private final EpicSpawners plugin;
     private final SpawnerStack stack;
@@ -27,7 +27,8 @@ public class SpawnerConvertGui extends Gui {
     private final List<SpawnerData> entities = new ArrayList<>();
 
     public SpawnerConvertGui(EpicSpawners plugin, SpawnerStack stack, Player player) {
-        super(6);
+        super(plugin, "convert");
+        setRows(6);
         this.plugin = plugin;
         this.stack = stack;
         this.player = player;
@@ -52,13 +53,13 @@ public class SpawnerConvertGui extends Gui {
         ItemStack glass3 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_3.getMaterial(CompatibleMaterial.LIGHT_BLUE_STAINED_GLASS_PANE));
 
         // edges will be type 3
-        mirrorFill(0, 2, true, true, glass3);
-        mirrorFill(1, 1, true, true, glass3);
+        mirrorFill("mirrorfill_1", 0, 2, true, true, glass3);
+        mirrorFill("mirrorfill_2", 1, 1, true, true, glass3);
 
         // decorate corners with type 2
-        mirrorFill(0, 0, true, true, glass2);
-        mirrorFill(1, 0, true, true, glass2);
-        mirrorFill(0, 1, true, true, glass2);
+        mirrorFill("mirrorfill_3", 0, 0, true, true, glass2);
+        mirrorFill("mirrorfill_4", 1, 0, true, true, glass2);
+        mirrorFill("mirrorfill_5",0, 1, true, true, glass2);
 
         pages = (int) Math.max(1, Math.ceil(entities.size() / ((double) 28)));
 
@@ -104,8 +105,8 @@ public class SpawnerConvertGui extends Gui {
             num++;
         }
 
-        setButton(8, GuiUtils.createButtonItem(Settings.EXIT_ICON.getMaterial(),
-                plugin.getLocale().getMessage("general.nametag.exit").getMessage()),
+        setButton("back", 8, GuiUtils.createButtonItem(Settings.EXIT_ICON.getMaterial(),
+                plugin.getLocale().getMessage("general.nametag.back").getMessage()),
                 event -> guiManager.showGUI(player, new SpawnerOverviewGui(plugin, stack, player)));
     }
 }

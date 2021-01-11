@@ -23,17 +23,12 @@ public final class SpawnerDataBuilder {
         return this;
     }
 
-    public SpawnerDataBuilder setUpgradable(boolean upgradable) {
-        this.spawnerData.setUpgradeable(upgradable);
-        return this;
-    }
-
     public SpawnerDataBuilder setKillGoal(int killGoal) {
         this.spawnerData.setKillGoal(killGoal);
         return this;
     }
 
-    public SpawnerDataBuilder setConvertable(boolean convertible) {
+    public SpawnerDataBuilder setConvertible(boolean convertible) {
         this.spawnerData.setConvertible(convertible);
         return this;
     }
@@ -68,7 +63,13 @@ public final class SpawnerDataBuilder {
         return this;
     }
 
+    public SpawnerDataBuilder shopPrice(double shopPrice) {
+        this.spawnerData.setShopPrice(shopPrice);
+        return this;
+    }
+
     public SpawnerData build() {
         return spawnerData;
     }
+
 }

@@ -1,7 +1,7 @@
 package com.songoda.epicspawners.gui;
 
 import com.songoda.core.compatibility.CompatibleMaterial;
-import com.songoda.core.gui.Gui;
+import com.songoda.core.gui.CustomizableGui;
 import com.songoda.core.hooks.EconomyManager;
 import com.songoda.core.utils.NumberUtils;
 import com.songoda.core.utils.TextUtils;
@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class SpawnerOverviewGui extends Gui {
+public class SpawnerOverviewGui extends CustomizableGui {
 
     private static final Pattern REGEX = Pattern.compile("(.{1,28}(?:\\s|$))|(.{0,28})", Pattern.DOTALL);
 
@@ -45,7 +45,8 @@ public class SpawnerOverviewGui extends Gui {
     private int task;
 
     public SpawnerOverviewGui(EpicSpawners plugin, SpawnerStack stack, Player player) {
-        super(3);
+        super(plugin, "overview");
+        setRows(3);
         this.stack = stack;
         spawner = stack.getSpawner();
         tier = stack.getCurrentTier();
@@ -72,14 +73,14 @@ public class SpawnerOverviewGui extends Gui {
 
         setDefaultItem(glass1);
 
-        mirrorFill(0, 0, true, true, glass2);
-        mirrorFill(0, 1, true, true, glass2);
-        mirrorFill(0, 2, true, true, glass3);
-        mirrorFill(1, 0, false, true, glass2);
-        mirrorFill(1, 1, false, true, glass3);
+        mirrorFill("mirrorfill_1", 0, 0, true, true, glass2);
+        mirrorFill("mirrorfill_2", 0, 1, true, true, glass2);
+        mirrorFill("mirrorfill_3", 0, 2, true, true, glass3);
+        mirrorFill("mirrorfill_4", 1, 0, false, true, glass2);
+        mirrorFill("mirrorfill_5", 1, 1, false, true, glass3);
 
         if (spawner.getSpawnerStacks().size() != 1)
-            setButton(0, com.songoda.core.gui.GuiUtils.createButtonItem(CompatibleMaterial.OAK_DOOR,
+            setButton("back", 0, com.songoda.core.gui.GuiUtils.createButtonItem(Settings.EXIT_ICON.getMaterial(),
                     plugin.getLocale().getMessage("general.nametag.back").getMessage()),
                     (event) -> guiManager.showGUI(event.player, new SpawnerTiersGui(plugin, player, spawner)));
 
@@ -89,21 +90,21 @@ public class SpawnerOverviewGui extends Gui {
         else if (showAmt == 0)
             showAmt = 1;
 
-        ItemStack item;
+        ItemStack spawnerItem;
 
         CompatibleMaterial displayItem = tier.getDisplayItem();
         if (displayItem != null && !displayItem.isAir()) {
-            item = displayItem.getItem();
+            spawnerItem = displayItem.getItem();
         } else {
             try {
-                item = HeadUtils.getTexturedSkull(data);
+                spawnerItem = HeadUtils.getTexturedSkull(data);
             } catch (Exception e) {
-                item = CompatibleMaterial.SPAWNER.getItem();
-                item.setAmount(showAmt);
+                spawnerItem = CompatibleMaterial.SPAWNER.getItem();
+                spawnerItem.setAmount(showAmt);
             }
         }
 
-        ItemMeta itemmeta = item.getItemMeta();
+        ItemMeta itemmeta = spawnerItem.getItemMeta();
         itemmeta.setDisplayName(plugin.getLocale().getMessage("interface.spawner.statstitle").getMessage());
         ArrayList<String> lore = new ArrayList<>();
 
@@ -144,13 +145,13 @@ public class SpawnerOverviewGui extends Gui {
         }
         
         itemmeta.setLore(lore);
-        item.setItemMeta(itemmeta);
+        spawnerItem.setItemMeta(itemmeta);
 
         double levelsCost = tier.getUpgradeCost(CostType.LEVELS);
         double economyCost = tier.getUpgradeCost(CostType.ECONOMY);
 
-        ItemStack itemXP = Settings.XP_ICON.getMaterial().getItem();
-        ItemMeta itemmetaXP = itemXP.getItemMeta();
+        ItemStack itemLevels = Settings.XP_ICON.getMaterial().getItem();
+        ItemMeta itemmetaXP = itemLevels.getItemMeta();
         itemmetaXP.setDisplayName(plugin.getLocale().getMessage("interface.spawner.upgradewithlevels").getMessage());
         ArrayList<String> loreXP = new ArrayList<>();
         if (nextTier != null)
@@ -159,7 +160,7 @@ public class SpawnerOverviewGui extends Gui {
         else
             loreXP.add(plugin.getLocale().getMessage("event.upgrade.maxed").getMessage());
         itemmetaXP.setLore(loreXP);
-        itemXP.setItemMeta(itemmetaXP);
+        itemLevels.setItemMeta(itemmetaXP);
 
         ItemStack itemECO = Settings.ECO_ICON.getMaterial().getItem();
         ItemMeta itemmetaECO = itemECO.getItemMeta();
@@ -173,10 +174,10 @@ public class SpawnerOverviewGui extends Gui {
         itemmetaECO.setLore(loreECO);
         itemECO.setItemMeta(itemmetaECO);
 
-        setItem(13, item);
+        setItem("spawner",13, spawnerItem);
 
-        if (player.hasPermission("epicspawners.convert")) {
-            setButton(4, GuiUtils.createButtonItem(Settings.CONVERT_ICON.getMaterial(),
+        if (player.hasPermission("epicspawners.convert") && data.isConvertible()) {
+            setButton("convert", 4, GuiUtils.createButtonItem(Settings.CONVERT_ICON.getMaterial(),
                     plugin.getLocale().getMessage("interface.spawner.convert").getMessage()),
                     (event) -> guiManager.showGUI(player, new SpawnerConvertGui(plugin, stack, player)));
         }
@@ -229,20 +230,20 @@ public class SpawnerOverviewGui extends Gui {
 
             itemmetaO.setLore(loreO);
             itemO.setItemMeta(itemmetaO);
-            setButton(8, itemO,
+            setButton("info",8, itemO,
                     event -> {
                         this.infoPage++;
                         addInfo();
                     });
         }
-        if (!onlyOneTier && data.isUpgradeable()) {
+        if (!onlyOneTier) {
             if (Settings.UPGRADE_WITH_LEVELS_ENABLED.getBoolean())
-                setButton(11, itemXP, event -> {
+                setButton("levels", 11, itemLevels, event -> {
                     stack.upgrade(player, CostType.LEVELS);
                     spawner.overview(player);
                 });
             if (Settings.UPGRADE_WITH_ECONOMY_ENABLED.getBoolean())
-                setButton(15, itemECO, event -> {
+                setButton("economy", 15, itemECO, event -> {
                     stack.upgrade(player, CostType.ECONOMY);
                     spawner.overview(player);
                 });
@@ -301,7 +302,7 @@ public class SpawnerOverviewGui extends Gui {
 
         itemmetaO.setLore(loreO);
         itemO.setItemMeta(itemmetaO);
-        setItem(8, itemO);
+        setItem("info", 8, itemO);
     }
 
     private String compileHow(Player p, String text) {
@@ -392,7 +393,7 @@ public class SpawnerOverviewGui extends Gui {
                 nu++;
             }
         }
-        text = text.replaceAll("[\\[\\]{}]", ""); // [, ], { or }
+        text = text.replaceAll("[\\[\\]{}]", "");
         return text;
     }
 

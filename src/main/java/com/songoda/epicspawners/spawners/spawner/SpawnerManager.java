@@ -48,6 +48,8 @@ public class SpawnerManager {
 
     private final Config spawnerConfig = new Config(EpicSpawners.getInstance(), "spawners.yml");
 
+    private String lastLoad = null;
+
     public SpawnerManager(EpicSpawners plugin) {
         this.plugin = plugin;
         spawnerConfig.load();
@@ -165,9 +167,8 @@ public class SpawnerManager {
 
         SpawnerData spawnerData = new SpawnerDataBuilder(typeString).setCustom(false)
                 .setActive(true)
-                .setUpgradable(true)
                 .setKillGoal(0)
-                .setConvertable(true)
+                .setConvertible(true)
                 .convertRatio("45%")
                 .setInShop(true)
                 .shopOrder(0)
@@ -259,18 +260,21 @@ public class SpawnerManager {
         // Register spawner data into SpawnerRegistry from configuration.
         FileConfiguration spawnerConfig = this.spawnerConfig.getFileConfig();
 
+        lastLoad = spawnerConfig.saveToString();
+
         if (!spawnerConfig.contains("Spawners")) return;
         for (String key : spawnerConfig.getConfigurationSection("Spawners").getKeys(false)) {
             ConfigurationSection currentSection = spawnerConfig.getConfigurationSection("Spawners." + key);
 
             SpawnerData spawnerData = new SpawnerDataBuilder(key).setCustom(currentSection.getBoolean("Custom", false))
                     .setActive(currentSection.getBoolean("Active", true))
-                    .setUpgradable(currentSection.getBoolean("Upgradable", true))
                     .setKillGoal(currentSection.getInt("Custom-Goal", 0))
-                    .setConvertable(currentSection.getBoolean("Convertible"))
+                    .setConvertible(currentSection.getBoolean("Convertible"))
                     .convertRatio(currentSection.getString("Convert-Ratio"))
                     .setInShop(currentSection.getBoolean("In-Shop", true))
                     .shopOrder(currentSection.getInt("Shop-Order", 0))
+                    .shopPrice(currentSection.getDouble("Shop-Price", 1000))
+
                     .setCraftable(currentSection.getBoolean("Craftable", false))
                     .setRecipe(currentSection.getString("Recipe-Layout", "AAAABAAAA"))
                     .setRecipeIngredients(currentSection.getStringList("Recipe-Ingredients"))
@@ -379,12 +383,12 @@ public class SpawnerManager {
 
             currentSection.set("Allowed", spawnerData.isActive());
             currentSection.set("Custom", spawnerData.isCustom());
-            currentSection.set("Upgradable", spawnerData.isUpgradeable());
             currentSection.set("Custom-Goal", spawnerData.getKillGoal());
             currentSection.set("Convertible", spawnerData.isConvertible());
             currentSection.set("Convert-Ratio", spawnerData.getConvertRatio());
             currentSection.set("In-Shop", spawnerData.isInShop());
             currentSection.set("Shop-Order", spawnerData.getShopOrder());
+            currentSection.set("Shop-Price", spawnerData.getShopPrice());
             currentSection.set("Craftable", spawnerData.isCraftable());
             currentSection.set("Recipe-Layout", spawnerData.getRecipe());
             currentSection.set("Recipe-Ingredients", spawnerData.getRecipeIngredients());
@@ -442,6 +446,11 @@ public class SpawnerManager {
             }
         }
         this.spawnerConfig.save();
+    }
+
+    public boolean wasConfigModified() {
+        getSpawnerConfig().load();
+        return !this.spawnerConfig.getFileConfig().saveToString().equals(lastLoad);
     }
 
     public Config getSpawnerConfig() {
