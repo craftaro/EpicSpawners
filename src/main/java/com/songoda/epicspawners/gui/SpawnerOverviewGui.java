@@ -176,7 +176,7 @@ public class SpawnerOverviewGui extends CustomizableGui {
 
         setItem("spawner",13, spawnerItem);
 
-        if (player.hasPermission("epicspawners.convert")) {
+        if (player.hasPermission("epicspawners.convert") && data.isConvertible()) {
             setButton("convert", 4, GuiUtils.createButtonItem(Settings.CONVERT_ICON.getMaterial(),
                     plugin.getLocale().getMessage("interface.spawner.convert").getMessage()),
                     (event) -> guiManager.showGUI(player, new SpawnerConvertGui(plugin, stack, player)));
