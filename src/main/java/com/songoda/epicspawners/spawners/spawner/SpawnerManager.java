@@ -48,6 +48,8 @@ public class SpawnerManager {
 
     private final Config spawnerConfig = new Config(EpicSpawners.getInstance(), "spawners.yml");
 
+    private String lastLoad = null;
+
     public SpawnerManager(EpicSpawners plugin) {
         this.plugin = plugin;
         spawnerConfig.load();
@@ -258,6 +260,8 @@ public class SpawnerManager {
         // Register spawner data into SpawnerRegistry from configuration.
         FileConfiguration spawnerConfig = this.spawnerConfig.getFileConfig();
 
+        lastLoad = spawnerConfig.saveToString();
+
         if (!spawnerConfig.contains("Spawners")) return;
         for (String key : spawnerConfig.getConfigurationSection("Spawners").getKeys(false)) {
             ConfigurationSection currentSection = spawnerConfig.getConfigurationSection("Spawners." + key);
@@ -442,6 +446,11 @@ public class SpawnerManager {
             }
         }
         this.spawnerConfig.save();
+    }
+
+    public boolean wasConfigModified() {
+        getSpawnerConfig().load();
+        return !this.spawnerConfig.getFileConfig().saveToString().equals(lastLoad);
     }
 
     public Config getSpawnerConfig() {

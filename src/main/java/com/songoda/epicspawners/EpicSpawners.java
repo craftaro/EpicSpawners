@@ -89,7 +89,8 @@ public class EpicSpawners extends SongodaPlugin {
 
     @Override
     public void onPluginDisable() {
-        this.saveToFile();
+        if (!spawnerManager.wasConfigModified())
+            this.saveToFile();
         this.particleTask.cancel();
         this.spawnerCustomSpawnTask.cancel();
         this.databaseConnector.closeConnection();
@@ -208,7 +209,8 @@ public class EpicSpawners extends SongodaPlugin {
         this.setLocale(Settings.LANGUGE_MODE.getString(), true);
         this.locale.reloadMessages();
         this.blacklistHandler.reload();
-        this.spawnerManager.reloadFromFile();
+        if (spawnerManager.wasConfigModified())
+            this.spawnerManager.reloadFromFile();
     }
 
     @Override
