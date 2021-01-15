@@ -2,7 +2,7 @@
     <groupId>com.songoda</groupId>
     <artifactId>EpicSpawners</artifactId>
     <modelVersion>4.0.0</modelVersion>
-    <version>7.0.2</version>
+    <version>7.0.2b</version>
     <build>
         <defaultGoal>clean install</defaultGoal>
         <finalName>EpicSpawners-${project.version}</finalName>
@@ -82,10 +82,6 @@
     </build>
     <repositories>
         <repository>
-            <id>private</id>
-            <url>https://repo.songoda.com/repository/private/</url>
-        </repository>
-        <repository>
             <id>public</id>
             <url>https://repo.songoda.com/repository/public/</url>
         </repository>
@@ -98,7 +94,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot</artifactId>
-            <version>1.16.2</version>
+            <version>1.16.4</version>
         </dependency>
         <dependency>
             <groupId>com.songoda</groupId>
