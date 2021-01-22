@@ -2,9 +2,6 @@
 
 EpicSpawners brings your spawners to a whole new level. It allows you to combine spawners together to create spawners that are 2x, 3x, 4x and even 5x as powerful as a normal spawner (the limit can be increased) and it can even combine completely different spawners together to create OmniSpawners!
 
-<<<<<<< HEAD
-![N|Solid](https://i.imgur.com/jKtE7ZM.png)
-=======
 <p align="center">
  <b>
       The simple and easy to use spawner plugin that allows you to customize everything
@@ -20,7 +17,7 @@ EpicSpawners brings your spawners to a whole new level. It allows you to combine
         <img alt="Patreon" src="https://img.shields.io/badge/-Support_on_Patreon-F96854.svg?logo=patreon&style=flat&logoColor=white">
     </a> 
     <br>
-    <img alt="Latest" src="https://img.shields.io/badge/-ver_7.0.2-4078C0.svg?logo=github&style=flat&logoColor=white&color=blue&label=Latest&labelColor=black">
+    <img alt="Latest" src="https://img.shields.io/badge/dynamic/xml?label=version&query=string%28%2F%2F%2A%5Blocal-name%28.%29%3D%27version%27%20and%20namespace-uri%28.%29%3D%27http%3A%2F%2Fmaven.apache.org%2FPOM%2F4.0.0%27%5D%5B1%5D%29&url=https%3A%2F%2Fraw.githubusercontent.com%2Fsongoda%2FEpicSpawners%2Fmaster%2Fpom.xml&logo=github&style=flat&logoColor=white&color=blue&labelColor=black">
     <a href="https://app.codacy.com/gh/songoda/EpicSpawners/dashboard">
         <img alt="quality" src="https://img.shields.io/codacy/grade/1538be190da6406aa6a2bc711b2478a2">
     </a>
@@ -93,8 +90,7 @@ EpicSpawners brings your spawners to a whole new level. It allows you to combine
         For suggestions about features you think should be added to the plugin to increase its functionality, feel free to create a thread or upvote an existing thread over on           <a href="https://feedback.songoda.com">our feedback site</a> and it might be chosen to be added into a future update of the plugin when one of our developers are looking         for new features to add to the plugin.
     </p>
 </article>
-<br>
+
 <p align="center">
     &copy;Songoda 2021
 </p>
->>>>>>> be1ae4c... Update README.MD
