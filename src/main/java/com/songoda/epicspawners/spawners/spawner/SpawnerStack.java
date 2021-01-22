@@ -63,8 +63,6 @@ public class SpawnerStack {
 
     public void upgrade(Player player, CostType type) {
         EpicSpawners plugin = EpicSpawners.getInstance();
-        double cost = currentTier.getUpgradeCost(type);
-        SpawnerTier oldTier = currentTier;
 
         if (getSpawnerData().getNextTier(currentTier) == null) {
             plugin.getLocale().getMessage("event.upgrade.maxed").sendPrefixedMessage(player);
@@ -73,6 +71,9 @@ public class SpawnerStack {
 
         SpawnerTier tier = getSpawnerData().getNextTier(currentTier);
         SpawnerChangeEvent event = new SpawnerChangeEvent(player, spawner, tier, currentTier);
+
+        double cost = tier.getUpgradeCost(type);
+        SpawnerTier oldTier = currentTier;
 
         if (type == CostType.ECONOMY) {
             if (!EconomyManager.isEnabled()) {
@@ -133,7 +134,6 @@ public class SpawnerStack {
         currentTier = data.getFirstTier();
         if (!spawner.merge(this, oldTier))
             plugin.getDataManager().updateSpawnerStack(this, oldTier.getIdentifyingName());
-
         try {
             spawner.getCreatureSpawner().setSpawnedType(EntityType.valueOf(data.getIdentifyingName().toUpperCase()));
         } catch (Exception e) {

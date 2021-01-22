@@ -116,7 +116,7 @@ public class SpawnerData {
     }
 
     public double getConvertPrice() {
-        return (int) (getFirstTier().getCostEconomy() * (Double.parseDouble(convertRatio.substring(0, convertRatio.length() - 1)) / 100.0f));
+        return getFirstTier().getCostEconomy() * (Double.parseDouble(convertRatio.substring(0, convertRatio.length() - 1)) / 100.0f);
     }
 
     public int getKillGoal() {

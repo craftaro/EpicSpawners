@@ -89,7 +89,7 @@ public class SpawnerConvertGui extends CustomizableGui {
             ItemMeta itemmeta = item.getItemMeta();
             String name = spawnerData.getFirstTier().getCompiledDisplayName();
             ArrayList<String> lore = new ArrayList<>();
-            double price = stack.getCurrentTier().getCostEconomy();
+            double price = spawnerData.getConvertPrice();
 
             lore.add(plugin.getLocale().getMessage("interface.shop.buyprice").processPlaceholder("cost", EconomyManager.formatEconomy(price)).getMessage());
             String loreString = plugin.getLocale().getMessage("interface.convert.lore").getMessage();
