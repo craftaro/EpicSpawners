@@ -75,6 +75,7 @@ command:
 event:
   general:
     nopermission: '&cYou do not have permission to do that.'
+    protected: '&cThis spawner is protected and you cannot interact with it.'
   upgrade:
     cannotafford: '&cYou cannot afford this upgrade.'
     success: '&7You''ve upgraded this spawner to &6%size%x&7.'
