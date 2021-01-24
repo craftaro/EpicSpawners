@@ -29,51 +29,6 @@
     <a href="https://bstats.org/plugin/bukkit/EpicSpawners/4181">
         <img alt="Servers" src="https://img.shields.io/bstats/servers/4181">
     </a>
-<<<<<<< HEAD
-    <img alt="Maintained" src="https://img.shields.io/maintenance/yes/2020"> 
-</p>
-
-## Table of Contents 
-
-*   [Introduction](#introduction)
-*   [Marketplace](#marketplace)
-*   [Documentation](#documentation)
-*   [Support](#support)
-*   [Suggestions](#suggestions)
-
-## Introduction
-EpicSpawners is a high configurable spawner plugin, that also offers a GUI based system that can be used
-to easily configure the plugin and customize spawners in-game.
-EpicSpawners allows you to combine spawners into powerful stacked spawners,
-while giving you the option to customize the interval between spawn attempts,
-the block that the mob will spawn on (doesn't need to follow the vanilla rules),
-the conditions required fot the spawner to attempt to spawn an entity,
-what the mobs that are spawned by the spawner will drop when killed,
-the different particle effects that will be shown when the spawner attempts to spawn an entity.
-EpicSpawners also allows you to create your own custom spawners,
-while giving you the freedom to customize the spawner to your own specifications, making it unique to your own server.
-
-Ever wanted to have a single spawner that can spawn multiple mobs at a time?
-Now you can, using omnispawners, which allows you to combine multiple entity spawners into a single spawner.
-EpicSpawner also offers a built-in, fully customizable spawnershop that can be easily accessed and used by your players. 
-
-## Marketplace
-You can visit [our marketplace](https://songoda.com/marketplace/product/epicspawners-the-ultimate-spawner-plugin.13)
-to download EpicSpawners as well as take a look at many other fantastic plugins which are sure to catch your eye.
-
-## Documentation
-You can find all the information about the plugin, including dependencies,
-commands, permissions, incompatible plugins on [our wiki](https://wiki.songoda.com/Epic_Spawners).
-Feel free to also contribute to the wiki as a way to help others in the community with using the plugin.
-  
-## Support
-If you encounter any issues while using the plugin,
-feel free to create a ticket on [our support desk](https://support.songoda.com).
-
-## Suggestions
-For suggestions about features you think should be added to the plugin to increase its functionality,
-feel free to create a thread over on [our feedback site](https://feedback.songoda.com).
-=======
     <img alt="Maintained" src="https://img.shields.io/maintenance/yes/2021"> 
 </p>
 
