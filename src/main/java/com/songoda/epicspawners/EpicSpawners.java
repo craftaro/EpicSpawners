@@ -12,6 +12,7 @@ import com.songoda.core.gui.GuiManager;
 import com.songoda.core.hooks.EconomyManager;
 import com.songoda.core.hooks.EntityStackerManager;
 import com.songoda.core.hooks.HologramManager;
+import com.songoda.core.hooks.ProtectionManager;
 import com.songoda.epicspawners.blacklist.BlacklistHandler;
 import com.songoda.epicspawners.boost.BoostManager;
 import com.songoda.epicspawners.commands.CommandBoost;
@@ -102,9 +103,10 @@ public class EpicSpawners extends SongodaPlugin {
         // Run Songoda Updater
         SongodaCore.registerPlugin(this, 13, CompatibleMaterial.SPAWNER);
 
-        // Load Economy & Hologram hooks
+        // Load Economy, Hologram and Protection hooks
         EconomyManager.load();
         HologramManager.load(this);
+        ProtectionManager.load(this);
 
         // Setup Config
         Settings.setupConfig();

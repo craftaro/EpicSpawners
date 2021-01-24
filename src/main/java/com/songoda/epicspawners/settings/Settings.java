@@ -139,6 +139,9 @@ public class Settings {
             "Which hologram plugin should be used?",
             "You can choose from \"" + HologramManager.getManager().getRegisteredPlugins().stream().collect(Collectors.joining(", ")) + "\".");
 
+    public static final ConfigSetting USE_PROTECTION_PLUGINS = new ConfigSetting(config, "Main.Use Protection Plugins", true,
+            "Should we use protection plugins?");
+
     public static final ConfigSetting CHARGE_FOR_CREATIVE = new ConfigSetting(config, "Main.Charge For Creative", false,
             "Should players in creative have to pay for perks like upgrades and boosting?");
 

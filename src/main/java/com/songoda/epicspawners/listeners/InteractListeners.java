@@ -3,6 +3,7 @@ package com.songoda.epicspawners.listeners;
 import com.songoda.core.compatibility.CompatibleHand;
 import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.core.compatibility.ServerVersion;
+import com.songoda.core.hooks.ProtectionManager;
 import com.songoda.core.utils.ItemUtils;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.api.events.SpawnerAccessEvent;
@@ -125,6 +126,12 @@ public class InteractListeners implements Listener {
         if (e.isCancelled()) {
             return;
         }
+
+        if (Settings.USE_PROTECTION_PLUGINS.getBoolean() && !ProtectionManager.canInteract(player, block.getLocation())) {
+            player.sendMessage(plugin.getLocale().getMessage("event.general.protected").getPrefixedMessage());
+            return;
+        }
+
         if (blockType.equals(itemType)) {
             plugin.getLocale().getMessage("event.egg.sametype")
                     .processPlaceholder("type", blockType.getIdentifyingName()).sendPrefixedMessage(player);
@@ -181,6 +188,11 @@ public class InteractListeners implements Listener {
             if (!player.isSneaking()) {
                 SpawnerTier spawnerTier = plugin.getSpawnerManager().getSpawnerTier(item);
                 if (player.hasPermission("epicspawners.stack." + spawnerTier.getIdentifyingName()) || player.hasPermission("epicspawners.stack.*")) {
+                    if (Settings.USE_PROTECTION_PLUGINS.getBoolean() && !ProtectionManager.canInteract(player, block.getLocation())) {
+                        player.sendMessage(plugin.getLocale().getMessage("event.general.protected").getPrefixedMessage());
+                        return;
+                    }
+
                     spawner.stack(player, spawnerTier, spawnerTier.getStackSize(item), CompatibleHand.getHand(event));
                     plugin.updateHologram(spawner);
                     event.setCancelled(true);
@@ -194,6 +206,11 @@ public class InteractListeners implements Listener {
                 SpawnerAccessEvent accessEvent = new SpawnerAccessEvent(player, spawner);
                 Bukkit.getPluginManager().callEvent(accessEvent);
                 if (accessEvent.isCancelled()) {
+                    return;
+                }
+
+                if (Settings.USE_PROTECTION_PLUGINS.getBoolean() && !ProtectionManager.canInteract(player, block.getLocation())) {
+                    player.sendMessage(plugin.getLocale().getMessage("event.general.protected").getPrefixedMessage());
                     return;
                 }
 
