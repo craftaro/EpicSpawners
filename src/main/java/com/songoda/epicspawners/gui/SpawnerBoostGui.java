@@ -31,6 +31,7 @@ public class SpawnerBoostGui extends CustomizableGui {
 
     public SpawnerBoostGui(EpicSpawners plugin, PlacedSpawner spawner, Player player) {
         super(plugin, "boost");
+        setRows(3);
         this.plugin = plugin;
         this.spawner = spawner;
         this.player = player;
