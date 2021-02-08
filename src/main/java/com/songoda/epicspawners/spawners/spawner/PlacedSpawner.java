@@ -192,7 +192,7 @@ public class PlacedSpawner {
         SpawnerTiersGui.openTiers(plugin, player, this);
     }
 
-    public boolean unstack(Player player) {
+    public boolean unstack(Player player, CompatibleHand hand) {
         EpicSpawners instance = EpicSpawners.getInstance();
         SpawnerStack stack = getFirstStack();
 
@@ -209,7 +209,7 @@ public class PlacedSpawner {
         ItemStack item = stack.getCurrentTier().toItemStack(1, stackSize);
 
 
-        ItemStack inHand = player.getInventory().getItemInHand();
+        ItemStack inHand = hand.getItem(player);
         if (Settings.SILKTOUCH_SPAWNERS.getBoolean()
                 && inHand.hasItemMeta()
                 && inHand.getItemMeta().hasEnchant(Enchantment.SILK_TOUCH)
