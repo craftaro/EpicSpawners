@@ -284,12 +284,11 @@ public class BlockListeners implements Listener {
             }
 
             SpawnerTier firstTier = spawner.getFirstStack().getCurrentTier();
-
             CompatibleHand hand = CompatibleHand.getHand(event);
-            if (hand.getItem(player).getType().name().endsWith("PICKAXE") && !player.hasPermission("epicspawners.nopickdamage"))
-                hand.damageItem(player, spawner.getFirstStack().getCurrentTier().getPickDamage());
 
-            if (spawner.unstack(event.getPlayer())) {
+            short damage = spawner.getFirstStack().getCurrentTier().getPickDamage();
+
+            if (spawner.unstack(event.getPlayer(), hand)) {
                 if (block.getType() != Material.AIR)
                     event.setCancelled(true);
 
@@ -300,10 +299,12 @@ public class BlockListeners implements Listener {
                         plugin.getLocale().getMessage("event.block.break").processPlaceholder("type", firstTier.getCompiledDisplayName(false, currentStackSize)).sendPrefixedMessage(player);
                     }
                 }
+
+                if (hand.getItem(player).getType().name().endsWith("PICKAXE") && !player.hasPermission("epicspawners.nopickdamage"))
+                    hand.damageItem(player, damage);
             }
 
             plugin.updateHologram(spawner);
-
             plugin.getAppearanceTask().removeDisplayItem(spawner);
 
             return;
