@@ -51,15 +51,20 @@ public class DataManager extends DataManagerAbstract {
         updateSpawnerStack(spawnerStack, spawnerStack.getCurrentTier().getIdentifyingName());
     }
 
-    public void updateSpawnerStack(SpawnerStack stack, String tierBeforeUpdate) {
+    public void updateSpawnerStack(SpawnerStack spawnerStack, String tierBeforeUpdate) {
+        updateSpawnerStack(spawnerStack, spawnerStack.getSpawnerData().getIdentifyingName(), tierBeforeUpdate);
+    }
+
+    public void updateSpawnerStack(SpawnerStack stack, String dataBeforeUpdate, String tierBeforeUpdate) {
         this.async(() -> this.databaseConnector.connect(connection -> {
-            String updateSpawnerStack = "UPDATE " + this.getTablePrefix() + "spawner_stacks SET amount = ?, tier = ? WHERE spawner_id = ? AND data_type = ? AND tier = ?";
+            String updateSpawnerStack = "UPDATE " + this.getTablePrefix() + "spawner_stacks SET amount = ?, data_type = ?, tier = ? WHERE spawner_id = ? AND data_type = ? AND tier = ?";
             try (PreparedStatement statement = connection.prepareStatement(updateSpawnerStack)) {
                 statement.setInt(1, stack.getStackSize());
-                statement.setString(2, stack.getCurrentTier().getIdentifyingName());
-                statement.setInt(3, stack.getSpawner().getId());
-                statement.setString(4, stack.getSpawnerData().getIdentifyingName());
-                statement.setString(5, tierBeforeUpdate);
+                statement.setString(2, stack.getSpawnerData().getIdentifyingName());
+                statement.setString(3, stack.getCurrentTier().getIdentifyingName());
+                statement.setInt(4, stack.getSpawner().getId());
+                statement.setString(5, dataBeforeUpdate);
+                statement.setString(6, tierBeforeUpdate);
                 statement.executeUpdate();
             }
         }));
