@@ -381,7 +381,7 @@ public class SpawnerManager {
         for (SpawnerData spawnerData : getAllSpawnerData()) {
             ConfigurationSection currentSection = spawnersSection.createSection(spawnerData.getIdentifyingName());
 
-            currentSection.set("Allowed", spawnerData.isActive());
+            currentSection.set("Active", spawnerData.isActive());
             currentSection.set("Custom", spawnerData.isCustom());
             currentSection.set("Custom-Goal", spawnerData.getKillGoal());
             currentSection.set("Convertible", spawnerData.isConvertible());
