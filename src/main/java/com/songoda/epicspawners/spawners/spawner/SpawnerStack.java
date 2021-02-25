@@ -133,7 +133,8 @@ public class SpawnerStack {
 
         currentTier = data.getFirstTier();
         if (!spawner.merge(this, oldTier))
-            plugin.getDataManager().updateSpawnerStack(this, oldTier.getIdentifyingName());
+            plugin.getDataManager().updateSpawnerStack(this, oldTier.getSpawnerData().getIdentifyingName(),
+                    oldTier.getIdentifyingName());
         try {
             spawner.getCreatureSpawner().setSpawnedType(EntityType.valueOf(data.getIdentifyingName().toUpperCase()));
         } catch (Exception e) {
