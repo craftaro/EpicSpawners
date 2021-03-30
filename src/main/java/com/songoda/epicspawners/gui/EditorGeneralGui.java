@@ -109,8 +109,8 @@ public class EditorGeneralGui extends Gui {
                             "&7Example: &625&7."));
                 });
 
-        setButton(30, GuiUtils.createButtonItem(CompatibleMaterial.EXPERIENCE_BOTTLE, TextUtils.formatText("&5&lCustom Goal",
-                "&7Currently: &a" + spawnerTier.getSpawnerData().getKillGoal(),
+        setButton(30, GuiUtils.createButtonItem(CompatibleMaterial.EXPERIENCE_BOTTLE, TextUtils.formatText("&5&lKill Drop Goal",
+                "&7Currently: &a" + spawnerTier.getSpawnerData().getKillDropGoal(),
                 "&7If this is set to anything",
                 "&7but 0 the default kill goal",
                 "&7will be adjusted for this spawner.")),
@@ -121,7 +121,32 @@ public class EditorGeneralGui extends Gui {
                     gui.setAction(evnt -> {
                         String msg = gui.getInputText().trim();
                         if (NumberUtils.isInt(msg)) {
-                            spawnerTier.getSpawnerData().setKillGoal(Integer.parseInt(msg));
+                            spawnerTier.getSpawnerData().setKillDropGoal(Integer.parseInt(msg));
+                            player.closeInventory();
+                        } else {
+                            player.sendMessage(TextUtils.formatText("&CYou must enter a number."));
+                        }
+                    }).setOnClose(e -> paint());
+                    plugin.getGuiManager().showGUI(player, gui);
+
+                    PlayerUtils.sendMessages(player, TextUtils.formatText("&7Enter a custom goal for " + spawnerTier.getIdentifyingName() + "&7.",
+                            "&7Use &60 &7to use the default price.",
+                            "&7Example: &35&6."));
+                });
+
+        setButton(31, GuiUtils.createButtonItem(CompatibleMaterial.EXPERIENCE_BOTTLE, TextUtils.formatText("&5&lKill Drop Chance",
+                "&7Currently: &a" + spawnerTier.getSpawnerData().getKillDropGoal(),
+                "&7If this is set to anything",
+                "&7but 0 the default kill chance",
+                "&7will be adjusted for this spawner.")),
+                event -> {
+                    Player player = event.player;
+                    AnvilGui gui = new AnvilGui(player, this);
+                    gui.setTitle("Goal: Ex. 5");
+                    gui.setAction(evnt -> {
+                        String msg = gui.getInputText().trim();
+                        if (NumberUtils.isInt(msg)) {
+                            spawnerTier.getSpawnerData().setKillDropGoal(Integer.parseInt(msg));
                             player.closeInventory();
                         } else {
                             player.sendMessage(TextUtils.formatText("&CYou must enter a number."));

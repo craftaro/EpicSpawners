@@ -152,10 +152,14 @@ public class EntityListeners implements Listener {
             plugin.getDataManager().updateEntityKill(player, event.getEntity().getType(), amt);
         else
             plugin.getDataManager().createEntityKill(player, event.getEntity().getType(), amt);
-        int goal = Settings.KILL_GOAL.getInt();
+        int goal = Settings.KILL_DROP_GOAL.getInt();
+        double chance = Settings.KILL_DROP_CHANCE.getDouble();
 
-        int customGoal = spawnerTier.getSpawnerData().getKillGoal();
+        int customGoal = spawnerTier.getSpawnerData().getKillDropGoal();
         if (customGoal != 0) goal = customGoal;
+
+        double customChance = spawnerTier.getSpawnerData().getKillDropChance();
+        if (customChance != 0) chance = customChance;
 
         if (Settings.ALERT_INTERVAL.getInt() != 0
                 && amt % Settings.ALERT_INTERVAL.getInt() == 0
@@ -170,7 +174,9 @@ public class EntityListeners implements Listener {
                         .processPlaceholder("type", spawnerTier.getDisplayName()).getMessage());
         }
 
-        if (amt >= goal) {
+        double rand = Math.random() * 100;
+        boolean goalReached = amt >= goal;
+        if (goalReached || rand - chance < 0 || chance == 100) {
             ItemStack item = spawnerTier.toItemStack();
 
             if (Settings.SPAWNERS_TO_INVENTORY.getBoolean() && player.getInventory().firstEmpty() != -1)
@@ -178,15 +184,14 @@ public class EntityListeners implements Listener {
             else
                 event.getEntity().getLocation().getWorld().dropItemNaturally(event.getEntity().getLocation(), item);
 
-            plugin.getPlayerDataManager().getPlayerData(player).removeEntity(event.getEntityType());
-            plugin.getDataManager().deleteEntityKills(player, event.getEntityType());
+            if (goalReached) {
+                plugin.getPlayerDataManager().getPlayerData(player).removeEntity(event.getEntityType());
+                plugin.getDataManager().deleteEntityKills(player, event.getEntityType());
+            }
+
             if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9))
                 player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(plugin.getLocale().getMessage("event.goal.reached")
-                        .processPlaceholder("type", spawnerTier.getIdentifyingName()).getMessage()));
-            else
-                player.sendTitle("", plugin.getLocale().getMessage("event.goal.alert")
-                        .processPlaceholder("goal", goal - amt)
-                        .processPlaceholder("type", spawnerTier.getIdentifyingName()).getMessage());
+                        .processPlaceholder("type", spawnerTier.getIdentifyingName()).getMessage()));;
         }
     }
 }

@@ -169,8 +169,11 @@ public class Settings {
     public static final ConfigSetting COUNT_UNNATURAL_KILLS = new ConfigSetting(config, "Spawner Drops.Count Unnatural Kills Towards Spawner Drop", false,
             "Can mobs from spawners count towards the spawner drop count?");
 
-    public static final ConfigSetting KILL_GOAL = new ConfigSetting(config, "Spawner Drops.Kills Needed for Drop", 100,
+    public static final ConfigSetting KILL_DROP_GOAL = new ConfigSetting(config, "Spawner Drops.Kills Needed for Drop", 100,
             "Amount of mob kills required to drop a spawner.");
+
+    public static final ConfigSetting KILL_DROP_CHANCE = new ConfigSetting(config, "Spawner Drops.Kills Needed for Drop", 2.5,
+            "The chance a mob kill will drop a spawner.");
 
     public static final ConfigSetting ALERT_INTERVAL = new ConfigSetting(config, "Spawner Drops.Alert Every X Before Drop", 10,
             "Alert players every x amount of kills before dropping spawner.");

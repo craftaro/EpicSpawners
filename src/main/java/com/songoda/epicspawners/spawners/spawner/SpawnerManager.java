@@ -167,7 +167,8 @@ public class SpawnerManager {
 
         SpawnerData spawnerData = new SpawnerDataBuilder(typeString).setCustom(false)
                 .setActive(true)
-                .setKillGoal(0)
+                .setKillDropGoal(0)
+                .setKillDropChance(0)
                 .setConvertible(true)
                 .convertRatio("45%")
                 .setInShop(true)
@@ -268,7 +269,8 @@ public class SpawnerManager {
 
             SpawnerData spawnerData = new SpawnerDataBuilder(key).setCustom(currentSection.getBoolean("Custom", false))
                     .setActive(currentSection.getBoolean("Active", true))
-                    .setKillGoal(currentSection.getInt("Custom-Goal", 0))
+                    .setKillDropGoal(currentSection.getInt("Kill-Drop-Goal", 0))
+                    .setKillDropChance(currentSection.getDouble("Kill-Drop-Goal", 0))
                     .setConvertible(currentSection.getBoolean("Convertible"))
                     .convertRatio(currentSection.getString("Convert-Ratio"))
                     .setInShop(currentSection.getBoolean("In-Shop", true))
@@ -383,7 +385,8 @@ public class SpawnerManager {
 
             currentSection.set("Active", spawnerData.isActive());
             currentSection.set("Custom", spawnerData.isCustom());
-            currentSection.set("Custom-Goal", spawnerData.getKillGoal());
+            currentSection.set("Kill-Drop-Goal", spawnerData.getKillDropGoal());
+            currentSection.set("Kill-Drop-Chance", spawnerData.getKillDropChance());
             currentSection.set("Convertible", spawnerData.isConvertible());
             currentSection.set("Convert-Ratio", spawnerData.getConvertRatio());
             currentSection.set("In-Shop", spawnerData.isInShop());
