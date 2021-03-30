@@ -374,11 +374,11 @@ public class SpawnerOverviewGui extends CustomizableGui {
                                 text = "";
                             } else {
                                 text = text.replace("<TYPE>", tier.getDisplayName().toLowerCase());
-                                stack.getSpawnerData().getKillGoal();
-                                if (stack.getSpawnerData().getKillGoal() != 0)
-                                    text = text.replace("<AMT>", Integer.toString(stack.getSpawnerData().getKillGoal()));
+                                stack.getSpawnerData().getKillDropGoal();
+                                if (stack.getSpawnerData().getKillDropGoal() != 0)
+                                    text = text.replace("<AMT>", Integer.toString(stack.getSpawnerData().getKillDropGoal()));
                                 else
-                                    text = text.replace("<AMT>", Integer.toString(Settings.KILL_GOAL.getInt()));
+                                    text = text.replace("<AMT>", Integer.toString(Settings.KILL_DROP_GOAL.getInt()));
                             }
                             if (nu == 1) {
                                 if (Settings.COUNT_UNNATURAL_KILLS.getBoolean()) {

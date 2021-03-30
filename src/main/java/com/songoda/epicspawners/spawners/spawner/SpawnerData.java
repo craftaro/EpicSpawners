@@ -24,10 +24,10 @@ public class SpawnerData {
             inShop = true, convertible = true;
 
     private String convertRatio = "45%";
-    private int killGoal = 0,
+    private int killDropGoal = 0,
             shopOrder = 0;
 
-    private double shopPrice = 1000;
+    private double shopPrice = 1000, killDropChance = 0;
 
     private final List<SpawnerTier> spawnerTiers = new LinkedList<>();
 
@@ -119,12 +119,20 @@ public class SpawnerData {
         return getFirstTier().getCostEconomy() * (Double.parseDouble(convertRatio.substring(0, convertRatio.length() - 1)) / 100.0f);
     }
 
-    public int getKillGoal() {
-        return killGoal;
+    public int getKillDropGoal() {
+        return killDropGoal;
     }
 
-    public void setKillGoal(int killGoal) {
-        this.killGoal = killGoal;
+    public void setKillDropGoal(int killDropGoal) {
+        this.killDropGoal = killDropGoal;
+    }
+
+    public double getKillDropChance() {
+        return killDropChance;
+    }
+
+    public void setKillDropChance(double killDropChance) {
+        this.killDropChance = killDropChance;
     }
 
     public int getShopOrder() {

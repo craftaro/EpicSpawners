@@ -23,8 +23,13 @@ public final class SpawnerDataBuilder {
         return this;
     }
 
-    public SpawnerDataBuilder setKillGoal(int killGoal) {
-        this.spawnerData.setKillGoal(killGoal);
+    public SpawnerDataBuilder setKillDropGoal(int goal) {
+        this.spawnerData.setKillDropGoal(goal);
+        return this;
+    }
+
+    public SpawnerDataBuilder setKillDropChance(double chance) {
+        this.spawnerData.setKillDropChance(chance);
         return this;
     }
 

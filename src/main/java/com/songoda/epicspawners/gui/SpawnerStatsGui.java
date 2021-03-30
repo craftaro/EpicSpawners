@@ -12,12 +12,9 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -78,11 +75,11 @@ public class SpawnerStatsGui extends CustomizableGui {
             if (num == 16 || num == 36)
                 num = num + 2;
 
-            int goal = Settings.KILL_GOAL.getInt();
+            int goal = Settings.KILL_DROP_GOAL.getInt();
 
             SpawnerData spawnerData = entry.getKey();
 
-            int customGoal = spawnerData.getKillGoal();
+            int customGoal = spawnerData.getKillDropGoal();
             if (customGoal != 0) goal = customGoal;
 
             setItem(num, GuiUtils.createButtonItem(HeadUtils.getTexturedSkull(spawnerData),
