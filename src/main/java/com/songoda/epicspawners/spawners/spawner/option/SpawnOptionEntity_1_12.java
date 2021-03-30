@@ -172,6 +172,10 @@ public class SpawnOptionEntity_1_12 implements SpawnOption {
                 maxEntitiesAllowed = ((SpawnConditionNearbyEntities) spawnCondition).getMax();
         }
 
+        // Should we skip the max entity amount on first spawn?
+        if (spawner.getSpawnCount() == 0 && Settings.IGNORE_MAX_ON_FIRST_SPAWN.getBoolean())
+            maxEntitiesAllowed = Integer.MAX_VALUE;
+
         // Get the amount of entities around the spawner.
         int size = SpawnConditionNearbyEntities.getEntitiesAroundSpawner(location, true);
 

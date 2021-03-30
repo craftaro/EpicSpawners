@@ -125,6 +125,10 @@ public class Settings {
             "This value depicts the variable {RAND} in equations used by this plugin",
             "It generates a random number between (by default) 1 and 4.");
 
+    public static final ConfigSetting IGNORE_MAX_ON_FIRST_SPAWN = new ConfigSetting(config, "Main.Ignore Max On First Spawn", false,
+            "Should the max entity count around spawners be",
+            "ignored on their first spawn?");
+
     public static final ConfigSetting REMOVE_CORRUPTED_SPAWNERS = new ConfigSetting(config, "Main.Remove Corrupted Spawners", true,
             "Should spawners without valid values be removed?",
             "This may need to be disabled for compatibility that use",
