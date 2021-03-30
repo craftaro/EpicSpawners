@@ -172,7 +172,7 @@ public class Settings {
     public static final ConfigSetting KILL_DROP_GOAL = new ConfigSetting(config, "Spawner Drops.Kills Needed for Drop", 100,
             "Amount of mob kills required to drop a spawner.");
 
-    public static final ConfigSetting KILL_DROP_CHANCE = new ConfigSetting(config, "Spawner Drops.Kills Needed for Drop", 2.5,
+    public static final ConfigSetting KILL_DROP_CHANCE = new ConfigSetting(config, "Spawner Drops.Chance of Drop", 2.5,
             "The chance a mob kill will drop a spawner.");
 
     public static final ConfigSetting ALERT_INTERVAL = new ConfigSetting(config, "Spawner Drops.Alert Every X Before Drop", 10,

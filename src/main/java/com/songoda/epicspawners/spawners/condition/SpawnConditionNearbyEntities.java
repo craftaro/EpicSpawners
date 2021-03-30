@@ -34,6 +34,11 @@ public class SpawnConditionNearbyEntities implements SpawnCondition {
 
     @Override
     public boolean isMet(PlacedSpawner spawner) {
+
+        // Should we skip the max entity amount on first spawn?
+        if (spawner.getSpawnCount() == 0 && Settings.IGNORE_MAX_ON_FIRST_SPAWN.getBoolean())
+            return true;
+
         return getEntitiesAroundSpawner(spawner.getLocation().add(0.5, 0.5, 0.5), false) < max;
     }
 
