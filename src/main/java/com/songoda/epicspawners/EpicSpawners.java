@@ -32,6 +32,7 @@ import com.songoda.epicspawners.listeners.EntityListeners;
 import com.songoda.epicspawners.listeners.InteractListeners;
 import com.songoda.epicspawners.listeners.InventoryListeners;
 import com.songoda.epicspawners.listeners.SpawnerListeners;
+import com.songoda.epicspawners.listeners.WorldListeners;
 import com.songoda.epicspawners.lootables.LootablesManager;
 import com.songoda.epicspawners.player.PlayerData;
 import com.songoda.epicspawners.player.PlayerDataManager;
@@ -153,6 +154,7 @@ public class EpicSpawners extends SongodaPlugin {
         pluginManager.registerEvents(new InteractListeners(this), this);
         pluginManager.registerEvents(new InventoryListeners(), this);
         pluginManager.registerEvents(new SpawnerListeners(this), this);
+        pluginManager.registerEvents(new WorldListeners(this), this);
 
         int timeout = Settings.AUTOSAVE.getInt() * 60 * 20;
         Bukkit.getScheduler().runTaskTimerAsynchronously(this, this::saveToFile, timeout, timeout);
