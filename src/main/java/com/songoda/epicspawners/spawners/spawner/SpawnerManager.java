@@ -270,7 +270,7 @@ public class SpawnerManager {
             SpawnerData spawnerData = new SpawnerDataBuilder(key).setCustom(currentSection.getBoolean("Custom", false))
                     .setActive(currentSection.getBoolean("Active", true))
                     .setKillDropGoal(currentSection.getInt("Kill-Drop-Goal", 0))
-                    .setKillDropChance(currentSection.getDouble("Kill-Drop-Goal", 0))
+                    .setKillDropChance(currentSection.getDouble("Kill-Drop-Chance", 0))
                     .setConvertible(currentSection.getBoolean("Convertible"))
                     .convertRatio(currentSection.getString("Convert-Ratio"))
                     .setInShop(currentSection.getBoolean("In-Shop", true))
