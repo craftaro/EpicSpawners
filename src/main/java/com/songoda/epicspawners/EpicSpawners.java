@@ -164,17 +164,6 @@ public class EpicSpawners extends SongodaPlugin {
         this.spawnerCustomSpawnTask = SpawnerSpawnTask.startTask(this);
         this.appearanceTask = AppearanceTask.startTask(this);
 
-        // ShopGUI+ support
-        if (Bukkit.getPluginManager().isPluginEnabled("ShopGUIPlus")) {
-            try {
-                // For some reason simply creating a new instance of the class without ShopGUIPlus being installed was giving a NoClassDefFoundError.
-                // We're using reflection to get around this problem.
-                Object provider = Class.forName("com.songoda.epicspawners.utils.EpicSpawnerProvider").newInstance();
-                net.brcdev.shopgui.ShopGuiPlusApi.registerSpawnerProvider((net.brcdev.shopgui.spawner.external.provider.ExternalSpawnerProvider) provider);
-            } catch (Exception ignored) {
-            }
-        }
-
         // Database stuff, go!
         this.databaseConnector = new SQLiteConnector(this);
         this.getLogger().info("Data handler connected using SQLite.");
