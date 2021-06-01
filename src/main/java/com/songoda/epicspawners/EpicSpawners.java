@@ -32,6 +32,7 @@ import com.songoda.epicspawners.listeners.EntityListeners;
 import com.songoda.epicspawners.listeners.InteractListeners;
 import com.songoda.epicspawners.listeners.InventoryListeners;
 import com.songoda.epicspawners.listeners.SpawnerListeners;
+import com.songoda.epicspawners.listeners.WorldListeners;
 import com.songoda.epicspawners.lootables.LootablesManager;
 import com.songoda.epicspawners.player.PlayerData;
 import com.songoda.epicspawners.player.PlayerDataManager;
@@ -153,6 +154,7 @@ public class EpicSpawners extends SongodaPlugin {
         pluginManager.registerEvents(new InteractListeners(this), this);
         pluginManager.registerEvents(new InventoryListeners(), this);
         pluginManager.registerEvents(new SpawnerListeners(this), this);
+        pluginManager.registerEvents(new WorldListeners(this), this);
 
         int timeout = Settings.AUTOSAVE.getInt() * 60 * 20;
         Bukkit.getScheduler().runTaskTimerAsynchronously(this, this::saveToFile, timeout, timeout);
@@ -161,17 +163,6 @@ public class EpicSpawners extends SongodaPlugin {
         this.particleTask = SpawnerParticleTask.startTask(this);
         this.spawnerCustomSpawnTask = SpawnerSpawnTask.startTask(this);
         this.appearanceTask = AppearanceTask.startTask(this);
-
-        // ShopGUI+ support
-        if (Bukkit.getPluginManager().isPluginEnabled("ShopGUIPlus")) {
-            try {
-                // For some reason simply creating a new instance of the class without ShopGUIPlus being installed was giving a NoClassDefFoundError.
-                // We're using reflection to get around this problem.
-                Object provider = Class.forName("com.songoda.epicspawners.utils.EpicSpawnerProvider").newInstance();
-                net.brcdev.shopgui.ShopGuiPlusApi.registerSpawnerProvider((net.brcdev.shopgui.spawner.external.provider.ExternalSpawnerProvider) provider);
-            } catch (Exception ignored) {
-            }
-        }
 
         // Database stuff, go!
         this.databaseConnector = new SQLiteConnector(this);

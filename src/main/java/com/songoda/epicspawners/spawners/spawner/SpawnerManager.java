@@ -5,6 +5,7 @@ import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.core.configuration.Config;
 import com.songoda.core.nms.NmsManager;
 import com.songoda.core.nms.nbt.NBTItem;
+import com.songoda.core.utils.EntityUtils;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.particles.ParticleDensity;
 import com.songoda.epicspawners.particles.ParticleEffect;
@@ -179,39 +180,9 @@ public class SpawnerManager {
                 .build();
 
         List<EntityType> entities = new ArrayList<>(Collections.singletonList(type));
-        List<CompatibleMaterial> spawnBlocks = new ArrayList<>(Collections.singletonList(CompatibleMaterial.AIR));
+        List<CompatibleMaterial> spawnBlocks;
 
-        switch (typeString.toUpperCase()) {
-            case "PIG":
-            case "SHEEP":
-            case "CHICKEN":
-            case "COW":
-            case "RABBIT":
-            case "LLAMA":
-            case "HORSE":
-            case "CAT":
-                spawnBlocks = new ArrayList<>(Collections.singletonList(CompatibleMaterial.GRASS_BLOCK));
-                break;
-            case "MUSHROOM_COW":
-                spawnBlocks = new ArrayList<>(Collections.singletonList(CompatibleMaterial.MYCELIUM));
-                break;
-            case "SQUID":
-            case "ELDER_GUARDIAN":
-            case "COD":
-            case "SALMON":
-            case "PUFFERFISH":
-            case "TROPICAL_FISH":
-                spawnBlocks = new ArrayList<>(Collections.singletonList(CompatibleMaterial.WATER));
-                break;
-            case "OCELOT":
-                spawnBlocks = new ArrayList<>(Arrays.asList(CompatibleMaterial.GRASS_BLOCK,
-                        CompatibleMaterial.JUNGLE_LEAVES, CompatibleMaterial.ACACIA_LEAVES,
-                        CompatibleMaterial.BIRCH_LEAVES, CompatibleMaterial.DARK_OAK_LEAVES,
-                        CompatibleMaterial.OAK_LEAVES, CompatibleMaterial.SPRUCE_LEAVES));
-                break;
-            default:
-                break;
-        }
+        spawnBlocks = EntityUtils.getSpawnBlocks(type);
 
         SpawnerTierBuilder tierBuilder = new SpawnerTierBuilder(spawnerData)
                 .setEntities(entities)
@@ -270,7 +241,7 @@ public class SpawnerManager {
             SpawnerData spawnerData = new SpawnerDataBuilder(key).setCustom(currentSection.getBoolean("Custom", false))
                     .setActive(currentSection.getBoolean("Active", true))
                     .setKillDropGoal(currentSection.getInt("Kill-Drop-Goal", 0))
-                    .setKillDropChance(currentSection.getDouble("Kill-Drop-Goal", 0))
+                    .setKillDropChance(currentSection.getDouble("Kill-Drop-Chance", 0))
                     .setConvertible(currentSection.getBoolean("Convertible"))
                     .convertRatio(currentSection.getString("Convert-Ratio"))
                     .setInShop(currentSection.getBoolean("In-Shop", true))
@@ -329,7 +300,7 @@ public class SpawnerManager {
                 if (currentSection2.contains("Conditions")) {
                     String biomeString = currentSection2.getString("Conditions.Biomes");
                     Set<Biome> biomes;
-                    if (biomeString.toLowerCase().equals("all"))
+                    if (biomeString.toUpperCase().equals("ALL"))
                         biomes = EnumSet.allOf(Biome.class);
                     else {
                         biomes = new HashSet<>();

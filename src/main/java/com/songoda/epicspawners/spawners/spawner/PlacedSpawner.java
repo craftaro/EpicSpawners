@@ -6,6 +6,7 @@ import com.songoda.core.compatibility.CompatibleParticleHandler;
 import com.songoda.core.compatibility.CompatibleSound;
 import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.core.utils.PlayerUtils;
+import com.songoda.core.world.SSpawner;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.api.events.SpawnerChangeEvent;
 import com.songoda.epicspawners.api.events.SpawnerDropEvent;
@@ -28,8 +29,6 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -40,26 +39,20 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
-public class PlacedSpawner {
+public class PlacedSpawner extends SSpawner {
 
     // Id for database use.
     private int id;
 
-    private static ScriptEngine engine = null;
     //Holds the different types of spawners contained by this creatureSpawner.
     private final Deque<SpawnerStack> spawnerStacks = new ArrayDeque<>();
-    private final Location location;
     private String omniState = null;
     private int spawnCount;
     private UUID placedBy = null;
     private CreatureSpawner creatureSpawner = null;
 
     public PlacedSpawner(Location location) {
-        this.location = location;
-        if (engine == null) {
-            ScriptEngineManager mgr = new ScriptEngineManager();
-            engine = mgr.getEngineByName("JavaScript");
-        }
+        super(location);
     }
 
     public boolean spawn() {
@@ -76,7 +69,7 @@ public class PlacedSpawner {
 
         //ToDo: This is bad.
         if (getFirstTier().getSpawnLimit() != -1 && spawnCount * spawnerStacks.size() > getFirstTier().getSpawnLimit()) {
-            this.location.getBlock().setType(Material.AIR);
+            location.getBlock().setType(Material.AIR);
 
             CompatibleParticleHandler.spawnParticles(CompatibleParticleHandler.ParticleType.LAVA,
                     location.clone().add(.5, .5, .5), 5, 0, 0, 0, 5);

@@ -14,7 +14,7 @@ public class SpawnConditionBiome implements SpawnCondition {
     private final Set<Biome> biomes;
 
     public SpawnConditionBiome(Biome... biomes) {
-        this.biomes = (biomes.length > 1) ? EnumSet.of(biomes[0], biomes) : EnumSet.noneOf(Biome.class);
+        this.biomes = (biomes.length >= 1) ? EnumSet.of(biomes[0], biomes) : EnumSet.noneOf(Biome.class);
     }
 
     public SpawnConditionBiome(Set<Biome> biomes) {
