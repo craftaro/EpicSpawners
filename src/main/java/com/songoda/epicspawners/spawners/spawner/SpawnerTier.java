@@ -2,7 +2,6 @@ package com.songoda.epicspawners.spawners.spawner;
 
 import com.google.common.base.Preconditions;
 import com.songoda.core.compatibility.CompatibleMaterial;
-import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.core.gui.GuiUtils;
 import com.songoda.core.nms.NmsManager;
 import com.songoda.core.nms.nbt.NBTItem;
@@ -16,8 +15,7 @@ import com.songoda.epicspawners.spawners.condition.SpawnCondition;
 import com.songoda.epicspawners.spawners.spawner.option.SpawnOption;
 import com.songoda.epicspawners.spawners.spawner.option.SpawnOptionBlock;
 import com.songoda.epicspawners.spawners.spawner.option.SpawnOptionCommand;
-import com.songoda.epicspawners.spawners.spawner.option.SpawnOptionEntity_1_12;
-import com.songoda.epicspawners.spawners.spawner.option.SpawnOptionEntity_1_13;
+import com.songoda.epicspawners.spawners.spawner.option.SpawnOptionEntity;
 import com.songoda.epicspawners.spawners.spawner.option.SpawnOptionItem;
 import com.songoda.epicspawners.utils.CostType;
 import org.apache.commons.lang.math.NumberUtils;
@@ -81,11 +79,7 @@ public class SpawnerTier {
 
     public void reloadSpawnMethods() {
         spawnOptions.clear();
-        if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13)) {
-            if (!entities.isEmpty()) spawnOptions.add(new SpawnOptionEntity_1_13(entities));
-        } else {
-            if (!entities.isEmpty()) spawnOptions.add(new SpawnOptionEntity_1_12(entities));
-        }
+        if (!entities.isEmpty()) spawnOptions.add(new SpawnOptionEntity(entities));
         if (!blocks.isEmpty()) spawnOptions.add(new SpawnOptionBlock(blocks));
         if (!items.isEmpty()) spawnOptions.add(new SpawnOptionItem(items));
         if (!commands.isEmpty()) spawnOptions.add(new SpawnOptionCommand(commands));
