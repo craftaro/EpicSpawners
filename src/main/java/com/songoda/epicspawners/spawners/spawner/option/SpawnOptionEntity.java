@@ -44,12 +44,16 @@ public class SpawnOptionEntity implements SpawnOption {
         location.add(.5, .5, .5);
         if (location.getWorld() == null) return;
 
-        String[] randomLowHigh = Settings.RANDOM_LOW_HIGH.getString().split(":");
+        String highLow = Settings.RANDOM_LOW_HIGH.getString();
+        String[] randomLowHigh = highLow.split(":");
+        boolean isSame = randomLowHigh.length == 1 || randomLowHigh[0].equals(randomLowHigh[1]);
 
         // Get the amount of entities to spawn per spawner in the stack.
         int spawnCount = 0;
         for (int i = 0; i < stack.getStackSize(); i++) {
-            int randomAmt = ThreadLocalRandom.current().nextInt(Integer.parseInt(randomLowHigh[0]), Integer.parseInt(randomLowHigh[1]));
+            int randomAmt = isSame ? Integer.parseInt(randomLowHigh[0]) :
+                    ThreadLocalRandom.current().nextInt(Integer.parseInt(randomLowHigh[0]),
+                            Integer.parseInt(randomLowHigh[1]));
 
             String equation = Settings.SPAWNER_SPAWN_EQUATION.getString();
             equation = equation.replace("{RAND}", Integer.toString(randomAmt));
