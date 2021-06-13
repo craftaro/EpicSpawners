@@ -6,6 +6,7 @@ import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.core.hooks.EconomyManager;
 import com.songoda.core.utils.ItemUtils;
 import com.songoda.core.utils.PlayerUtils;
+import com.songoda.core.world.SItemStack;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.api.events.SpawnerBreakEvent;
 import com.songoda.epicspawners.api.events.SpawnerChangeEvent;
@@ -301,7 +302,7 @@ public class BlockListeners implements Listener {
                 }
 
                 if (hand.getItem(player).getType().name().endsWith("PICKAXE") && !player.hasPermission("epicspawners.nopickdamage"))
-                    hand.damageItem(player, damage);
+                    new SItemStack(hand.getItem(player)).addDamage(player, damage);
             }
 
             plugin.updateHologram(spawner);
