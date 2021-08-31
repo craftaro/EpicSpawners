@@ -147,11 +147,11 @@ public class InteractListeners implements Listener {
         }
         spawner.getCreatureSpawner().update();
         
-        if (plugin.getConfig().getBoolean("giveOldEgg")) {
+        if (Settings.GIVE_OLD_EGG.getBoolean()) {
             CreatureSpawner creatureSpawner = (CreatureSpawner) block.getState();
-            ItemStack oldEgg = new ItemStack(item.getType(), 1);
-            ((SpawnEggMeta) oldEgg.getItemMeta()).setSpawnedType(creatureSpawner.getSpawnedType());
-            player.getInventory().addItem(oldEgg);
+            SpawnEgg oldEgg = new SpawnEgg(creatureSpawner.getSpawnedType());
+            ItemStack givenEgg = new ItemStack(Material.LEGACY_MONSTER_EGG, 1, creatureSpawner.getSpawnedType().getTypeId());
+            player.getInventory().addItem(givenEgg);
         }
         
         plugin.processChange(block);
