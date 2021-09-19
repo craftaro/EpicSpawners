@@ -3,11 +3,10 @@ package com.songoda.epicspawners.tasks;
 import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.settings.Settings;
+import com.songoda.epicspawners.spawners.spawner.PlacedSpawner;
 import com.songoda.epicspawners.spawners.spawner.SpawnerManager;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.scheduler.BukkitRunnable;
-
-import java.util.ArrayList;
 
 public class SpawnerSpawnTask extends BukkitRunnable {
 
@@ -33,7 +32,7 @@ public class SpawnerSpawnTask extends BukkitRunnable {
 
     @Override
     public void run() {
-        new ArrayList<>(manager.getSpawners()).forEach(spawner -> {
+        for (PlacedSpawner spawner : manager.getSpawners().toArray(new PlacedSpawner[0])) {
             try {
                 if (spawner.getWorld() == null
                         || plugin.getBlacklistHandler().isBlacklisted(spawner.getWorld())
@@ -46,8 +45,8 @@ public class SpawnerSpawnTask extends BukkitRunnable {
                 }
 
                 if (spawner.getStackSize() == 0
-                        || !spawner.checkConditions()
-                        || (spawner.getPlacedBy() == null && Settings.DISABLE_NATURAL_SPAWNERS.getBoolean())) return;
+                        || (spawner.getPlacedBy() == null && Settings.DISABLE_NATURAL_SPAWNERS.getBoolean())
+                        || !spawner.checkConditions()) return;
 
                 CreatureSpawner cSpawner = spawner.getCreatureSpawner();
                 if (cSpawner == null) return;
@@ -56,12 +55,12 @@ public class SpawnerSpawnTask extends BukkitRunnable {
                 spawner.getCreatureSpawner().setDelay(delay);
                 if (delay >= 0) return;
 
-                if (!spawner.spawn())
+                if (!spawner.spawn()) {
                     spawner.updateDelay();
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        });
+        }
     }
-
 }

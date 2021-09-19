@@ -143,6 +143,12 @@ public class Settings {
             "Which hologram plugin should be used?",
             "You can choose from \"" + HologramManager.getManager().getRegisteredPlugins().stream().collect(Collectors.joining(", ")) + "\".");
 
+    public static final ConfigSetting EPIC_ANCHORS_PLAYER_WEIGHT = new ConfigSetting(config, "Main.EpicAnchorsPlayerWeight",
+            1,
+            "This setting affects how Anchors (Chunkloader) from EpicAnchors are affecting EpicSpawners.\n" +
+                    "-1 = Skips NearbyPlayers condition if the chunk is loaded by an Anchor\n" +
+                    "0 and greater = Counts as *n* players for the NearbyPlayers condition");
+
     public static final ConfigSetting USE_PROTECTION_PLUGINS = new ConfigSetting(config, "Main.Use Protection Plugins", true,
             "Should we use protection plugins?");
 
