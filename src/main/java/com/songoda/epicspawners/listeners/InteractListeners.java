@@ -137,6 +137,14 @@ public class InteractListeners implements Listener {
                     .processPlaceholder("type", blockType.getIdentifyingName()).sendPrefixedMessage(player);
             return;
         }
+
+        CreatureSpawner creatureSpawner = (CreatureSpawner) block.getState();
+
+        if (Settings.GIVE_OLD_EGG.getBoolean() && creatureSpawner.getSpawnedType() != EntityType.fromId(item.getDurability())) {
+            ItemStack oldEgg = CompatibleMaterial.getSpawnEgg(creatureSpawner.getSpawnedType()).getItem();
+            player.getInventory().addItem(oldEgg);
+        }
+
         String oldTier = spawner.getFirstStack().getCurrentTier().getIdentifyingName();
         SpawnerStack stack = spawner.getFirstStack().setTier(plugin.getSpawnerManager().getSpawnerData(itype).getFirstTier());
         plugin.getDataManager().updateSpawnerStack(stack, oldTier);
@@ -146,7 +154,7 @@ public class InteractListeners implements Listener {
             spawner.getCreatureSpawner().setSpawnedType(EntityType.DROPPED_ITEM);
         }
         spawner.getCreatureSpawner().update();
-
+        
         plugin.processChange(block);
         ItemUtils.takeActiveItem(player, CompatibleHand.getHand(event), bmulti);
     }

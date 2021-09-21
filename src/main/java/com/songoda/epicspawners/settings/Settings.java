@@ -102,6 +102,9 @@ public class Settings {
     public static final ConfigSetting MAX_SPAWNERS = new ConfigSetting(config, "Main.Max Spawners Per Player", -1,
             "The maximum amount of spawners a player can place. Set to -1 to allow unlimited",
             "spawner placement.");
+    
+    public static final ConfigSetting GIVE_OLD_EGG = new ConfigSetting(config, "Main.Give Previous Mob as Egg when replacing mob", true,
+            "Should the previous mob of the spawner be given as an egg when changing the spawner's mob?");
 
     public static final ConfigSetting AUTOSAVE = new ConfigSetting(config, "Main.Auto Save Interval In Seconds", 15,
             "The amount of time in between saving to file.",
