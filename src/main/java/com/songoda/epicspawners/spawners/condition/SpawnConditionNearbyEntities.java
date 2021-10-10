@@ -1,6 +1,7 @@
 package com.songoda.epicspawners.spawners.condition;
 
 import com.songoda.core.hooks.EntityStackerManager;
+import com.songoda.core.utils.NumberUtils;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.settings.Settings;
 import com.songoda.epicspawners.spawners.spawner.PlacedSpawner;
@@ -44,18 +45,36 @@ public class SpawnConditionNearbyEntities implements SpawnCondition {
 
     public static int getEntitiesAroundSpawner(Location location, boolean cached) {
         if (cached) {
-            if (cachedAmounts.containsKey(location))
+            if (cachedAmounts.containsKey(location)) {
                 return cachedAmounts.get(location);
+            }
+
             return 0;
         }
         String[] arr = Settings.SEARCH_RADIUS.getString().split("x");
 
+        if (arr.length == 1) {
+            if (NumberUtils.isNumeric(arr[0])) {
+                arr = new String[] {arr[0], arr[0], arr[0]};
+            }
+        }
+
+        if (arr.length != 3) {
+            EpicSpawners.getInstance().getLogger().warning("Search radius is invalid:" + Settings.SEARCH_RADIUS.getString());
+            return 0;
+        }
+
         int amt = location.getWorld().getNearbyEntities(location, Integer.parseInt(arr[0]), Integer.parseInt(arr[1]), Integer.parseInt(arr[2]))
-                .stream().filter(e -> e instanceof LivingEntity && e.getType() != EntityType.PLAYER && e.getType() != EntityType.ARMOR_STAND && e.isValid())
+                .stream()
+                .filter(e -> e.isValid() &&
+                        e instanceof LivingEntity &&
+                        e.getType() != EntityType.PLAYER &&
+                        e.getType() != EntityType.ARMOR_STAND)
                 .mapToInt(e -> {
                     if (EntityStackerManager.getStacker() == null) return 1;
                     return EntityStackerManager.getStacker().getSize((LivingEntity) e);
                 }).sum();
+
         cachedAmounts.put(location, amt);
         return amt;
     }
