@@ -7,9 +7,9 @@ import com.songoda.core.utils.ItemUtils;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.settings.Settings;
 import com.songoda.epicspawners.spawners.spawner.SpawnerTier;
-import com.songoda.lootables.gui.GuiLootableEditor;
-import com.songoda.lootables.loot.LootManager;
-import com.songoda.lootables.loot.Lootable;
+import com.songoda.core.lootables.gui.GuiLootableEditor;
+import com.songoda.core.lootables.loot.LootManager;
+import com.songoda.core.lootables.loot.Lootable;
 import org.bukkit.inventory.ItemStack;
 
 public class EditorDropsGui extends Gui {

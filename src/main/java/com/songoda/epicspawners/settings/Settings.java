@@ -102,6 +102,9 @@ public class Settings {
     public static final ConfigSetting MAX_SPAWNERS = new ConfigSetting(config, "Main.Max Spawners Per Player", -1,
             "The maximum amount of spawners a player can place. Set to -1 to allow unlimited",
             "spawner placement.");
+    
+    public static final ConfigSetting GIVE_OLD_EGG = new ConfigSetting(config, "Main.Give Previous Mob as Egg when replacing mob", true,
+            "Should the previous mob of the spawner be given as an egg when changing the spawner's mob?");
 
     public static final ConfigSetting AUTOSAVE = new ConfigSetting(config, "Main.Auto Save Interval In Seconds", 15,
             "The amount of time in between saving to file.",
@@ -142,6 +145,12 @@ public class Settings {
             HologramManager.getHolograms() == null ? "HolographicDisplays" : HologramManager.getHolograms().getName(),
             "Which hologram plugin should be used?",
             "You can choose from \"" + HologramManager.getManager().getRegisteredPlugins().stream().collect(Collectors.joining(", ")) + "\".");
+
+    public static final ConfigSetting EPIC_ANCHORS_PLAYER_WEIGHT = new ConfigSetting(config, "Main.EpicAnchorsPlayerWeight",
+            1,
+            "This setting affects how Anchors (Chunkloader) from EpicAnchors are affecting EpicSpawners.\n" +
+                    "-1 = Skips NearbyPlayers condition if the chunk is loaded by an Anchor\n" +
+                    "0 and greater = Counts as *n* players for the NearbyPlayers condition");
 
     public static final ConfigSetting USE_PROTECTION_PLUGINS = new ConfigSetting(config, "Main.Use Protection Plugins", true,
             "Should we use protection plugins?");

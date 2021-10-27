@@ -1,7 +1,7 @@
 name: EpicSpawners
 description: EpicSpawners
 version: maven-version-number
-softdepend: [Holograms, HolographicDisplays, CMI, Vault, PlayerPoints, UltimateStacker, StackMob, SkyBlock, Towny, RedProtect, Kingdoms, PlotSquared, GriefPrevention, USkyBlock, ASkyBlock, WorldGuard, Factions, PlaceholderAPI, ShopGUIPlus, UltimateClaims, Lands, BentoBox]
+softdepend: [ Holograms, HolographicDisplays, CMI, Vault, PlayerPoints, UltimateStacker, StackMob, SkyBlock, Towny, RedProtect, Kingdoms, PlotSquared, GriefPrevention, USkyBlock, ASkyBlock, WorldGuard, Factions, PlaceholderAPI, ShopGUIPlus, UltimateClaims, Lands, BentoBox, EpicAnchors ]
 main: com.songoda.epicspawners.EpicSpawners
 author: songoda
 api-version: 1.13
@@ -9,7 +9,7 @@ commands:
   es:
     description: I have no idea.
     default: true
-    aliases: [EpicSpawners]
+    aliases: [ EpicSpawners ]
     usage: /<command> [reload]
   SpawnerStats:
     description: I have no idea.
