@@ -191,7 +191,7 @@ public class EpicSpawners extends SongodaPlugin {
                     }
                 });
 
-                System.out.println("[" + getDescription().getName() + "] Loading Crafting Recipes");
+                getLogger().info("Loading Crafting Recipes");
                 this.enabledRecipe();
             });
         }, "create");
