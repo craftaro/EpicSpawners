@@ -41,6 +41,11 @@ import java.util.UUID;
 
 public class PlacedSpawner extends SSpawner {
 
+    // This is the unique identifier for this hologram.
+    // It is reset on every plugin load.
+    // Used for holograms.
+    private final UUID uniqueId = UUID.randomUUID();
+
     // Id for database use.
     private int id;
 
@@ -487,6 +492,10 @@ public class PlacedSpawner extends SSpawner {
         }
         plugin.updateHologram(this);
         return modified;
+    }
+
+    public String getHologramId() {
+        return "EpicSpawners-" + uniqueId;
     }
 
     @Override

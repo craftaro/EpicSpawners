@@ -190,7 +190,7 @@ public class BlockListeners implements Listener {
             EpicSpawners.getInstance().getDataManager().createSpawner(spawner);
 
             plugin.processChange(block);
-            plugin.updateHologram(spawner);
+            plugin.createHologram(spawner);
             plugin.getAppearanceTask().updateDisplayItem(spawner, spawnerTier);
             return;
         }
@@ -235,7 +235,7 @@ public class BlockListeners implements Listener {
             if (spawner.getFirstStack().getSpawnerData() == null) {
                 if (Settings.REMOVE_CORRUPTED_SPAWNERS.getBoolean()) {
                     block.setType(Material.AIR);
-                    System.out.println("A corrupted spawner has been removed as its Type no longer exists.");
+                    plugin.getLogger().warning("A corrupted spawner has been removed as its Type no longer exists.");
                     spawner.destroy(plugin);
                 }
                 return;

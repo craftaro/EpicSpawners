@@ -191,7 +191,7 @@ public class EpicSpawners extends SongodaPlugin {
                     }
                 });
 
-                System.out.println("[" + getDescription().getName() + "] Loading Crafting Recipes");
+                getLogger().info("Loading Crafting Recipes");
                 this.enabledRecipe();
             });
         }, "create");
@@ -217,24 +217,39 @@ public class EpicSpawners extends SongodaPlugin {
 
         for (PlacedSpawner spawner : spawners) {
             if (spawner.getWorld() == null) continue;
-            updateHologram(spawner);
+            createHologram(spawner);
         }
     }
 
     public void clearHologram(PlacedSpawner spawner) {
-        HologramManager.removeHologram(spawner.getLocation());
+        HologramManager.removeHologram(spawner.getHologramId());
+    }
+
+    public void createHologram(PlacedSpawner spawner) {
+        // are holograms enabled?
+        if (!Settings.SPAWNER_HOLOGRAMS.getBoolean() || !HologramManager.getManager().isEnabled()) return;
+
+        // create the hologram
+        HologramManager.createHologram(spawner.getHologramId(), spawner.getLocation(), getHologramName(spawner));
     }
 
     public void updateHologram(PlacedSpawner spawner) {
         // are holograms enabled?
         if (!Settings.SPAWNER_HOLOGRAMS.getBoolean() || !HologramManager.getManager().isEnabled()) return;
 
-        int stackSize = spawner.getStackSize();
         if (spawner.getSpawnerStacks().isEmpty()) return;
-        String name = spawner.getFirstTier().getCompiledDisplayName(spawner.getSpawnerStacks().size() > 1, stackSize).trim();
+
+        // check if it is created
+        if (!HologramManager.isHologramLoaded(spawner.getHologramId())) return;
 
         // create the hologram
-        HologramManager.updateHologram(spawner.getLocation(), name);
+        HologramManager.updateHologram(spawner.getHologramId(), getHologramName(spawner));
+    }
+
+    public String getHologramName(PlacedSpawner spawner) {
+        int stackSize = spawner.getStackSize();
+        if (spawner.getSpawnerStacks().isEmpty()) return null;
+        return spawner.getFirstTier().getCompiledDisplayName(spawner.getSpawnerStacks().size() > 1, stackSize).trim();
     }
 
     public void processChange(Block block) {
