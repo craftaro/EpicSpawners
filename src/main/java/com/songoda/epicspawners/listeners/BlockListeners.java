@@ -190,7 +190,7 @@ public class BlockListeners implements Listener {
             EpicSpawners.getInstance().getDataManager().createSpawner(spawner);
 
             plugin.processChange(block);
-            plugin.updateHologram(spawner);
+            plugin.createHologram(spawner);
             plugin.getAppearanceTask().updateDisplayItem(spawner, spawnerTier);
             return;
         }
