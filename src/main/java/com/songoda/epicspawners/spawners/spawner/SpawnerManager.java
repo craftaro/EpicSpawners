@@ -210,7 +210,7 @@ public class SpawnerManager {
             tier.addCondition(new SpawnConditionHeight(50, 70));
         } else {
             tier.addCondition(new SpawnConditionBiome(Biome.values()));
-            tier.addCondition(new SpawnConditionHeight(0, 256));
+            tier.addCondition(new SpawnConditionHeight(-64, 320));
         }
         if (Monster.class.isAssignableFrom(type.getEntityClass())) {
             tier.addCondition(new SpawnConditionLightDark(SpawnConditionLightDark.Type.DARK));
