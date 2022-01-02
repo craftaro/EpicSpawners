@@ -15,15 +15,7 @@ import com.songoda.core.hooks.HologramManager;
 import com.songoda.core.hooks.ProtectionManager;
 import com.songoda.epicspawners.blacklist.BlacklistHandler;
 import com.songoda.epicspawners.boost.BoostManager;
-import com.songoda.epicspawners.commands.CommandBoost;
-import com.songoda.epicspawners.commands.CommandChange;
-import com.songoda.epicspawners.commands.CommandEditor;
-import com.songoda.epicspawners.commands.CommandGive;
-import com.songoda.epicspawners.commands.CommandReload;
-import com.songoda.epicspawners.commands.CommandSettings;
-import com.songoda.epicspawners.commands.CommandSpawn;
-import com.songoda.epicspawners.commands.CommandSpawnerShop;
-import com.songoda.epicspawners.commands.CommandSpawnerStats;
+import com.songoda.epicspawners.commands.*;
 import com.songoda.epicspawners.database.DataManager;
 import com.songoda.epicspawners.database.migrations._1_InitialMigration;
 import com.songoda.epicspawners.database.migrations._2_AddTiers;
@@ -126,6 +118,7 @@ public class EpicSpawners extends SongodaPlugin {
         this.commandManager.addMainCommand("es")
                 .addSubCommands(
                         new CommandGive(this),
+                        new CommandOpenShop(this),
                         new CommandBoost(this),
                         new CommandEditor(this),
                         new CommandSettings(this),
