@@ -26,7 +26,7 @@ public class CommandOpenShop extends AbstractCommand {
             return ReturnType.SYNTAX_ERROR;
         }
 
-        if (Bukkit.getPlayerExact(args[0]) == null && !args[0].toLowerCase().equals("all")) {
+        if (Bukkit.getPlayerExact(args[0]) == null && !args[0].equalsIgnoreCase("all")) {
             plugin.getLocale().newMessage("&cThat username does not exist, or the user is not online!").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
@@ -36,7 +36,7 @@ public class CommandOpenShop extends AbstractCommand {
     }
 
     private void openShop(String who) {
-        if (who.toLowerCase().equals("all")) {
+        if (who.equalsIgnoreCase("all")) {
             for (Player pl : Bukkit.getOnlinePlayers()) {
                 plugin.getGuiManager().showGUI(pl, new SpawnerShopGui(plugin, pl));
             }
