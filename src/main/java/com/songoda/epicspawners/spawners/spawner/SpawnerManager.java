@@ -210,7 +210,8 @@ public class SpawnerManager {
             tier.addCondition(new SpawnConditionHeight(50, 70));
         } else {
             tier.addCondition(new SpawnConditionBiome(Biome.values()));
-            tier.addCondition(new SpawnConditionHeight(0, 256));
+            // TODO: These values should probably be *world* dependent as even in older versions, the max build height could be higher (vanilla spawners probably work up there too?)
+            tier.addCondition(new SpawnConditionHeight(-64, 320));
         }
         if (Monster.class.isAssignableFrom(type.getEntityClass())) {
             tier.addCondition(new SpawnConditionLightDark(SpawnConditionLightDark.Type.DARK));
