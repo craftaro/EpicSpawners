@@ -36,30 +36,30 @@ public class SpawnerSpawnTask extends BukkitRunnable {
             try {
                 if (spawner.getWorld() == null
                         || plugin.getBlacklistHandler().isBlacklisted(spawner.getWorld())
-                        || !spawner.getWorld().isChunkLoaded(spawner.getX() >> 4, spawner.getZ() >> 4)) return;
+                        || !spawner.getWorld().isChunkLoaded(spawner.getX() >> 4, spawner.getZ() >> 4)) continue;
 
                 if (spawner.getLocation().getBlock().getType() != CompatibleMaterial.SPAWNER.getMaterial()
                         || !spawner.isValid()) {
                     spawner.destroy(plugin);
-                    return;
+                    continue;
                 }
 
                 if (spawner.getStackSize() == 0
                         || (spawner.getPlacedBy() == null && Settings.DISABLE_NATURAL_SPAWNERS.getBoolean())
-                        || !spawner.checkConditions()) return;
+                        || !spawner.checkConditions()) continue;
 
                 CreatureSpawner cSpawner = spawner.getCreatureSpawner();
-                if (cSpawner == null) return;
+                if (cSpawner == null) continue;
                 int delay = spawner.getCreatureSpawner().getDelay();
                 delay = delay - Settings.CUSTOM_SPAWNER_TICK_RATE.getInt();
                 spawner.getCreatureSpawner().setDelay(delay);
-                if (delay >= 0) return;
+                if (delay >= 0) continue;
 
                 if (!spawner.spawn()) {
                     spawner.updateDelay();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
         }
     }
