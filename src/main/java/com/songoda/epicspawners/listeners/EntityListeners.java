@@ -111,7 +111,7 @@ public class EntityListeners implements Listener {
             if (!values.isEmpty()) {
                 SpawnerData spawnerData = plugin.getSpawnerManager().getSpawnerData(values.get(0).asString());
                 SpawnerTier spawnerTier = spawnerData.getTier(values2.get(0).asString());
-                if (plugin.getLootablesManager().getLootManager().getRegisteredLootables().containsKey(spawnerTier.getIdentifyingName())) {
+                if (plugin.getLootablesManager().getLootManager().getRegisteredLootables().containsKey(spawnerTier.getFullyIdentifyingName())) {
                     List<Drop> drops = plugin.getLootablesManager().getDrops(event.getEntity(), spawnerTier);
 
                     if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13)
