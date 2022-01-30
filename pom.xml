@@ -107,7 +107,7 @@
         <dependency>
             <groupId>com.songoda</groupId>
             <artifactId>SongodaCore</artifactId>
-            <version>2.6.10</version>
+            <version>2.6.11</version>
             <scope>compile</scope>
         </dependency>
 
