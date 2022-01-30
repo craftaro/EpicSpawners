@@ -19,6 +19,7 @@ import com.songoda.epicspawners.commands.CommandBoost;
 import com.songoda.epicspawners.commands.CommandChange;
 import com.songoda.epicspawners.commands.CommandEditor;
 import com.songoda.epicspawners.commands.CommandGive;
+import com.songoda.epicspawners.commands.CommandOpenShop;
 import com.songoda.epicspawners.commands.CommandReload;
 import com.songoda.epicspawners.commands.CommandSettings;
 import com.songoda.epicspawners.commands.CommandSpawn;
@@ -126,6 +127,7 @@ public class EpicSpawners extends SongodaPlugin {
         this.commandManager.addMainCommand("es")
                 .addSubCommands(
                         new CommandGive(this),
+                        new CommandOpenShop(this),
                         new CommandBoost(this),
                         new CommandEditor(this),
                         new CommandSettings(this),
