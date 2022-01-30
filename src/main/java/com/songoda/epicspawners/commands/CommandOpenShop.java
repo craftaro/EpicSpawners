@@ -7,16 +7,17 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class CommandOpenShop extends AbstractCommand {
-
     private final EpicSpawners plugin;
 
     public CommandOpenShop(EpicSpawners plugin) {
         super(false, "openshop");
+
         this.plugin = plugin;
     }
 
@@ -49,10 +50,16 @@ public class CommandOpenShop extends AbstractCommand {
     @Override
     protected List<String> onTab(CommandSender sender, String... args) {
         if (args.length == 1) {
-            List<String> players = Bukkit.getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList());
+            List<String> players = new ArrayList<>();
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                String name = player.getName();
+                players.add(name);
+            }
+
             players.add("All");
             return players;
         }
+
         return Collections.emptyList();
     }
 
