@@ -2,7 +2,7 @@
     <groupId>com.songoda</groupId>
     <artifactId>EpicSpawners</artifactId>
     <modelVersion>4.0.0</modelVersion>
-    <version>7.2.5</version>
+    <version>7.2.6</version>
     <build>
         <defaultGoal>clean install</defaultGoal>
         <finalName>EpicSpawners-${project.version}</finalName>
@@ -55,7 +55,6 @@
                             <artifactSet>
                                 <includes>
                                     <include>com.songoda:SongodaCore</include>
-                                    <include>com.songoda:Lootables</include>
                                 </includes>
                             </artifactSet>
                             <filters>
@@ -100,7 +99,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.18-R0.1-SNAPSHOT</version>
+            <version>1.18.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
 
@@ -137,12 +136,6 @@
             <artifactId>shopgui-api</artifactId>
             <version>1.0.0</version>
             <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.songoda</groupId>
-            <artifactId>Lootables</artifactId>
-            <version>LATEST</version>
         </dependency>
     </dependencies>
 </project>
