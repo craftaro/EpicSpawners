@@ -3,8 +3,7 @@ package com.songoda.epicspawners.spawners.spawner;
 import com.songoda.core.compatibility.CompatibleBiome;
 import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.core.configuration.Config;
-import com.songoda.core.nms.NmsManager;
-import com.songoda.core.nms.nbt.NBTItem;
+import com.songoda.core.third_party.de.tr7zw.nbtapi.NBTItem;
 import com.songoda.core.utils.EntityUtils;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.particles.ParticleDensity;
@@ -31,7 +30,17 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BlockStateMeta;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class SpawnerManager {
@@ -75,11 +84,11 @@ public class SpawnerManager {
     public SpawnerTier getSpawnerTier(ItemStack item) {
         if (item == null) return null;
 
-        NBTItem nbtItem = NmsManager.getNbt().of(item);
-        if (nbtItem.has("data")) {
+        NBTItem nbtItem = new NBTItem(item);
+        if (nbtItem.hasKey("data")) {
             String type = nbtItem.getString("data");
             SpawnerData data = getSpawnerData(type);
-            if (data != null && nbtItem.has("tier"))
+            if (data != null && nbtItem.hasKey("tier"))
                 return data.getTierOrFirst(nbtItem.getString("tier"));
         }
 
