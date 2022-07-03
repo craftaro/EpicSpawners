@@ -1,11 +1,11 @@
 package com.songoda.epicspawners.spawners.spawner.option;
 
+import com.songoda.core.third_party.org.apache.commons.lang3.math.NumberUtils;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.boost.types.Boosted;
 import com.songoda.epicspawners.spawners.spawner.PlacedSpawner;
 import com.songoda.epicspawners.spawners.spawner.SpawnerStack;
 import com.songoda.epicspawners.spawners.spawner.SpawnerTier;
-import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;

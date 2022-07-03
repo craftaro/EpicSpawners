@@ -18,7 +18,6 @@ import com.songoda.epicspawners.spawners.spawner.option.SpawnOptionCommand;
 import com.songoda.epicspawners.spawners.spawner.option.SpawnOptionEntity;
 import com.songoda.epicspawners.spawners.spawner.option.SpawnOptionItem;
 import com.songoda.epicspawners.utils.CostType;
-import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
@@ -352,7 +351,11 @@ public class SpawnerTier {
         if (!name.contains(":")) return 1;
 
         String amount = name.replace(String.valueOf(ChatColor.COLOR_CHAR), "").replace(";", "").split(":")[1];
-        return NumberUtils.toInt(amount, 1);
+        if (amount == null) {
+            return 1;
+        }
+
+        return Integer.parseInt(amount);
     }
 
     public String getGuiTitle() {
