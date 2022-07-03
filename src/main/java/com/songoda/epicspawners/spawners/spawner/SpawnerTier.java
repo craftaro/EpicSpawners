@@ -3,8 +3,7 @@ package com.songoda.epicspawners.spawners.spawner;
 import com.google.common.base.Preconditions;
 import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.core.gui.GuiUtils;
-import com.songoda.core.nms.NmsManager;
-import com.songoda.core.nms.nbt.NBTItem;
+import com.songoda.core.third_party.de.tr7zw.nbtapi.NBTItem;
 import com.songoda.core.utils.TextUtils;
 import com.songoda.epicspawners.EpicSpawners;
 import com.songoda.epicspawners.particles.ParticleDensity;
@@ -103,11 +102,13 @@ public class SpawnerTier {
 
         ItemStack item = GuiUtils.createButtonItem(CompatibleMaterial.SPAWNER, getCompiledDisplayName(false, stackSize));
         item.setAmount(amount);
-        NBTItem nbtItem = NmsManager.getNbt().of(item);
-        nbtItem.set("data", spawnerData.getIdentifyingName());
-        nbtItem.set("tier", identifyingName);
-        nbtItem.set("size", stackSize);
-        return nbtItem.finish();
+
+        NBTItem nbtItem = new NBTItem(item);
+        nbtItem.setString("data", spawnerData.getIdentifyingName());
+        nbtItem.setString("tier", identifyingName);
+        nbtItem.setInteger("size", stackSize);
+
+        return nbtItem.getItem();
     }
 
     public String getIdentifyingName() {
@@ -339,10 +340,10 @@ public class SpawnerTier {
 
     public int getStackSize(ItemStack item) {
         Preconditions.checkNotNull(item, "Cannot get stack size of null item");
-        NBTItem nbtItem = NmsManager.getNbt().of(item);
+        NBTItem nbtItem = new NBTItem(item);
 
-        if (nbtItem.has("size"))
-            return nbtItem.getNBTObject("size").asInt();
+        if (nbtItem.hasKey("size"))
+            return nbtItem.getInteger("size");
 
         // Legacy
         if (!item.hasItemMeta() && !item.getItemMeta().hasDisplayName()) return 1;
