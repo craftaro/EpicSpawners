@@ -87,9 +87,15 @@
     </pluginRepositories>
     <repositories>
         <repository>
-            <id>public</id>
+            <id>spigotmc-repo</id>
+            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+        </repository>
+
+        <repository>
+            <id>songoda-public</id>
             <url>https://repo.songoda.com/repository/public/</url>
         </repository>
+
         <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
