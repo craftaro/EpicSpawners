@@ -1,6 +1,5 @@
 <p align="center">
-<img alt="EpicSpawners"
-    src="https://proxy.songoda.com/200/https://cdn2.songoda.com/products/epicspawners/5vteSKAGiFo6ElBhkFqUuKO13ggH28GDO3tundgK.png">
+<img alt="EpicSpawners" src="https://cdn2.songoda.com/products/epicspawners/5vteSKAGiFo6ElBhkFqUuKO13ggH28GDO3tundgK.png" width="128px">
 </p>
 
 <h1 align="center">EpicSpawners</h1>
@@ -24,12 +23,10 @@
     <a href="https://app.codacy.com/gh/songoda/EpicSpawners/dashboard">
         <img alt="quality" src="https://img.shields.io/codacy/grade/1538be190da6406aa6a2bc711b2478a2">
     </a>
-    <img alt="Last Updated" src="https://img.shields.io/github/last-commit/songoda/EpicSpawners">
     <br>
     <a href="https://bstats.org/plugin/bukkit/EpicSpawners/4181">
-        <img alt="Servers" src="https://img.shields.io/bstats/servers/4181">
+        <img alt="Servers" src="https://img.shields.io/bstats/servers/4181?label=Server+running+EpicSpawners">
     </a>
-    <img alt="Maintained" src="https://img.shields.io/maintenance/yes/2021"> 
 </p>
 
 <h2>Table of Contents</h2>
