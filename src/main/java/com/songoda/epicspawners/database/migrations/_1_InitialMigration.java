@@ -31,7 +31,7 @@ public class _1_InitialMigration extends DataMigration {
                     "y DOUBLE NOT NULL, " +
                     "z DOUBLE NOT NULL, " +
                     "UNIQUE (world,x,y,z) " +
-                    (isMySQL ? "" : "ON CONFLICT REPLACE") +
+                    (isMySQL ? "REPLACE" : "ON CONFLICT REPLACE") +
                     ")");
         }
 
