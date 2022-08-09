@@ -16,7 +16,7 @@ public class CommandOpenShop extends AbstractCommand {
     private final EpicSpawners plugin;
 
     public CommandOpenShop(EpicSpawners plugin) {
-        super(false, "openshop");
+        super(CommandType.CONSOLE_OK, "openshop");
 
         this.plugin = plugin;
     }

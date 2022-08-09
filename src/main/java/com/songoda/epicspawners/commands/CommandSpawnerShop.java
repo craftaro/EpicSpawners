@@ -14,7 +14,7 @@ public class CommandSpawnerShop extends AbstractCommand {
     private final EpicSpawners plugin;
 
     public CommandSpawnerShop(EpicSpawners plugin) {
-        super(true, "spawnershop");
+        super(CommandType.PLAYER_ONLY, "spawnershop");
         this.plugin = plugin;
     }
 

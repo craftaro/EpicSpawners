@@ -26,7 +26,7 @@ public class CommandGive extends AbstractCommand {
     private final EpicSpawners plugin;
 
     public CommandGive(EpicSpawners plugin) {
-        super(false, "give");
+        super(CommandType.CONSOLE_OK, "give");
         this.plugin = plugin;
     }
 

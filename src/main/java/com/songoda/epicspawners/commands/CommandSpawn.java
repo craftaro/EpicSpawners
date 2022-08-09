@@ -15,7 +15,7 @@ public class CommandSpawn extends AbstractCommand {
     private final EpicSpawners plugin;
 
     public CommandSpawn(EpicSpawners plugin) {
-        super(true, "spawn");
+        super(CommandType.PLAYER_ONLY, "spawn");
         this.plugin = plugin;
     }
 

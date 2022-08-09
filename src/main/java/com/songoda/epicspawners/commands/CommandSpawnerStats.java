@@ -14,7 +14,7 @@ public class CommandSpawnerStats extends AbstractCommand {
     private final EpicSpawners plugin;
 
     public CommandSpawnerStats(EpicSpawners plugin) {
-        super(true, "spawnerstats");
+        super(CommandType.PLAYER_ONLY, "spawnerstats");
         this.plugin = plugin;
     }
 
