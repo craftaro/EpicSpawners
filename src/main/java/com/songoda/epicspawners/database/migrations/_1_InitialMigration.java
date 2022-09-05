@@ -1,8 +1,10 @@
 package com.songoda.epicspawners.database.migrations;
 
 import com.songoda.core.database.DataMigration;
+import com.songoda.core.database.DatabaseConnector;
 import com.songoda.core.database.MySQLConnector;
 import com.songoda.epicspawners.EpicSpawners;
+import com.songoda.epicspawners.database.DataManager;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -17,10 +19,10 @@ public class _1_InitialMigration extends DataMigration {
     @Override
     public void migrate(Connection connection, String tablePrefix) throws SQLException {
         String autoIncrement = EpicSpawners.getInstance().getDatabaseConnector() instanceof MySQLConnector ? " AUTO_INCREMENT" : "";
-
+        boolean isMySQL = EpicSpawners.getInstance().getDatabaseConnector() instanceof MySQLConnector;
         // Create spawners table
         try (Statement statement = connection.createStatement()) {
-            statement.execute("CREATE TABLE " + tablePrefix + "placed_spawners (" +
+            statement.execute("CREATE TABLE IF NOT EXISTS " + tablePrefix + "placed_spawners (" +
                     "id INTEGER PRIMARY KEY" + autoIncrement + ", " +
                     "spawn_count INTEGER NOT NULL, " +
                     "placed_by VARCHAR(36), " +
@@ -29,13 +31,13 @@ public class _1_InitialMigration extends DataMigration {
                     "y DOUBLE NOT NULL, " +
                     "z DOUBLE NOT NULL, " +
                     "UNIQUE (world,x,y,z) " +
-                    "ON CONFLICT REPLACE" +
+                    (isMySQL ? "REPLACE" : "ON CONFLICT REPLACE") +
                     ")");
         }
 
         // Create spawner stacks
         try (Statement statement = connection.createStatement()) {
-            statement.execute("CREATE TABLE " + tablePrefix + "spawner_stacks (" +
+            statement.execute("CREATE TABLE IF NOT EXISTS " + tablePrefix + "spawner_stacks (" +
                     "spawner_id INTEGER NOT NULL, " +
                     "data_type VARCHAR(100) NOT NULL," +
                     "amount INTEGER NOT NULL " +
@@ -44,7 +46,7 @@ public class _1_InitialMigration extends DataMigration {
 
         // Create player boosts
         try (Statement statement = connection.createStatement()) {
-            statement.execute("CREATE TABLE " + tablePrefix + "boosted_players (" +
+            statement.execute("CREATE TABLE IF NOT EXISTS " + tablePrefix + "boosted_players (" +
                     "player VARCHAR(36) NOT NULL, " +
                     "amount INTEGER NOT NULL," +
                     "end_time BIGINT NOT NULL " +
@@ -53,7 +55,7 @@ public class _1_InitialMigration extends DataMigration {
 
         // Create spawner boosts
         try (Statement statement = connection.createStatement()) {
-            statement.execute("CREATE TABLE " + tablePrefix + "boosted_spawners (" +
+            statement.execute("CREATE TABLE IF NOT EXISTS " + tablePrefix + "boosted_spawners (" +
                     "world TEXT NOT NULL, " +
                     "x DOUBLE NOT NULL, " +
                     "y DOUBLE NOT NULL, " +
@@ -65,7 +67,7 @@ public class _1_InitialMigration extends DataMigration {
 
         // Create entity kills
         try (Statement statement = connection.createStatement()) {
-            statement.execute("CREATE TABLE " + tablePrefix + "entity_kills (" +
+            statement.execute("CREATE TABLE IF NOT EXISTS " + tablePrefix + "entity_kills (" +
                     "player VARCHAR(36) NOT NULL, " +
                     "entity_type VARCHAR(100) NOT NULL, " +
                     "count DOUBLE NOT NULL " +

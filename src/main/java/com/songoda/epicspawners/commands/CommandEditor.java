@@ -14,7 +14,7 @@ public class CommandEditor extends AbstractCommand {
     private final EpicSpawners plugin;
 
     public CommandEditor(EpicSpawners plugin) {
-        super(true, "editor");
+        super(CommandType.PLAYER_ONLY, "editor");
         this.plugin = plugin;
     }
 

@@ -20,7 +20,7 @@ public class CommandBoost extends AbstractCommand {
     private final EpicSpawners plugin;
 
     public CommandBoost(EpicSpawners plugin) {
-        super(false, "boost");
+        super(CommandType.CONSOLE_OK, "boost");
         this.plugin = plugin;
     }
 

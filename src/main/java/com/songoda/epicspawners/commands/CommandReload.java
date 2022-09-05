@@ -12,7 +12,7 @@ public class CommandReload extends AbstractCommand {
     private final EpicSpawners plugin;
 
     public CommandReload(EpicSpawners plugin) {
-        super(false, "reload");
+        super(CommandType.CONSOLE_OK, "reload");
         this.plugin = plugin;
     }
 

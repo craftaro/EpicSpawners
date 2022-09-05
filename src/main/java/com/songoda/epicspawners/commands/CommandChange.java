@@ -18,7 +18,7 @@ public class CommandChange extends AbstractCommand {
     private final EpicSpawners plugin;
 
     public CommandChange(EpicSpawners plugin) {
-        super(true, "change");
+        super(CommandType.PLAYER_ONLY, "change");
         this.plugin = plugin;
     }
 
