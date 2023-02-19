@@ -2,7 +2,7 @@
     <groupId>com.songoda</groupId>
     <artifactId>EpicSpawners</artifactId>
     <modelVersion>4.0.0</modelVersion>
-    <version>7.3.0</version>
+    <version>Custom-7.3.0</version>
     <build>
         <defaultGoal>clean install</defaultGoal>
         <finalName>EpicSpawners-${project.version}</finalName>
@@ -55,6 +55,7 @@
                             <artifactSet>
                                 <includes>
                                     <include>com.songoda:SongodaCore</include>
+                                    <include>com.github.caputoortega:RevisedSongodaCore</include>
                                 </includes>
                             </artifactSet>
                             <filters>
@@ -86,9 +87,15 @@
         </pluginRepository>
     </pluginRepositories>
     <repositories>
+
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+
         <repository>
             <id>spigotmc-repo</id>
-            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+            <url>https://hub.spigotmc.org/nexus/content/repositories/public/</url>
         </repository>
 
         <repository>
@@ -96,24 +103,20 @@
             <url>https://repo.songoda.com/repository/public/</url>
         </repository>
 
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
     </repositories>
     <dependencies>
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.19-R0.1-SNAPSHOT</version>
+            <version>1.19.3-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
-            <groupId>com.songoda</groupId>
-            <artifactId>SongodaCore</artifactId>
-            <version>2.6.18</version>
-            <scope>compile</scope>
+            <groupId>com.github.caputoortega</groupId>
+            <artifactId>RevisedSongodaCore</artifactId>
+            <version>1.0-SONGODA_2.6.18</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -144,4 +147,5 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
+
 </project>
