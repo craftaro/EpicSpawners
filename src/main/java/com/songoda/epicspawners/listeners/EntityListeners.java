@@ -140,7 +140,7 @@ public class EntityListeners implements Listener {
 
         if (ultimateStacker != null) {
             boolean killAll = com.songoda.ultimatestacker.settings.Settings.KILL_WHOLE_STACK_ON_DEATH.getBoolean();
-            if (ultimateStacker.getEntityStackManager().isStackedAndLoaded(event.getEntity().getUniqueId()) && killAll) {
+            if (ultimateStacker.getEntityStackManager().isStackedEntity(event.getEntity()) && killAll) {
                 amount = ultimateStacker.getEntityStackManager().getStack(event.getEntity().getUniqueId()).getAmount();
             }
         }
