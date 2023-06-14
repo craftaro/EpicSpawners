@@ -1,19 +1,19 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
     <groupId>com.craftaro</groupId>
     <artifactId>EpicSpawnersParent</artifactId>
-    <modules>
-        <module>EpicSpawnersAPI</module>
-        <module>EpicSpawners</module>
-    </modules>
-    <modelVersion>4.0.0</modelVersion>
     <version>7.3.3</version>
 
     <packaging>pom</packaging>
 
+    <modules>
+        <module>EpicSpawnersAPI</module>
+        <module>EpicSpawners</module>
+    </modules>
+
     <properties>
         <java.version>1.8</java.version>
         <java.release>8</java.release>
-
         <core.version>3.0.0-SNAPSHOT</core.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
