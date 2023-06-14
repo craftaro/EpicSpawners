@@ -30,6 +30,6 @@ hs_err_pid*
 /bin/
 **/target/
 *.iml
-*.xml
+dependency-reduced-pom.xml
 .DS_Store
 
