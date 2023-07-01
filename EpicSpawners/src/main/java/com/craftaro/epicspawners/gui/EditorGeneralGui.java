@@ -9,7 +9,7 @@ import com.craftaro.core.utils.PlayerUtils;
 import com.craftaro.core.utils.TextUtils;
 import com.craftaro.epicspawners.EpicSpawners;
 import com.craftaro.epicspawners.settings.Settings;
-import com.craftaro.epicspawners.spawners.spawner.SpawnerTier;
+import com.craftaro.epicspawners.api.spawners.spawner.SpawnerTier;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 

@@ -11,6 +11,7 @@ import com.craftaro.epicspawners.EpicSpawners;
 import com.craftaro.epicspawners.api.events.SpawnerBreakEvent;
 import com.craftaro.epicspawners.api.events.SpawnerChangeEvent;
 import com.craftaro.epicspawners.api.events.SpawnerPlaceEvent;
+import com.craftaro.epicspawners.api.spawners.spawner.PlacedSpawner;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerTier;
 import com.craftaro.epicspawners.settings.Settings;
 import com.craftaro.epicspawners.spawners.spawner.PlacedSpawnerImpl;
@@ -76,7 +77,7 @@ public class BlockListeners implements Listener {
         int forceCombineRadius = Settings.FORCE_COMBINE_RADIUS.getInt();
         if (forceCombineRadius == 0) return false;
 
-        for (PlacedSpawnerImpl spawner : plugin.getSpawnerManager().getSpawners()) {
+        for (PlacedSpawner spawner : plugin.getSpawnerManager().getSpawners()) {
             if (spawner.getLocation().getWorld() == null
                     || spawner.getLocation().getWorld() != placedSpawner.getLocation().getWorld()
                     || spawner.getLocation() == placedSpawner.getLocation()
@@ -102,7 +103,7 @@ public class BlockListeners implements Listener {
         int amountFound = 0;
         int chunkX = spawnerBlock.getX() >> 4;
         int chunkZ = spawnerBlock.getZ() >> 4;
-        for (PlacedSpawnerImpl spawner : plugin.getSpawnerManager().getSpawners()) {
+        for (PlacedSpawner spawner : plugin.getSpawnerManager().getSpawners()) {
             if (spawner.getWorld() != spawnerBlock.getWorld()
                     || spawner.getX() >> 4 != chunkX
                     || spawner.getZ() >> 4 != chunkZ) continue;
@@ -187,7 +188,7 @@ public class BlockListeners implements Listener {
 
             spawner.updateDelay();
             spawner.setPlacedBy(player);
-            EpicSpawners.getInstance().getDataManager().createSpawner(spawner);
+            EpicSpawners.getInstance().getDataManager().save(spawner);
 
             plugin.processChange(block);
             plugin.createHologram(spawner);
@@ -227,10 +228,10 @@ public class BlockListeners implements Listener {
 
                 spawner.addSpawnerStack(new SpawnerStackImpl(spawner, plugin.getSpawnerManager().getSpawnerData(creatureSpawner.getSpawnedType()).getFirstTier()));
                 plugin.getSpawnerManager().addSpawnerToWorld(location, spawner);
-                EpicSpawners.getInstance().getDataManager().createSpawner(spawner);
+                EpicSpawners.getInstance().getDataManager().save(spawner);
             }
 
-            PlacedSpawnerImpl spawner = plugin.getSpawnerManager().getSpawnerFromWorld(location);
+            PlacedSpawner spawner = plugin.getSpawnerManager().getSpawnerFromWorld(location);
 
             if (spawner.getFirstStack().getSpawnerData() == null) {
                 if (Settings.REMOVE_CORRUPTED_SPAWNERS.getBoolean()) {

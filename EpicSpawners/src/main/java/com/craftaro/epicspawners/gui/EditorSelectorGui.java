@@ -5,6 +5,7 @@ import com.craftaro.core.gui.Gui;
 import com.craftaro.core.gui.GuiUtils;
 import com.craftaro.core.utils.TextUtils;
 import com.craftaro.epicspawners.EpicSpawners;
+import com.craftaro.epicspawners.api.spawners.spawner.SpawnerData;
 import com.craftaro.epicspawners.settings.Settings;
 import com.craftaro.epicspawners.spawners.spawner.SpawnerDataImpl;
 import com.craftaro.epicspawners.api.utils.HeadUtils;
@@ -20,7 +21,7 @@ public class EditorSelectorGui extends Gui {
     private final EpicSpawners plugin;
     private final Player player;
     private Type shownType = Type.BOTH;
-    private final List<SpawnerDataImpl> entities = new ArrayList<>();
+    private final List<SpawnerData> entities = new ArrayList<>();
 
     public EditorSelectorGui(EpicSpawners plugin, Player player) {
         super(6);
@@ -56,7 +57,7 @@ public class EditorSelectorGui extends Gui {
         setPrevPage(5, 1, GuiUtils.createButtonItem(CompatibleMaterial.ARROW, plugin.getLocale().getMessage("general.nametag.back").getMessage()));
         setOnPage((event) -> showPage());
 
-        List<SpawnerDataImpl> data = entities.stream()
+        List<SpawnerData> data = entities.stream()
                 .filter(s -> shownType == Type.BOTH
                         || shownType == Type.DEFAULT && !s.isCustom()
                         || shownType == Type.CUSTOM && s.isCustom()).skip((page - 1) * 28).limit(28).collect(Collectors.toList());
@@ -67,7 +68,7 @@ public class EditorSelectorGui extends Gui {
         int num = 10;
         for (int i = 0; i < 28; i++) {
             num++;
-            SpawnerDataImpl spawnerData = i < data.size() ? data.get(i) : null;
+            SpawnerData spawnerData = i < data.size() ? data.get(i) : null;
             if (num == 16 || num == 36)
                 num = num + 2;
 

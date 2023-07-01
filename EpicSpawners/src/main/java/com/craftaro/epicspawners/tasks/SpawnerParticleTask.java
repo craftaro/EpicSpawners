@@ -6,8 +6,9 @@ import com.craftaro.epicspawners.EpicSpawners;
 import com.craftaro.epicspawners.api.particles.ParticleDensity;
 import com.craftaro.epicspawners.api.particles.ParticleEffect;
 import com.craftaro.epicspawners.api.particles.ParticleType;
+import com.craftaro.epicspawners.api.spawners.spawner.PlacedSpawner;
+import com.craftaro.epicspawners.api.spawners.spawner.SpawnerTier;
 import com.craftaro.epicspawners.spawners.spawner.PlacedSpawnerImpl;
-import com.craftaro.epicspawners.spawners.spawner.SpawnerTier;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -39,7 +40,7 @@ public class SpawnerParticleTask extends BukkitRunnable {
 
     @Override
     public void run() {
-        for (PlacedSpawnerImpl spawner : new ArrayList<>(plugin.getSpawnerManager().getSpawners())) {
+        for (PlacedSpawner spawner : new ArrayList<>(plugin.getSpawnerManager().getSpawners())) {
             if (spawner == null || spawner.getLocation() == null ||
                     spawner.getStackSize() == 0 || spawner.getFirstStack().getSpawnerData() == null)
                 continue;

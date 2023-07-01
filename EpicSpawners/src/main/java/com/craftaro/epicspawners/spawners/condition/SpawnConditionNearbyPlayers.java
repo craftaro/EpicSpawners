@@ -1,10 +1,11 @@
 package com.craftaro.epicspawners.spawners.condition;
 
-import com.craftaro.epicanchors.EpicAnchors;
 import com.craftaro.epicspawners.EpicSpawners;
 import com.craftaro.epicspawners.api.spawners.condition.SpawnCondition;
+import com.craftaro.epicspawners.api.spawners.spawner.PlacedSpawner;
 import com.craftaro.epicspawners.settings.Settings;
 import com.craftaro.epicspawners.spawners.spawner.PlacedSpawnerImpl;
+import com.songoda.epicanchors.EpicAnchors;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
@@ -42,7 +43,7 @@ public class SpawnConditionNearbyPlayers implements SpawnCondition {
     }
 
     @Override
-    public boolean isMet(PlacedSpawnerImpl spawner) {
+    public boolean isMet(PlacedSpawner spawner) {
         Location location = spawner.getLocation().add(0.5, 0.5, 0.5);
         assert location.getWorld() != null;
 

@@ -7,9 +7,10 @@ import com.craftaro.core.gui.GuiUtils;
 import com.craftaro.core.input.ChatPrompt;
 import com.craftaro.core.utils.TextUtils;
 import com.craftaro.epicspawners.EpicSpawners;
+import com.craftaro.epicspawners.api.spawners.spawner.SpawnerData;
 import com.craftaro.epicspawners.settings.Settings;
 import com.craftaro.epicspawners.spawners.spawner.SpawnerDataImpl;
-import com.craftaro.epicspawners.spawners.spawner.SpawnerTier;
+import com.craftaro.epicspawners.api.spawners.spawner.SpawnerTier;
 import com.craftaro.epicspawners.api.utils.HeadType;
 import com.craftaro.epicspawners.api.utils.HeadUtils;
 import org.bukkit.entity.Player;
@@ -24,7 +25,7 @@ public class EditorOverviewGui extends Gui {
     private final EpicSpawners plugin;
     private final Player player;
     private final SpawnerTier spawnerTier;
-    private final SpawnerDataImpl spawnerData;
+    private final SpawnerData spawnerData;
 
     public EditorOverviewGui(EpicSpawners plugin, Player player, SpawnerTier spawnerTier) {
         super(6);

@@ -1,6 +1,7 @@
 package com.craftaro.epicspawners.spawners.condition;
 
 import com.craftaro.epicspawners.api.spawners.condition.SpawnCondition;
+import com.craftaro.epicspawners.api.spawners.spawner.PlacedSpawner;
 import com.google.common.collect.Iterables;
 import com.craftaro.core.third_party.org.apache.commons.text.WordUtils;
 import com.craftaro.epicspawners.EpicSpawners;
@@ -37,7 +38,7 @@ public class SpawnConditionBiome implements SpawnCondition {
     }
 
     @Override
-    public boolean isMet(PlacedSpawnerImpl spawner) {
+    public boolean isMet(PlacedSpawner spawner) {
         return biomes.contains(spawner.getLocation().getBlock().getBiome());
     }
 

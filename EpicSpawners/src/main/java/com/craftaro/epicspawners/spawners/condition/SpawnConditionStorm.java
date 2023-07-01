@@ -1,6 +1,7 @@
 package com.craftaro.epicspawners.spawners.condition;
 
 import com.craftaro.epicspawners.api.spawners.condition.SpawnCondition;
+import com.craftaro.epicspawners.api.spawners.spawner.PlacedSpawner;
 import com.craftaro.epicspawners.spawners.spawner.PlacedSpawnerImpl;
 
 public class SpawnConditionStorm implements SpawnCondition {
@@ -22,7 +23,7 @@ public class SpawnConditionStorm implements SpawnCondition {
     }
 
     @Override
-    public boolean isMet(PlacedSpawnerImpl spawner) {
+    public boolean isMet(PlacedSpawner spawner) {
         return !stormOnly || spawner.getLocation().getWorld().hasStorm();
     }
 

@@ -111,7 +111,7 @@ public class SpawnOptionEntity implements SpawnOption {
                 }, types);
 
         spawner.setSpawnCount(spawner.getSpawnCount() + amountSpawned);
-        EpicSpawners.getInstance().getDataManager().updateSpawner(spawner);
+        EpicSpawners.getInstance().getDataManager().save(spawner);
     }
 
     @Override

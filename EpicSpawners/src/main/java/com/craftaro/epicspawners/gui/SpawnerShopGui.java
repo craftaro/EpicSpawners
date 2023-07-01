@@ -6,6 +6,7 @@ import com.craftaro.core.gui.GuiUtils;
 import com.craftaro.core.hooks.EconomyManager;
 import com.craftaro.core.utils.TextUtils;
 import com.craftaro.epicspawners.EpicSpawners;
+import com.craftaro.epicspawners.api.spawners.spawner.SpawnerData;
 import com.craftaro.epicspawners.settings.Settings;
 import com.craftaro.epicspawners.spawners.spawner.SpawnerDataImpl;
 import com.craftaro.epicspawners.api.utils.HeadUtils;
@@ -23,7 +24,7 @@ public class SpawnerShopGui extends CustomizableGui {
 
     private final EpicSpawners plugin;
     private final Player player;
-    private final List<SpawnerDataImpl> entities = new ArrayList<>();
+    private final List<SpawnerData> entities = new ArrayList<>();
 
     public SpawnerShopGui(EpicSpawners plugin, Player player) {
         super(plugin, "shop");
@@ -31,7 +32,7 @@ public class SpawnerShopGui extends CustomizableGui {
         this.plugin = plugin;
         this.player = player;
 
-        for (SpawnerDataImpl spawnerData : plugin.getSpawnerManager().getAllSpawnerData()) {
+        for (SpawnerData spawnerData : plugin.getSpawnerManager().getAllSpawnerData()) {
             if (!spawnerData.isInShop()
                     || !spawnerData.isActive()
                     || !player.hasPermission("epicspawners.shop." + spawnerData.getIdentifyingName().replace(" ", "_")))
@@ -67,12 +68,12 @@ public class SpawnerShopGui extends CustomizableGui {
         setOnPage((event) -> showPage());
 
         // Sort entities by their shopOrder val
-        entities.sort(Comparator.comparingInt(SpawnerDataImpl::getShopOrder));
+        entities.sort(Comparator.comparingInt(SpawnerData::getShopOrder));
 
-        List<SpawnerDataImpl> data = entities.stream().skip((page - 1) * 28).limit(28).collect(Collectors.toList());
+        List<SpawnerData> data = entities.stream().skip((page - 1) * 28).limit(28).collect(Collectors.toList());
 
         int num = 11;
-        for (SpawnerDataImpl spawnerData : data) {
+        for (SpawnerData spawnerData : data) {
             if (num == 16 || num == 36)
                 num = num + 2;
 

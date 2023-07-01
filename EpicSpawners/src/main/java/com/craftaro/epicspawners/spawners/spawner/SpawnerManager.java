@@ -7,11 +7,13 @@ import com.craftaro.core.third_party.de.tr7zw.nbtapi.NBTItem;
 import com.craftaro.core.third_party.org.apache.commons.text.WordUtils;
 import com.craftaro.core.utils.EntityUtils;
 import com.craftaro.epicspawners.EpicSpawners;
+import com.craftaro.epicspawners.api.spawners.spawner.PlacedSpawner;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerData;
 import com.craftaro.epicspawners.api.particles.ParticleDensity;
 import com.craftaro.epicspawners.api.particles.ParticleEffect;
 import com.craftaro.epicspawners.api.particles.ParticleType;
 import com.craftaro.epicspawners.api.spawners.condition.SpawnCondition;
+import com.craftaro.epicspawners.api.spawners.spawner.SpawnerStack;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerTier;
 import com.craftaro.epicspawners.spawners.condition.SpawnConditionBiome;
 import com.craftaro.epicspawners.spawners.condition.SpawnConditionHeight;
@@ -54,10 +56,10 @@ public class SpawnerManager {
     private final Map<String, SpawnerData> registeredSpawnerData = new LinkedHashMap<>();
 
     // These are spawners that exist in the game world.
-    private final Map<Location, PlacedSpawnerImpl> spawnersInWorld = new HashMap<>();
+    private final Map<Location, PlacedSpawner> spawnersInWorld = new HashMap<>();
 
     // This is the map that holds the cooldowns for picking up stuffs
-    private final List<PlacedSpawnerImpl> pickingUp = new ArrayList<>();
+    private final List<PlacedSpawner> pickingUp = new ArrayList<>();
 
     private final Config spawnerConfig = new Config(EpicSpawners.getInstance(), "spawners.yml");
 
@@ -130,39 +132,43 @@ public class SpawnerManager {
         return registeredSpawnerData.containsKey(type.toLowerCase());
     }
 
-    public PlacedSpawnerImpl getSpawnerFromWorld(Location location) {
+    public PlacedSpawner getSpawnerFromWorld(Location location) {
         return spawnersInWorld.get(location);
     }
 
-    public void addSpawnerToWorld(Location location, PlacedSpawnerImpl spawner) {
+    public void addSpawnerToWorld(Location location, PlacedSpawner spawner) {
         spawnersInWorld.put(location, spawner);
     }
 
-    public PlacedSpawnerImpl removeSpawnerFromWorld(Location location) {
+    public PlacedSpawner removeSpawnerFromWorld(Location location) {
         return spawnersInWorld.remove(location);
     }
 
-    public PlacedSpawnerImpl removeSpawnerFromWorld(PlacedSpawnerImpl spawner) {
+    public PlacedSpawner removeSpawnerFromWorld(PlacedSpawner spawner) {
         return spawnersInWorld.remove(spawner.getLocation());
     }
 
-    public Collection<PlacedSpawnerImpl> getSpawners() {
+    public Collection<PlacedSpawner> getSpawners() {
         return Collections.unmodifiableCollection(spawnersInWorld.values());
     }
 
-    public void addSpawners(Map<Location, PlacedSpawnerImpl> spawners) {
+    public void addSpawners(Map<Location, PlacedSpawner> spawners) {
         spawnersInWorld.putAll(spawners);
     }
 
-    public void addCooldown(PlacedSpawnerImpl spawner) {
+    public void addSpawners(List<PlacedSpawner> spawners) {
+        spawners.forEach(spawner -> spawnersInWorld.put(spawner.getLocation(), (PlacedSpawnerImpl) spawner));
+    }
+
+    public void addCooldown(PlacedSpawner spawner) {
         pickingUp.add(spawner);
     }
 
-    public void removeCooldown(PlacedSpawnerImpl spawner) {
+    public void removeCooldown(PlacedSpawner spawner) {
         pickingUp.remove(spawner);
     }
 
-    public boolean hasCooldown(PlacedSpawnerImpl spawner) {
+    public boolean hasCooldown(PlacedSpawner spawner) {
         return pickingUp.contains(spawner);
     }
 
@@ -342,11 +348,11 @@ public class SpawnerManager {
     }
 
     public void reloadSpawnerData() {
-        for (PlacedSpawnerImpl spawner : spawnersInWorld.values()) {
-            for (SpawnerStackImpl stack : spawner.getSpawnerStacks()) {
+        for (PlacedSpawner spawner : spawnersInWorld.values()) {
+            for (SpawnerStack stack : spawner.getSpawnerStacks()) {
                 stack.setTier(registeredSpawnerData.get(stack.getSpawnerData().getIdentifyingName().toLowerCase())
                         .getTierOrFirst(stack.getCurrentTier().getIdentifyingName()));
-                plugin.getDataManager().updateSpawnerStack(stack);
+                plugin.getDataManager().save(stack);
             }
         }
     }

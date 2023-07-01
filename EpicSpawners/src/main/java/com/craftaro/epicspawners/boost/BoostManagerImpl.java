@@ -19,42 +19,50 @@ public class BoostManagerImpl implements BoostManager {
 
     private final Set<Boosted> registeredBoosts = new HashSet<>();
 
+    @Override
     public void addBoost(Boosted boosted) {
         synchronized (registeredBoosts) {
             this.registeredBoosts.add(boosted);
         }
     }
 
+    @Override
     public void removeBoost(Boosted boosted) {
         synchronized (registeredBoosts) {
             this.registeredBoosts.remove(boosted);
         }
     }
 
+    @Override
     public Set<Boosted> getBoosts() {
         return Collections.unmodifiableSet(registeredBoosts);
     }
 
+    @Override
     public void addBoosts(List<Boosted> boosts) {
         synchronized (registeredBoosts) {
             registeredBoosts.addAll(boosts);
         }
     }
 
+    @Override
     public void clearBoosts() {
         synchronized (registeredBoosts) {
             registeredBoosts.clear();
         }
     }
 
+    @Override
     public BoostedPlayer createBoostedPlayer(UUID playerUUID, int amtBoosted, long endTime) {
         return new BoostedPlayerImpl(playerUUID, amtBoosted, endTime);
     }
 
+    @Override
     public BoostedPlayer createBoostedPlayer(Player player, int amtBoosted, long endTime) {
         return new BoostedPlayerImpl(player, amtBoosted, endTime);
     }
 
+    @Override
     public BoostedSpawner createBoostedSpawner(Location location, int amtBoosted, long endTime) {
         return new BoostedSpawnerImpl(location, amtBoosted, endTime);
     }

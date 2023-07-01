@@ -5,6 +5,7 @@ import com.craftaro.core.gui.CustomizableGui;
 import com.craftaro.core.gui.GuiUtils;
 import com.craftaro.core.utils.TextUtils;
 import com.craftaro.epicspawners.EpicSpawners;
+import com.craftaro.epicspawners.api.spawners.spawner.SpawnerData;
 import com.craftaro.epicspawners.settings.Settings;
 import com.craftaro.epicspawners.spawners.spawner.SpawnerDataImpl;
 import com.craftaro.epicspawners.api.utils.HeadUtils;
@@ -23,7 +24,7 @@ public class SpawnerStatsGui extends CustomizableGui {
 
     private final EpicSpawners plugin;
     private final Player player;
-    private final Map<SpawnerDataImpl, Integer> entities = new HashMap<>();
+    private final Map<SpawnerData, Integer> entities = new HashMap<>();
 
     public SpawnerStatsGui(EpicSpawners plugin, Player player) {
         super(plugin, "stats");
@@ -32,7 +33,7 @@ public class SpawnerStatsGui extends CustomizableGui {
         this.player = player;
 
         for (Map.Entry<EntityType, Integer> entry : plugin.getPlayerDataManager().getPlayerData(player).getEntityKills().entrySet()) {
-            SpawnerDataImpl data = plugin.getSpawnerManager().getSpawnerData(entry.getKey());
+            SpawnerData data = plugin.getSpawnerManager().getSpawnerData(entry.getKey());
             if (data.isActive())
                 entities.put(data, entry.getValue());
         }
@@ -67,17 +68,17 @@ public class SpawnerStatsGui extends CustomizableGui {
         setButton("exit", 8, GuiUtils.createButtonItem(CompatibleMaterial.valueOf(plugin.getConfig().getString("Interfaces.Exit Icon")),
                 plugin.getLocale().getMessage("general.nametag.exit").getMessage()), (event) -> player.closeInventory());
 
-        Set<Map.Entry<SpawnerDataImpl, Integer>> entries = entities.entrySet().stream().skip((page - 1) * 28).limit(28)
+        Set<Map.Entry<SpawnerData, Integer>> entries = entities.entrySet().stream().skip((page - 1) * 28).limit(28)
                 .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder())).collect(Collectors.toCollection(LinkedHashSet::new));
 
         int num = 11;
-        for (Map.Entry<SpawnerDataImpl, Integer> entry : entries) {
+        for (Map.Entry<SpawnerData, Integer> entry : entries) {
             if (num == 16 || num == 36)
                 num = num + 2;
 
             int goal = Settings.KILL_DROP_GOAL.getInt();
 
-            SpawnerDataImpl spawnerData = entry.getKey();
+            SpawnerData spawnerData = entry.getKey();
 
             int customGoal = spawnerData.getKillDropGoal();
             if (customGoal != 0) goal = customGoal;

@@ -4,14 +4,14 @@ import com.craftaro.core.compatibility.ServerVersion;
 import com.craftaro.core.lootables.loot.Drop;
 import com.craftaro.core.lootables.loot.DropUtils;
 import com.craftaro.epicspawners.EpicSpawners;
+import com.craftaro.epicspawners.api.player.PlayerData;
+import com.craftaro.epicspawners.api.spawners.spawner.PlacedSpawner;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerData;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerStack;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerTier;
-import com.craftaro.epicspawners.player.PlayerData;
-import com.craftaro.epicspawners.player.PlayerDataManager;
+import com.craftaro.epicspawners.player.PlayerDataImpl;
+import com.craftaro.epicspawners.player.PlayerDataManagerImpl;
 import com.craftaro.epicspawners.settings.Settings;
-import com.craftaro.epicspawners.spawners.spawner.PlacedSpawnerImpl;
-import com.craftaro.epicspawners.spawners.spawner.SpawnerDataImpl;
 import com.craftaro.ultimatestacker.api.UltimateStackerAPI;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -60,7 +60,7 @@ public class EntityListeners implements Listener {
 
             Location spawnLocation = block.getLocation();
 
-            PlacedSpawnerImpl spawner = plugin.getSpawnerManager().getSpawnerFromWorld(block.getLocation());
+            PlacedSpawner spawner = plugin.getSpawnerManager().getSpawnerFromWorld(block.getLocation());
 
             if (Settings.SPAWNERS_DONT_EXPLODE.getBoolean())
                 toCancel.add(block);
@@ -142,14 +142,11 @@ public class EntityListeners implements Listener {
                 amount = UltimateStackerAPI.getEntityStackManager().getStackedEntity(event.getEntity().getUniqueId()).getAmount();
             }
         }
-        PlayerDataManager playerDataManager = plugin.getPlayerDataManager();
+        PlayerDataManagerImpl playerDataManager = plugin.getPlayerDataManager();
 
         PlayerData playerData = playerDataManager.getPlayerData(player);
         int amt = playerData.addKilledEntity(event.getEntityType(), amount);
-        if (amt != amount)
-            plugin.getDataManager().updateEntityKill(player, event.getEntity().getType(), amt);
-        else
-            plugin.getDataManager().createEntityKill(player, event.getEntity().getType(), amt);
+        playerData.save();
         int goal = Settings.KILL_DROP_GOAL.getInt();
         double chance = Settings.KILL_DROP_CHANCE.getDouble();
 
@@ -184,7 +181,8 @@ public class EntityListeners implements Listener {
 
             if (goalReached) {
                 plugin.getPlayerDataManager().getPlayerData(player).removeEntity(event.getEntityType());
-                plugin.getDataManager().deleteEntityKills(player, event.getEntityType());
+                playerData.deleteEntityKills(event.getEntityType());
+                playerData.save();
             }
 
             if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9))

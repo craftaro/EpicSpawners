@@ -2,6 +2,7 @@ package com.craftaro.epicspawners.spawners.condition;
 
 import com.craftaro.epicspawners.EpicSpawners;
 import com.craftaro.epicspawners.api.spawners.condition.SpawnCondition;
+import com.craftaro.epicspawners.api.spawners.spawner.PlacedSpawner;
 import com.craftaro.epicspawners.spawners.spawner.PlacedSpawnerImpl;
 import org.bukkit.Location;
 
@@ -31,7 +32,7 @@ public class SpawnConditionLightDark implements SpawnCondition {
     }
 
     @Override
-    public boolean isMet(PlacedSpawnerImpl spawner) {
+    public boolean isMet(PlacedSpawner spawner) {
         Location location = spawner.getLocation();
         switch (lightDark) {
             case LIGHT:

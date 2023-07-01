@@ -1,6 +1,7 @@
 package com.craftaro.epicspawners.listeners;
 
 import com.craftaro.epicspawners.EpicSpawners;
+import com.craftaro.epicspawners.api.spawners.spawner.PlacedSpawner;
 import com.craftaro.epicspawners.spawners.spawner.PlacedSpawnerImpl;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
@@ -24,23 +25,24 @@ public class WorldListeners implements Listener {
 	@EventHandler
 	public void onWorldLoad(WorldLoadEvent e) {
 		// Unload previous spawners belonging to this world.
-		for (PlacedSpawnerImpl ps : plugin.getSpawnerManager().getSpawners()) {
+		for (PlacedSpawner ps : plugin.getSpawnerManager().getSpawners()) {
 			if (e.getWorld().getName().equals(ps.getWorld().getName())) {
 				plugin.getSpawnerManager().removeSpawnerFromWorld(ps);
 			}
 		}
 
+		//Todo fix it
 		// Load spawners back in.
-		plugin.getDataManager().getSpawners(new Consumer<Map<Location, PlacedSpawnerImpl>>() {
-			@Override
-			public void accept(Map<Location, PlacedSpawnerImpl> locationPlacedSpawnerMap) {
-				for(PlacedSpawnerImpl ps : locationPlacedSpawnerMap.values()){
-					if (e.getWorld().getName().equals(ps.getWorld().getName())) {
-						plugin.getSpawnerManager().addSpawnerToWorld(ps.getLocation(), ps);
-					}
-				}
-			}
-		});
+//		plugin.getDataManager().getSpawners(new Consumer<Map<Location, PlacedSpawner>>() {
+//			@Override
+//			public void accept(Map<Location, PlacedSpawner> locationPlacedSpawnerMap) {
+//				for(PlacedSpawner ps : locationPlacedSpawnerMap.values()){
+//					if (e.getWorld().getName().equals(ps.getWorld().getName())) {
+//						plugin.getSpawnerManager().addSpawnerToWorld(ps.getLocation(), ps);
+//					}
+//				}
+//			}
+//		});
 	}
 
 }

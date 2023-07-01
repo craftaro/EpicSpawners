@@ -5,6 +5,8 @@ import com.craftaro.core.gui.CustomizableGui;
 import com.craftaro.core.gui.GuiUtils;
 import com.craftaro.core.hooks.EconomyManager;
 import com.craftaro.epicspawners.EpicSpawners;
+import com.craftaro.epicspawners.api.spawners.spawner.SpawnerData;
+import com.craftaro.epicspawners.api.spawners.spawner.SpawnerStack;
 import com.craftaro.epicspawners.settings.Settings;
 import com.craftaro.epicspawners.spawners.spawner.SpawnerDataImpl;
 import com.craftaro.epicspawners.spawners.spawner.SpawnerStackImpl;
@@ -22,18 +24,18 @@ import java.util.stream.Collectors;
 public class SpawnerConvertGui extends CustomizableGui {
 
     private final EpicSpawners plugin;
-    private final SpawnerStackImpl stack;
+    private final SpawnerStack stack;
     private final Player player;
-    private final List<SpawnerDataImpl> entities = new ArrayList<>();
+    private final List<SpawnerData> entities = new ArrayList<>();
 
-    public SpawnerConvertGui(EpicSpawners plugin, SpawnerStackImpl stack, Player player) {
+    public SpawnerConvertGui(EpicSpawners plugin, SpawnerStack stack, Player player) {
         super(plugin, "convert");
         setRows(6);
         this.plugin = plugin;
         this.stack = stack;
         this.player = player;
 
-        for (SpawnerDataImpl spawnerData : plugin.getSpawnerManager().getAllSpawnerData()) {
+        for (SpawnerData spawnerData : plugin.getSpawnerManager().getAllSpawnerData()) {
             if (!spawnerData.isConvertible()
                     || !spawnerData.isActive()
                     || !player.hasPermission("epicspawners.convert." + spawnerData.getIdentifyingName().replace(" ", "_")))
@@ -69,12 +71,12 @@ public class SpawnerConvertGui extends CustomizableGui {
         setOnPage((event) -> showPage());
 
         // Sort entities by their shopOrder val
-        entities.sort(Comparator.comparingInt(SpawnerDataImpl::getShopOrder));
+        entities.sort(Comparator.comparingInt(SpawnerData::getShopOrder));
 
-        List<SpawnerDataImpl> data = entities.stream().skip((page - 1) * 28).limit(28).collect(Collectors.toList());
+        List<SpawnerData> data = entities.stream().skip((page - 1) * 28).limit(28).collect(Collectors.toList());
 
         int num = 11;
-        for (SpawnerDataImpl spawnerData : data) {
+        for (SpawnerData spawnerData : data) {
             if (num == 16 || num == 36)
                 num = num + 2;
 

@@ -54,7 +54,7 @@ public class SpawnerListeners implements Listener {
             SpawnerData spawnerData = plugin.getSpawnerManager().getSpawnerData(event.getEntityType().name());
             if (spawnerData == null) return;
             spawner.addSpawnerStack(new SpawnerStackImpl(spawner, spawnerData.getFirstTier(), 1));
-            EpicSpawners.getInstance().getDataManager().createSpawner(spawner);
+            EpicSpawners.getInstance().getDataManager().save(spawner);
         }
     }
 

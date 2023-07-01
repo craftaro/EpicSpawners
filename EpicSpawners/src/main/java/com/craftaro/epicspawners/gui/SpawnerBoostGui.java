@@ -10,6 +10,7 @@ import com.craftaro.core.third_party.org.apache.commons.text.WordUtils;
 import com.craftaro.core.utils.ItemUtils;
 import com.craftaro.core.utils.TextUtils;
 import com.craftaro.epicspawners.EpicSpawners;
+import com.craftaro.epicspawners.api.spawners.spawner.PlacedSpawner;
 import com.craftaro.epicspawners.boost.types.BoostedImpl;
 import com.craftaro.epicspawners.boost.types.BoostedSpawnerImpl;
 import com.craftaro.epicspawners.settings.Settings;
@@ -25,11 +26,11 @@ import java.util.Date;
 public class SpawnerBoostGui extends CustomizableGui {
 
     private final EpicSpawners plugin;
-    private final PlacedSpawnerImpl spawner;
+    private final PlacedSpawner spawner;
     private final Player player;
     private int amount = 1;
 
-    public SpawnerBoostGui(EpicSpawners plugin, PlacedSpawnerImpl spawner, Player player) {
+    public SpawnerBoostGui(EpicSpawners plugin, PlacedSpawner spawner, Player player) {
         super(plugin, "boost");
         setRows(3);
         this.plugin = plugin;
@@ -161,7 +162,7 @@ public class SpawnerBoostGui extends CustomizableGui {
 
         BoostedImpl boost = new BoostedSpawnerImpl(location, amt, c.getTimeInMillis());
         instance.getBoostManager().addBoost(boost);
-        instance.getDataManager().createBoost(boost);
+        instance.getDataManager().delete(boost);
         plugin.getLocale().getMessage("event.boost.applied").sendPrefixedMessage(player);
         player.playSound(location, CompatibleSound.ENTITY_VILLAGER_YES.getSound(), 1, 1);
     }

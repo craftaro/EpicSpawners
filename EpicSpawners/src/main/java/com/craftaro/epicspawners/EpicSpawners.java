@@ -5,13 +5,18 @@ import com.craftaro.core.SongodaPlugin;
 import com.craftaro.core.commands.CommandManager;
 import com.craftaro.core.compatibility.CompatibleMaterial;
 import com.craftaro.core.configuration.Config;
-import com.craftaro.core.database.DatabaseConnector;
+import com.craftaro.core.database.DataManager;
 import com.craftaro.core.gui.GuiManager;
 import com.craftaro.core.hooks.EconomyManager;
 import com.craftaro.core.hooks.EntityStackerManager;
 import com.craftaro.core.hooks.HologramManager;
 import com.craftaro.core.hooks.ProtectionManager;
+import com.craftaro.core.third_party.org.jooq.Record;
+import com.craftaro.core.third_party.org.jooq.Result;
 import com.craftaro.epicspawners.api.EpicSpawnersAPI;
+import com.craftaro.epicspawners.api.boosts.types.BoostedPlayer;
+import com.craftaro.epicspawners.api.player.PlayerData;
+import com.craftaro.epicspawners.api.spawners.spawner.PlacedSpawner;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerData;
 import com.craftaro.epicspawners.blacklist.BlacklistHandler;
 import com.craftaro.epicspawners.boost.BoostManagerImpl;
@@ -25,7 +30,6 @@ import com.craftaro.epicspawners.commands.CommandSettings;
 import com.craftaro.epicspawners.commands.CommandSpawn;
 import com.craftaro.epicspawners.commands.CommandSpawnerShop;
 import com.craftaro.epicspawners.commands.CommandSpawnerStats;
-import com.craftaro.epicspawners.database.DataManager;
 import com.craftaro.epicspawners.database.migrations._1_InitialMigration;
 import com.craftaro.epicspawners.database.migrations._2_AddTiers;
 import com.craftaro.epicspawners.listeners.BlockListeners;
@@ -35,12 +39,10 @@ import com.craftaro.epicspawners.listeners.InventoryListeners;
 import com.craftaro.epicspawners.listeners.SpawnerListeners;
 import com.craftaro.epicspawners.listeners.WorldListeners;
 import com.craftaro.epicspawners.lootables.LootablesManager;
-import com.craftaro.epicspawners.player.PlayerData;
-import com.craftaro.epicspawners.player.PlayerDataManager;
+import com.craftaro.epicspawners.player.PlayerDataImpl;
+import com.craftaro.epicspawners.player.PlayerDataManagerImpl;
 import com.craftaro.epicspawners.settings.Settings;
 import com.craftaro.epicspawners.spawners.SpawnManager;
-import com.craftaro.epicspawners.spawners.spawner.PlacedSpawnerImpl;
-import com.craftaro.epicspawners.spawners.spawner.SpawnerDataImpl;
 import com.craftaro.epicspawners.spawners.spawner.SpawnerManager;
 import com.craftaro.epicspawners.tasks.AppearanceTask;
 import com.craftaro.epicspawners.tasks.SpawnerParticleTask;
@@ -54,11 +56,11 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.plugin.PluginManager;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 public class EpicSpawners extends SongodaPlugin {
@@ -67,7 +69,7 @@ public class EpicSpawners extends SongodaPlugin {
 
     private final GuiManager guiManager = new GuiManager(this);
     private SpawnManager spawnManager;
-    private PlayerDataManager playerActionManager;
+    private PlayerDataManagerImpl playerActionManager;
     private SpawnerManager spawnerManager;
     private BoostManagerImpl boostManager;
     private CommandManager commandManager;
@@ -139,7 +141,7 @@ public class EpicSpawners extends SongodaPlugin {
         this.spawnManager = new SpawnManager();
         this.spawnerManager = new SpawnerManager(this);
         this.blacklistHandler = new BlacklistHandler();
-        this.playerActionManager = new PlayerDataManager();
+        this.playerActionManager = new PlayerDataManagerImpl();
 
         this.lootablesManager = new LootablesManager();
         this.lootablesManager.getLootManager().loadLootables();
@@ -169,23 +171,20 @@ public class EpicSpawners extends SongodaPlugin {
 
     @Override
     public void onDataLoad() {
-        // Adding in spawners
-        getDataManager().runAsync(() -> {
-            // Load data from DB
-            this.dataManager.getSpawners((spawners) -> {
-                this.spawnerManager.addSpawners(spawners);
-                loadHolograms();
-                this.dataManager.getBoosts((boosts) -> this.boostManager.addBoosts(boosts));
-                this.dataManager.getEntityKills((kills) -> {
-                    for (Map.Entry<UUID, Map<EntityType, Integer>> entry : kills.entrySet()) {
-                        PlayerData playerData = this.playerActionManager.getPlayerData(entry.getKey());
-                        for (Map.Entry<EntityType, Integer> entry2 : entry.getValue().entrySet())
-                            playerData.addKilledEntity(entry2.getKey(), entry2.getValue());
-                    }
-                });
+        DataManager dataManager = getDataManager();
+        spawnerManager.addSpawners(dataManager.loadBatch(PlacedSpawner.class, "placed_spawners"));
+        loadHolograms();
+        boostManager.addBoosts(dataManager.loadBatch(BoostedPlayer.class, "boosted_players"));
 
-                getLogger().info("Loading Crafting Recipes");
-                this.enabledRecipe();
+        //Load entity kills
+        dataManager.getDatabaseConnector().connectDSL(dslContext -> {
+            @NotNull Result<Record> results = dslContext.select().from(dataManager.getTablePrefix() + "entity_kills").fetch();
+            results.stream().iterator().forEachRemaining(record -> {
+                UUID uuid = UUID.fromString(record.get("uuid").toString());
+                EntityType entityType = EntityType.valueOf(record.get("entity_type").toString());
+                int amount = Integer.parseInt(record.get("amount").toString());
+                PlayerData playerData = playerActionManager.getPlayerData(uuid);
+                playerData.addKilledEntity(entityType, amount);
             });
         });
     }
@@ -205,20 +204,20 @@ public class EpicSpawners extends SongodaPlugin {
     }
 
     private void loadHolograms() {
-        Collection<PlacedSpawnerImpl> spawners = getSpawnerManager().getSpawners();
+        Collection<PlacedSpawner> spawners = getSpawnerManager().getSpawners();
         if (spawners.size() == 0) return;
 
-        for (PlacedSpawnerImpl spawner : spawners) {
+        for (PlacedSpawner spawner : spawners) {
             if (spawner.getWorld() == null) continue;
             createHologram(spawner);
         }
     }
 
-    public void clearHologram(PlacedSpawnerImpl spawner) {
+    public void clearHologram(PlacedSpawner spawner) {
         HologramManager.removeHologram(spawner.getHologramId());
     }
 
-    public void createHologram(PlacedSpawnerImpl spawner) {
+    public void createHologram(PlacedSpawner spawner) {
         // are holograms enabled?
         if (!Settings.SPAWNER_HOLOGRAMS.getBoolean() || !HologramManager.getManager().isEnabled()) return;
 
@@ -226,7 +225,7 @@ public class EpicSpawners extends SongodaPlugin {
         HologramManager.createHologram(spawner.getHologramId(), spawner.getLocation(), getHologramName(spawner));
     }
 
-    public void updateHologram(PlacedSpawnerImpl spawner) {
+    public void updateHologram(PlacedSpawner spawner) {
         // are holograms enabled?
         if (!Settings.SPAWNER_HOLOGRAMS.getBoolean() || !HologramManager.getManager().isEnabled()) return;
 
@@ -239,7 +238,7 @@ public class EpicSpawners extends SongodaPlugin {
         HologramManager.updateHologram(spawner.getHologramId(), getHologramName(spawner));
     }
 
-    public String getHologramName(PlacedSpawnerImpl spawner) {
+    public String getHologramName(PlacedSpawner spawner) {
         int stackSize = spawner.getStackSize();
         if (spawner.getSpawnerStacks().isEmpty()) return null;
         return spawner.getFirstTier().getCompiledDisplayName(spawner.getSpawnerStacks().size() > 1, stackSize).trim();
@@ -248,7 +247,7 @@ public class EpicSpawners extends SongodaPlugin {
     public void processChange(Block block) {
         if (block.getType() != CompatibleMaterial.SPAWNER.getMaterial())
             return;
-        PlacedSpawnerImpl spawner = getSpawnerManager().getSpawnerFromWorld(block.getLocation());
+        PlacedSpawner spawner = getSpawnerManager().getSpawnerFromWorld(block.getLocation());
         Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, () ->
                 updateHologram(spawner), 1L);
     }
@@ -327,7 +326,7 @@ public class EpicSpawners extends SongodaPlugin {
         return boostManager;
     }
 
-    public PlayerDataManager getPlayerDataManager() {
+    public PlayerDataManagerImpl getPlayerDataManager() {
         return playerActionManager;
     }
 

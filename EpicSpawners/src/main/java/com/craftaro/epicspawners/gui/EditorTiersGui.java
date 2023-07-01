@@ -6,12 +6,14 @@ import com.craftaro.core.gui.GuiUtils;
 import com.craftaro.core.input.ChatPrompt;
 import com.craftaro.core.utils.TextUtils;
 import com.craftaro.epicspawners.EpicSpawners;
+import com.craftaro.epicspawners.api.spawners.spawner.PlacedSpawner;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerData;
+import com.craftaro.epicspawners.api.spawners.spawner.SpawnerStack;
 import com.craftaro.epicspawners.settings.Settings;
 import com.craftaro.epicspawners.spawners.spawner.PlacedSpawnerImpl;
 import com.craftaro.epicspawners.spawners.spawner.SpawnerDataImpl;
 import com.craftaro.epicspawners.spawners.spawner.SpawnerStackImpl;
-import com.craftaro.epicspawners.spawners.spawner.SpawnerTier;
+import com.craftaro.epicspawners.api.spawners.spawner.SpawnerTier;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
@@ -141,9 +143,9 @@ public class EditorTiersGui extends Gui {
                                     newTiers.put("Tier_" + (newTiers.size() + 1), tier);
                             }
 
-                            for (PlacedSpawnerImpl spawner : plugin.getSpawnerManager().getSpawners()) {
+                            for (PlacedSpawner spawner : plugin.getSpawnerManager().getSpawners()) {
                                 boolean modified = false;
-                                for (SpawnerStackImpl stack : spawner.getSpawnerStacks()) {
+                                for (SpawnerStack stack : spawner.getSpawnerStacks()) {
                                     if (stack.getSpawnerData() != spawnerData)
                                         continue;
 
@@ -153,7 +155,7 @@ public class EditorTiersGui extends Gui {
                                 }
                                 if (modified) {
                                     plugin.updateHologram(spawner);
-                                    plugin.getDataManager().updateSpawner(spawner);
+                                    plugin.getDataManager().save(spawner);
                                 }
                             }
 

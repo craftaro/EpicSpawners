@@ -54,7 +54,7 @@ public class SpawnOptionItem implements SpawnOption {
                 if (item == null || item.getType() == Material.AIR) continue;
                 Item droppedItem = world.dropItem(spawnLocation, item);
                 spawner.setSpawnCount(spawner.getSpawnCount() + 1);
-                EpicSpawners.getInstance().getDataManager().updateSpawner(spawner);
+                EpicSpawners.getInstance().getDataManager().save(spawner);
 
                 double dx = -.2 + (.2 - -.2) * random.nextDouble();
                 double dy = 0 + (.5 - 0) * random.nextDouble();

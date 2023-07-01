@@ -9,7 +9,7 @@ import com.craftaro.epicspawners.api.particles.ParticleDensity;
 import com.craftaro.epicspawners.api.particles.ParticleEffect;
 import com.craftaro.epicspawners.api.particles.ParticleType;
 import com.craftaro.epicspawners.settings.Settings;
-import com.craftaro.epicspawners.spawners.spawner.SpawnerTier;
+import com.craftaro.epicspawners.api.spawners.spawner.SpawnerTier;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 

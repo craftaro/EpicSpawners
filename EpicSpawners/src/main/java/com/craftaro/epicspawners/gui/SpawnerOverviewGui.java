@@ -6,12 +6,15 @@ import com.craftaro.core.hooks.EconomyManager;
 import com.craftaro.core.utils.NumberUtils;
 import com.craftaro.core.utils.TextUtils;
 import com.craftaro.epicspawners.EpicSpawners;
+import com.craftaro.epicspawners.api.spawners.spawner.PlacedSpawner;
+import com.craftaro.epicspawners.api.spawners.spawner.SpawnerData;
+import com.craftaro.epicspawners.api.spawners.spawner.SpawnerStack;
+import com.craftaro.epicspawners.api.spawners.spawner.SpawnerTier;
 import com.craftaro.epicspawners.settings.Settings;
 import com.craftaro.epicspawners.api.spawners.condition.SpawnCondition;
 import com.craftaro.epicspawners.spawners.spawner.PlacedSpawnerImpl;
 import com.craftaro.epicspawners.spawners.spawner.SpawnerDataImpl;
 import com.craftaro.epicspawners.spawners.spawner.SpawnerStackImpl;
-import com.craftaro.epicspawners.spawners.spawner.SpawnerTier;
 import com.craftaro.epicspawners.api.utils.CostType;
 import com.craftaro.epicspawners.utils.GuiUtils;
 import com.craftaro.epicspawners.api.utils.HeadUtils;
@@ -31,9 +34,9 @@ public class SpawnerOverviewGui extends CustomizableGui {
 
     private static final Pattern REGEX = Pattern.compile("(.{1,28}(?:\\s|$))|(.{0,28})", Pattern.DOTALL);
 
-    private final PlacedSpawnerImpl spawner;
-    private final SpawnerStackImpl stack;
-    private final SpawnerDataImpl data;
+    private final PlacedSpawner spawner;
+    private final SpawnerStack stack;
+    private final SpawnerData data;
     private final SpawnerTier tier;
     private final SpawnerTier nextTier;
     private final boolean onlyOneTier;
@@ -44,7 +47,7 @@ public class SpawnerOverviewGui extends CustomizableGui {
 
     private int task;
 
-    public SpawnerOverviewGui(EpicSpawners plugin, SpawnerStackImpl stack, Player player) {
+    public SpawnerOverviewGui(EpicSpawners plugin, SpawnerStack stack, Player player) {
         super(plugin, "overview");
         setRows(3);
         this.stack = stack;
@@ -80,7 +83,7 @@ public class SpawnerOverviewGui extends CustomizableGui {
         mirrorFill("mirrorfill_5", 1, 1, false, true, glass3);
 
         if (spawner.getSpawnerStacks().size() != 1)
-            setButton("back", 0, com.songoda.core.gui.GuiUtils.createButtonItem(Settings.EXIT_ICON.getMaterial(),
+            setButton("back", 0, com.craftaro.core.gui.GuiUtils.createButtonItem(Settings.EXIT_ICON.getMaterial(),
                     plugin.getLocale().getMessage("general.nametag.back").getMessage()),
                     (event) -> guiManager.showGUI(event.player, new SpawnerTiersGui(plugin, player, spawner)));
 

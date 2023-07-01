@@ -47,7 +47,7 @@ public class SpawnOptionBlock implements SpawnOption {
                 int searchIndex = 0;
                 while (searchIndex++ <= MAX_SEARCH_COUNT) {
                     spawner.setSpawnCount(spawner.getSpawnCount() + 1);
-                    EpicSpawners.getInstance().getDataManager().updateSpawner(spawner);
+                    EpicSpawners.getInstance().getDataManager().save(spawner);
                     double xOffset = random.nextInt((SPAWN_RADIUS * 2) + 1) - SPAWN_RADIUS;
                     double yOffset = random.nextInt((SPAWN_RADIUS * 2) + 1) - SPAWN_RADIUS;
                     double zOffset = random.nextInt((SPAWN_RADIUS * 2) + 1) - SPAWN_RADIUS;

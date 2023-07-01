@@ -8,6 +8,7 @@ import com.craftaro.core.utils.ItemUtils;
 import com.craftaro.epicspawners.EpicSpawners;
 import com.craftaro.epicspawners.api.events.SpawnerAccessEvent;
 import com.craftaro.epicspawners.api.events.SpawnerChangeEvent;
+import com.craftaro.epicspawners.api.spawners.spawner.PlacedSpawner;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerStack;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerTier;
 import com.craftaro.epicspawners.settings.Settings;
@@ -87,7 +88,7 @@ public class InteractListeners implements Listener {
         if (!plugin.getSpawnerManager().isSpawner(block.getLocation()))
             createMissingSpawner(block.getLocation());
 
-        PlacedSpawnerImpl spawner = spawnerManager.getSpawnerFromWorld(block.getLocation());
+        PlacedSpawner spawner = spawnerManager.getSpawnerFromWorld(block.getLocation());
 
         SpawnerTier blockType = spawnerManager.getSpawnerData(spawner.getCreatureSpawner().getSpawnedType()).getFirstTier();
 
@@ -146,9 +147,8 @@ public class InteractListeners implements Listener {
             player.getInventory().addItem(oldEgg);
         }
 
-        String oldTier = spawner.getFirstStack().getCurrentTier().getIdentifyingName();
         SpawnerStack stack = spawner.getFirstStack().setTier(plugin.getSpawnerManager().getSpawnerData(itype).getFirstTier());
-        plugin.getDataManager().updateSpawnerStack(stack, oldTier);
+        plugin.getDataManager().save(stack);
         try {
             spawner.getCreatureSpawner().setSpawnedType(EntityType.valueOf(plugin.getSpawnerManager().getSpawnerData(itype).getIdentifyingName().toUpperCase()));
         } catch (Exception e2) {
@@ -190,7 +190,7 @@ public class InteractListeners implements Listener {
             return;
 
         if (isSpawner && CompatibleMaterial.SPAWNER.matches(item)) {
-            PlacedSpawnerImpl spawner = plugin.getSpawnerManager().getSpawnerFromWorld(location);
+            PlacedSpawner spawner = plugin.getSpawnerManager().getSpawnerFromWorld(location);
 
             if (spawner.getPlacedBy() == null && Settings.DISABLE_NATURAL_SPAWNERS.getBoolean()) return;
 
@@ -208,7 +208,7 @@ public class InteractListeners implements Listener {
                 }
             }
         } else if (isSpawner && !plugin.getBlacklistHandler().isBlacklisted(player, false)) {
-            PlacedSpawnerImpl spawner = plugin.getSpawnerManager().getSpawnerFromWorld(location);
+            PlacedSpawner spawner = plugin.getSpawnerManager().getSpawnerFromWorld(location);
             if (!player.isSneaking() && event.getAction() == Action.RIGHT_CLICK_BLOCK) {
                 if (spawner.getPlacedBy() == null && Settings.DISABLE_NATURAL_SPAWNERS.getBoolean()) return;
 
@@ -237,7 +237,7 @@ public class InteractListeners implements Listener {
 
         spawner.addSpawnerStack(new SpawnerStackImpl(spawner, plugin.getSpawnerManager().getSpawnerData(creatureSpawner.getSpawnedType()).getFirstTier(), 1));
         plugin.getSpawnerManager().addSpawnerToWorld(location, spawner);
-        EpicSpawners.getInstance().getDataManager().createSpawner(spawner);
+        EpicSpawners.getInstance().getDataManager().save(spawner);
         return spawner;
     }
 }

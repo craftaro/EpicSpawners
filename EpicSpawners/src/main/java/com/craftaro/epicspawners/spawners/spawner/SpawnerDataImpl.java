@@ -2,6 +2,7 @@ package com.craftaro.epicspawners.spawners.spawner;
 
 import com.craftaro.core.compatibility.CompatibleMaterial;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerData;
+import com.craftaro.epicspawners.api.spawners.spawner.SpawnerTier;
 import com.craftaro.epicspawners.spawners.condition.SpawnConditionBiome;
 import com.craftaro.epicspawners.spawners.condition.SpawnConditionHeight;
 import com.craftaro.epicspawners.spawners.condition.SpawnConditionLightDark;
@@ -230,7 +231,7 @@ public class SpawnerDataImpl implements SpawnerData {
 
     @Override
     public void addDefaultTier() {
-        SpawnerTier tier = new SpawnerTier(this);
+        SpawnerTier tier = new SpawnerTierImpl(this);
         tier.addCondition(new SpawnConditionNearbyPlayers(16, 1));
         tier.addCondition(new SpawnConditionHeight(0, 265));
         tier.addCondition(new SpawnConditionBiome(Biome.values()));

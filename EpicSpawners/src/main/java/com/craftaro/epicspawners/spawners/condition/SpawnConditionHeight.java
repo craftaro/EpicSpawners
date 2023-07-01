@@ -2,6 +2,7 @@ package com.craftaro.epicspawners.spawners.condition;
 
 import com.craftaro.epicspawners.EpicSpawners;
 import com.craftaro.epicspawners.api.spawners.condition.SpawnCondition;
+import com.craftaro.epicspawners.api.spawners.spawner.PlacedSpawner;
 import com.craftaro.epicspawners.spawners.spawner.PlacedSpawnerImpl;
 
 public class SpawnConditionHeight implements SpawnCondition {
@@ -27,7 +28,7 @@ public class SpawnConditionHeight implements SpawnCondition {
     }
 
     @Override
-    public boolean isMet(PlacedSpawnerImpl spawner) {
+    public boolean isMet(PlacedSpawner spawner) {
         double y = spawner.getLocation().getY();
         return y >= min && y <= max;
     }

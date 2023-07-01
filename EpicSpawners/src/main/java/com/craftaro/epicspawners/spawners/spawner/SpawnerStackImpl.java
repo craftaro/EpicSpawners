@@ -120,7 +120,7 @@ public class SpawnerStackImpl implements SpawnerStack {
             }
         }
         if (!spawner.merge(this, oldTier))
-            plugin.getDataManager().updateSpawnerStack(this, oldTier.getIdentifyingName());
+            plugin.getDataManager().save(this);
     }
 
     @Override
@@ -147,8 +147,7 @@ public class SpawnerStackImpl implements SpawnerStack {
 
         currentTier = data.getFirstTier();
         if (!spawner.merge(this, oldTier))
-            plugin.getDataManager().updateSpawnerStack(this, oldTier.getSpawnerData().getIdentifyingName(),
-                    oldTier.getIdentifyingName());
+            plugin.getDataManager().save(this);
         try {
             spawner.getCreatureSpawner().setSpawnedType(EntityType.valueOf(data.getIdentifyingName().toUpperCase()));
         } catch (Exception e) {

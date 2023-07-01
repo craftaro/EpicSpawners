@@ -7,9 +7,10 @@ import com.craftaro.core.gui.GuiUtils;
 import com.craftaro.core.hooks.EconomyManager;
 import com.craftaro.core.utils.ItemUtils;
 import com.craftaro.epicspawners.EpicSpawners;
+import com.craftaro.epicspawners.api.spawners.spawner.SpawnerData;
 import com.craftaro.epicspawners.settings.Settings;
 import com.craftaro.epicspawners.spawners.spawner.SpawnerDataImpl;
-import com.craftaro.epicspawners.spawners.spawner.SpawnerTier;
+import com.craftaro.epicspawners.api.spawners.spawner.SpawnerTier;
 import com.craftaro.epicspawners.api.utils.HeadUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -22,7 +23,7 @@ public class SpawnerShopItemGui extends CustomizableGui {
 
     private final EpicSpawners plugin;
     private final SpawnerTier spawnerTier;
-    private final SpawnerDataImpl spawnerData;
+    private final SpawnerData spawnerData;
     private final Gui back;
     private int amount = 1;
 

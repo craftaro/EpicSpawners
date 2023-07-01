@@ -4,6 +4,7 @@ import com.craftaro.core.hooks.EntityStackerManager;
 import com.craftaro.core.utils.NumberUtils;
 import com.craftaro.epicspawners.EpicSpawners;
 import com.craftaro.epicspawners.api.spawners.condition.SpawnCondition;
+import com.craftaro.epicspawners.api.spawners.spawner.PlacedSpawner;
 import com.craftaro.epicspawners.settings.Settings;
 import com.craftaro.epicspawners.spawners.spawner.PlacedSpawnerImpl;
 import org.bukkit.Location;
@@ -35,7 +36,7 @@ public class SpawnConditionNearbyEntities implements SpawnCondition {
     }
 
     @Override
-    public boolean isMet(PlacedSpawnerImpl spawner) {
+    public boolean isMet(PlacedSpawner spawner) {
 
         // Should we skip the max entity amount on first spawn?
         if (spawner.getSpawnCount() == 0 && Settings.IGNORE_MAX_ON_FIRST_SPAWN.getBoolean())

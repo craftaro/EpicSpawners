@@ -3,6 +3,8 @@ package com.craftaro.epicspawners.commands;
 import com.craftaro.core.commands.AbstractCommand;
 import com.craftaro.core.compatibility.CompatibleMaterial;
 import com.craftaro.epicspawners.EpicSpawners;
+import com.craftaro.epicspawners.api.spawners.spawner.PlacedSpawner;
+import com.craftaro.epicspawners.api.spawners.spawner.SpawnerData;
 import com.craftaro.epicspawners.spawners.spawner.PlacedSpawnerImpl;
 import com.craftaro.epicspawners.spawners.spawner.SpawnerDataImpl;
 import org.bukkit.block.Block;
@@ -37,15 +39,15 @@ public class CommandChange extends AbstractCommand {
             return ReturnType.FAILURE;
         }
 
-        PlacedSpawnerImpl spawner = plugin.getSpawnerManager().getSpawnerFromWorld(block.getLocation());
+        PlacedSpawner spawner = plugin.getSpawnerManager().getSpawnerFromWorld(block.getLocation());
 
         if (spawner.getSpawnerStacks().size() > 1) {
             plugin.getLocale().newMessage("&cYou cannot convert an omni spawner...").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
 
-        SpawnerDataImpl data = null;
-        for (SpawnerDataImpl spawnerData : plugin.getSpawnerManager().getAllSpawnerData()) {
+        SpawnerData data = null;
+        for (SpawnerData spawnerData : plugin.getSpawnerManager().getAllSpawnerData()) {
             String input = args[0].toUpperCase().replace("_", "").replace(" ", "");
             String compare = spawnerData.getIdentifyingName().toUpperCase().replace("_", "").replace(" ", "");
             if (input.equals(compare))

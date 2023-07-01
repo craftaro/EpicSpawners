@@ -4,6 +4,7 @@ import com.craftaro.core.compatibility.CompatibleMaterial;
 import com.craftaro.core.compatibility.ServerVersion;
 import com.craftaro.epicspawners.EpicSpawners;
 import com.craftaro.epicspawners.api.spawners.spawner.PlacedSpawner;
+import com.craftaro.epicspawners.api.spawners.spawner.SpawnerStack;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerTier;
 import com.craftaro.epicspawners.settings.Settings;
 import com.craftaro.epicspawners.spawners.spawner.PlacedSpawnerImpl;
@@ -40,7 +41,7 @@ public class AppearanceTask extends BukkitRunnable {
     public void run() {
         EpicSpawners instance = EpicSpawners.getInstance();
 
-        for (PlacedSpawnerImpl spawner : new ArrayList<>(instance.getSpawnerManager().getSpawners())) {
+        for (PlacedSpawner spawner : new ArrayList<>(instance.getSpawnerManager().getSpawners())) {
             Location location = spawner.getLocation();
             if (location == null || location.getWorld() == null) continue;
             int destx = location.getBlockX() >> 4;
@@ -60,8 +61,8 @@ public class AppearanceTask extends BukkitRunnable {
 
             String last = null;
             SpawnerTier next = null;
-            List<SpawnerStackImpl> list = new ArrayList<>(spawner.getSpawnerStacks());
-            for (SpawnerStackImpl stack : list) {
+            List<SpawnerStack> list = new ArrayList<>(spawner.getSpawnerStacks());
+            for (SpawnerStack stack : list) {
                 if (stack.getCurrentTier().getIdentifyingName().equals(spawner.getOmniState())) {
                     last = stack.getCurrentTier().getIdentifyingName();
                 } else if (last != null && next == null) {

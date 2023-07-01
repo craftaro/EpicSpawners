@@ -1,5 +1,7 @@
 package com.craftaro.epicspawners.commands;
 
+import com.craftaro.epicspawners.api.spawners.spawner.SpawnerData;
+import com.craftaro.epicspawners.api.spawners.spawner.SpawnerTier;
 import com.google.common.collect.Iterables;
 import com.craftaro.core.commands.AbstractCommand;
 import com.craftaro.core.utils.NumberUtils;
@@ -7,7 +9,6 @@ import com.craftaro.core.utils.TextUtils;
 import com.craftaro.epicspawners.EpicSpawners;
 import com.craftaro.epicspawners.settings.Settings;
 import com.craftaro.epicspawners.spawners.spawner.SpawnerDataImpl;
-import com.craftaro.epicspawners.spawners.spawner.SpawnerTier;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -41,8 +42,8 @@ public class CommandGive extends AbstractCommand {
             return ReturnType.FAILURE;
         }
 
-        SpawnerDataImpl data = null;
-        for (SpawnerDataImpl spawnerData : plugin.getSpawnerManager().getAllSpawnerData()) {
+        SpawnerData data = null;
+        for (SpawnerData spawnerData : plugin.getSpawnerManager().getAllSpawnerData()) {
             String input = args[1].toUpperCase().replace("_", "").replace(" ", "");
             String compare = spawnerData.getIdentifyingName().toUpperCase().replace("_", "").replace(" ", "");
             if (input.equals(compare))
@@ -53,7 +54,7 @@ public class CommandGive extends AbstractCommand {
             plugin.getLocale().newMessage("&7The entity Type &6" + args[1] + " &7does not exist. Try one of these:").sendPrefixedMessage(sender);
             StringBuilder list = new StringBuilder();
 
-            for (SpawnerDataImpl spawnerData : plugin.getSpawnerManager().getAllSpawnerData())
+            for (SpawnerData spawnerData : plugin.getSpawnerManager().getAllSpawnerData())
                 list.append(spawnerData.getIdentifyingName().toUpperCase().replace(" ", "_")).append("&7, &6");
 
             sender.sendMessage(TextUtils.formatText("&6" + list));
@@ -61,7 +62,7 @@ public class CommandGive extends AbstractCommand {
         }
 
         if (args[1].equalsIgnoreCase("random")) {
-            Collection<SpawnerDataImpl> list = plugin.getSpawnerManager().getAllEnabledSpawnerData();
+            Collection<SpawnerData> list = plugin.getSpawnerManager().getAllEnabledSpawnerData();
             Random rand = new Random();
             data = Iterables.get(list, rand.nextInt(list.size()));
         }
@@ -136,8 +137,8 @@ public class CommandGive extends AbstractCommand {
             spawners.add("random");
             return spawners;
         } else if (args.length == 3) {
-            SpawnerDataImpl data = null;
-            for (SpawnerDataImpl spawnerData : plugin.getSpawnerManager().getAllSpawnerData()) {
+            SpawnerData data = null;
+            for (SpawnerData spawnerData : plugin.getSpawnerManager().getAllSpawnerData()) {
                 String input = args[1].toUpperCase().replace("_", "").replace(" ", "");
                 String compare = spawnerData.getIdentifyingName().toUpperCase().replace("_", "").replace(" ", "");
                 if (input.equals(compare))

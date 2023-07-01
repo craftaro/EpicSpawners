@@ -5,10 +5,12 @@ import com.craftaro.core.gui.CustomizableGui;
 import com.craftaro.core.utils.NumberUtils;
 import com.craftaro.core.utils.TextUtils;
 import com.craftaro.epicspawners.EpicSpawners;
+import com.craftaro.epicspawners.api.spawners.spawner.PlacedSpawner;
+import com.craftaro.epicspawners.api.spawners.spawner.SpawnerStack;
 import com.craftaro.epicspawners.settings.Settings;
 import com.craftaro.epicspawners.spawners.spawner.PlacedSpawnerImpl;
 import com.craftaro.epicspawners.spawners.spawner.SpawnerStackImpl;
-import com.craftaro.epicspawners.spawners.spawner.SpawnerTier;
+import com.craftaro.epicspawners.api.spawners.spawner.SpawnerTier;
 import com.craftaro.epicspawners.utils.GuiUtils;
 import com.craftaro.epicspawners.api.utils.HeadUtils;
 import org.bukkit.Bukkit;
@@ -21,11 +23,11 @@ public class SpawnerTiersGui extends CustomizableGui {
 
     private final EpicSpawners plugin;
     private final Player player;
-    private final PlacedSpawnerImpl spawner;
+    private final PlacedSpawner spawner;
 
     private int task;
 
-    public SpawnerTiersGui(EpicSpawners plugin, Player player, PlacedSpawnerImpl spawner) {
+    public SpawnerTiersGui(EpicSpawners plugin, Player player, PlacedSpawner spawner) {
         super(plugin, "tiers");
         setRows(6);
         this.plugin = plugin;
@@ -59,7 +61,7 @@ public class SpawnerTiersGui extends CustomizableGui {
         mirrorFill("mirrorfill_4", 1, 0, true, true, glass2);
         mirrorFill("mirrorfill_5", 0, 1, true, true, glass2);
 
-        List<SpawnerStackImpl> stacks = spawner.getSpawnerStacks();
+        List<SpawnerStack> stacks = spawner.getSpawnerStacks();
 
         int num = 10;
         for (int i = 0; i < 28; i++) {
@@ -75,7 +77,7 @@ public class SpawnerTiersGui extends CustomizableGui {
                 setItem(num, GuiUtils.createButtonItem(tier.getDisplayItem() == CompatibleMaterial.AIR ? CompatibleMaterial.DIRT : tier.getDisplayItem(),
                         tier.getIdentifyingName()));
             } else {
-                SpawnerStackImpl stack = stacks.get(i);
+                SpawnerStack stack = stacks.get(i);
                 CompatibleMaterial material = tier.getDisplayItem();
                 setButton(num, GuiUtils.createButtonItem(material == null || material.isAir() ? HeadUtils.getTexturedSkull(tier) : tier.getDisplayItem().getItem(),
                         TextUtils.formatText(tier.getCompiledDisplayName(false, stack.getStackSize()))),

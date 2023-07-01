@@ -95,7 +95,7 @@ public class PlacedSpawnerImpl implements PlacedSpawner {
                     ? Sound.ENTITY_GENERIC_EXPLODE : Sound.valueOf("EXPLODE"), 10, 10);
 
             instance.getSpawnerManager().removeSpawnerFromWorld(this);
-            EpicSpawners.getInstance().getDataManager().deleteSpawner(this);
+            EpicSpawners.getInstance().getDataManager().delete(this);
             instance.clearHologram(this);
             return true;
         }
@@ -166,7 +166,7 @@ public class PlacedSpawnerImpl implements PlacedSpawner {
         if (creatureSpawner == null) {
             if (location.getBlock().getType() != CompatibleMaterial.SPAWNER.getMaterial()) {
                 EpicSpawners.getInstance().getSpawnerManager().removeSpawnerFromWorld(this);
-                EpicSpawners.getInstance().getDataManager().deleteSpawner(this);
+                EpicSpawners.getInstance().getDataManager().delete(this);
                 return null;
             }
             this.creatureSpawner = (CreatureSpawner) location.getBlock().getState();
@@ -274,18 +274,18 @@ public class PlacedSpawnerImpl implements PlacedSpawner {
 
         if (stack.getStackSize() > 1 && stackSize == 1) {
             stack.setStackSize(stack.getStackSize() - 1);
-            EpicSpawners.getInstance().getDataManager().updateSpawnerStack(stack);
+            EpicSpawners.getInstance().getDataManager().save(stack);
             return true;
         }
 
         spawnerStacks.remove(stack);
-        EpicSpawners.getInstance().getDataManager().deleteSpawnerStack(stack);
+        EpicSpawners.getInstance().getDataManager().delete(stack);
 
         if (spawnerStacks.size() != 0) return true;
 
         location.getBlock().setType(Material.AIR);
         EpicSpawners.getInstance().getSpawnerManager().removeSpawnerFromWorld(this);
-        EpicSpawners.getInstance().getDataManager().deleteSpawner(this);
+        EpicSpawners.getInstance().getDataManager().delete(this);
         instance.clearHologram(this);
         return true;
     }
@@ -318,7 +318,7 @@ public class PlacedSpawnerImpl implements PlacedSpawner {
         for (SpawnerStack stack : spawnerStacks) {
             if (!stack.getCurrentTier().equals(tier)) continue;
             stack.setStackSize(stack.getStackSize() + amount);
-            plugin.getDataManager().updateSpawnerStack(stack);
+            plugin.getDataManager().save(stack);
             upgradeEffects(player, tier, true);
 
             if (player.getGameMode() != GameMode.CREATIVE || Settings.CHARGE_FOR_CREATIVE.getBoolean())
@@ -329,7 +329,7 @@ public class PlacedSpawnerImpl implements PlacedSpawner {
 
         SpawnerStack stack = new SpawnerStackImpl(this, tier, amount);
         addSpawnerStack(stack);
-        plugin.getDataManager().createSpawnerStack(stack);
+        plugin.getDataManager().save(stack);
 
         if (player.getGameMode() != GameMode.CREATIVE || Settings.CHARGE_FOR_CREATIVE.getBoolean())
             hand.takeItem(player);
@@ -392,7 +392,7 @@ public class PlacedSpawnerImpl implements PlacedSpawner {
             if (boost instanceof BoostedPlayerImpl && placedBy == null) continue;
             if (System.currentTimeMillis() >= boost.getEndTime()) {
                 instance.getBoostManager().removeBoost(boost);
-                instance.getDataManager().deleteBoost(boost);
+                instance.getDataManager().delete(boost);
                 continue;
             }
 
@@ -535,7 +535,7 @@ public class PlacedSpawnerImpl implements PlacedSpawner {
         EpicSpawners plugin = EpicSpawners.getInstance();
         plugin.getAppearanceTask().removeDisplayItem(this);
         plugin.getSpawnerManager().removeSpawnerFromWorld(this);
-        plugin.getDataManager().deleteSpawner(this);
+        plugin.getDataManager().delete(this);
         plugin.clearHologram(this);
     }
 
@@ -556,8 +556,8 @@ public class PlacedSpawnerImpl implements PlacedSpawner {
                     || !stack.getCurrentTier().equals(toMerge.getCurrentTier())) continue;
             stack.setStackSize(toMerge.getStackSize() + stack.getStackSize());
             spawnerStacks.remove(toMerge);
-            plugin.getDataManager().deleteSpawnerStack(toMerge, oldTier);
-            plugin.getDataManager().updateSpawnerStack(stack);
+            plugin.getDataManager().delete(toMerge);
+            plugin.getDataManager().save(stack);
             modified = true;
             break;
         }
