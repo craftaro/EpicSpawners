@@ -1,6 +1,6 @@
 package com.craftaro.epicspawners.spawners.spawner;
 
-import com.craftaro.core.compatibility.CompatibleMaterial;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerData;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerTier;
 import com.craftaro.epicspawners.spawners.condition.SpawnConditionBiome;
@@ -219,7 +219,7 @@ public class SpawnerDataImpl implements SpawnerData {
     }
 
     @Override
-    public CompatibleMaterial getDisplayItem() {
+    public XMaterial getDisplayItem() {
         return getFirstTier().getDisplayItem();
     }
 

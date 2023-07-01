@@ -1,6 +1,6 @@
 package com.craftaro.epicspawners.gui;
 
-import com.craftaro.core.compatibility.CompatibleMaterial;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.gui.CustomizableGui;
 import com.craftaro.core.hooks.EconomyManager;
 import com.craftaro.core.utils.NumberUtils;
@@ -95,14 +95,14 @@ public class SpawnerOverviewGui extends CustomizableGui {
 
         ItemStack spawnerItem;
 
-        CompatibleMaterial displayItem = tier.getDisplayItem();
-        if (displayItem != null && !displayItem.isAir()) {
-            spawnerItem = displayItem.getItem();
+        XMaterial displayItem = tier.getDisplayItem();
+        if (displayItem != null && !displayItem.equals(XMaterial.AIR)) {
+            spawnerItem = displayItem.parseItem();
         } else {
             try {
                 spawnerItem = HeadUtils.getTexturedSkull(data);
             } catch (Exception e) {
-                spawnerItem = CompatibleMaterial.SPAWNER.getItem();
+                spawnerItem = XMaterial.SPAWNER.parseItem();
                 spawnerItem.setAmount(showAmt);
             }
         }
@@ -111,14 +111,14 @@ public class SpawnerOverviewGui extends CustomizableGui {
         itemmeta.setDisplayName(plugin.getLocale().getMessage("interface.spawner.statstitle").getMessage());
         ArrayList<String> lore = new ArrayList<>();
 
-        List<CompatibleMaterial> blocks = tier.getSpawnBlocksList();
+        List<XMaterial> blocks = tier.getSpawnBlocksList();
 
-        if (blocks.isEmpty() || blocks.get(0) == null) blocks = Collections.singletonList(CompatibleMaterial.AIR);
+        if (blocks.isEmpty() || blocks.get(0) == null) blocks = Collections.singletonList(XMaterial.AIR);
 
         StringBuilder only = new StringBuilder(blocks.get(0).name());
 
         int num = 1;
-        for (CompatibleMaterial block : blocks) {
+        for (XMaterial block : blocks) {
             if (num != 1)
                 only.append("&8, &a").append(block.name());
             num++;
@@ -153,7 +153,7 @@ public class SpawnerOverviewGui extends CustomizableGui {
         double levelsCost = nextTier == null ? -1 : nextTier.getUpgradeCost(CostType.LEVELS);
         double economyCost = nextTier == null ? -1 : nextTier.getUpgradeCost(CostType.ECONOMY);
 
-        ItemStack itemLevels = Settings.XP_ICON.getMaterial().getItem();
+        ItemStack itemLevels = Settings.XP_ICON.getMaterial().parseItem();
         ItemMeta itemmetaXP = itemLevels.getItemMeta();
         itemmetaXP.setDisplayName(plugin.getLocale().getMessage("interface.spawner.upgradewithlevels").getMessage());
         ArrayList<String> loreXP = new ArrayList<>();
@@ -165,7 +165,7 @@ public class SpawnerOverviewGui extends CustomizableGui {
         itemmetaXP.setLore(loreXP);
         itemLevels.setItemMeta(itemmetaXP);
 
-        ItemStack itemECO = Settings.ECO_ICON.getMaterial().getItem();
+        ItemStack itemECO = Settings.ECO_ICON.getMaterial().parseItem();
         ItemMeta itemmetaECO = itemECO.getItemMeta();
         itemmetaECO.setDisplayName(plugin.getLocale().getMessage("interface.spawner.upgradewitheconomy").getMessage());
         ArrayList<String> loreECO = new ArrayList<>();

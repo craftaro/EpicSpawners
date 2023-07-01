@@ -1,6 +1,6 @@
 package com.craftaro.epicspawners.api.spawners.spawner;
 
-import com.craftaro.core.compatibility.CompatibleMaterial;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.epicspawners.api.particles.ParticleDensity;
 import com.craftaro.epicspawners.api.particles.ParticleEffect;
 import com.craftaro.epicspawners.api.particles.ParticleType;
@@ -32,11 +32,11 @@ public interface SpawnerTier {
 
     void setPickupCost(double pickupCost);
 
-    CompatibleMaterial[] getSpawnBlocks();
+    XMaterial[] getSpawnBlocks();
 
-    void setSpawnBlocks(List<CompatibleMaterial> spawnBlock);
+    void setSpawnBlocks(List<XMaterial> spawnBlock);
 
-    List<CompatibleMaterial> getSpawnBlocksList();
+    List<XMaterial> getSpawnBlocksList();
 
     boolean isSpawnOnFire();
 
@@ -62,17 +62,17 @@ public interface SpawnerTier {
 
     void setDisplayName(String displayName);
 
-    CompatibleMaterial getDisplayItem();
+    XMaterial getDisplayItem();
 
-    void setDisplayItem(CompatibleMaterial displayItem);
+    void setDisplayItem(XMaterial displayItem);
 
     List<EntityType> getEntities();
 
     void setEntities(List<EntityType> entities);
 
-    List<CompatibleMaterial> getBlocks();
+    List<XMaterial> getBlocks();
 
-    void setBlocks(List<CompatibleMaterial> blocks);
+    void setBlocks(List<XMaterial> blocks);
 
     List<ItemStack> getItems();
 

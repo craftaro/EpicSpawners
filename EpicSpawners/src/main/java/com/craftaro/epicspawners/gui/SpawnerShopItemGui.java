@@ -1,6 +1,6 @@
 package com.craftaro.epicspawners.gui;
 
-import com.craftaro.core.compatibility.CompatibleMaterial;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.gui.CustomizableGui;
 import com.craftaro.core.gui.Gui;
 import com.craftaro.core.gui.GuiUtils;
@@ -46,8 +46,8 @@ public class SpawnerShopItemGui extends CustomizableGui {
         reset();
 
         // decorate the edges
-        ItemStack glass2 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_2.getMaterial(CompatibleMaterial.BLUE_STAINED_GLASS_PANE));
-        ItemStack glass3 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_3.getMaterial(CompatibleMaterial.LIGHT_BLUE_STAINED_GLASS_PANE));
+        ItemStack glass2 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_2.getMaterial(XMaterial.BLUE_STAINED_GLASS_PANE));
+        ItemStack glass3 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_3.getMaterial(XMaterial.LIGHT_BLUE_STAINED_GLASS_PANE));
 
         // edges will be type 3
         mirrorFill("mirrorfill_1", 0, 2, true, true, glass3);
@@ -63,9 +63,9 @@ public class SpawnerShopItemGui extends CustomizableGui {
         ItemStack item = HeadUtils.getTexturedSkull(spawnerData);
 
         if (spawnerData.getDisplayItem() != null) {
-            CompatibleMaterial mat = spawnerData.getDisplayItem();
-            if (!mat.isAir())
-                item = mat.getItem();
+            XMaterial mat = spawnerData.getDisplayItem();
+            if (!mat.equals(XMaterial.AIR))
+                item = mat.parseItem();
         }
 
         item.setAmount(amount);
@@ -79,7 +79,7 @@ public class SpawnerShopItemGui extends CustomizableGui {
         item.setItemMeta(itemmeta);
         setItem("spawner",22, item);
 
-        ItemStack plus = CompatibleMaterial.LIME_STAINED_GLASS_PANE.getItem(1);
+        ItemStack plus = XMaterial.LIME_STAINED_GLASS_PANE.parseItem();
         ItemMeta plusmeta = plus.getItemMeta();
         plusmeta.setDisplayName(plugin.getLocale().getMessage("interface.shop.add1").getMessage());
         plus.setItemMeta(plusmeta);
@@ -90,7 +90,8 @@ public class SpawnerShopItemGui extends CustomizableGui {
             });
         }
 
-        plus = CompatibleMaterial.LIME_STAINED_GLASS_PANE.getItem(10);
+        plus = XMaterial.LIME_STAINED_GLASS_PANE.parseItem();
+        plus.setAmount(10);
         plusmeta.setDisplayName(plugin.getLocale().getMessage("interface.shop.add10").getMessage());
         plus.setItemMeta(plusmeta);
         if (item.getAmount() + 10 <= 64) {
@@ -100,7 +101,8 @@ public class SpawnerShopItemGui extends CustomizableGui {
             });
         }
 
-        plus = CompatibleMaterial.LIME_STAINED_GLASS_PANE.getItem(64);
+        plus = XMaterial.LIME_STAINED_GLASS_PANE.parseItem();
+        plus.setAmount(64);
         plusmeta.setDisplayName(plugin.getLocale().getMessage("interface.shop.set64").getMessage());
         plus.setItemMeta(plusmeta);
         if (item.getAmount() != 64) {
@@ -110,7 +112,8 @@ public class SpawnerShopItemGui extends CustomizableGui {
             });
         }
 
-        ItemStack minus = CompatibleMaterial.RED_STAINED_GLASS_PANE.getItem(1);
+        ItemStack minus = XMaterial.RED_STAINED_GLASS_PANE.parseItem();
+        minus.setAmount(1);
         ItemMeta minusmeta = minus.getItemMeta();
         minusmeta.setDisplayName(plugin.getLocale().getMessage("interface.shop.remove1").getMessage());
         minus.setItemMeta(minusmeta);
@@ -121,7 +124,8 @@ public class SpawnerShopItemGui extends CustomizableGui {
             });
         }
 
-        minus = CompatibleMaterial.RED_STAINED_GLASS_PANE.getItem(10);
+        minus = XMaterial.RED_STAINED_GLASS_PANE.parseItem();
+        minus.setAmount(10);
         minusmeta.setDisplayName(plugin.getLocale().getMessage("interface.shop.remove10").getMessage());
         minus.setItemMeta(minusmeta);
         if (item.getAmount() - 10 >= 0) {
@@ -131,7 +135,8 @@ public class SpawnerShopItemGui extends CustomizableGui {
             });
         }
 
-        minus = CompatibleMaterial.RED_STAINED_GLASS_PANE.getItem(1);
+        minus = XMaterial.RED_STAINED_GLASS_PANE.parseItem();
+        minus.setAmount(1);
         minusmeta.setDisplayName(plugin.getLocale().getMessage("interface.shop.set1").getMessage());
         minus.setItemMeta(minusmeta);
         if (item.getAmount() != 1) {

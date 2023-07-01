@@ -1,6 +1,6 @@
 package com.craftaro.epicspawners.tasks;
 
-import com.craftaro.core.compatibility.CompatibleMaterial;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.compatibility.ServerVersion;
 import com.craftaro.epicspawners.EpicSpawners;
 import com.craftaro.epicspawners.api.spawners.spawner.PlacedSpawner;
@@ -49,7 +49,7 @@ public class AppearanceTask extends BukkitRunnable {
             if (!location.getWorld().isChunkLoaded(destx, destz)) {
                 continue;
             }
-            if (CompatibleMaterial.getMaterial(location.getBlock()) != CompatibleMaterial.SPAWNER)
+            if (XMaterial.matchXMaterial(location.getBlock().getType().name()).get() != XMaterial.SPAWNER)
                 continue;
 
             if (spawner.getSpawnerStacks().size() <= 1) {
@@ -93,7 +93,7 @@ public class AppearanceTask extends BukkitRunnable {
 
         ItemStack itemStack = new ItemStack(Material.DIRT);
         if (spawnerTier.getDisplayItem() != null)
-            itemStack = spawnerTier.getDisplayItem().getItem();
+            itemStack = spawnerTier.getDisplayItem().parseItem();
 
         List<Entity> entities = getDisplayItem(spawner);
 

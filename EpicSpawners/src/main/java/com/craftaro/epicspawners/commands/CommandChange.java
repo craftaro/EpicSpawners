@@ -1,7 +1,7 @@
 package com.craftaro.epicspawners.commands;
 
 import com.craftaro.core.commands.AbstractCommand;
-import com.craftaro.core.compatibility.CompatibleMaterial;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.epicspawners.EpicSpawners;
 import com.craftaro.epicspawners.api.spawners.spawner.PlacedSpawner;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerData;
@@ -34,7 +34,7 @@ public class CommandChange extends AbstractCommand {
         Player player = (Player) sender;
         Block block = player.getTargetBlock(null, 200);
 
-        if (block.getType() != CompatibleMaterial.SPAWNER.getMaterial()) {
+        if (block.getType() != XMaterial.SPAWNER.parseMaterial()) {
             plugin.getLocale().newMessage("&cThis is not a spawner.").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }

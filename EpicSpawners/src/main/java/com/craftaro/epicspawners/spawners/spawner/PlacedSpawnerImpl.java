@@ -1,7 +1,7 @@
 package com.craftaro.epicspawners.spawners.spawner;
 
 import com.craftaro.core.compatibility.CompatibleHand;
-import com.craftaro.core.compatibility.CompatibleMaterial;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.compatibility.CompatibleParticleHandler;
 import com.craftaro.core.compatibility.CompatibleSound;
 import com.craftaro.core.compatibility.ServerVersion;
@@ -123,7 +123,7 @@ public class PlacedSpawnerImpl implements PlacedSpawner {
     }
 
     @Override
-    public int spawn(int amountToSpawn, String particle, Set<CompatibleMaterial> canSpawnOn, SpawnedEntity spawned, EntityType... types) {
+    public int spawn(int amountToSpawn, String particle, Set<XMaterial> canSpawnOn, SpawnedEntity spawned, EntityType... types) {
         return sSpawner.spawn(amountToSpawn, particle, canSpawnOn, spawned, types);
     }
 
@@ -164,7 +164,7 @@ public class PlacedSpawnerImpl implements PlacedSpawner {
         if (!getWorld().isChunkLoaded(getX() >> 4, getZ() >> 4))
             return null;
         if (creatureSpawner == null) {
-            if (location.getBlock().getType() != CompatibleMaterial.SPAWNER.getMaterial()) {
+            if (location.getBlock().getType() != XMaterial.SPAWNER.parseMaterial()) {
                 EpicSpawners.getInstance().getSpawnerManager().removeSpawnerFromWorld(this);
                 EpicSpawners.getInstance().getDataManager().delete(this);
                 return null;

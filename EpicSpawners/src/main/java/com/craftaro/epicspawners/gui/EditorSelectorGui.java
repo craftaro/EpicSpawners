@@ -1,6 +1,6 @@
 package com.craftaro.epicspawners.gui;
 
-import com.craftaro.core.compatibility.CompatibleMaterial;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.gui.Gui;
 import com.craftaro.core.gui.GuiUtils;
 import com.craftaro.core.utils.TextUtils;
@@ -38,8 +38,8 @@ public class EditorSelectorGui extends Gui {
         reset();
 
         // decorate the edges
-        ItemStack glass2 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_2.getMaterial(CompatibleMaterial.BLUE_STAINED_GLASS_PANE));
-        ItemStack glass3 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_3.getMaterial(CompatibleMaterial.LIGHT_BLUE_STAINED_GLASS_PANE));
+        ItemStack glass2 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_2.getMaterial(XMaterial.BLUE_STAINED_GLASS_PANE));
+        ItemStack glass3 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_3.getMaterial(XMaterial.LIGHT_BLUE_STAINED_GLASS_PANE));
 
         // edges will be type 3
         mirrorFill(0, 2, true, true, glass3);
@@ -53,8 +53,8 @@ public class EditorSelectorGui extends Gui {
         pages = (int) Math.max(1, Math.ceil(entities.size() / ((double) 28)));
 
         // enable page event
-        setNextPage(5, 7, GuiUtils.createButtonItem(CompatibleMaterial.ARROW, plugin.getLocale().getMessage("general.nametag.next").getMessage()));
-        setPrevPage(5, 1, GuiUtils.createButtonItem(CompatibleMaterial.ARROW, plugin.getLocale().getMessage("general.nametag.back").getMessage()));
+        setNextPage(5, 7, GuiUtils.createButtonItem(XMaterial.ARROW, plugin.getLocale().getMessage("general.nametag.next").getMessage()));
+        setPrevPage(5, 1, GuiUtils.createButtonItem(XMaterial.ARROW, plugin.getLocale().getMessage("general.nametag.back").getMessage()));
         setOnPage((event) -> showPage());
 
         List<SpawnerData> data = entities.stream()
@@ -62,7 +62,7 @@ public class EditorSelectorGui extends Gui {
                         || shownType == Type.DEFAULT && !s.isCustom()
                         || shownType == Type.CUSTOM && s.isCustom()).skip((page - 1) * 28).limit(28).collect(Collectors.toList());
 
-        setButton(8, GuiUtils.createButtonItem(CompatibleMaterial.OAK_DOOR,
+        setButton(8, GuiUtils.createButtonItem(XMaterial.OAK_DOOR,
                 plugin.getLocale().getMessage("general.nametag.exit").getMessage()), (event) -> close());
 
         int num = 10;
@@ -76,18 +76,18 @@ public class EditorSelectorGui extends Gui {
                 setItem(num, null);
                 continue;
             }
-            CompatibleMaterial mat = spawnerData.getDisplayItem();
-            setButton(num, GuiUtils.createButtonItem(mat != null && !mat.isAir() ? spawnerData.getDisplayItem().getItem() : HeadUtils.getTexturedSkull(spawnerData),
+            XMaterial mat = spawnerData.getDisplayItem();
+            setButton(num, GuiUtils.createButtonItem(mat != null && !mat.equals(XMaterial.AIR) ? spawnerData.getDisplayItem().parseItem() : HeadUtils.getTexturedSkull(spawnerData),
                     TextUtils.formatText("&6&l" + spawnerData.getIdentifyingName()), TextUtils.formatText("&7Click to &a&lEdit&7.")),
                     (event) -> EditorTiersGui.openTiers(plugin, player, spawnerData));
         }
 
-        setButton(5, 5, GuiUtils.createButtonItem(CompatibleMaterial.COMPASS, TextUtils.formatText("&5&lShow: &7" + shownType.name())),
+        setButton(5, 5, GuiUtils.createButtonItem(XMaterial.COMPASS, TextUtils.formatText("&5&lShow: &7" + shownType.name())),
                 (event) -> {
                     shownType = shownType.next();
                     showPage();
                 });
-        setButton(5, 6, GuiUtils.createButtonItem(CompatibleMaterial.PAPER, TextUtils.formatText("&9&lNew Spawner")),
+        setButton(5, 6, GuiUtils.createButtonItem(XMaterial.PAPER, TextUtils.formatText("&9&lNew Spawner")),
                 (event) -> EditorTiersGui.openTiers(plugin, player, null));
     }
 

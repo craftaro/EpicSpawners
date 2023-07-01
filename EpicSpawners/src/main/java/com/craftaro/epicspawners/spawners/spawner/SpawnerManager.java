@@ -1,7 +1,7 @@
 package com.craftaro.epicspawners.spawners.spawner;
 
 import com.craftaro.core.compatibility.CompatibleBiome;
-import com.craftaro.core.compatibility.CompatibleMaterial;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.configuration.Config;
 import com.craftaro.core.third_party.de.tr7zw.nbtapi.NBTItem;
 import com.craftaro.core.third_party.org.apache.commons.text.WordUtils;
@@ -45,6 +45,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -198,7 +199,7 @@ public class SpawnerManager {
                 .build();
 
         List<EntityType> entities = new ArrayList<>(Collections.singletonList(type));
-        List<CompatibleMaterial> spawnBlocks;
+        List<XMaterial> spawnBlocks;
 
         spawnBlocks = EntityUtils.getSpawnBlocks(type);
 
@@ -219,7 +220,7 @@ public class SpawnerManager {
                 .setParticleEffectBoostedOnly(true)
                 .setSpawnLimit(-1)
                 .setDisplayName(WordUtils.capitalizeFully(typeString.replace("_", " ")))
-                .displayItem(CompatibleMaterial.AIR);
+                .displayItem(XMaterial.AIR);
 
         SpawnerTier tier = tierBuilder.build();
 
@@ -276,17 +277,17 @@ public class SpawnerManager {
                 ConfigurationSection currentSection2 = currentSection.getConfigurationSection("Tiers." + tierKey);
 
                 List<EntityType> entities = new ArrayList<>();
-                List<CompatibleMaterial> blocks = new ArrayList<>();
-                List<CompatibleMaterial> spawnBlocks = new ArrayList<>();
+                List<XMaterial> blocks = new ArrayList<>();
+                List<XMaterial> spawnBlocks = new ArrayList<>();
                 List<ItemStack> items = (List<ItemStack>) currentSection2.getList("Items", new ArrayList<>());
                 List<String> commands = currentSection2.getStringList("Command");
 
                 for (String block : currentSection2.getStringList("Blocks")) {
-                    CompatibleMaterial material = CompatibleMaterial.getMaterial(block.toUpperCase());
-                    blocks.add(material == null ? CompatibleMaterial.AIR : material);
+                    Optional<XMaterial> material = XMaterial.matchXMaterial(block.toUpperCase());
+                    blocks.add(material.orElse(XMaterial.AIR));
                 }
                 for (String block : currentSection2.getStringList("Spawn-Blocks")) {
-                    spawnBlocks.add(CompatibleMaterial.getMaterial(block.toUpperCase().trim()));
+                    XMaterial.matchXMaterial(block.toUpperCase().trim()).ifPresent(spawnBlocks::add);
                 }
                 for (String entity : currentSection2.getStringList("Entities")) {
                     try {
@@ -312,7 +313,7 @@ public class SpawnerManager {
                         .setParticleEffectBoostedOnly(currentSection2.getBoolean("Particle-Effect-BoostedImpl-Only", true))
                         .setSpawnLimit(currentSection2.getInt("Spawn-Limit", -1))
                         .setDisplayName(currentSection2.getString("Display-Name", key))
-                        .displayItem(CompatibleMaterial.valueOf(currentSection2.getString(currentSection2.contains("Display-Item") ? "Display-Item" : "AIR")));
+                        .displayItem(XMaterial.valueOf(currentSection2.getString(currentSection2.contains("Display-Item") ? "Display-Item" : "AIR")));
 
                 SpawnerTier tier = tierBuilder.build();
 

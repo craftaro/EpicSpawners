@@ -1,6 +1,6 @@
 package com.craftaro.epicspawners.gui;
 
-import com.craftaro.core.compatibility.CompatibleMaterial;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.gui.AnvilGui;
 import com.craftaro.core.gui.Gui;
 import com.craftaro.core.gui.GuiUtils;
@@ -34,7 +34,7 @@ public class EditorOverviewGui extends Gui {
         this.spawnerTier = spawnerTier;
         this.spawnerData = spawnerTier.getSpawnerData();
 
-        setDefaultItem(GuiUtils.getBorderItem(Settings.GLASS_TYPE_1.getMaterial().getItem()));
+        setDefaultItem(GuiUtils.getBorderItem(Settings.GLASS_TYPE_1.getMaterial().parseItem()));
 
         setTitle(spawnerTier.getGuiTitle());
 
@@ -46,8 +46,8 @@ public class EditorOverviewGui extends Gui {
         reset();
 
         // decorate the edges
-        ItemStack glass2 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_2.getMaterial(CompatibleMaterial.BLUE_STAINED_GLASS_PANE));
-        ItemStack glass3 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_3.getMaterial(CompatibleMaterial.LIGHT_BLUE_STAINED_GLASS_PANE));
+        ItemStack glass2 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_2.getMaterial(XMaterial.BLUE_STAINED_GLASS_PANE));
+        ItemStack glass3 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_3.getMaterial(XMaterial.LIGHT_BLUE_STAINED_GLASS_PANE));
 
         setItem(0, glass3);
         setItem(1, glass3);
@@ -83,13 +83,13 @@ public class EditorOverviewGui extends Gui {
         setItem(52, glass3);
         setItem(53, glass3);
 
-        setButton(8, GuiUtils.createButtonItem(CompatibleMaterial.OAK_DOOR,
+        setButton(8, GuiUtils.createButtonItem(XMaterial.OAK_DOOR,
                 plugin.getLocale().getMessage("general.nametag.back").getMessage()),
                 (event) -> EditorTiersGui.openTiersInReverse(plugin, player, spawnerTier));
 
         ItemStack item = HeadUtils.getTexturedSkull(spawnerTier);
-        if (spawnerTier.getDisplayItem() != null && !spawnerTier.getDisplayItem().isAir())
-            item = spawnerTier.getDisplayItem().getItem();
+        if (spawnerTier.getDisplayItem() != null && !spawnerTier.getDisplayItem().equals(XMaterial.AIR))
+            item = spawnerTier.getDisplayItem().parseItem();
 
         ItemMeta itemmeta = item.getItemMeta();
         ArrayList<String> lore = new ArrayList<>();
@@ -113,7 +113,7 @@ public class EditorOverviewGui extends Gui {
         item.setItemMeta(itemmeta);
         setButton(11, item, event -> {
             if (event.clickType == ClickType.RIGHT) {
-                spawnerTier.setDisplayItem(CompatibleMaterial.getMaterial(player.getInventory().getItemInHand()));
+                spawnerTier.setDisplayItem(XMaterial.matchXMaterial(player.getInventory().getItemInHand()));
                 plugin.getLocale().newMessage("&7Display Item for &6" + spawnerTier.getIdentifyingName() + " &7set to &6" + player.getInventory().getItemInHand().getType().toString() + "&7.")
                         .sendPrefixedMessage(player);
                 paint();
@@ -130,7 +130,7 @@ public class EditorOverviewGui extends Gui {
         });
 
         if (spawnerData.getTiers().size() != 1 || spawnerData.isCustom())
-            setButton(29, GuiUtils.createButtonItem(CompatibleMaterial.TNT, TextUtils.formatText("&7Click to: &cDestroy This Tier")),
+            setButton(29, GuiUtils.createButtonItem(XMaterial.TNT, TextUtils.formatText("&7Click to: &cDestroy This Tier")),
                     (event) -> {
                         player.sendMessage("Type \"yes\" to confirm this action.");
                         ChatPrompt.showPrompt(plugin, player, evnt -> {
@@ -149,29 +149,29 @@ public class EditorOverviewGui extends Gui {
                         }).setTimeOut(player, 20L * 15L);
                     });
 
-        setButton(23, GuiUtils.createButtonItem(CompatibleMaterial.LEVER, TextUtils.formatText("&9&lGeneral Settings")),
+        setButton(23, GuiUtils.createButtonItem(XMaterial.LEVER, TextUtils.formatText("&9&lGeneral Settings")),
                 event -> guiManager.showGUI(player, new EditorGeneralGui(plugin, this, spawnerTier)));
 
-        setButton(24, GuiUtils.createButtonItem(CompatibleMaterial.BONE, TextUtils.formatText("&e&lDrop Settings")),
+        setButton(24, GuiUtils.createButtonItem(XMaterial.BONE, TextUtils.formatText("&e&lDrop Settings")),
                 event -> plugin.getGuiManager().showGUI(player, new EditorDropsGui(plugin, spawnerTier, this)));
 
         setButton(25, GuiUtils.createButtonItem(HeadUtils.getTexturedSkull(HeadType.OMNI), TextUtils.formatText("&a&lEntity Settings")),
                 event -> guiManager.showGUI(player, new EditorEditGui(plugin, this, spawnerTier, EditorEditGui.EditType.ENTITY)));
 
-        setButton(41, GuiUtils.createButtonItem(CompatibleMaterial.CHEST, TextUtils.formatText("&5&lItem Settings")),
+        setButton(41, GuiUtils.createButtonItem(XMaterial.CHEST, TextUtils.formatText("&5&lItem Settings")),
                 event -> guiManager.showGUI(player, new EditorEditGui(plugin, this, spawnerTier, EditorEditGui.EditType.ITEM)));
 
-        setButton(32, GuiUtils.createButtonItem(CompatibleMaterial.GOLD_BLOCK, TextUtils.formatText("&c&lBlock Settings")),
+        setButton(32, GuiUtils.createButtonItem(XMaterial.GOLD_BLOCK, TextUtils.formatText("&c&lBlock Settings")),
                 event -> guiManager.showGUI(player, new EditorEditGui(plugin, this, spawnerTier, EditorEditGui.EditType.BLOCK)));
 
-        setButton(34, GuiUtils.createButtonItem(CompatibleMaterial.FIREWORK_ROCKET, TextUtils.formatText("&b&lParticle Settings")),
+        setButton(34, GuiUtils.createButtonItem(XMaterial.FIREWORK_ROCKET, TextUtils.formatText("&b&lParticle Settings")),
                 event -> guiManager.showGUI(player, new EditorParticleGui(plugin, this, spawnerTier)));
 
-        setButton(43, GuiUtils.createButtonItem(CompatibleMaterial.PAPER, TextUtils.formatText("&6&lCommand Settings")),
+        setButton(43, GuiUtils.createButtonItem(XMaterial.PAPER, TextUtils.formatText("&6&lCommand Settings")),
                 event -> guiManager.showGUI(player, new EditorEditGui(plugin, this, spawnerTier, EditorEditGui.EditType.COMMAND)));
 
         if (spawnerData.getTiers().size() == 1)
-            setButton(5, 0, GuiUtils.createButtonItem(CompatibleMaterial.FIRE_CHARGE, TextUtils.formatText("&6Go to tiered view.")),
+            setButton(5, 0, GuiUtils.createButtonItem(XMaterial.FIRE_CHARGE, TextUtils.formatText("&6Go to tiered view.")),
                     event -> EditorTiersGui.openTiers(plugin, player, spawnerData, true));
     }
 }

@@ -1,7 +1,7 @@
 package com.craftaro.epicspawners.listeners;
 
 import com.craftaro.core.compatibility.CompatibleHand;
-import com.craftaro.core.compatibility.CompatibleMaterial;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.compatibility.ServerVersion;
 import com.craftaro.core.hooks.EconomyManager;
 import com.craftaro.core.utils.ItemUtils;
@@ -65,7 +65,7 @@ public class BlockListeners implements Listener {
                                 || (foundBlock.getType().equals(Material.WATER) || foundBlock.getType().equals(Material.WATER))) {
                             foundBlock.setType(Material.AIR);
                         }
-                    } else if (CompatibleMaterial.getMaterial(foundBlock) == CompatibleMaterial.SPAWNER)
+                    } else if (XMaterial.matchXMaterial(foundBlock.getType().name()).get() == XMaterial.SPAWNER)
                         return true;
                 }
             }
@@ -117,7 +117,7 @@ public class BlockListeners implements Listener {
         // We are ignoring canceled inside the event so that it will still remove holograms when the event is canceled.
         if (!event.isCancelled()) {
             Block block = event.getBlock();
-            if (CompatibleMaterial.getMaterial(block) != CompatibleMaterial.SPAWNER
+            if (XMaterial.matchXMaterial(block.getType().name()).get() != XMaterial.SPAWNER
                     || ((CreatureSpawner) block.getState()).getSpawnedType() == EntityType.FIREWORK) return;
 
             Location location = block.getLocation();
@@ -210,7 +210,7 @@ public class BlockListeners implements Listener {
 
         //We are ignoring canceled inside the event so that it will still remove holograms when the event is canceled.
         if (!event.isCancelled()) {
-            if (CompatibleMaterial.getMaterial(block) != CompatibleMaterial.SPAWNER
+            if (XMaterial.matchXMaterial(block.getType().name()).get() != XMaterial.SPAWNER
                     || ((CreatureSpawner) block.getState()).getSpawnedType() == EntityType.FIREWORK) return;
 
             if (plugin.getBlacklistHandler().isBlacklisted(event.getPlayer(), true)) {

@@ -1,6 +1,6 @@
 package com.craftaro.epicspawners.tasks;
 
-import com.craftaro.core.compatibility.CompatibleMaterial;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.epicspawners.EpicSpawners;
 import com.craftaro.epicspawners.settings.Settings;
 import com.craftaro.epicspawners.spawners.spawner.PlacedSpawnerImpl;
@@ -38,7 +38,7 @@ public class SpawnerSpawnTask extends BukkitRunnable {
                         || plugin.getBlacklistHandler().isBlacklisted(spawner.getWorld())
                         || !spawner.getWorld().isChunkLoaded(spawner.getX() >> 4, spawner.getZ() >> 4)) continue;
 
-                if (spawner.getLocation().getBlock().getType() != CompatibleMaterial.SPAWNER.getMaterial()
+                if (spawner.getLocation().getBlock().getType() != XMaterial.SPAWNER.parseMaterial()
                         || !spawner.isValid()) {
                     spawner.destroy();
                     continue;

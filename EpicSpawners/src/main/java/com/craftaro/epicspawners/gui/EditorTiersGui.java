@@ -1,6 +1,6 @@
 package com.craftaro.epicspawners.gui;
 
-import com.craftaro.core.compatibility.CompatibleMaterial;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.gui.Gui;
 import com.craftaro.core.gui.GuiUtils;
 import com.craftaro.core.input.ChatPrompt;
@@ -47,8 +47,8 @@ public class EditorTiersGui extends Gui {
         reset();
 
         // decorate the edges
-        ItemStack glass2 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_2.getMaterial(CompatibleMaterial.BLUE_STAINED_GLASS_PANE));
-        ItemStack glass3 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_3.getMaterial(CompatibleMaterial.LIGHT_BLUE_STAINED_GLASS_PANE));
+        ItemStack glass2 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_2.getMaterial(XMaterial.BLUE_STAINED_GLASS_PANE));
+        ItemStack glass3 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_3.getMaterial(XMaterial.LIGHT_BLUE_STAINED_GLASS_PANE));
 
         // edges will be type 3
         mirrorFill(0, 2, true, true, glass3);
@@ -59,7 +59,7 @@ public class EditorTiersGui extends Gui {
         mirrorFill(1, 0, true, true, glass2);
         mirrorFill(0, 1, true, true, glass2);
 
-        setButton(8, GuiUtils.createButtonItem(CompatibleMaterial.OAK_DOOR, "Back to Selector"),
+        setButton(8, GuiUtils.createButtonItem(XMaterial.OAK_DOOR, "Back to Selector"),
                 (event) -> plugin.getGuiManager().showGUI(player, new EditorSelectorGui(plugin, player)));
 
         List<SpawnerTier> tiersSource = spawnerData.getTiers();
@@ -67,8 +67,8 @@ public class EditorTiersGui extends Gui {
         pages = (int) Math.max(1, Math.ceil(tiersSource.size() / ((double) 28)));
 
         // enable page event
-        setNextPage(5, 7, GuiUtils.createButtonItem(CompatibleMaterial.ARROW, plugin.getLocale().getMessage("general.nametag.next").getMessage()));
-        setPrevPage(5, 1, GuiUtils.createButtonItem(CompatibleMaterial.ARROW, plugin.getLocale().getMessage("general.nametag.back").getMessage()));
+        setNextPage(5, 7, GuiUtils.createButtonItem(XMaterial.ARROW, plugin.getLocale().getMessage("general.nametag.next").getMessage()));
+        setPrevPage(5, 1, GuiUtils.createButtonItem(XMaterial.ARROW, plugin.getLocale().getMessage("general.nametag.back").getMessage()));
         setOnPage((event) -> showPage());
 
         List<SpawnerTier> tiers = tiersSource.stream().skip((page - 1) * 28).limit(28).collect(Collectors.toList());
@@ -86,7 +86,7 @@ public class EditorTiersGui extends Gui {
             }
 
             if (acceptsItems) {
-                setItem(num, GuiUtils.createButtonItem(tier.getDisplayItem() == CompatibleMaterial.AIR ? CompatibleMaterial.DIRT : tier.getDisplayItem(),
+                setItem(num, GuiUtils.createButtonItem(tier.getDisplayItem() == XMaterial.AIR ? XMaterial.DIRT : tier.getDisplayItem(),
                         tier.getIdentifyingName()));
             } else {
 
@@ -98,7 +98,7 @@ public class EditorTiersGui extends Gui {
                     lore.add(TextUtils.formatText("&7Right Click to &c&lDestroy&7."));
 
 
-                setButton(num, GuiUtils.createButtonItem(tier.getDisplayItem() == CompatibleMaterial.AIR ? CompatibleMaterial.DIRT : tier.getDisplayItem(),
+                setButton(num, GuiUtils.createButtonItem(tier.getDisplayItem() == XMaterial.AIR ? XMaterial.DIRT : tier.getDisplayItem(),
                         lore),
                         (event) -> {
                             if (event.clickType == ClickType.LEFT)
@@ -118,11 +118,11 @@ public class EditorTiersGui extends Gui {
             }
         }
 
-        setButton(5, 3, GuiUtils.createButtonItem(CompatibleMaterial.FIRE_CHARGE, TextUtils.formatText("&9&lEdit Settings")),
+        setButton(5, 3, GuiUtils.createButtonItem(XMaterial.FIRE_CHARGE, TextUtils.formatText("&9&lEdit Settings")),
                 (event) -> guiManager.showGUI(player, new EditorTierGeneralGui(plugin, this, spawnerData)));
 
         if (pages == 1)
-            setButton(5, 4, GuiUtils.createButtonItem(CompatibleMaterial.CHEST, TextUtils.formatText("&a&lUnlock Tiers",
+            setButton(5, 4, GuiUtils.createButtonItem(XMaterial.CHEST, TextUtils.formatText("&a&lUnlock Tiers",
                     "&7Currently: " + (acceptsItems ? "&aUnlocked" : "&cLocked") + "&7.",
                     "&7Re-lock to save changed.")),
                     (event) -> {
@@ -178,7 +178,7 @@ public class EditorTiersGui extends Gui {
                     });
         else setItem(5, 4, null);
 
-        setButton(5, 5, GuiUtils.createButtonItem(CompatibleMaterial.PAPER, TextUtils.formatText("&9&lNew Tier")),
+        setButton(5, 5, GuiUtils.createButtonItem(XMaterial.PAPER, TextUtils.formatText("&9&lNew Tier")),
                 (event) -> {
                     spawnerData.addDefaultTier();
                     showPage();

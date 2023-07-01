@@ -1,6 +1,6 @@
 package com.craftaro.epicspawners.gui;
 
-import com.craftaro.core.compatibility.CompatibleMaterial;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.gui.Gui;
 import com.craftaro.core.gui.GuiUtils;
 import com.craftaro.core.lootables.gui.GuiLootableEditor;
@@ -24,10 +24,10 @@ public class EditorDropsGui extends Gui {
 
 
         // decorate the edges
-        ItemStack glass2 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_2.getMaterial(CompatibleMaterial.BLUE_STAINED_GLASS_PANE));
-        ItemStack glass3 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_3.getMaterial(CompatibleMaterial.LIGHT_BLUE_STAINED_GLASS_PANE));
+        ItemStack glass2 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_2.getMaterial(XMaterial.BLUE_STAINED_GLASS_PANE));
+        ItemStack glass3 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_3.getMaterial(XMaterial.LIGHT_BLUE_STAINED_GLASS_PANE));
 
-        setDefaultItem(Settings.GLASS_TYPE_1.getMaterial().getItem());
+        setDefaultItem(Settings.GLASS_TYPE_1.getMaterial().parseItem());
 
         mirrorFill(0, 0, true, true, glass2);
         mirrorFill(0, 1, true, true, glass2);
@@ -47,7 +47,7 @@ public class EditorDropsGui extends Gui {
     public void paint() {
         LootManager lootManager = plugin.getLootablesManager().getLootManager();
 
-        setButton(1, 3, GuiUtils.createButtonItem(CompatibleMaterial.BARRIER, "Remove & Reset Custom Drops"),
+        setButton(1, 3, GuiUtils.createButtonItem(XMaterial.BARRIER, "Remove & Reset Custom Drops"),
                 (event) -> {
                     lootManager.removeLootable(spawnerTier.getFullyIdentifyingName());
                     paint();
@@ -55,7 +55,7 @@ public class EditorDropsGui extends Gui {
 
         boolean dropExists = lootManager.getRegisteredLootables().containsKey(spawnerTier.getFullyIdentifyingName());
 
-        setButton(1, 5, GuiUtils.createButtonItem(CompatibleMaterial.LIME_DYE, dropExists ? "Edit Drops" : "Create & Enable Custom Drops"),
+        setButton(1, 5, GuiUtils.createButtonItem(XMaterial.LIME_DYE, dropExists ? "Edit Drops" : "Create & Enable Custom Drops"),
                 (event) -> {
                     if (!dropExists)
                         lootManager.addLootable(new Lootable(spawnerTier.getFullyIdentifyingName()));

@@ -1,7 +1,6 @@
 package com.craftaro.epicspawners.player;
 
 import com.craftaro.core.database.DataManager;
-import com.craftaro.core.database.MultiData;
 import com.craftaro.core.third_party.org.jooq.impl.DSL;
 import com.craftaro.epicspawners.EpicSpawners;
 import com.craftaro.epicspawners.api.player.PlayerData;

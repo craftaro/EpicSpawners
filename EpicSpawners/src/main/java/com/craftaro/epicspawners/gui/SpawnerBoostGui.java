@@ -1,6 +1,6 @@
 package com.craftaro.epicspawners.gui;
 
-import com.craftaro.core.compatibility.CompatibleMaterial;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.compatibility.CompatibleSound;
 import com.craftaro.core.gui.CustomizableGui;
 import com.craftaro.core.gui.GuiUtils;
@@ -67,25 +67,25 @@ public class SpawnerBoostGui extends CustomizableGui {
         mirrorFill("mirrorfill_4", 1, 0, false, true, glass2);
         mirrorFill("mirrorfill_5", 1, 1, false, true, glass3);
 
-        setButton("boost5", 10, GuiUtils.createButtonItem(CompatibleMaterial.COAL, plugin.getLocale().getMessage("interface.boost.boostfor")
+        setButton("boost5", 10, GuiUtils.createButtonItem(XMaterial.COAL, plugin.getLocale().getMessage("interface.boost.boostfor")
                         .processPlaceholder("amount", "5").getMessage(),
                 plugin.getLocale().getMessage("interface.boost.cost")
                         .processPlaceholder("cost", getBoostCost(5, amount)).getMessage()),
                 event -> purchaseBoost(player, 5, amount));
 
-        setButton("boost15", 12, GuiUtils.createButtonItem(CompatibleMaterial.IRON_INGOT, plugin.getLocale().getMessage("interface.boost.boostfor")
+        setButton("boost15", 12, GuiUtils.createButtonItem(XMaterial.IRON_INGOT, plugin.getLocale().getMessage("interface.boost.boostfor")
                         .processPlaceholder("amount", "15").getMessage(),
                 plugin.getLocale().getMessage("interface.boost.cost")
                         .processPlaceholder("cost", getBoostCost(15, amount)).getMessage()),
                 event -> purchaseBoost(player, 15, amount));
 
-        setButton("boost30", 14, GuiUtils.createButtonItem(CompatibleMaterial.DIAMOND, plugin.getLocale().getMessage("interface.boost.boostfor")
+        setButton("boost30", 14, GuiUtils.createButtonItem(XMaterial.DIAMOND, plugin.getLocale().getMessage("interface.boost.boostfor")
                         .processPlaceholder("amount", "30").getMessage(),
                 plugin.getLocale().getMessage("interface.boost.cost")
                         .processPlaceholder("cost", getBoostCost(30, amount)).getMessage()),
                 event -> purchaseBoost(player, 30, amount));
 
-        setButton("boost60", 16, GuiUtils.createButtonItem(CompatibleMaterial.EMERALD, plugin.getLocale().getMessage("interface.boost.boostfor")
+        setButton("boost60", 16, GuiUtils.createButtonItem(XMaterial.EMERALD, plugin.getLocale().getMessage("interface.boost.boostfor")
                         .processPlaceholder("amount", "60").getMessage(),
                 plugin.getLocale().getMessage("interface.boost.cost")
                         .processPlaceholder("cost", getBoostCost(60, amount)).getMessage()),
@@ -145,7 +145,7 @@ public class SpawnerBoostGui extends CustomizableGui {
                 return;
             }
         } else {
-            ItemStack stack = CompatibleMaterial.valueOf(type).getItem();
+            ItemStack stack = XMaterial.valueOf(type).parseItem();
             if (player.getInventory().containsAtLeast(stack, cost)) {
                 stack.setAmount(cost);
                 player.getInventory().removeItem(stack);

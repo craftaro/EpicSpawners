@@ -1,6 +1,6 @@
 package com.craftaro.epicspawners.settings;
 
-import com.craftaro.core.compatibility.CompatibleMaterial;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.configuration.Config;
 import com.craftaro.core.configuration.ConfigSetting;
 import com.craftaro.core.hooks.EconomyManager;
@@ -205,16 +205,16 @@ public class Settings {
     public static final ConfigSetting SILKTOUCH_PLACED_SPAWNER_DROP_CHANCE = new ConfigSetting(config, "Spawner Drops.Chance On Placed Silktouch", "100%",
             "Chance of a placed spawner dropping with silk touch.");
 
-    public static final ConfigSetting EXIT_ICON = new ConfigSetting(config, "Interfaces.Exit Icon", CompatibleMaterial.OAK_DOOR.getMaterial().name(),
+    public static final ConfigSetting EXIT_ICON = new ConfigSetting(config, "Interfaces.Exit Icon", XMaterial.OAK_DOOR.parseMaterial().name(),
             "Item to be displayed as the icon for exiting the interface.");
 
     public static final ConfigSetting BUY_ICON = new ConfigSetting(config, "Interfaces.Buy Icon", "EMERALD",
             "Item to be displayed as the icon for buying a spawner.");
 
-    public static final ConfigSetting ECO_ICON = new ConfigSetting(config, "Interfaces.Economy Icon", CompatibleMaterial.SUNFLOWER.getMaterial().name(),
+    public static final ConfigSetting ECO_ICON = new ConfigSetting(config, "Interfaces.Economy Icon", XMaterial.SUNFLOWER.parseMaterial().name(),
             "Item to be displayed as the icon for economy upgrades.");
 
-    public static final ConfigSetting XP_ICON = new ConfigSetting(config, "Interfaces.XP Icon", CompatibleMaterial.EXPERIENCE_BOTTLE.getMaterial().name(),
+    public static final ConfigSetting XP_ICON = new ConfigSetting(config, "Interfaces.XP Icon", XMaterial.EXPERIENCE_BOTTLE.parseMaterial().name(),
             "Item to be displayed as the icon for XP upgrades.");
 
     public static final ConfigSetting CONVERT_ICON = new ConfigSetting(config, "Interfaces.Convert Icon", "EGG");

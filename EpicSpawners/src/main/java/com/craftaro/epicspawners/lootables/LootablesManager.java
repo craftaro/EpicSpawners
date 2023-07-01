@@ -1,6 +1,6 @@
 package com.craftaro.epicspawners.lootables;
 
-import com.craftaro.core.compatibility.CompatibleMaterial;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.compatibility.ServerVersion;
 import com.craftaro.core.lootables.Lootables;
 import com.craftaro.core.lootables.Modify;
@@ -61,11 +61,11 @@ public class LootablesManager {
         Modify modify = null;
         if (entity instanceof Sheep) {
             modify = (Loot loot2) -> {
-                CompatibleMaterial material = loot2.getMaterial();
+                XMaterial material = loot2.getMaterial();
                 if (material.name().contains("WOOL") && ((Sheep) entity).getColor() != null) {
                     if (((Sheep) entity).isSheared()) return null;
                     if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13))
-                        loot2.setMaterial(CompatibleMaterial.valueOf(((Sheep) entity).getColor() + "_WOOL"));
+                        loot2.setMaterial(XMaterial.valueOf(((Sheep) entity).getColor() + "_WOOL"));
 
                 }
                 return loot2;

@@ -1,6 +1,6 @@
 package com.craftaro.epicspawners.gui;
 
-import com.craftaro.core.compatibility.CompatibleMaterial;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.gui.Gui;
 import com.craftaro.core.gui.GuiUtils;
 import com.craftaro.core.utils.TextUtils;
@@ -27,7 +27,7 @@ public class EditorParticleGui extends Gui {
 
         setTitle(spawnerTier.getGuiTitle());
         setOnClose(event -> plugin.getSpawnerManager().saveSpawnerDataToFile());
-        setDefaultItem(GuiUtils.getBorderItem(Settings.GLASS_TYPE_1.getMaterial().getItem()));
+        setDefaultItem(GuiUtils.getBorderItem(Settings.GLASS_TYPE_1.getMaterial().parseItem()));
 
         paint();
     }
@@ -36,8 +36,8 @@ public class EditorParticleGui extends Gui {
         reset();
 
         // decorate the edges
-        ItemStack glass2 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_2.getMaterial(CompatibleMaterial.BLUE_STAINED_GLASS_PANE));
-        ItemStack glass3 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_3.getMaterial(CompatibleMaterial.LIGHT_BLUE_STAINED_GLASS_PANE));
+        ItemStack glass2 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_2.getMaterial(XMaterial.BLUE_STAINED_GLASS_PANE));
+        ItemStack glass3 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_3.getMaterial(XMaterial.LIGHT_BLUE_STAINED_GLASS_PANE));
 
         setItem(1, glass2);
         setItem(2, glass3);
@@ -59,11 +59,11 @@ public class EditorParticleGui extends Gui {
         setItem(43, glass2);
         setItem(44, glass2);
 
-        setButton(0, GuiUtils.createButtonItem(CompatibleMaterial.OAK_DOOR,
+        setButton(0, GuiUtils.createButtonItem(XMaterial.OAK_DOOR,
                 plugin.getLocale().getMessage("general.nametag.back").getMessage()),
                 (event) -> guiManager.showGUI(event.player, back));
 
-        setButton(20, GuiUtils.createButtonItem(CompatibleMaterial.ENDER_PEARL, TextUtils.formatText("&5&lParticle Types",
+        setButton(20, GuiUtils.createButtonItem(XMaterial.ENDER_PEARL, TextUtils.formatText("&5&lParticle Types",
                 "&7Entity Spawn Particle: &a" + spawnerTier.getEntitySpawnParticle().name(),
                 "&cLeft-Click to change.",
                 "&7Spawner Spawn Particle: &a" + spawnerTier.getSpawnerSpawnParticle().name(),
@@ -104,7 +104,7 @@ public class EditorParticleGui extends Gui {
             }
         }).setOnClose(event -> paint());
 
-        setButton(22, GuiUtils.createButtonItem(CompatibleMaterial.FIREWORK_ROCKET, TextUtils.formatText("&6&lSpawner Effect",
+        setButton(22, GuiUtils.createButtonItem(XMaterial.FIREWORK_ROCKET, TextUtils.formatText("&6&lSpawner Effect",
                 "&7Particle Effect: &a" + spawnerTier.getParticleEffect().name(),
                 "&cLeft-Click to change.",
                 "&7Particle Effect For BoostedImpl Only: &a" + spawnerTier.isParticleEffectBoostedOnly(),
@@ -130,7 +130,7 @@ public class EditorParticleGui extends Gui {
             }
         }).setOnClose(event -> paint());
 
-        setButton(24, GuiUtils.createButtonItem(CompatibleMaterial.COMPARATOR, TextUtils.formatText("&6&lPerformance",
+        setButton(24, GuiUtils.createButtonItem(XMaterial.COMPARATOR, TextUtils.formatText("&6&lPerformance",
                 "&7Currently: &a" + spawnerTier.getParticleDensity().name() + " &cClick to change.")),
                 event -> {
                     ParticleDensity currentParticleDensity = spawnerTier.getParticleDensity();

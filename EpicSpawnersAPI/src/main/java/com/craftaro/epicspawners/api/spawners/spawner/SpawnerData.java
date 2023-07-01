@@ -1,6 +1,6 @@
 package com.craftaro.epicspawners.api.spawners.spawner;
 
-import com.craftaro.core.compatibility.CompatibleMaterial;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 
 import java.util.Collection;
 import java.util.List;
@@ -75,7 +75,7 @@ public interface SpawnerData {
 
     void replaceTiers(Collection<SpawnerTier> newTiers);
 
-    CompatibleMaterial getDisplayItem();
+    XMaterial getDisplayItem();
 
     void reloadSpawnMethods();
 

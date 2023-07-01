@@ -2,6 +2,7 @@ package com.craftaro.epicspawners.listeners;
 
 import com.craftaro.core.compatibility.CompatibleHand;
 import com.craftaro.core.compatibility.CompatibleMaterial;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.compatibility.ServerVersion;
 import com.craftaro.core.hooks.ProtectionManager;
 import com.craftaro.core.utils.ItemUtils;
@@ -31,6 +32,8 @@ import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.SpawnEgg;
+
+import java.util.Optional;
 
 /**
  * Created by songoda on 2/25/2017.
@@ -63,7 +66,7 @@ public class InteractListeners implements Listener {
                 for (int fy = -radius; fy <= radius; fy++) {
                     for (int fz = -radius; fz <= radius; fz++) {
                         Block b = event.getClickedBlock().getWorld().getBlockAt(bx + fx, by + fy, bz + fz);
-                        if (b.getType() == CompatibleMaterial.SPAWNER.getMaterial()) {
+                        if (b.getType() == XMaterial.SPAWNER.parseMaterial()) {
                             event.setCancelled(true);
                         }
                     }
@@ -73,11 +76,14 @@ public class InteractListeners implements Listener {
 
         if (item == null || item.getType() == Material.AIR) return;
 
-        CompatibleMaterial egg = CompatibleMaterial.getMaterial(item);
+        if (block == null || block.getType() != XMaterial.SPAWNER.parseMaterial()) return;
 
-        if (block.getType() != CompatibleMaterial.SPAWNER.getMaterial()
-                || egg.getEggType() == null)
+        //Check if the item is a spawn egg
+        try {
+            CompatibleMaterial.getEntityForSpawnEgg(XMaterial.matchXMaterial(item));
+        } catch (IllegalArgumentException ex) {
             return;
+        }
 
         event.setCancelled(true);
 
@@ -143,8 +149,8 @@ public class InteractListeners implements Listener {
         CreatureSpawner creatureSpawner = (CreatureSpawner) block.getState();
 
         if (Settings.GIVE_OLD_EGG.getBoolean() && creatureSpawner.getSpawnedType() != EntityType.fromId(item.getDurability())) {
-            ItemStack oldEgg = CompatibleMaterial.getSpawnEgg(creatureSpawner.getSpawnedType()).getItem();
-            player.getInventory().addItem(oldEgg);
+            Optional<XMaterial> oldEgg = XMaterial.matchXMaterial(creatureSpawner.getSpawnedType().name() + "_SPAWN_EGG");
+            oldEgg.ifPresent(xMaterial -> player.getInventory().addItem(xMaterial.parseItem()));
         }
 
         SpawnerStack stack = spawner.getFirstStack().setTier(plugin.getSpawnerManager().getSpawnerData(itype).getFirstTier());
@@ -177,7 +183,7 @@ public class InteractListeners implements Listener {
         Location location = block.getLocation();
         ItemStack item = event.getItem();
 
-        boolean isSpawner = block.getType() == CompatibleMaterial.SPAWNER.getMaterial();
+        boolean isSpawner = block.getType() == XMaterial.SPAWNER.parseMaterial();
 
         if (isSpawner && !plugin.getSpawnerManager().isSpawner(location))
             createMissingSpawner(location);
@@ -189,7 +195,7 @@ public class InteractListeners implements Listener {
         if (item != null && item.getType().name().contains("SPAWN_EGG") && item.getType().name().equals("MONSTER_EGG"))
             return;
 
-        if (isSpawner && CompatibleMaterial.SPAWNER.matches(item)) {
+        if (isSpawner && XMaterial.SPAWNER.equals(XMaterial.matchXMaterial(item))) {
             PlacedSpawner spawner = plugin.getSpawnerManager().getSpawnerFromWorld(location);
 
             if (spawner.getPlacedBy() == null && Settings.DISABLE_NATURAL_SPAWNERS.getBoolean()) return;

@@ -1,6 +1,6 @@
 package com.craftaro.epicspawners.api.utils;
 
-import com.craftaro.core.compatibility.CompatibleMaterial;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.epicspawners.api.particles.ParticleDensity;
 import com.craftaro.epicspawners.api.particles.ParticleEffect;
 import com.craftaro.epicspawners.api.particles.ParticleType;
@@ -19,17 +19,17 @@ public interface SpawnerTierBuilder {
     SpawnerTierBuilder newBuilder(String identifier);
 
     SpawnerTierBuilder setDisplayName(String name);
-    SpawnerTierBuilder displayItem(CompatibleMaterial material);
+    SpawnerTierBuilder displayItem(XMaterial material);
 
     SpawnerTierBuilder setEntities(List<EntityType> entities);
 
-    SpawnerTierBuilder setBlocks(List<CompatibleMaterial> blocks);
+    SpawnerTierBuilder setBlocks(List<XMaterial> blocks);
 
     SpawnerTierBuilder setItems(List<ItemStack> items);
 
     SpawnerTierBuilder setCommands(List<String> commands);
 
-    SpawnerTierBuilder setSpawnBlocks(List<CompatibleMaterial> spawnBlocks);
+    SpawnerTierBuilder setSpawnBlocks(List<XMaterial> spawnBlocks);
 
     SpawnerTierBuilder setSpawnOnFire(boolean spawnOnFire);
 

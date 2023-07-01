@@ -1,6 +1,6 @@
 package com.craftaro.epicspawners.gui;
 
-import com.craftaro.core.compatibility.CompatibleMaterial;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.gui.CustomizableGui;
 import com.craftaro.core.utils.NumberUtils;
 import com.craftaro.core.utils.TextUtils;
@@ -49,8 +49,8 @@ public class SpawnerTiersGui extends CustomizableGui {
         reset();
 
         // decorate the edges
-        ItemStack glass2 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_2.getMaterial(CompatibleMaterial.BLUE_STAINED_GLASS_PANE));
-        ItemStack glass3 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_3.getMaterial(CompatibleMaterial.LIGHT_BLUE_STAINED_GLASS_PANE));
+        ItemStack glass2 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_2.getMaterial(XMaterial.BLUE_STAINED_GLASS_PANE));
+        ItemStack glass3 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_3.getMaterial(XMaterial.LIGHT_BLUE_STAINED_GLASS_PANE));
 
         // edges will be type 3
         mirrorFill("mirrorfill_1", 0, 2, true, true, glass3);
@@ -74,12 +74,12 @@ public class SpawnerTiersGui extends CustomizableGui {
                 continue;
 
             if (acceptsItems) {
-                setItem(num, GuiUtils.createButtonItem(tier.getDisplayItem() == CompatibleMaterial.AIR ? CompatibleMaterial.DIRT : tier.getDisplayItem(),
+                setItem(num, GuiUtils.createButtonItem(tier.getDisplayItem() == XMaterial.AIR ? XMaterial.DIRT : tier.getDisplayItem(),
                         tier.getIdentifyingName()));
             } else {
                 SpawnerStack stack = stacks.get(i);
-                CompatibleMaterial material = tier.getDisplayItem();
-                setButton(num, GuiUtils.createButtonItem(material == null || material.isAir() ? HeadUtils.getTexturedSkull(tier) : tier.getDisplayItem().getItem(),
+                XMaterial material = tier.getDisplayItem();
+                setButton(num, GuiUtils.createButtonItem(material == null || material.equals(XMaterial.AIR) ? HeadUtils.getTexturedSkull(tier) : tier.getDisplayItem().parseItem(),
                         TextUtils.formatText(tier.getCompiledDisplayName(false, stack.getStackSize()))),
                         (event) -> plugin.getGuiManager().showGUI(player, new SpawnerOverviewGui(plugin, stack, player)));
             }
@@ -87,7 +87,7 @@ public class SpawnerTiersGui extends CustomizableGui {
 
         GuiUtils.applyBoosted(5, this, plugin, player, spawner);
 
-        setItem("stats", 3, GuiUtils.createButtonItem(CompatibleMaterial.PAPER, plugin.getLocale().getMessage("interface.spawner.statstitle").getMessage(),
+        setItem("stats", 3, GuiUtils.createButtonItem(XMaterial.PAPER, plugin.getLocale().getMessage("interface.spawner.statstitle").getMessage(),
                 plugin.getLocale().getMessage("interface.spawner.stats")
                         .processPlaceholder("amount", NumberUtils.formatNumber(spawner.getSpawnCount())).getMessage()));
     }

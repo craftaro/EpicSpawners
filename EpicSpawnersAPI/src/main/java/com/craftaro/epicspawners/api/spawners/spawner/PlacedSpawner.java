@@ -1,7 +1,7 @@
 package com.craftaro.epicspawners.api.spawners.spawner;
 
 import com.craftaro.core.compatibility.CompatibleHand;
-import com.craftaro.core.compatibility.CompatibleMaterial;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.database.Data;
 import com.craftaro.core.nms.world.SpawnedEntity;
 import com.craftaro.epicspawners.api.boosts.types.Boosted;
@@ -18,7 +18,7 @@ import java.util.UUID;
 
 public interface PlacedSpawner extends Data {
 
-    int spawn(int amountToSpawn, String particle, Set<CompatibleMaterial> canSpawnOn, SpawnedEntity spawned, EntityType... types);
+    int spawn(int amountToSpawn, String particle, Set<XMaterial> canSpawnOn, SpawnedEntity spawned, EntityType... types);
 
     SpawnerStack addSpawnerStack(SpawnerStack spawnerStack);
 

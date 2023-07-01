@@ -1,6 +1,5 @@
 package com.craftaro.epicspawners.api.player;
 
-import com.craftaro.core.database.MultiData;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.EntityType;
 

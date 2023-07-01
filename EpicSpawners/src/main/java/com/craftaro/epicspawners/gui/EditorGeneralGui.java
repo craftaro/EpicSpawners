@@ -1,6 +1,6 @@
 package com.craftaro.epicspawners.gui;
 
-import com.craftaro.core.compatibility.CompatibleMaterial;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.gui.AnvilGui;
 import com.craftaro.core.gui.Gui;
 import com.craftaro.core.gui.GuiUtils;
@@ -25,7 +25,7 @@ public class EditorGeneralGui extends Gui {
         this.back = back;
         this.spawnerTier = spawnerTier;
 
-        setDefaultItem(GuiUtils.getBorderItem(Settings.GLASS_TYPE_1.getMaterial().getItem()));
+        setDefaultItem(GuiUtils.getBorderItem(Settings.GLASS_TYPE_1.getMaterial().parseItem()));
         setTitle(spawnerTier.getGuiTitle());
         setOnClose(event -> plugin.getSpawnerManager().saveSpawnerDataToFile());
 
@@ -36,8 +36,8 @@ public class EditorGeneralGui extends Gui {
         reset();
 
         // decorate the edges
-        ItemStack glass2 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_2.getMaterial(CompatibleMaterial.BLUE_STAINED_GLASS_PANE));
-        ItemStack glass3 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_3.getMaterial(CompatibleMaterial.LIGHT_BLUE_STAINED_GLASS_PANE));
+        ItemStack glass2 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_2.getMaterial(XMaterial.BLUE_STAINED_GLASS_PANE));
+        ItemStack glass3 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_3.getMaterial(XMaterial.LIGHT_BLUE_STAINED_GLASS_PANE));
 
         // edges will be type 3
         mirrorFill(0, 2, true, true, glass3);
@@ -48,11 +48,11 @@ public class EditorGeneralGui extends Gui {
         mirrorFill(1, 0, true, true, glass2);
         mirrorFill(0, 1, true, true, glass2);
 
-        setButton(0, GuiUtils.createButtonItem(CompatibleMaterial.OAK_DOOR,
+        setButton(0, GuiUtils.createButtonItem(XMaterial.OAK_DOOR,
                 plugin.getLocale().getMessage("general.nametag.back").getMessage()),
                 (event) -> guiManager.showGUI(event.player, back));
 
-        setButton(22, GuiUtils.createButtonItem(CompatibleMaterial.FIRE_CHARGE, TextUtils.formatText("&c&lSpawn On Fire",
+        setButton(22, GuiUtils.createButtonItem(XMaterial.FIRE_CHARGE, TextUtils.formatText("&c&lSpawn On Fire",
                 "&7Currently: &a" + spawnerTier.isSpawnOnFire(),
                 "&7If this is true this spawner",
                 "&7will spawn entities on fire.")),
@@ -61,7 +61,7 @@ public class EditorGeneralGui extends Gui {
                     paint();
                 });
 
-        setButton(20, GuiUtils.createButtonItem(CompatibleMaterial.SUNFLOWER, TextUtils.formatText("&6&lEconomy cost",
+        setButton(20, GuiUtils.createButtonItem(XMaterial.SUNFLOWER, TextUtils.formatText("&6&lEconomy cost",
                 "&7Currently: &a" + spawnerTier.getCostEconomy(),
                 "&7This is the economy cost",
                 "&7to upgrade or sell this spawner.")),
@@ -85,7 +85,7 @@ public class EditorGeneralGui extends Gui {
                             "&7Example: &619.99&7."));
                 });
 
-        setButton(24, GuiUtils.createButtonItem(CompatibleMaterial.EXPERIENCE_BOTTLE, TextUtils.formatText("&5&lLevels cost",
+        setButton(24, GuiUtils.createButtonItem(XMaterial.EXPERIENCE_BOTTLE, TextUtils.formatText("&5&lLevels cost",
                 "&7Currently: &a" + spawnerTier.getCostLevels(),
                 "&7This is the custom levels cost",
                 "&7to upgrade this spawner.")),
@@ -109,7 +109,7 @@ public class EditorGeneralGui extends Gui {
                             "&7Example: &625&7."));
                 });
 
-        setButton(30, GuiUtils.createButtonItem(CompatibleMaterial.EXPERIENCE_BOTTLE, TextUtils.formatText("&5&lKill Drop Goal",
+        setButton(30, GuiUtils.createButtonItem(XMaterial.EXPERIENCE_BOTTLE, TextUtils.formatText("&5&lKill Drop Goal",
                 "&7Currently: &a" + spawnerTier.getSpawnerData().getKillDropGoal(),
                 "&7If this is set to anything",
                 "&7but 0 the default kill goal",
@@ -134,7 +134,7 @@ public class EditorGeneralGui extends Gui {
                             "&7Example: &35&6."));
                 });
 
-        setButton(31, GuiUtils.createButtonItem(CompatibleMaterial.EXPERIENCE_BOTTLE, TextUtils.formatText("&5&lKill Drop Chance",
+        setButton(31, GuiUtils.createButtonItem(XMaterial.EXPERIENCE_BOTTLE, TextUtils.formatText("&5&lKill Drop Chance",
                 "&7Currently: &a" + spawnerTier.getSpawnerData().getKillDropGoal(),
                 "&7If this is set to anything",
                 "&7but 0 the default kill chance",
@@ -159,7 +159,7 @@ public class EditorGeneralGui extends Gui {
                             "&7Example: &35&6."));
                 });
 
-        setButton(32, GuiUtils.createButtonItem(CompatibleMaterial.DIAMOND, TextUtils.formatText("&b&lPickup Cost",
+        setButton(32, GuiUtils.createButtonItem(XMaterial.DIAMOND, TextUtils.formatText("&b&lPickup Cost",
                 "&7Currently: &a" + spawnerTier.getPickupCost(),
                 "&7Setting this to anything but 0",
                 "&7will allow you to charge players",
@@ -185,7 +185,7 @@ public class EditorGeneralGui extends Gui {
                             "&7Example: &625&7."));
                 });
 
-        setButton(40, GuiUtils.createButtonItem(CompatibleMaterial.CLOCK, TextUtils.formatText("&6&lTick Rate",
+        setButton(40, GuiUtils.createButtonItem(XMaterial.CLOCK, TextUtils.formatText("&6&lTick Rate",
                 "&7Currently: &a" + spawnerTier.getTickRate(),
                 "&7This is the default tick rate",
                 "&7that your spawner will use",

@@ -1,6 +1,6 @@
 package com.craftaro.epicspawners.gui;
 
-import com.craftaro.core.compatibility.CompatibleMaterial;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.gui.AnvilGui;
 import com.craftaro.core.gui.Gui;
 import com.craftaro.core.gui.GuiUtils;
@@ -52,8 +52,8 @@ public class EditorEditGui extends Gui {
         unlockedCells.remove(27);
 
         // decorate the edges
-        ItemStack glass2 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_2.getMaterial(CompatibleMaterial.BLUE_STAINED_GLASS_PANE));
-        ItemStack glass3 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_3.getMaterial(CompatibleMaterial.LIGHT_BLUE_STAINED_GLASS_PANE));
+        ItemStack glass2 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_2.getMaterial(XMaterial.BLUE_STAINED_GLASS_PANE));
+        ItemStack glass3 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_3.getMaterial(XMaterial.LIGHT_BLUE_STAINED_GLASS_PANE));
 
         setItem(1, glass2);
         setItem(7, glass2);
@@ -96,7 +96,7 @@ public class EditorEditGui extends Gui {
                             setItem(num, null);
                             continue;
                         }
-                        setItem(num, spawnerTier.getBlocks().get(i).getItem());
+                        setItem(num, spawnerTier.getBlocks().get(i).parseItem());
                         break;
                     case ENTITY: {
                         if (i >= spawnerTier.getEntities().size()) {
@@ -132,7 +132,7 @@ public class EditorEditGui extends Gui {
             }
         }, 1L);
 
-        setButton(0, GuiUtils.createButtonItem(CompatibleMaterial.OAK_DOOR,
+        setButton(0, GuiUtils.createButtonItem(XMaterial.OAK_DOOR,
                 TextUtils.formatText(plugin.getLocale().getMessage("general.nametag.back").getMessage())),
                 (event) -> guiManager.showGUI(event.player, back));
 
@@ -143,7 +143,7 @@ public class EditorEditGui extends Gui {
                 add = new ItemStack(Material.PAPER);
                 addName = "&6Add Command";
             } else {
-                add = CompatibleMaterial.SHEEP_SPAWN_EGG.getItem();
+                add = XMaterial.SHEEP_SPAWN_EGG.parseItem();
                 addName = "&6Add entity";
             }
 
@@ -183,7 +183,7 @@ public class EditorEditGui extends Gui {
         }
 
         setButton(editType != EditType.ITEM ? 41 : 49,
-                GuiUtils.createButtonItem(CompatibleMaterial.REDSTONE, TextUtils.formatText("&aSave")),
+                GuiUtils.createButtonItem(XMaterial.REDSTONE, TextUtils.formatText("&aSave")),
                 event -> save(event.player, getItems(event.player)));
 
     }
@@ -210,9 +210,9 @@ public class EditorEditGui extends Gui {
         if (editType == EditType.ITEM) {
             spawnerTier.setItems(items);
         } else if (editType == EditType.BLOCK) {
-            List<CompatibleMaterial> list = new ArrayList<>();
+            List<XMaterial> list = new ArrayList<>();
             for (ItemStack item : items) {
-                CompatibleMaterial material = CompatibleMaterial.getMaterial(item);
+                XMaterial material = XMaterial.matchXMaterial(item);
                 list.add(material);
             }
             spawnerTier.setBlocks(list);

@@ -1,7 +1,7 @@
 package com.craftaro.epicspawners.commands;
 
 import com.craftaro.core.commands.AbstractCommand;
-import com.craftaro.core.compatibility.CompatibleMaterial;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.epicspawners.EpicSpawners;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
@@ -25,7 +25,7 @@ public class CommandSpawn extends AbstractCommand {
 
         Block block = player.getTargetBlock(null, 200);
 
-        if (CompatibleMaterial.getMaterial(block) != CompatibleMaterial.SPAWNER) {
+        if (XMaterial.matchXMaterial(block.getType().name()).get() != XMaterial.SPAWNER) {
             plugin.getLocale().newMessage("&cThat is not a spawner...").sendPrefixedMessage(player);
             return ReturnType.FAILURE;
         }

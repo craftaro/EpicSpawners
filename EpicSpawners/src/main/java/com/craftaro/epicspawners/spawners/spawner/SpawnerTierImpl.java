@@ -15,7 +15,7 @@ import com.craftaro.epicspawners.spawners.spawner.option.SpawnOptionCommand;
 import com.craftaro.epicspawners.spawners.spawner.option.SpawnOptionEntity;
 import com.craftaro.epicspawners.spawners.spawner.option.SpawnOptionItem;
 import com.google.common.base.Preconditions;
-import com.craftaro.core.compatibility.CompatibleMaterial;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.gui.GuiUtils;
 import com.craftaro.core.third_party.de.tr7zw.nbtapi.NBTItem;
 import com.craftaro.core.utils.TextUtils;
@@ -42,11 +42,11 @@ public class SpawnerTierImpl implements SpawnerTier {
     private double costEconomy = 1000.0;
     private int CostLevels = 2;
 
-    private List<CompatibleMaterial> spawnBlocks = Collections.singletonList(CompatibleMaterial.AIR);
+    private List<XMaterial> spawnBlocks = Collections.singletonList(XMaterial.AIR);
     private boolean spawnOnFire = false;
     private int spawnLimit = -1;
     private short pickDamage = 1;
-    private CompatibleMaterial displayItem = null;
+    private XMaterial displayItem = null;
 
     private String tickRate = "800:200";
 
@@ -60,7 +60,7 @@ public class SpawnerTierImpl implements SpawnerTier {
     private boolean particleEffectBoostedOnly = true;
 
     private List<EntityType> entities = new ArrayList<>();
-    private List<CompatibleMaterial> blocks = new ArrayList<>();
+    private List<XMaterial> blocks = new ArrayList<>();
     private List<ItemStack> items = new ArrayList<>();
     private List<String> commands = new ArrayList<>();
 
@@ -109,7 +109,7 @@ public class SpawnerTierImpl implements SpawnerTier {
     public ItemStack toItemStack(int amount, int stackSize) {
         Preconditions.checkArgument(stackSize >= 0, "Stack size must be greater than or equal to 0");
 
-        ItemStack item = GuiUtils.createButtonItem(CompatibleMaterial.SPAWNER, getCompiledDisplayName(false, stackSize));
+        ItemStack item = GuiUtils.createButtonItem(XMaterial.SPAWNER, getCompiledDisplayName(false, stackSize));
         item.setAmount(amount);
 
         NBTItem nbtItem = new NBTItem(item);
@@ -146,17 +146,17 @@ public class SpawnerTierImpl implements SpawnerTier {
     }
 
     @Override
-    public CompatibleMaterial[] getSpawnBlocks() {
-        return spawnBlocks.toArray(new CompatibleMaterial[spawnBlocks.size()]);
+    public XMaterial[] getSpawnBlocks() {
+        return spawnBlocks.toArray(new XMaterial[spawnBlocks.size()]);
     }
 
     @Override
-    public void setSpawnBlocks(List<CompatibleMaterial> spawnBlock) {
+    public void setSpawnBlocks(List<XMaterial> spawnBlock) {
         this.spawnBlocks = spawnBlock;
     }
 
     @Override
-    public List<CompatibleMaterial> getSpawnBlocksList() {
+    public List<XMaterial> getSpawnBlocksList() {
         return Collections.unmodifiableList(spawnBlocks);
     }
 
@@ -239,12 +239,12 @@ public class SpawnerTierImpl implements SpawnerTier {
     }
 
     @Override
-    public CompatibleMaterial getDisplayItem() {
-        return displayItem == null ? CompatibleMaterial.AIR : displayItem;
+    public XMaterial getDisplayItem() {
+        return displayItem == null ? XMaterial.AIR : displayItem;
     }
 
     @Override
-    public void setDisplayItem(CompatibleMaterial displayItem) {
+    public void setDisplayItem(XMaterial displayItem) {
         this.displayItem = displayItem;
     }
 
@@ -259,12 +259,12 @@ public class SpawnerTierImpl implements SpawnerTier {
     }
 
     @Override
-    public List<CompatibleMaterial> getBlocks() {
+    public List<XMaterial> getBlocks() {
         return Collections.unmodifiableList(blocks);
     }
 
     @Override
-    public void setBlocks(List<CompatibleMaterial> blocks) {
+    public void setBlocks(List<XMaterial> blocks) {
         this.blocks = blocks;
     }
 

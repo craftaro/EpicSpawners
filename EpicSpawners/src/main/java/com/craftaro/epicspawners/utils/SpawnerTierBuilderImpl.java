@@ -1,6 +1,6 @@
 package com.craftaro.epicspawners.utils;
 
-import com.craftaro.core.compatibility.CompatibleMaterial;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.epicspawners.api.particles.ParticleDensity;
 import com.craftaro.epicspawners.api.particles.ParticleEffect;
 import com.craftaro.epicspawners.api.particles.ParticleType;
@@ -35,7 +35,7 @@ public final class SpawnerTierBuilderImpl implements SpawnerTierBuilder {
     }
 
     @Override
-    public SpawnerTierBuilder displayItem(CompatibleMaterial material) {
+    public SpawnerTierBuilder displayItem(XMaterial material) {
         this.spawnerTier.setDisplayItem(material);
         return this;
     }
@@ -47,7 +47,7 @@ public final class SpawnerTierBuilderImpl implements SpawnerTierBuilder {
     }
 
     @Override
-    public SpawnerTierBuilder setBlocks(List<CompatibleMaterial> blocks) {
+    public SpawnerTierBuilder setBlocks(List<XMaterial> blocks) {
         this.spawnerTier.setBlocks(blocks);
         return this;
     }
@@ -65,7 +65,7 @@ public final class SpawnerTierBuilderImpl implements SpawnerTierBuilder {
     }
 
     @Override
-    public SpawnerTierBuilder setSpawnBlocks(List<CompatibleMaterial> spawnBlocks) {
+    public SpawnerTierBuilder setSpawnBlocks(List<XMaterial> spawnBlocks) {
         this.spawnerTier.setSpawnBlocks(spawnBlocks);
         return this;
     }

@@ -1,6 +1,7 @@
 package com.craftaro.epicspawners.spawners.spawner.option;
 
-import com.craftaro.core.compatibility.CompatibleMaterial;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XBlock;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.epicspawners.EpicSpawners;
 import com.craftaro.epicspawners.api.boosts.types.Boosted;
 import com.craftaro.epicspawners.api.spawners.spawner.PlacedSpawner;
@@ -25,15 +26,15 @@ public class SpawnOptionBlock implements SpawnOption {
     private static final int SPAWN_RADIUS = 3;
 
     private final Random random;
-    private final CompatibleMaterial[] blocks;
+    private final XMaterial[] blocks;
 
-    public SpawnOptionBlock(CompatibleMaterial... blocks) {
+    public SpawnOptionBlock(XMaterial... blocks) {
         this.blocks = blocks;
         this.random = new Random();
     }
 
-    public SpawnOptionBlock(Collection<CompatibleMaterial> blocks) {
-        this(blocks.toArray(new CompatibleMaterial[blocks.size()]));
+    public SpawnOptionBlock(Collection<XMaterial> blocks) {
+        this(blocks.toArray(new XMaterial[blocks.size()]));
     }
 
     @Override
@@ -43,7 +44,7 @@ public class SpawnOptionBlock implements SpawnOption {
 
         int spawnerBoost = spawner.getBoosts().stream().mapToInt(Boosted::getAmountBoosted).sum();
         for (int i = 0; i < stack.getStackSize() + spawnerBoost; i++) {
-            for (CompatibleMaterial material : blocks) {
+            for (XMaterial material : blocks) {
                 int searchIndex = 0;
                 while (searchIndex++ <= MAX_SEARCH_COUNT) {
                     spawner.setSpawnCount(spawner.getSpawnCount() + 1);
@@ -61,7 +62,7 @@ public class SpawnOptionBlock implements SpawnOption {
                     if (spawnBlock.getType() != Material.AIR) continue;
 
                     // Set Type and data for valid air block
-                    material.applyToBlock(spawnBlock);
+                    XBlock.setType(spawnBlock, material, true);
                     break;
                 }
             }

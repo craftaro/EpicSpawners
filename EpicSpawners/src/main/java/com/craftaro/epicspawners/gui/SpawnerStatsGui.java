@@ -1,6 +1,6 @@
 package com.craftaro.epicspawners.gui;
 
-import com.craftaro.core.compatibility.CompatibleMaterial;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.gui.CustomizableGui;
 import com.craftaro.core.gui.GuiUtils;
 import com.craftaro.core.utils.TextUtils;
@@ -46,8 +46,8 @@ public class SpawnerStatsGui extends CustomizableGui {
         reset();
 
         // decorate the edges
-        ItemStack glass2 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_2.getMaterial(CompatibleMaterial.BLUE_STAINED_GLASS_PANE));
-        ItemStack glass3 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_3.getMaterial(CompatibleMaterial.LIGHT_BLUE_STAINED_GLASS_PANE));
+        ItemStack glass2 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_2.getMaterial(XMaterial.BLUE_STAINED_GLASS_PANE));
+        ItemStack glass3 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_3.getMaterial(XMaterial.LIGHT_BLUE_STAINED_GLASS_PANE));
 
         // edges will be type 3
         mirrorFill("mirrorfill_1", 0, 2, true, true, glass3);
@@ -61,11 +61,11 @@ public class SpawnerStatsGui extends CustomizableGui {
         pages = (int) Math.max(1, Math.ceil(entities.size() / ((double) 28)));
 
         // enable page event
-        setNextPage(5, 7, GuiUtils.createButtonItem(CompatibleMaterial.ARROW, plugin.getLocale().getMessage("general.nametag.next").getMessage()));
-        setPrevPage(5, 1, GuiUtils.createButtonItem(CompatibleMaterial.ARROW, plugin.getLocale().getMessage("general.nametag.back").getMessage()));
+        setNextPage(5, 7, GuiUtils.createButtonItem(XMaterial.ARROW, plugin.getLocale().getMessage("general.nametag.next").getMessage()));
+        setPrevPage(5, 1, GuiUtils.createButtonItem(XMaterial.ARROW, plugin.getLocale().getMessage("general.nametag.back").getMessage()));
         setOnPage((event) -> showPage());
 
-        setButton("exit", 8, GuiUtils.createButtonItem(CompatibleMaterial.valueOf(plugin.getConfig().getString("Interfaces.Exit Icon")),
+        setButton("exit", 8, GuiUtils.createButtonItem(XMaterial.valueOf(plugin.getConfig().getString("Interfaces.Exit Icon")),
                 plugin.getLocale().getMessage("general.nametag.exit").getMessage()), (event) -> player.closeInventory());
 
         Set<Map.Entry<SpawnerData, Integer>> entries = entities.entrySet().stream().skip((page - 1) * 28).limit(28)

@@ -3,7 +3,7 @@ package com.craftaro.epicspawners;
 import com.craftaro.core.SongodaCore;
 import com.craftaro.core.SongodaPlugin;
 import com.craftaro.core.commands.CommandManager;
-import com.craftaro.core.compatibility.CompatibleMaterial;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.configuration.Config;
 import com.craftaro.core.database.DataManager;
 import com.craftaro.core.gui.GuiManager;
@@ -102,7 +102,7 @@ public class EpicSpawners extends SongodaPlugin {
     @Override
     public void onPluginEnable() {
         // Run Songoda Updater
-        SongodaCore.registerPlugin(this, 13, CompatibleMaterial.SPAWNER);
+        SongodaCore.registerPlugin(this, 13, XMaterial.SPAWNER);
 
         // Load Economy, Hologram and Protection hooks
         EconomyManager.load();
@@ -245,7 +245,7 @@ public class EpicSpawners extends SongodaPlugin {
     }
 
     public void processChange(Block block) {
-        if (block.getType() != CompatibleMaterial.SPAWNER.getMaterial())
+        if (block.getType() != XMaterial.SPAWNER.parseMaterial())
             return;
         PlacedSpawner spawner = getSpawnerManager().getSpawnerFromWorld(block.getLocation());
         Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, () ->
