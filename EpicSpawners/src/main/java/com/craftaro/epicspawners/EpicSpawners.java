@@ -18,8 +18,10 @@ import com.craftaro.epicspawners.api.boosts.types.BoostedPlayer;
 import com.craftaro.epicspawners.api.player.PlayerData;
 import com.craftaro.epicspawners.api.spawners.spawner.PlacedSpawner;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerData;
+import com.craftaro.epicspawners.api.spawners.spawner.SpawnerStack;
 import com.craftaro.epicspawners.blacklist.BlacklistHandler;
 import com.craftaro.epicspawners.boost.BoostManagerImpl;
+import com.craftaro.epicspawners.boost.types.BoostedPlayerImpl;
 import com.craftaro.epicspawners.commands.CommandBoost;
 import com.craftaro.epicspawners.commands.CommandChange;
 import com.craftaro.epicspawners.commands.CommandEditor;
@@ -43,7 +45,9 @@ import com.craftaro.epicspawners.player.PlayerDataImpl;
 import com.craftaro.epicspawners.player.PlayerDataManagerImpl;
 import com.craftaro.epicspawners.settings.Settings;
 import com.craftaro.epicspawners.spawners.SpawnManager;
+import com.craftaro.epicspawners.spawners.spawner.PlacedSpawnerImpl;
 import com.craftaro.epicspawners.spawners.spawner.SpawnerManager;
+import com.craftaro.epicspawners.spawners.spawner.SpawnerStackImpl;
 import com.craftaro.epicspawners.tasks.AppearanceTask;
 import com.craftaro.epicspawners.tasks.SpawnerParticleTask;
 import com.craftaro.epicspawners.tasks.SpawnerSpawnTask;
@@ -58,6 +62,7 @@ import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -166,15 +171,17 @@ public class EpicSpawners extends SongodaPlugin {
         this.appearanceTask = AppearanceTask.startTask(this);
 
         initDatabase(Arrays.asList(new _1_InitialMigration(), new _2_AddTiers()));
-        new EpicSpawnersAPI(this, new SpawnerDataBuilderImpl(""), new SpawnerTierBuilderImpl(null));
+        new EpicSpawnersAPI(this, new SpawnerDataBuilderImpl(""), new SpawnerTierBuilderImpl());
     }
 
     @Override
     public void onDataLoad() {
         DataManager dataManager = getDataManager();
-        spawnerManager.addSpawners(dataManager.loadBatch(PlacedSpawner.class, "placed_spawners"));
+        spawnerManager.addSpawners(dataManager.loadBatch(PlacedSpawnerImpl.class, "placed_spawners"));
+        //Need to load the SpawnerStacks to the loaded spawners now.
+        List<SpawnerStack> stacks = dataManager.loadBatch(SpawnerStackImpl.class, "spawner_stacks");
         loadHolograms();
-        boostManager.addBoosts(dataManager.loadBatch(BoostedPlayer.class, "boosted_players"));
+        boostManager.addBoosts(dataManager.loadBatch(BoostedPlayerImpl.class, "boosted_players"));
 
         //Load entity kills
         dataManager.getDatabaseConnector().connectDSL(dslContext -> {

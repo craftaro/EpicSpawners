@@ -7,11 +7,11 @@
     <parent>
         <groupId>com.craftaro</groupId>
         <artifactId>EpicSpawnersParent</artifactId>
-        <version>7.3.3</version>
+        <version>8.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>EpicSpawnersAPI</artifactId>
-    <version>1.0</version>
+    <version>1.0.0-SNAPSHOT</version>
 
     <build>
         <plugins>
@@ -25,6 +25,31 @@
                     <target>${java.version}</target>
 
                     <release>${java.release}</release>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>de.m3y.maven</groupId>
+                <artifactId>inject-maven-plugin</artifactId>
+                <version>1.3</version>
+
+                <executions>
+                    <execution>
+                        <phase>process-classes</phase>
+
+                        <goals>
+                            <goal>inject</goal>
+                        </goals>
+                    </execution>
+                </executions>
+
+                <configuration>
+                    <injections>
+                        <injection>
+                            <value>${project.version}</value>
+                            <pointCut>com.craftaro.epicspawners.api.EpicSpawnersAPI.getVersion</pointCut>
+                        </injection>
+                    </injections>
                 </configuration>
             </plugin>
         </plugins>

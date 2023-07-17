@@ -23,6 +23,15 @@ public class SpawnerStackImpl implements SpawnerStack {
 
     private SpawnerTier currentTier;
 
+    /**
+     * Default constructor used for database loading.
+     */
+    public SpawnerStackImpl() {
+        this.spawner = null;
+        this.currentTier = null;
+        this.stackSize = 0;
+    }
+
     public SpawnerStackImpl(PlacedSpawnerImpl spawner) {
         this(spawner, null, 1);
     }
@@ -40,6 +49,12 @@ public class SpawnerStackImpl implements SpawnerStack {
         if (tier != null)
             this.currentTier = tier;
         this.stackSize = stackSize;
+    }
+
+    public SpawnerStackImpl(int spawnerId, String dataType, String tier, int amount) {
+        this.spawner = (PlacedSpawnerImpl) EpicSpawners.getInstance().getSpawnerManager().getSpawner(spawnerId);
+        this.currentTier = EpicSpawners.getInstance().getSpawnerManager().getSpawnerData(dataType).getTier(tier);
+        this.stackSize = amount;
     }
 
     @Override
@@ -176,8 +191,11 @@ public class SpawnerStackImpl implements SpawnerStack {
 
     @Override
     public Data deserialize(Map<String, Object> map) {
-        //TODO: Deserialize
-        return this;
+        int spawnerId = (int) map.get("spawner_id");
+        String dataType = (String) map.get("data_type");
+        String tier = (String) map.get("tier");
+        int amount = (int) map.get("amount");
+        return new SpawnerStackImpl(spawnerId, dataType, tier, amount);
     }
 
     @Override

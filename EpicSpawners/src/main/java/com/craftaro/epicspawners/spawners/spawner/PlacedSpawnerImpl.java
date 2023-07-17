@@ -1,6 +1,7 @@
 package com.craftaro.epicspawners.spawners.spawner;
 
 import com.craftaro.core.compatibility.CompatibleHand;
+import com.craftaro.core.database.DataManager;
 import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.compatibility.CompatibleParticleHandler;
 import com.craftaro.core.compatibility.CompatibleSound;
@@ -8,6 +9,7 @@ import com.craftaro.core.compatibility.ServerVersion;
 import com.craftaro.core.database.Data;
 import com.craftaro.core.database.SerializedLocation;
 import com.craftaro.core.nms.world.SpawnedEntity;
+import com.craftaro.core.third_party.org.jooq.impl.DSL;
 import com.craftaro.core.utils.PlayerUtils;
 import com.craftaro.core.world.SSpawner;
 import com.craftaro.epicspawners.EpicSpawners;
@@ -66,6 +68,25 @@ public class PlacedSpawnerImpl implements PlacedSpawner {
     private CreatureSpawner creatureSpawner = null;
     private Location location;
     private SSpawner sSpawner;
+
+    /**
+     * Default constructor used for database loading.
+     */
+    public PlacedSpawnerImpl() {
+    }
+
+    public PlacedSpawnerImpl(int id, int spawnCount, UUID placedBy, Location location) {
+        this.id = id;
+        this.spawnCount = spawnCount;
+        this.placedBy = placedBy;
+        this.location = location;
+        this.sSpawner = new SSpawner(this.location);
+        DataManager dataManager = EpicSpawners.getInstance().getDataManager();
+        dataManager.getDatabaseConnector().connectDSL(dslContext -> {
+            List<SpawnerStack> spawnerStacks = dataManager.loadBatch(SpawnerStackImpl.class, "spawner_stacks", DSL.field("spawner_id").eq(this.id));
+            this.spawnerStacks.addAll(spawnerStacks);
+        });
+    }
 
     public PlacedSpawnerImpl(Location location) {
         this.location = location;
@@ -483,11 +504,11 @@ public class PlacedSpawnerImpl implements PlacedSpawner {
 
     @Override
     public Data deserialize(Map<String, Object> map) {
-        id = (int) map.get("id");
-        spawnCount = (int) map.get("spawn_count");
-        placedBy = UUID.fromString((String) map.get("placed_by"));
-        location = SerializedLocation.of(map);
-        return this;
+        int id = (int) map.get("id");
+        int spawnCount = (int) map.get("spawn_count");
+        UUID placedBy = UUID.fromString((String) map.get("placed_by"));
+        Location location = SerializedLocation.of(map);
+        return new PlacedSpawnerImpl(id, spawnCount, placedBy, location);
     }
 
     @Override

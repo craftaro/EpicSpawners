@@ -14,6 +14,14 @@ public class BoostedPlayerImpl extends BoostedImpl implements BoostedPlayer {
 
     private final UUID player;
 
+    /**
+     * Default constructor used for database loading.
+     */
+    public BoostedPlayerImpl() {
+        super(0, 0);
+        this.player = null;
+    }
+
     public BoostedPlayerImpl(UUID player, int amtBoosted, long endTime) {
         super(amtBoosted, endTime);
         this.player = player;

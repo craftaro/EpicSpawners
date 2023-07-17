@@ -18,6 +18,10 @@ public final class SpawnerTierBuilderImpl implements SpawnerTierBuilder {
 
     private final SpawnerTier spawnerTier;
 
+    public SpawnerTierBuilderImpl() {
+        this.spawnerTier = null;
+    }
+
     public SpawnerTierBuilderImpl(SpawnerData data) {
         this.spawnerTier = new SpawnerTierImpl(data);
         spawnerTier.reloadSpawnMethods();

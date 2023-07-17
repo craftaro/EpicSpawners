@@ -4,6 +4,11 @@ import com.craftaro.epicspawners.api.utils.SpawnerDataBuilder;
 import com.craftaro.epicspawners.api.utils.SpawnerTierBuilder;
 import org.bukkit.plugin.Plugin;
 
+/**
+ * The main class of the API
+ * <p>
+ * <b>!! {@link EpicSpawnersAPI#getVersion()} value is automatically replaced by maven don't change it !!</b>
+ */
 public class EpicSpawnersAPI {
 
     private static Plugin plugin;
@@ -40,4 +45,11 @@ public class EpicSpawnersAPI {
         return spawnerTierBuilder.newBuilder(identifier);
     }
 
+    /**
+     * Used to get the version of the plugin
+     * @return The version of the plugin
+     */
+    public static String getVersion() {
+        return "UKNOWN_VERSION";
+    }
 }

@@ -455,4 +455,8 @@ public class SpawnerManager {
         getSpawnerConfig().load();
         loadSpawnerDataFromFile();
     }
+
+    public PlacedSpawner getSpawner(int id) {
+        return spawnersInWorld.values().stream().filter(spawner -> spawner.getId() == id).findFirst().orElse(null);
+    }
 }
