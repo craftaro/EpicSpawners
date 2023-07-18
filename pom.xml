@@ -2,29 +2,26 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.craftaro</groupId>
-    <artifactId>EpicSpawnersParent</artifactId>
+    <artifactId>EpicSpawners-Parent</artifactId>
     <version>8.0.0-SNAPSHOT</version>
 
     <packaging>pom</packaging>
 
     <modules>
-        <module>EpicSpawnersAPI</module>
-        <module>EpicSpawners</module>
+        <module>EpicSpawners-API</module>
+        <module>EpicSpawners-Plugin</module>
     </modules>
 
     <properties>
-        <java.version>1.8</java.version>
-        <java.release>8</java.release>
         <core.version>3.0.0-SNAPSHOT</core.version>
+
+        <maven.compiler.release>8</maven.compiler.release>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-    <pluginRepositories>
-        <pluginRepository>
-            <id>apache.snapshots</id>
-            <url>https://repository.apache.org/snapshots/</url>
-        </pluginRepository>
-    </pluginRepositories>
     <repositories>
         <repository>
             <id>spigotmc-repo</id>
