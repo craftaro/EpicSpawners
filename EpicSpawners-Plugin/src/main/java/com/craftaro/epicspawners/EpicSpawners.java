@@ -187,7 +187,7 @@ public class EpicSpawners extends SongodaPlugin {
         dataManager.getDatabaseConnector().connectDSL(dslContext -> {
             @NotNull Result<Record> results = dslContext.select().from(dataManager.getTablePrefix() + "entity_kills").fetch();
             results.stream().iterator().forEachRemaining(record -> {
-                UUID uuid = UUID.fromString(record.get("uuid").toString());
+                UUID uuid = UUID.fromString(record.get("player").toString());
                 EntityType entityType = EntityType.valueOf(record.get("entity_type").toString());
                 int amount = Integer.parseInt(record.get("amount").toString());
                 PlayerData playerData = playerActionManager.getPlayerData(uuid);
