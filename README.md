@@ -1,9 +1,9 @@
 <!--suppress HtmlDeprecatedAttribute -->
 <div align="center">
-<img src="https://cdn2.songoda.com/products/epicspawners/5vteSKAGiFo6ElBhkFqUuKO13ggH28GDO3tundgK.png" width="128px">
+<img src="https://craftaro.com/images/products/304/icons/5vteSKAGiFo6ElBhkFqUuKO13ggH28GDO3tundgK.png" width="128px">
 
 # EpicSpawners
-**The simple and easy to use spawner plugin that allows you to customize everything about spawners and make them unique to your server.**
+**Bring together item spawners, custom drops, spawning combining, silk-touch spawners and a spawner shop all in a simple and easy to use and configure plugin**
 
 
 [![Discord][Discord shield]][Discord invite]
@@ -13,10 +13,6 @@
 [![bStats Servers][bStats shield]][bStats page]
 </div>
 
-
-## Introduction
-EpicSpawners is a high configurable spawner plugin, that also offers a GUI based system that can be used to easily configure the plugin and customize spawners in-game. EpicSpawners allows you to create spawner tiers that your players can then use by upgrading their spawners, stack spawners together and individually upgrade each spawner. The plugin also allows you to rearrange the tiers in-game so that spawners are updated in realtime when you rearrange the tiers, it also allows you to edit the settings of the spawner such as which types of entities would be spawned by the spawner, supports multiple entities being spawned, allows you to customize the interval between spawn attempts, the spawn conditions (block, light level, biome, weather, max entities around spawner, etc) for the spawner to spawn an entity, what the entity will drop when it is killed, the particle effects used when the spawner successfully spawns an entity. All of these settings can be customized in-game through GUIs or through the files. EpicSpawners also allows you to create custom spawners that can spawn items, supports some custom mob plugins, and allows you to customize everything about spawners to make them unique to your server.
-Ever wanted to have a single spawner that can spawn multiple mobs at a time? Now you can, using omnispawners, which allows you to combine multiple entity spawners into a single spawner. EpicSpawner also offers a built-in, fully customizable spawnershop that can be used to sell the vanilla spawners as well as your custom spawners, and can be easily accessed and used by your players.
 
 ## Download (Marketplace)
 You can visit [our marketplace][Marketplace page] to download EpicSpawners as well as take a
