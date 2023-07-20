@@ -56,7 +56,7 @@
                             <artifactSet>
                                 <includes>
                                     <include>com.craftaro:CraftaroCore</include>
-                                    <include>com.craftaro:EpicSpawnersAPI</include>
+                                    <include>com.craftaro:EpicSpawners-API</include>
                                 </includes>
                             </artifactSet>
                             <filters>
