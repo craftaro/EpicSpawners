@@ -75,6 +75,14 @@ public class PlacedSpawnerImpl implements PlacedSpawner {
     public PlacedSpawnerImpl() {
     }
 
+    /**
+     * Constructor used for database loading.
+     *
+     * @param id         The id of the spawner
+     * @param spawnCount The spawn count of the spawner
+     * @param placedBy   The player who placed the spawner
+     * @param location   The location of the spawner
+     */
     public PlacedSpawnerImpl(int id, int spawnCount, UUID placedBy, Location location) {
         this.id = id;
         this.spawnCount = spawnCount;
