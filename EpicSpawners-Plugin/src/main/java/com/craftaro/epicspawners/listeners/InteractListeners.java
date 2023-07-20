@@ -92,7 +92,7 @@ public class InteractListeners implements Listener {
         SpawnerManager spawnerManager = plugin.getSpawnerManager();
 
         if (!plugin.getSpawnerManager().isSpawner(block.getLocation()))
-            createMissingSpawner(block.getLocation());
+            createMissingSpawner(block.getLocation(), player);
 
         PlacedSpawner spawner = spawnerManager.getSpawnerFromWorld(block.getLocation());
 
@@ -186,7 +186,7 @@ public class InteractListeners implements Listener {
         boolean isSpawner = block.getType() == XMaterial.SPAWNER.parseMaterial();
 
         if (isSpawner && !plugin.getSpawnerManager().isSpawner(location))
-            createMissingSpawner(location);
+            createMissingSpawner(location, player);
 
         if (event.getClickedBlock() == null
                 || event.getAction() != Action.RIGHT_CLICK_BLOCK)
@@ -236,8 +236,9 @@ public class InteractListeners implements Listener {
         }
     }
 
-    private PlacedSpawnerImpl createMissingSpawner(Location location) {
+    private PlacedSpawnerImpl createMissingSpawner(Location location, Player player) {
         PlacedSpawnerImpl spawner = new PlacedSpawnerImpl(location);
+        spawner.setPlacedBy(player);
         CreatureSpawner creatureSpawner = spawner.getCreatureSpawner();
         if (creatureSpawner == null) return null;
 
