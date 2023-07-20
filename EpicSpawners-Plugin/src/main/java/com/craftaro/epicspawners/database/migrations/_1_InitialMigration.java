@@ -17,22 +17,24 @@ public class _1_InitialMigration extends DataMigration {
 
     @Override
     public void migrate(DatabaseConnector databaseConnector, String tablePrefix) throws SQLException {
+
+        Connection connection = databaseConnector.getConnection();
+
         // Create spawners table
-        try (Statement statement = databaseConnector.getConnection().createStatement()) {
+        try (Statement statement = connection.createStatement()) {
             statement.execute("CREATE TABLE IF NOT EXISTS " + tablePrefix + "placed_spawners (" +
                     "id INTEGER PRIMARY KEY AUTO_INCREMENT" + ", " +
                     "spawn_count INTEGER NOT NULL, " +
-                    "placed_by VARCHAR(36), " +
+                    "placed_by VARCHAR(36) NOT NULL, " +
                     "world TEXT NOT NULL, " +
                     "x DOUBLE NOT NULL, " +
                     "y DOUBLE NOT NULL, " +
-                    "z DOUBLE NOT NULL, " +
-                    "UNIQUE (world,x,y,z) " +
+                    "z DOUBLE NOT NULL " +
                     ")");
         }
 
         // Create spawner stacks
-        try (Statement statement = databaseConnector.getConnection().createStatement()) {
+        try (Statement statement = connection.createStatement()) {
             statement.execute("CREATE TABLE IF NOT EXISTS " + tablePrefix + "spawner_stacks (" +
                     "spawner_id INTEGER NOT NULL, " +
                     "data_type VARCHAR(100) NOT NULL," +
@@ -41,7 +43,7 @@ public class _1_InitialMigration extends DataMigration {
         }
 
         // Create player boosts
-        try (Statement statement = databaseConnector.getConnection().createStatement()) {
+        try (Statement statement = connection.createStatement()) {
             statement.execute("CREATE TABLE IF NOT EXISTS " + tablePrefix + "boosted_players (" +
                     "player VARCHAR(36) NOT NULL, " +
                     "amount INTEGER NOT NULL," +
@@ -50,7 +52,7 @@ public class _1_InitialMigration extends DataMigration {
         }
 
         // Create spawner boosts
-        try (Statement statement = databaseConnector.getConnection().createStatement()) {
+        try (Statement statement = connection.createStatement()) {
             statement.execute("CREATE TABLE IF NOT EXISTS " + tablePrefix + "boosted_spawners (" +
                     "world TEXT NOT NULL, " +
                     "x DOUBLE NOT NULL, " +
@@ -62,13 +64,15 @@ public class _1_InitialMigration extends DataMigration {
         }
 
         // Create entity kills
-        try (Statement statement = databaseConnector.getConnection().createStatement()) {
+        try (Statement statement = connection.createStatement()) {
             statement.execute("CREATE TABLE IF NOT EXISTS " + tablePrefix + "entity_kills (" +
                     "player VARCHAR(36) NOT NULL, " +
                     "entity_type VARCHAR(100) NOT NULL, " +
                     "count DOUBLE NOT NULL " +
                     ")");
         }
+
+        connection.close();
     }
 
 }
