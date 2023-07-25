@@ -2,6 +2,7 @@ package com.craftaro.epicspawners.spawners.spawner;
 
 import com.craftaro.core.database.Data;
 import com.craftaro.core.hooks.EconomyManager;
+import com.craftaro.core.third_party.org.jooq.impl.DSL;
 import com.craftaro.epicspawners.EpicSpawners;
 import com.craftaro.epicspawners.api.events.SpawnerChangeEvent;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerData;
@@ -14,11 +15,13 @@ import org.bukkit.GameMode;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class SpawnerStackImpl implements SpawnerStack {
 
-    private final PlacedSpawnerImpl spawner;
+    private PlacedSpawnerImpl spawner;
     private int stackSize;
 
     private SpawnerTier currentTier;
@@ -30,6 +33,15 @@ public class SpawnerStackImpl implements SpawnerStack {
         this.spawner = null;
         this.currentTier = null;
         this.stackSize = 0;
+    }
+
+    /**
+     * Constructor used for database loading.
+     */
+    public SpawnerStackImpl(int spawnerId, String dataType, String tier, int amount) {
+        this.spawner = (PlacedSpawnerImpl) EpicSpawners.getInstance().getSpawnerManager().getSpawner(spawnerId);
+        this.currentTier = EpicSpawners.getInstance().getSpawnerManager().getSpawnerData(dataType).getTier(tier);
+        this.stackSize = amount;
     }
 
     public SpawnerStackImpl(PlacedSpawnerImpl spawner) {
@@ -51,15 +63,13 @@ public class SpawnerStackImpl implements SpawnerStack {
         this.stackSize = stackSize;
     }
 
-    public SpawnerStackImpl(int spawnerId, String dataType, String tier, int amount) {
-        this.spawner = (PlacedSpawnerImpl) EpicSpawners.getInstance().getSpawnerManager().getSpawner(spawnerId);
-        this.currentTier = EpicSpawners.getInstance().getSpawnerManager().getSpawnerData(dataType).getTier(tier);
-        this.stackSize = amount;
-    }
-
     @Override
     public PlacedSpawnerImpl getSpawner() {
         return spawner;
+    }
+
+    public void setSpawner(PlacedSpawnerImpl spawner) {
+        this.spawner = spawner;
     }
 
     @Override
@@ -134,8 +144,17 @@ public class SpawnerStackImpl implements SpawnerStack {
                 plugin.getLocale().getMessage("event.upgrade.cannotafford").sendPrefixedMessage(player);
             }
         }
-        if (!spawner.merge(this, oldTier))
-            plugin.getDataManager().save(this);
+        if (!spawner.merge(this, oldTier)) {
+            plugin.getDataManager().getDatabaseConnector().connectDSL(dslContext -> {
+                //Update tier
+                dslContext.update(DSL.table(plugin.getDataManager().getTablePrefix() + "spawner_stacks"))
+                        .set(DSL.field("tier"), tier.getIdentifyingName())
+                        .where(DSL.field("spawner_id").eq(this.getSpawner().getId()))
+                        .and(DSL.field("data_type").eq(oldTier.getSpawnerData().getIdentifyingName()))
+                        .and(DSL.field("amount").eq(this.getStackSize()))
+                        .execute();
+            });
+        }
     }
 
     @Override
@@ -161,8 +180,9 @@ public class SpawnerStackImpl implements SpawnerStack {
         }
 
         currentTier = data.getFirstTier();
-        if (!spawner.merge(this, oldTier))
-            plugin.getDataManager().save(this);
+        if (!spawner.merge(this, oldTier)) {
+            plugin.getDataManager().save(this, "spawner_id", spawner.getId());
+        }
         try {
             spawner.getCreatureSpawner().setSpawnedType(EntityType.valueOf(data.getIdentifyingName().toUpperCase()));
         } catch (Exception e) {
@@ -181,11 +201,11 @@ public class SpawnerStackImpl implements SpawnerStack {
 
     @Override
     public Map<String, Object> serialize() {
-        Map<String, Object> map = spawner.serialize();
+        Map<String, Object> map = new LinkedHashMap<>();
         map.put("spawner_id", getSpawner().getId());
         map.put("data_type", getSpawnerData().getIdentifyingName());
-        map.put("tier", getCurrentTier().getIdentifyingName());
         map.put("amount", getStackSize());
+        map.put("tier", getCurrentTier().getIdentifyingName());
         return map;
     }
 
@@ -193,8 +213,8 @@ public class SpawnerStackImpl implements SpawnerStack {
     public Data deserialize(Map<String, Object> map) {
         int spawnerId = (int) map.get("spawner_id");
         String dataType = (String) map.get("data_type");
-        String tier = (String) map.get("tier");
         int amount = (int) map.get("amount");
+        String tier = (String) map.get("tier");
         return new SpawnerStackImpl(spawnerId, dataType, tier, amount);
     }
 

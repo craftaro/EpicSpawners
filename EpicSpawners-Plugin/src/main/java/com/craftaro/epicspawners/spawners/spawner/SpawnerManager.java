@@ -310,7 +310,7 @@ public class SpawnerManager {
                         .setEntitySpawnParticle(ParticleType.valueOf(currentSection2.getString("Entity-Spawn-Particle", "SMOKE")))
                         .setSpawnerSpawnParticle(ParticleType.valueOf(currentSection2.getString("Spawner-Spawn-Particle", "FIRE")))
                         .setParticleDensity(ParticleDensity.valueOf(currentSection2.getString("Particle-Amount", "NORMAL")))
-                        .setParticleEffectBoostedOnly(currentSection2.getBoolean("Particle-Effect-BoostedImpl-Only", true))
+                        .setParticleEffectBoostedOnly(currentSection2.getBoolean("Particle-Effect-Boosted-Only", true))
                         .setSpawnLimit(currentSection2.getInt("Spawn-Limit", -1))
                         .setDisplayName(currentSection2.getString("Display-Name", key))
                         .displayItem(XMaterial.valueOf(currentSection2.getString(currentSection2.contains("Display-Item") ? "Display-Item" : "AIR")));
@@ -412,7 +412,7 @@ public class SpawnerManager {
                 currentSection2.set("Entity-Spawn-Particle", spawnerTier.getEntitySpawnParticle().name());
                 currentSection2.set("Spawner-Spawn-Particle", spawnerTier.getSpawnerSpawnParticle().name());
                 currentSection2.set("Particle-Amount", spawnerTier.getParticleDensity().name());
-                currentSection2.set("Particle-Effect-BoostedImpl-Only", spawnerTier.isParticleEffectBoostedOnly());
+                currentSection2.set("Particle-Effect-Boosted-Only", spawnerTier.isParticleEffectBoostedOnly());
 
                 for (SpawnCondition spawnCondition : spawnerTier.getConditions()) {
                     if (spawnCondition instanceof SpawnConditionBiome) {
@@ -458,5 +458,9 @@ public class SpawnerManager {
 
     public PlacedSpawner getSpawner(int id) {
         return spawnersInWorld.values().stream().filter(spawner -> spawner.getId() == id).findFirst().orElse(null);
+    }
+
+    public PlacedSpawner getSpawner(Location location) {
+        return spawnersInWorld.get(location);
     }
 }

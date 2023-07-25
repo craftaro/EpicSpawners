@@ -1,6 +1,7 @@
 package com.craftaro.epicspawners.spawners.spawner.option;
 
 import com.craftaro.core.compatibility.ServerVersion;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XSound;
 import com.craftaro.epicspawners.EpicSpawners;
 import com.craftaro.epicspawners.api.boosts.types.Boosted;
 import com.craftaro.epicspawners.api.spawners.spawner.PlacedSpawner;
@@ -45,8 +46,10 @@ public class SpawnOptionItem implements SpawnOption {
         World world = location.getWorld();
         Location spawnLocation = location.clone().add(0.5, 0.9, 0.5);
 
-        if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9))
-            location.getWorld().playSound(location, Sound.ENTITY_ITEM_PICKUP, 0.1F, 1F);
+        if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9)) {
+            XSound.ENTITY_ITEM_PICKUP.play(location, 0.1F, 1F);
+        }
+
 
         int spawnerBoost = spawner.getBoosts().stream().mapToInt(Boosted::getAmountBoosted).sum();
         for (int i = 0; i < stack.getStackSize() + spawnerBoost; i++) {

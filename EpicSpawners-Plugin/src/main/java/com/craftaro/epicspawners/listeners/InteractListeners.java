@@ -91,8 +91,11 @@ public class InteractListeners implements Listener {
 
         SpawnerManager spawnerManager = plugin.getSpawnerManager();
 
-        if (!plugin.getSpawnerManager().isSpawner(block.getLocation()))
-            createMissingSpawner(block.getLocation(), player);
+        //Fixme: Why we want to handle non player placed spawners?
+        if (!plugin.getSpawnerManager().isSpawner(block.getLocation())) {
+            //createMissingSpawner(block.getLocation(), player);
+            return;
+        }
 
         PlacedSpawner spawner = spawnerManager.getSpawnerFromWorld(block.getLocation());
 
@@ -185,17 +188,21 @@ public class InteractListeners implements Listener {
 
         boolean isSpawner = block.getType() == XMaterial.SPAWNER.parseMaterial();
 
-        if (isSpawner && !plugin.getSpawnerManager().isSpawner(location))
-            createMissingSpawner(location, player);
-
-        if (event.getClickedBlock() == null
-                || event.getAction() != Action.RIGHT_CLICK_BLOCK)
+        //Fixme: Why we want to handle non player placed spawners?
+        if (!isSpawner && !plugin.getSpawnerManager().isSpawner(location)) {
+            //createMissingSpawner(location, player);
             return;
+        }
 
-        if (item != null && item.getType().name().contains("SPAWN_EGG") && item.getType().name().equals("MONSTER_EGG"))
+        if (event.getClickedBlock() == null || event.getAction() != Action.RIGHT_CLICK_BLOCK) {
             return;
+        }
 
-        if (isSpawner && XMaterial.SPAWNER.equals(XMaterial.matchXMaterial(item))) {
+        if (item != null && item.getType().name().contains("SPAWN_EGG") && item.getType().name().equals("MONSTER_EGG")) {
+            return;
+        }
+
+        if (isSpawner && item != null && XMaterial.SPAWNER.equals(XMaterial.matchXMaterial(item))) {
             PlacedSpawner spawner = plugin.getSpawnerManager().getSpawnerFromWorld(location);
 
             if (spawner.getPlacedBy() == null && Settings.DISABLE_NATURAL_SPAWNERS.getBoolean()) return;
@@ -216,7 +223,7 @@ public class InteractListeners implements Listener {
         } else if (isSpawner && !plugin.getBlacklistHandler().isBlacklisted(player, false)) {
             PlacedSpawner spawner = plugin.getSpawnerManager().getSpawnerFromWorld(location);
             if (!player.isSneaking() && event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                if (spawner.getPlacedBy() == null && Settings.DISABLE_NATURAL_SPAWNERS.getBoolean()) return;
+                if ((spawner == null ||spawner.getPlacedBy() == null) && Settings.DISABLE_NATURAL_SPAWNERS.getBoolean()) return;
 
                 SpawnerAccessEvent accessEvent = new SpawnerAccessEvent(player, spawner);
                 Bukkit.getPluginManager().callEvent(accessEvent);
@@ -234,17 +241,5 @@ public class InteractListeners implements Listener {
                 event.setCancelled(true);
             }
         }
-    }
-
-    private PlacedSpawnerImpl createMissingSpawner(Location location, Player player) {
-        PlacedSpawnerImpl spawner = new PlacedSpawnerImpl(location);
-        spawner.setPlacedBy(player);
-        CreatureSpawner creatureSpawner = spawner.getCreatureSpawner();
-        if (creatureSpawner == null) return null;
-
-        spawner.addSpawnerStack(new SpawnerStackImpl(spawner, plugin.getSpawnerManager().getSpawnerData(creatureSpawner.getSpawnedType()).getFirstTier(), 1));
-        plugin.getSpawnerManager().addSpawnerToWorld(location, spawner);
-        EpicSpawners.getInstance().getDataManager().save(spawner);
-        return spawner;
     }
 }

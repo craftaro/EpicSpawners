@@ -107,7 +107,7 @@ public class EditorParticleGui extends Gui {
         setButton(22, GuiUtils.createButtonItem(XMaterial.FIREWORK_ROCKET, TextUtils.formatText("&6&lSpawner Effect",
                 "&7Particle Effect: &a" + spawnerTier.getParticleEffect().name(),
                 "&cLeft-Click to change.",
-                "&7Particle Effect For BoostedImpl Only: &a" + spawnerTier.isParticleEffectBoostedOnly(),
+                "&7Particle Effect For Boosted Only: &a" + spawnerTier.isParticleEffectBoostedOnly(),
                 "&cRight-Click to change.")), event -> {
             ParticleEffect currentParticleEffect = spawnerTier.getParticleEffect();
             ClickType type = event.clickType;

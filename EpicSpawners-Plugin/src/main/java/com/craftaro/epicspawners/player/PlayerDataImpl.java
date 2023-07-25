@@ -61,9 +61,9 @@ public class PlayerDataImpl implements PlayerData {
                 context.insertInto(DSL.table(dataManager.getTablePrefix() + "entity_kills"))
                         .set(DSL.field("player"), playerUUID.toString())
                         .set(DSL.field("entity_type"), entry.getKey().name())
-                        .set(DSL.field("amount"), entry.getValue())
+                        .set(DSL.field("count"), entry.getValue())
                         .onDuplicateKeyUpdate()
-                        .set(DSL.field("amount"), entry.getValue())
+                        .set(DSL.field("count"), entry.getValue())
                         .execute();
             }
         });

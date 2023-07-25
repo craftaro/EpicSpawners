@@ -1,5 +1,6 @@
 package com.craftaro.epicspawners.boost;
 
+import com.craftaro.epicspawners.EpicSpawners;
 import com.craftaro.epicspawners.api.boosts.BoostManager;
 import com.craftaro.epicspawners.api.boosts.types.Boosted;
 import com.craftaro.epicspawners.api.boosts.types.BoostedPlayer;
@@ -38,14 +39,12 @@ public class BoostManagerImpl implements BoostManager {
         return Collections.unmodifiableSet(registeredBoosts);
     }
 
-    @Override
     public void addBoosts(List<Boosted> boosts) {
         synchronized (registeredBoosts) {
             registeredBoosts.addAll(boosts);
         }
     }
 
-    @Override
     public void clearBoosts() {
         synchronized (registeredBoosts) {
             registeredBoosts.clear();

@@ -221,14 +221,16 @@ public class BlockListeners implements Listener {
             Location location = block.getLocation();
 
             if (!plugin.getSpawnerManager().isSpawner(location)) {
-                PlacedSpawnerImpl spawner = new PlacedSpawnerImpl(location);
-
-                CreatureSpawner creatureSpawner = spawner.getCreatureSpawner();
-                if (creatureSpawner == null) return;
-
-                spawner.addSpawnerStack(new SpawnerStackImpl(spawner, plugin.getSpawnerManager().getSpawnerData(creatureSpawner.getSpawnedType()).getFirstTier()));
-                plugin.getSpawnerManager().addSpawnerToWorld(location, spawner);
-                EpicSpawners.getInstance().getDataManager().save(spawner);
+                //Fixme: Why we want to handle non player placed spawners?
+//                PlacedSpawnerImpl spawner = new PlacedSpawnerImpl(location);
+//
+//                CreatureSpawner creatureSpawner = spawner.getCreatureSpawner();
+//                if (creatureSpawner == null) return;
+//
+//                spawner.addSpawnerStack(new SpawnerStackImpl(spawner, plugin.getSpawnerManager().getSpawnerData(creatureSpawner.getSpawnedType()).getFirstTier()));
+//                plugin.getSpawnerManager().addSpawnerToWorld(location, spawner);
+//                EpicSpawners.getInstance().getDataManager().save(spawner);
+                return;
             }
 
             PlacedSpawner spawner = plugin.getSpawnerManager().getSpawnerFromWorld(location);
@@ -291,8 +293,9 @@ public class BlockListeners implements Listener {
             short damage = spawner.getFirstStack().getCurrentTier().getPickDamage();
 
             if (spawner.unstack(event.getPlayer(), hand)) {
-                if (block.getType() != Material.AIR)
+                if (block.getType() != Material.AIR) {
                     event.setCancelled(true);
+                }
 
                 if (Settings.ALERT_PLACE_BREAK.getBoolean()) {
                     if (spawner.getSpawnerStacks().size() != 0) {
@@ -302,8 +305,9 @@ public class BlockListeners implements Listener {
                     }
                 }
 
-                if (hand.getItem(player).getType().name().endsWith("PICKAXE") && !player.hasPermission("epicspawners.nopickdamage"))
+                if (hand.getItem(player).getType().name().endsWith("PICKAXE") && !player.hasPermission("epicspawners.nopickdamage")) {
                     new SItemStack(hand.getItem(player)).addDamage(player, damage);
+                }
             }
 
             plugin.updateHologram(spawner);

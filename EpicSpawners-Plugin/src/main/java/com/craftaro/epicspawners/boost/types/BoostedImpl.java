@@ -5,7 +5,7 @@ import com.craftaro.epicspawners.api.boosts.types.Boosted;
 
 import java.util.Map;
 
-public class BoostedImpl implements Boosted {
+public abstract class BoostedImpl implements Boosted {
 
     private final int amountBoosted;
     private final long endTime;
@@ -25,18 +25,4 @@ public class BoostedImpl implements Boosted {
         return endTime;
     }
 
-    @Override
-    public Map<String, Object> serialize() {
-        return null;
-    }
-
-    @Override
-    public Data deserialize(Map<String, Object> map) {
-        return null;
-    }
-
-    @Override
-    public String getTableName() {
-        return null;
-    }
 }

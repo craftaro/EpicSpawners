@@ -9,6 +9,7 @@ import com.craftaro.core.compatibility.ServerVersion;
 import com.craftaro.core.database.Data;
 import com.craftaro.core.database.SerializedLocation;
 import com.craftaro.core.nms.world.SpawnedEntity;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XSound;
 import com.craftaro.core.third_party.org.jooq.impl.DSL;
 import com.craftaro.core.utils.PlayerUtils;
 import com.craftaro.core.world.SSpawner;
@@ -49,6 +50,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class PlacedSpawnerImpl implements PlacedSpawner {
 
@@ -58,7 +60,7 @@ public class PlacedSpawnerImpl implements PlacedSpawner {
     private final UUID uniqueHologramId = UUID.randomUUID();
 
     // Id for database use.
-    private int id;
+    private int id = -1;
 
     //Holds the different types of spawners contained by this creatureSpawner.
     private final Deque<SpawnerStack> spawnerStacks = new ArrayDeque<>();
@@ -92,13 +94,23 @@ public class PlacedSpawnerImpl implements PlacedSpawner {
         DataManager dataManager = EpicSpawners.getInstance().getDataManager();
         dataManager.getDatabaseConnector().connectDSL(dslContext -> {
             List<SpawnerStack> spawnerStacks = dataManager.loadBatch(SpawnerStackImpl.class, "spawner_stacks", DSL.field("spawner_id").eq(this.id));
-            this.spawnerStacks.addAll(spawnerStacks);
+            for (SpawnerStack stack : spawnerStacks) {
+                SpawnerStackImpl spawnerStackImpl = (SpawnerStackImpl) stack;
+                spawnerStackImpl.setSpawner(this);
+                this.spawnerStacks.push(spawnerStackImpl);
+            }
         });
     }
 
+    /**
+     * Constructor used for creating new spawners.
+     *
+     * @param location   The location of the spawner
+     */
     public PlacedSpawnerImpl(Location location) {
         this.location = location;
         this.sSpawner = new SSpawner(this.location);
+        this.id = EpicSpawners.getInstance().getDataManager().getNextId(getTableName());
     }
 
     @Override
@@ -120,8 +132,7 @@ public class PlacedSpawnerImpl implements PlacedSpawner {
 
             CompatibleParticleHandler.spawnParticles(CompatibleParticleHandler.ParticleType.LAVA,
                     location.clone().add(.5, .5, .5), 5, 0, 0, 0, 5);
-            location.getWorld().playSound(location, ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13)
-                    ? Sound.ENTITY_GENERIC_EXPLODE : Sound.valueOf("EXPLODE"), 10, 10);
+            XSound.ENTITY_GENERIC_EXPLODE.play(location, 10, 10);
 
             instance.getSpawnerManager().removeSpawnerFromWorld(this);
             EpicSpawners.getInstance().getDataManager().delete(this);
@@ -248,6 +259,7 @@ public class PlacedSpawnerImpl implements PlacedSpawner {
     public boolean unstack(Player player, CompatibleHand hand) {
         EpicSpawners instance = EpicSpawners.getInstance();
         SpawnerStack stack = getFirstStack();
+        if (stack == null || stack.getId() == -1) return false; //Not a stack
 
         int stackSize = 1;
 
@@ -257,7 +269,7 @@ public class PlacedSpawnerImpl implements PlacedSpawner {
         }
 
         if (Settings.SOUNDS_ENABLED.getBoolean()) {
-            player.playSound(player.getLocation(), CompatibleSound.ENTITY_ARROW_HIT_PLAYER.getSound(), 0.6F, 15.0F);
+            XSound.ENTITY_ARROW_HIT_PLAYER.play(player, 0.6F, 15.0F);
         }
         ItemStack item = stack.getCurrentTier().toItemStack(1, stackSize);
 
@@ -344,21 +356,40 @@ public class PlacedSpawnerImpl implements PlacedSpawner {
             amount = max - currentStackSize;
         }
 
-        for (SpawnerStack stack : spawnerStacks) {
-            if (!stack.getCurrentTier().equals(tier)) continue;
-            stack.setStackSize(stack.getStackSize() + amount);
-            plugin.getDataManager().save(stack);
+        for (SpawnerStack spawnerStack: spawnerStacks) {
+            if (!spawnerStack.getCurrentTier().equals(tier)) continue;
+            spawnerStack.setStackSize(spawnerStack.getStackSize() + amount);
+            //plugin.getDataManager().saveSync(spawnerStack, "spawner_id", spawnerStack.getSpawner().getId());
+            // Not sure why this is not working. Maybe no key defined?
+            DataManager dataManager = EpicSpawners.getInstance().getDataManager();
+            dataManager.getDatabaseConnector().connectDSL(context -> {
+
+                int modified = context.update(DSL.table(dataManager.getTablePrefix() + "spawner_stacks"))
+                        .set(DSL.field("amount"), spawnerStack.getStackSize())
+                        .where(DSL.field("spawner_id").eq(spawnerStack.getSpawner().getId()))
+                        .and(DSL.field("data_type").eq(spawnerStack.getSpawnerData().getIdentifyingName()))
+                        .and(DSL.field("tier").eq(spawnerStack.getCurrentTier().getIdentifyingName()))
+                        .execute();
+                if (modified == 0) {
+                    context.insertInto(DSL.table(dataManager.getTablePrefix() + "spawner_stacks"))
+                            .set(spawnerStack.serialize())
+                            .execute();
+                }
+            });
+
+
+
             upgradeEffects(player, tier, true);
 
-            if (player.getGameMode() != GameMode.CREATIVE || Settings.CHARGE_FOR_CREATIVE.getBoolean())
+            if (player.getGameMode() != GameMode.CREATIVE || Settings.CHARGE_FOR_CREATIVE.getBoolean()) {
                 hand.takeItem(player);
-
+            }
             return true;
         }
 
         SpawnerStack stack = new SpawnerStackImpl(this, tier, amount);
         addSpawnerStack(stack);
-        plugin.getDataManager().save(stack);
+        plugin.getDataManager().save(stack, "spawner_id", stack.getSpawner().getId());
 
         if (player.getGameMode() != GameMode.CREATIVE || Settings.CHARGE_FOR_CREATIVE.getBoolean())
             hand.takeItem(player);
@@ -402,12 +433,12 @@ public class PlacedSpawnerImpl implements PlacedSpawner {
             return;
         }
         if (currentStackSize != Settings.SPAWNERS_MAX.getInt()) {
-            player.playSound(player.getLocation(), CompatibleSound.ENTITY_PLAYER_LEVELUP.getSound(), 0.6F, 15.0F);
+            XSound.ENTITY_PLAYER_LEVELUP.play(player, 0.6F, 15.0F);
         } else {
-            player.playSound(player.getLocation(), CompatibleSound.ENTITY_PLAYER_LEVELUP.getSound(), 2F, 25.0F);
-            player.playSound(player.getLocation(), CompatibleSound.BLOCK_NOTE_BLOCK_CHIME.getSound(), 2F, 25.0F);
-            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> player.playSound(player.getLocation(), CompatibleSound.BLOCK_NOTE_BLOCK_CHIME.getSound(), 1.2F, 35.0F), 5L);
-            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> player.playSound(player.getLocation(), CompatibleSound.BLOCK_NOTE_BLOCK_CHIME.getSound(), 1.8F, 35.0F), 10L);
+            XSound.ENTITY_PLAYER_LEVELUP.play(player, 2.0F, 25.0F);
+            XSound.BLOCK_NOTE_BLOCK_CHIME.play(player, 2.0F, 25.0F);
+            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> XSound.BLOCK_NOTE_BLOCK_CHIME.play(player, 1.2F, 35.0F), 5L);
+            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> XSound.BLOCK_NOTE_BLOCK_CHIME.play(player, 1.8F, 35.0F), 10L);
         }
     }
 
@@ -419,9 +450,19 @@ public class PlacedSpawnerImpl implements PlacedSpawner {
         List<Boosted> found = new ArrayList<>();
         for (Boosted boost : new ArrayList<>(boosts)) {
             if (boost instanceof BoostedPlayerImpl && placedBy == null) continue;
+            BoostedSpawnerImpl boostedSpawner = (BoostedSpawnerImpl) boost;
             if (System.currentTimeMillis() >= boost.getEndTime()) {
                 instance.getBoostManager().removeBoost(boost);
-                instance.getDataManager().delete(boost);
+                instance.getDataManager().getAsyncPool().execute(() -> {
+                    instance.getDataManager().getDatabaseConnector().connectDSL(dslContext -> {
+                        dslContext.deleteFrom(DSL.table(instance.getDataManager().getTablePrefix() + "boosted_spawners"))
+                                .where(DSL.field("world").eq(boostedSpawner.getLocation().getWorld().getName()))
+                                .and(DSL.field("x").eq(boostedSpawner.getLocation().getBlockX()))
+                                .and(DSL.field("y").eq(boostedSpawner.getLocation().getBlockY()))
+                                .and(DSL.field("z").eq(boostedSpawner.getLocation().getBlockZ()))
+                                .execute();
+                    });
+                });
                 continue;
             }
 
@@ -580,16 +621,28 @@ public class PlacedSpawnerImpl implements PlacedSpawner {
     public boolean merge(SpawnerStack toMerge, SpawnerTier oldTier) {
         EpicSpawners plugin = EpicSpawners.getInstance();
         boolean modified = false;
+        String tablePrefix = plugin.getDataManager().getTablePrefix();
+
         for (SpawnerStack stack : getSpawnerStacks()) {
             if (stack == toMerge
                     || !stack.getCurrentTier().equals(toMerge.getCurrentTier())) continue;
             stack.setStackSize(toMerge.getStackSize() + stack.getStackSize());
             spawnerStacks.remove(toMerge);
-            plugin.getDataManager().delete(toMerge);
-            plugin.getDataManager().save(stack);
+            plugin.getDataManager().getDatabaseConnector().connectDSL(dslContext -> {
+                //Delete the old stack
+                dslContext.update(DSL.table(tablePrefix+"spawner_stacks"))
+                        .set(toMerge.serialize())
+                        .where(DSL.field("spawner_id").eq(getId()))
+                        .and(DSL.field("data_type").eq(oldTier.getSpawnerData().getIdentifyingName()))
+                        .and(DSL.field("tier").eq(oldTier.getIdentifyingName()))
+                        .and(DSL.field("amount").eq(toMerge.getStackSize()))
+                        .execute();
+            });
+            plugin.getDataManager().save(stack, "spawner_id", getId());
             modified = true;
             break;
         }
+
         plugin.updateHologram(this);
         return modified;
     }

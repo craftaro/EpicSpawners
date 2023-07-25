@@ -1,12 +1,17 @@
 package com.craftaro.epicspawners.gui;
 
+import com.craftaro.core.database.DataManager;
 import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.compatibility.CompatibleSound;
 import com.craftaro.core.gui.CustomizableGui;
 import com.craftaro.core.gui.GuiUtils;
 import com.craftaro.core.hooks.EconomyManager;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XSound;
 import com.craftaro.core.third_party.org.apache.commons.lang3.math.NumberUtils;
 import com.craftaro.core.third_party.org.apache.commons.text.WordUtils;
+import com.craftaro.core.third_party.org.jooq.Record;
+import com.craftaro.core.third_party.org.jooq.Result;
+import com.craftaro.core.third_party.org.jooq.impl.DSL;
 import com.craftaro.core.utils.ItemUtils;
 import com.craftaro.core.utils.TextUtils;
 import com.craftaro.epicspawners.EpicSpawners;
@@ -160,11 +165,36 @@ public class SpawnerBoostGui extends CustomizableGui {
         c.add(Calendar.MINUTE, time);
 
 
-        BoostedImpl boost = new BoostedSpawnerImpl(location, amt, c.getTimeInMillis());
+        BoostedSpawnerImpl boost = new BoostedSpawnerImpl(location, amt, c.getTimeInMillis());
         instance.getBoostManager().addBoost(boost);
-        instance.getDataManager().delete(boost);
+        DataManager dataManager = instance.getDataManager();
+        dataManager.getAsyncPool().execute(() -> {
+            dataManager.getDatabaseConnector().connectDSL(context -> {
+
+                Result<Record> result = context.select().from(DSL.table(dataManager.getTablePrefix()+"boosted_spawners"))
+                        .where(DSL.field("world").eq(boost.getLocation().getWorld().getName()))
+                        .and(DSL.field("x").eq(boost.getLocation().getX()))
+                        .and(DSL.field("y").eq(boost.getLocation().getY()))
+                        .and(DSL.field("z").eq(boost.getLocation().getZ()))
+                        .fetch();
+
+                if (result.size() == 0) {
+                    context.insertInto(DSL.table(dataManager.getTablePrefix()+"boosted_spawners"))
+                            .set(boost.serialize())
+                            .execute();
+                } else {
+                    context.update(DSL.table(dataManager.getTablePrefix()+"boosted_spawners"))
+                            .set(boost.serialize())
+                            .where(DSL.field("world").eq(boost.getLocation().getWorld().getName()))
+                            .and(DSL.field("x").eq(boost.getLocation().getX()))
+                            .and(DSL.field("y").eq(boost.getLocation().getY()))
+                            .and(DSL.field("z").eq(boost.getLocation().getZ()))
+                            .execute();
+                }
+            });
+        });
         plugin.getLocale().getMessage("event.boost.applied").sendPrefixedMessage(player);
-        player.playSound(location, CompatibleSound.ENTITY_VILLAGER_YES.getSound(), 1, 1);
+        XSound.ENTITY_VILLAGER_YES.play(player, 1.0f, 1.0f);
     }
 
     public String getBoostCost(int time, int amount) {

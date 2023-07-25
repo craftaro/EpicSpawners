@@ -13,7 +13,9 @@ import com.craftaro.core.hooks.HologramManager;
 import com.craftaro.core.hooks.ProtectionManager;
 import com.craftaro.core.third_party.org.jooq.Record;
 import com.craftaro.core.third_party.org.jooq.Result;
+import com.craftaro.core.third_party.org.jooq.impl.DSL;
 import com.craftaro.epicspawners.api.EpicSpawnersAPI;
+import com.craftaro.epicspawners.api.boosts.types.Boosted;
 import com.craftaro.epicspawners.api.boosts.types.BoostedPlayer;
 import com.craftaro.epicspawners.api.player.PlayerData;
 import com.craftaro.epicspawners.api.spawners.spawner.PlacedSpawner;
@@ -22,6 +24,7 @@ import com.craftaro.epicspawners.api.spawners.spawner.SpawnerStack;
 import com.craftaro.epicspawners.blacklist.BlacklistHandler;
 import com.craftaro.epicspawners.boost.BoostManagerImpl;
 import com.craftaro.epicspawners.boost.types.BoostedPlayerImpl;
+import com.craftaro.epicspawners.boost.types.BoostedSpawnerImpl;
 import com.craftaro.epicspawners.commands.CommandBoost;
 import com.craftaro.epicspawners.commands.CommandChange;
 import com.craftaro.epicspawners.commands.CommandEditor;
@@ -54,6 +57,7 @@ import com.craftaro.epicspawners.tasks.SpawnerSpawnTask;
 import com.craftaro.epicspawners.utils.SpawnerDataBuilderImpl;
 import com.craftaro.epicspawners.utils.SpawnerTierBuilderImpl;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
@@ -181,7 +185,32 @@ public class EpicSpawners extends SongodaPlugin {
         //Need to load the SpawnerStacks to the loaded spawners now.
         List<SpawnerStack> stacks = dataManager.loadBatch(SpawnerStackImpl.class, "spawner_stacks");
         loadHolograms();
-        boostManager.addBoosts(dataManager.loadBatch(BoostedPlayerImpl.class, "boosted_players"));
+
+        List<Boosted> boosted = new ArrayList<>();
+        String prefix = dataManager.getTablePrefix();
+        dataManager.getDatabaseConnector().connectDSL(dslContext -> {
+            dslContext.select().from(DSL.table(prefix+"boosted_players")).fetch().forEach(record -> {
+                boosted.add(new BoostedPlayerImpl(
+                        UUID.fromString(record.get("player").toString()),
+                        Integer.parseInt(record.get("amount").toString()),
+                        Long.parseLong(record.get("end_time").toString())
+                ));
+            });
+
+            dslContext.select().from(DSL.table(prefix+"boosted_spawners")).fetch().forEach(record -> {
+                Location location = new Location(
+                        Bukkit.getWorld(record.get("world").toString()),
+                        Double.parseDouble(record.get("x").toString()),
+                        Double.parseDouble(record.get("y").toString()),
+                        Double.parseDouble(record.get("z").toString()));
+                boosted.add(new BoostedSpawnerImpl(
+                        location,
+                        Integer.parseInt(record.get("amount").toString()),
+                        Long.parseLong(record.get("end_time").toString())
+                ));
+            });
+        });
+        boostManager.addBoosts(boosted);
 
         //Load entity kills
         dataManager.getDatabaseConnector().connectDSL(dslContext -> {

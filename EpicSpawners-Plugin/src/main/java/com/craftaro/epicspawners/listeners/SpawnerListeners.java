@@ -46,16 +46,18 @@ public class SpawnerListeners implements Listener {
         }
         entity.remove();
 
-        Location location = event.getSpawner().getLocation();
-
-        if (!plugin.getSpawnerManager().isSpawner(location)) {
-            PlacedSpawnerImpl spawner = new PlacedSpawnerImpl(location);
-            plugin.getSpawnerManager().addSpawnerToWorld(location, spawner);
-            SpawnerData spawnerData = plugin.getSpawnerManager().getSpawnerData(event.getEntityType().name());
-            if (spawnerData == null) return;
-            spawner.addSpawnerStack(new SpawnerStackImpl(spawner, spawnerData.getFirstTier(), 1));
-            EpicSpawners.getInstance().getDataManager().save(spawner);
-        }
+//        Location location = event.getSpawner().getLocation();
+//
+//        //FIXME: Why we handle non player placed spawners here?
+//        //Causes errors when saving the data since placedBy is null
+//        if (!plugin.getSpawnerManager().isSpawner(location)) {
+//            PlacedSpawnerImpl spawner = new PlacedSpawnerImpl(location);
+//            plugin.getSpawnerManager().addSpawnerToWorld(location, spawner);
+//            SpawnerData spawnerData = plugin.getSpawnerManager().getSpawnerData(event.getEntityType().name());
+//            if (spawnerData == null) return;
+//            spawner.addSpawnerStack(new SpawnerStackImpl(spawner, spawnerData.getFirstTier(), 1));
+//            EpicSpawners.getInstance().getDataManager().save(spawner);
+//        }
     }
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)

@@ -53,6 +53,7 @@ public class CommandBoost extends AbstractCommand {
 
         BoostedPlayerImpl boost = new BoostedPlayerImpl(player, Integer.parseInt(args[1]), duration == 0L ? Long.MAX_VALUE : System.currentTimeMillis() + duration);
         plugin.getBoostManager().addBoost(boost);
+        plugin.getDataManager().save(boost, "player", player.getUniqueId().toString());
         plugin.getLocale()
                 .newMessage("&6" + player.getName() + "&7 has been given a spawner boost of &6" + args[1] + "&7" + (duration == 0L ? "" : (" for " + TimeUtils.makeReadable(duration))) + "&7.")
                 .sendPrefixedMessage(sender);
