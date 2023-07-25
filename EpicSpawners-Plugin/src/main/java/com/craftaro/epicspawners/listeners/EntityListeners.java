@@ -12,7 +12,7 @@ import com.craftaro.epicspawners.api.spawners.spawner.SpawnerTier;
 import com.craftaro.epicspawners.player.PlayerDataImpl;
 import com.craftaro.epicspawners.player.PlayerDataManagerImpl;
 import com.craftaro.epicspawners.settings.Settings;
-import com.craftaro.ultimatestacker.api.UltimateStackerAPI;
+import com.craftaro.ultimatestacker.api.UltimateStackerApi;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -137,9 +137,9 @@ public class EntityListeners implements Listener {
         int amount = 1;
 
         if (Bukkit.getPluginManager().isPluginEnabled("UltimateStacker")) {
-            boolean killAll = UltimateStackerAPI.getSettings().killWholeStackOnDeath();
-            if (UltimateStackerAPI.getEntityStackManager().isStackedEntity(event.getEntity()) && killAll) {
-                amount = UltimateStackerAPI.getEntityStackManager().getStackedEntity(event.getEntity().getUniqueId()).getAmount();
+            boolean killAll = UltimateStackerApi.getSettings().killWholeStackOnDeath();
+            if (UltimateStackerApi.getEntityStackManager().isStackedEntity(event.getEntity()) && killAll) {
+                amount = UltimateStackerApi.getEntityStackManager().getStackedEntity(event.getEntity().getUniqueId()).getAmount();
             }
         }
         PlayerDataManagerImpl playerDataManager = plugin.getPlayerDataManager();
