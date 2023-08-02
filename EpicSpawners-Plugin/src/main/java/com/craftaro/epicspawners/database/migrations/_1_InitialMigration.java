@@ -16,9 +16,7 @@ public class _1_InitialMigration extends DataMigration {
     }
 
     @Override
-    public void migrate(DatabaseConnector databaseConnector, String tablePrefix) throws SQLException {
-
-        Connection connection = databaseConnector.getConnection();
+    public void migrate(Connection connection, String tablePrefix) throws SQLException {
 
         // Create spawners table
         try (Statement statement = connection.createStatement()) {
@@ -71,8 +69,6 @@ public class _1_InitialMigration extends DataMigration {
                     "count DOUBLE NOT NULL " +
                     ")");
         }
-
-        connection.close();
     }
 
 }
