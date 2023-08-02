@@ -14,8 +14,8 @@ public class _2_AddTiers extends DataMigration {
     }
 
     @Override
-    public void migrate(Connection connection, String tablePrefix) throws SQLException {
-        try (Statement statement = connection.createStatement()) {
+    public void migrate(DatabaseConnector databaseConnector, String tablePrefix) throws SQLException {
+        try (Statement statement = databaseConnector.getConnection().createStatement()) {
             statement.execute("ALTER TABLE " + tablePrefix + "spawner_stacks ADD COLUMN tier VARCHAR(100) DEFAULT 'Tier_1' NOT NULL");
         }
     }
