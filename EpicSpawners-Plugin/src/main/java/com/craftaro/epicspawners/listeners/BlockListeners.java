@@ -12,6 +12,7 @@ import com.craftaro.epicspawners.api.events.SpawnerBreakEvent;
 import com.craftaro.epicspawners.api.events.SpawnerChangeEvent;
 import com.craftaro.epicspawners.api.events.SpawnerPlaceEvent;
 import com.craftaro.epicspawners.api.spawners.spawner.PlacedSpawner;
+import com.craftaro.epicspawners.api.spawners.spawner.SpawnerStack;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerTier;
 import com.craftaro.epicspawners.settings.Settings;
 import com.craftaro.epicspawners.spawners.spawner.PlacedSpawnerImpl;
@@ -127,7 +128,9 @@ public class BlockListeners implements Listener {
             if (spawnerTier == null) return;
 
             int spawnerStackSize = spawnerTier.getStackSize(event.getItemInHand());
-            spawner.addSpawnerStack(new SpawnerStackImpl(spawner, spawnerTier, spawnerStackSize));
+            SpawnerStack stack = new SpawnerStackImpl(spawner, spawnerTier, spawnerStackSize);
+            spawner.addSpawnerStack(stack);
+            EpicSpawners.getInstance().getDataManager().save(stack, "spawner_id", spawner.getId());
 
             Player player = event.getPlayer();
 

@@ -259,7 +259,7 @@ public class PlacedSpawnerImpl implements PlacedSpawner {
     public boolean unstack(Player player, CompatibleHand hand) {
         EpicSpawners instance = EpicSpawners.getInstance();
         SpawnerStack stack = getFirstStack();
-        if (stack == null || stack.getId() == -1) return false; //Not a stack
+        if (stack == null || stack.getSpawner().getId() == -1) return false; //Not a stack
 
         int stackSize = 1;
 
