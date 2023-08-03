@@ -1,9 +1,9 @@
 package com.craftaro.epicspawners.listeners;
 
 import com.craftaro.core.compatibility.CompatibleHand;
-import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.compatibility.ServerVersion;
 import com.craftaro.core.hooks.EconomyManager;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.utils.ItemUtils;
 import com.craftaro.core.utils.PlayerUtils;
 import com.craftaro.core.world.SItemStack;
@@ -32,11 +32,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 
-/**
- * Created by songoda on 2/25/2017.
- */
 public class BlockListeners implements Listener {
-
     private final EpicSpawners plugin;
 
     public BlockListeners(EpicSpawners plugin) {
@@ -46,13 +42,19 @@ public class BlockListeners implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onBlockFromTo(BlockFromToEvent e) {
-        if (doLiquidRepel(e.getBlock(), false)) e.setCancelled(true);
+        if (doLiquidRepel(e.getBlock(), false)) {
+            e.setCancelled(true);
+        }
     }
 
     private boolean doLiquidRepel(Block block, boolean from) {
         int radius = Settings.LIQUID_REPEL_RADIUS.getInt();
-        if (radius == 0) return false;
-        if (!from) radius++;
+        if (radius == 0) {
+            return false;
+        }
+        if (!from) {
+            radius++;
+        }
         int bx = block.getX();
         int by = block.getY();
         int bz = block.getZ();
@@ -62,12 +64,13 @@ public class BlockListeners implements Listener {
                     Block foundBlock = block.getWorld().getBlockAt(bx + fx, by + fy, bz + fz);
 
                     if (from) {
-                        if ((foundBlock.getType().equals(Material.LAVA) || foundBlock.getType().equals(Material.LAVA))
-                                || (foundBlock.getType().equals(Material.WATER) || foundBlock.getType().equals(Material.WATER))) {
+                        if ((foundBlock.getType() == Material.LAVA || foundBlock.getType() == Material.LAVA)
+                                || (foundBlock.getType() == Material.WATER || foundBlock.getType() == Material.WATER)) {
                             foundBlock.setType(Material.AIR);
                         }
-                    } else if (XMaterial.matchXMaterial(foundBlock.getType().name()).get() == XMaterial.SPAWNER)
+                    } else if (XMaterial.matchXMaterial(foundBlock.getType().name()).get() == XMaterial.SPAWNER) {
                         return true;
+                    }
                 }
             }
         }
@@ -76,9 +79,11 @@ public class BlockListeners implements Listener {
 
     private boolean doForceCombine(Player player, PlacedSpawnerImpl placedSpawner, BlockPlaceEvent event) {
         int forceCombineRadius = Settings.FORCE_COMBINE_RADIUS.getInt();
-        if (forceCombineRadius == 0) return false;
+        if (forceCombineRadius == 0) {
+            return false;
+        }
 
-        for (PlacedSpawner spawner : plugin.getSpawnerManager().getSpawners()) {
+        for (PlacedSpawner spawner : this.plugin.getSpawnerManager().getSpawners()) {
             if (spawner.getLocation().getWorld() == null
                     || spawner.getLocation().getWorld() != placedSpawner.getLocation().getWorld()
                     || spawner.getLocation() == placedSpawner.getLocation()
@@ -88,12 +93,13 @@ public class BlockListeners implements Listener {
             }
 
             CompatibleHand hand = CompatibleHand.getHand(event);
-            if (Settings.FORCE_COMBINE_DENY.getBoolean())
-                plugin.getLocale().getMessage("event.block.forcedeny").sendPrefixedMessage(player);
-            else if (spawner.stack(player, plugin.getSpawnerManager().getSpawnerTier(hand.getItem(player)), placedSpawner.getStackSize(), hand)) {
-                plugin.getLocale().getMessage("event.block.mergedistance").sendPrefixedMessage(player);
-                if (hand == CompatibleHand.OFF_HAND)
+            if (Settings.FORCE_COMBINE_DENY.getBoolean()) {
+                this.plugin.getLocale().getMessage("event.block.forcedeny").sendPrefixedMessage(player);
+            } else if (spawner.stack(player, this.plugin.getSpawnerManager().getSpawnerTier(hand.getItem(player)), placedSpawner.getStackSize(), hand)) {
+                this.plugin.getLocale().getMessage("event.block.mergedistance").sendPrefixedMessage(player);
+                if (hand == CompatibleHand.OFF_HAND) {
                     ItemUtils.takeActiveItem(player, hand);
+                }
             }
             return true;
         }
@@ -104,10 +110,12 @@ public class BlockListeners implements Listener {
         int amountFound = 0;
         int chunkX = spawnerBlock.getX() >> 4;
         int chunkZ = spawnerBlock.getZ() >> 4;
-        for (PlacedSpawner spawner : plugin.getSpawnerManager().getSpawners()) {
+        for (PlacedSpawner spawner : this.plugin.getSpawnerManager().getSpawners()) {
             if (spawner.getWorld() != spawnerBlock.getWorld()
                     || spawner.getX() >> 4 != chunkX
-                    || spawner.getZ() >> 4 != chunkZ) continue;
+                    || spawner.getZ() >> 4 != chunkZ) {
+                continue;
+            }
             amountFound++;
         }
         return amountFound;
@@ -119,13 +127,17 @@ public class BlockListeners implements Listener {
         if (!event.isCancelled()) {
             Block block = event.getBlock();
             if (XMaterial.matchXMaterial(block.getType().name()).get() != XMaterial.SPAWNER
-                    || ((CreatureSpawner) block.getState()).getSpawnedType() == EntityType.FIREWORK) return;
+                    || ((CreatureSpawner) block.getState()).getSpawnedType() == EntityType.FIREWORK) {
+                return;
+            }
 
             Location location = block.getLocation();
             PlacedSpawnerImpl spawner = new PlacedSpawnerImpl(block.getLocation());
 
-            SpawnerTier spawnerTier = plugin.getSpawnerManager().getSpawnerTier(event.getItemInHand());
-            if (spawnerTier == null) return;
+            SpawnerTier spawnerTier = this.plugin.getSpawnerManager().getSpawnerTier(event.getItemInHand());
+            if (spawnerTier == null) {
+                return;
+            }
 
             int spawnerStackSize = spawnerTier.getStackSize(event.getItemInHand());
             SpawnerStack stack = new SpawnerStackImpl(spawner, spawnerTier, spawnerStackSize);
@@ -136,7 +148,7 @@ public class BlockListeners implements Listener {
 
             doLiquidRepel(block, true);
 
-            if (plugin.getBlacklistHandler().isBlacklisted(player, true)
+            if (this.plugin.getBlacklistHandler().isBlacklisted(player, true)
                     || !player.hasPermission("epicspawners.place." + spawnerTier.getSpawnerData().getIdentifyingName().replace(" ", "_"))
                     || doForceCombine(player, spawner, event)) {
                 event.setCancelled(true);
@@ -145,25 +157,27 @@ public class BlockListeners implements Listener {
 
             int maxPerChunk = Settings.MAX_SPAWNERS_PER_CHUNK.getInt();
             if (maxPerChunk != -1 && getAmountInChunk(block) >= maxPerChunk) {
-                plugin.getLocale().getMessage("event.block.chunklimit")
+                this.plugin.getLocale().getMessage("event.block.chunklimit")
                         .processPlaceholder("amount", maxPerChunk)
                         .sendPrefixedMessage(player);
                 event.setCancelled(true);
                 return;
             }
 
-            int amountPlaced = plugin.getSpawnerManager().getAmountPlaced(player);
+            int amountPlaced = this.plugin.getSpawnerManager().getAmountPlaced(player);
             int maxSpawners = PlayerUtils.getNumberFromPermission(player, "epicspawners.limit", Settings.MAX_SPAWNERS.getInt());
 
             if (maxSpawners != -1 && amountPlaced > maxSpawners) {
-                player.sendMessage(plugin.getLocale().getMessage("event.spawner.toomany")
+                player.sendMessage(this.plugin.getLocale().getMessage("event.spawner.toomany")
                         .processPlaceholder("amount", maxSpawners).getMessage());
                 event.setCancelled(true);
                 return;
             }
 
             CreatureSpawner creatureSpawner = spawner.getCreatureSpawner();
-            if (creatureSpawner == null) return;
+            if (creatureSpawner == null) {
+                return;
+            }
 
             SpawnerPlaceEvent placeEvent = new SpawnerPlaceEvent(player, spawner);
             Bukkit.getPluginManager().callEvent(placeEvent);
@@ -173,15 +187,17 @@ public class BlockListeners implements Listener {
             }
 
 
-            plugin.getSpawnerManager().addSpawnerToWorld(location, spawner);
+            this.plugin.getSpawnerManager().addSpawnerToWorld(location, spawner);
 
-            if (Settings.ALERT_PLACE_BREAK.getBoolean())
-                plugin.getLocale().getMessage("event.block.place")
+            if (Settings.ALERT_PLACE_BREAK.getBoolean()) {
+                this.plugin.getLocale().getMessage("event.block.place")
                         .processPlaceholder("type", spawnerTier.getCompiledDisplayName(false, spawner.getFirstStack().getStackSize()))
                         .sendPrefixedMessage(player);
+            }
 
-            if (player.getGameMode() == GameMode.CREATIVE && Settings.CHARGE_FOR_CREATIVE.getBoolean())
+            if (player.getGameMode() == GameMode.CREATIVE && Settings.CHARGE_FOR_CREATIVE.getBoolean()) {
                 ItemUtils.takeActiveItem(player, CompatibleHand.getHand(event), 1);
+            }
 
             try {
                 creatureSpawner.setSpawnedType(spawnerTier.getEntities().get(0));
@@ -193,16 +209,16 @@ public class BlockListeners implements Listener {
             spawner.setPlacedBy(player);
             EpicSpawners.getInstance().getDataManager().save(spawner);
 
-            plugin.processChange(block);
-            plugin.createHologram(spawner);
-            plugin.getAppearanceTask().updateDisplayItem(spawner, spawnerTier);
+            this.plugin.processChange(block);
+            this.plugin.createHologram(spawner);
+            this.plugin.getAppearanceTask().updateDisplayItem(spawner, spawnerTier);
             return;
         }
 
         //ToDo: Probably remove this.
         Bukkit.getServer().
                 getScheduler().
-                scheduleSyncDelayedTask(plugin, () -> plugin.processChange(event.getBlock()), 10L);
+                scheduleSyncDelayedTask(this.plugin, () -> this.plugin.processChange(event.getBlock()), 10L);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -214,16 +230,18 @@ public class BlockListeners implements Listener {
         //We are ignoring canceled inside the event so that it will still remove holograms when the event is canceled.
         if (!event.isCancelled()) {
             if (XMaterial.matchXMaterial(block.getType().name()).get() != XMaterial.SPAWNER
-                    || ((CreatureSpawner) block.getState()).getSpawnedType() == EntityType.FIREWORK) return;
+                    || ((CreatureSpawner) block.getState()).getSpawnedType() == EntityType.FIREWORK) {
+                return;
+            }
 
-            if (plugin.getBlacklistHandler().isBlacklisted(event.getPlayer(), true)) {
+            if (this.plugin.getBlacklistHandler().isBlacklisted(event.getPlayer(), true)) {
                 event.setCancelled(true);
                 return;
             }
 
             Location location = block.getLocation();
 
-            if (!plugin.getSpawnerManager().isSpawner(location)) {
+            if (!this.plugin.getSpawnerManager().isSpawner(location)) {
                 //Fixme: Why we want to handle non player placed spawners?
 //                PlacedSpawnerImpl spawner = new PlacedSpawnerImpl(location);
 //
@@ -236,12 +254,12 @@ public class BlockListeners implements Listener {
                 return;
             }
 
-            PlacedSpawner spawner = plugin.getSpawnerManager().getSpawnerFromWorld(location);
+            PlacedSpawner spawner = this.plugin.getSpawnerManager().getSpawnerFromWorld(location);
 
             if (spawner.getFirstStack().getSpawnerData() == null) {
                 if (Settings.REMOVE_CORRUPTED_SPAWNERS.getBoolean()) {
                     block.setType(Material.AIR);
-                    plugin.getLogger().warning("A corrupted spawner has been removed as its Type no longer exists.");
+                    this.plugin.getLogger().warning("A corrupted spawner has been removed as its Type no longer exists.");
                     spawner.destroy();
                 }
                 return;
@@ -269,22 +287,22 @@ public class BlockListeners implements Listener {
 
             double cost = spawner.getFirstStack().getCurrentTier().getPickupCost();
             if (cost != 0.0 && (!naturalOnly || spawner.getPlacedBy() == null)) {
-                if (!plugin.getSpawnerManager().hasCooldown(spawner)) {
-                    plugin.getLocale().getMessage("event.block.chargebreak")
+                if (!this.plugin.getSpawnerManager().hasCooldown(spawner)) {
+                    this.plugin.getLocale().getMessage("event.block.chargebreak")
                             .processPlaceholder("cost", EconomyManager.formatEconomy(spawner.getFirstStack().getCurrentTier().getPickupCost()))
                             .sendPrefixedMessage(player);
-                    plugin.getSpawnerManager().addCooldown(spawner);
-                    Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> plugin.getSpawnerManager().removeCooldown(spawner), 300L);
+                    this.plugin.getSpawnerManager().addCooldown(spawner);
+                    Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin, () -> this.plugin.getSpawnerManager().removeCooldown(spawner), 300L);
                     event.setCancelled(true);
                     return;
                 }
 
-                plugin.getSpawnerManager().removeCooldown(spawner);
+                this.plugin.getSpawnerManager().removeCooldown(spawner);
 
                 if (EconomyManager.hasBalance(player, cost)) {
                     EconomyManager.withdrawBalance(player, cost);
                 } else {
-                    plugin.getLocale().getMessage("event.block.cannotbreak").sendPrefixedMessage(player);
+                    this.plugin.getLocale().getMessage("event.block.cannotbreak").sendPrefixedMessage(player);
                     event.setCancelled(true);
                     return;
                 }
@@ -301,10 +319,10 @@ public class BlockListeners implements Listener {
                 }
 
                 if (Settings.ALERT_PLACE_BREAK.getBoolean()) {
-                    if (spawner.getSpawnerStacks().size() != 0) {
-                        plugin.getLocale().getMessage("event.downgrade.success").processPlaceholder("size", Integer.toString(spawner.getStackSize())).sendPrefixedMessage(player);
+                    if (!spawner.getSpawnerStacks().isEmpty()) {
+                        this.plugin.getLocale().getMessage("event.downgrade.success").processPlaceholder("size", Integer.toString(spawner.getStackSize())).sendPrefixedMessage(player);
                     } else {
-                        plugin.getLocale().getMessage("event.block.break").processPlaceholder("type", firstTier.getCompiledDisplayName(false, currentStackSize)).sendPrefixedMessage(player);
+                        this.plugin.getLocale().getMessage("event.block.break").processPlaceholder("type", firstTier.getCompiledDisplayName(false, currentStackSize)).sendPrefixedMessage(player);
                     }
                 }
 
@@ -313,13 +331,13 @@ public class BlockListeners implements Listener {
                 }
             }
 
-            plugin.updateHologram(spawner);
-            plugin.getAppearanceTask().removeDisplayItem(spawner);
+            this.plugin.updateHologram(spawner);
+            this.plugin.getAppearanceTask().removeDisplayItem(spawner);
 
             return;
         }
 
         //ToDo: Probably remove this.
-        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> plugin.processChange(block), 10L);
+        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin, () -> this.plugin.processChange(block), 10L);
     }
 }

@@ -19,15 +19,16 @@ import java.util.List;
 import java.util.Objects;
 
 public class SpawnerDataImpl implements SpawnerData {
-
     private final String identifyingName;
 
-    private boolean custom = false, active = true,
-            inShop = true, convertible = true;
+    private boolean custom = false;
+    private boolean active = true;
+    private boolean inShop = true;
+    private boolean convertible = true;
 
     private String convertRatio = "45%";
-    private int killDropGoal = 0,
-            shopOrder = 0;
+    private int killDropGoal = 0;
+    private int shopOrder = 0;
 
     private double shopPrice = 1000, killDropChance = 0;
 
@@ -43,12 +44,12 @@ public class SpawnerDataImpl implements SpawnerData {
 
     @Override
     public String getIdentifyingName() {
-        return identifyingName;
+        return this.identifyingName;
     }
 
     @Override
     public boolean isCraftable() {
-        return craftable;
+        return this.craftable;
     }
 
     @Override
@@ -58,7 +59,7 @@ public class SpawnerDataImpl implements SpawnerData {
 
     @Override
     public String getRecipe() {
-        return recipe;
+        return this.recipe;
     }
 
     @Override
@@ -68,7 +69,7 @@ public class SpawnerDataImpl implements SpawnerData {
 
     @Override
     public List<String> getRecipeIngredients() {
-        return recipeIngredients;
+        return this.recipeIngredients;
     }
 
     @Override
@@ -78,7 +79,7 @@ public class SpawnerDataImpl implements SpawnerData {
 
     @Override
     public boolean isCustom() {
-        return custom;
+        return this.custom;
     }
 
     @Override
@@ -88,7 +89,7 @@ public class SpawnerDataImpl implements SpawnerData {
 
     @Override
     public boolean isActive() {
-        return active;
+        return this.active;
     }
 
     @Override
@@ -98,7 +99,7 @@ public class SpawnerDataImpl implements SpawnerData {
 
     @Override
     public boolean isInShop() {
-        return inShop;
+        return this.inShop;
     }
 
     @Override
@@ -108,7 +109,7 @@ public class SpawnerDataImpl implements SpawnerData {
 
     @Override
     public double getShopPrice() {
-        return shopPrice;
+        return this.shopPrice;
     }
 
     @Override
@@ -118,7 +119,7 @@ public class SpawnerDataImpl implements SpawnerData {
 
     @Override
     public boolean isConvertible() {
-        return convertible;
+        return this.convertible;
     }
 
     @Override
@@ -128,7 +129,7 @@ public class SpawnerDataImpl implements SpawnerData {
 
     @Override
     public String getConvertRatio() {
-        return convertRatio;
+        return this.convertRatio;
     }
 
     @Override
@@ -138,12 +139,12 @@ public class SpawnerDataImpl implements SpawnerData {
 
     @Override
     public double getConvertPrice() {
-        return getFirstTier().getCostEconomy() * (Double.parseDouble(convertRatio.substring(0, convertRatio.length() - 1)) / 100.0f);
+        return getFirstTier().getCostEconomy() * (Double.parseDouble(this.convertRatio.substring(0, this.convertRatio.length() - 1)) / 100.0f);
     }
 
     @Override
     public int getKillDropGoal() {
-        return killDropGoal;
+        return this.killDropGoal;
     }
 
     @Override
@@ -153,7 +154,7 @@ public class SpawnerDataImpl implements SpawnerData {
 
     @Override
     public double getKillDropChance() {
-        return killDropChance;
+        return this.killDropChance;
     }
 
     @Override
@@ -163,7 +164,7 @@ public class SpawnerDataImpl implements SpawnerData {
 
     @Override
     public int getShopOrder() {
-        return shopOrder;
+        return this.shopOrder;
     }
 
     @Override
@@ -173,14 +174,14 @@ public class SpawnerDataImpl implements SpawnerData {
 
     @Override
     public List<SpawnerTier> getTiers() {
-        return Collections.unmodifiableList(spawnerTiers);
+        return Collections.unmodifiableList(this.spawnerTiers);
     }
 
     @Override
     public SpawnerTier getTier(String tierName) {
         tierName = tierName.replace(" ", "_");
         final String finalTierName = tierName;
-        return spawnerTiers.stream().filter(tier -> tier.getIdentifyingName().replace(" ", "_")
+        return this.spawnerTiers.stream().filter(tier -> tier.getIdentifyingName().replace(" ", "_")
                 .equalsIgnoreCase(finalTierName)).findFirst().orElse(null);
     }
 
@@ -192,30 +193,33 @@ public class SpawnerDataImpl implements SpawnerData {
 
     @Override
     public SpawnerTier getFirstTier() {
-        return spawnerTiers.get(0);
+        return this.spawnerTiers.get(0);
     }
 
     @Override
     public SpawnerTier getNextTier(SpawnerTier tier) {
-        int idx = spawnerTiers.indexOf(tier);
-        if (idx < 0 || idx + 1 == spawnerTiers.size()) return null;
-        return spawnerTiers.get(idx + 1);
+        int idx = this.spawnerTiers.indexOf(tier);
+
+        if (idx < 0 || idx + 1 == this.spawnerTiers.size()) {
+            return null;
+        }
+        return this.spawnerTiers.get(idx + 1);
     }
 
     @Override
     public void addTier(SpawnerTier tier) {
-        spawnerTiers.add(tier);
+        this.spawnerTiers.add(tier);
     }
 
     @Override
     public void removeTier(SpawnerTier tier) {
-        spawnerTiers.remove(tier);
+        this.spawnerTiers.remove(tier);
     }
 
     @Override
     public void replaceTiers(Collection<SpawnerTier> newTiers) {
-        spawnerTiers.clear();
-        spawnerTiers.addAll(newTiers);
+        this.spawnerTiers.clear();
+        this.spawnerTiers.addAll(newTiers);
     }
 
     @Override
@@ -225,8 +229,9 @@ public class SpawnerDataImpl implements SpawnerData {
 
     @Override
     public void reloadSpawnMethods() {
-        for (SpawnerTier spawnerTier : spawnerTiers)
+        for (SpawnerTier spawnerTier : this.spawnerTiers) {
             spawnerTier.reloadSpawnMethods();
+        }
     }
 
     @Override
@@ -238,20 +243,23 @@ public class SpawnerDataImpl implements SpawnerData {
         tier.addCondition(new SpawnConditionLightDark(SpawnConditionLightDark.Type.BOTH));
         tier.addCondition(new SpawnConditionStorm(false));
         tier.addCondition(new SpawnConditionNearbyEntities(6));
-        spawnerTiers.add(tier);
+        this.spawnerTiers.add(tier);
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        SpawnerDataImpl that = (SpawnerDataImpl) o;
-        return identifyingName.equals(that.identifyingName);
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        return this.identifyingName.equals(((SpawnerDataImpl) obj).identifyingName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(identifyingName);
+        return Objects.hash(this.identifyingName);
     }
 
 }

@@ -7,21 +7,20 @@ import org.bukkit.plugin.Plugin;
 /**
  * The main class of the API
  * <p>
- * <b>!! {@link EpicSpawnersAPI#getVersion()} value is automatically replaced by maven don't change it !!</b>
+ * <b>!! {@link EpicSpawnersApi#getVersion()} value is automatically replaced by maven don't change it !!</b>
  */
-public class EpicSpawnersAPI {
-
+public class EpicSpawnersApi {
     private static Plugin plugin;
     private static SpawnerDataBuilder spawnerDataBuilder;
     private static SpawnerTierBuilder spawnerTierBuilder;
 
-    public EpicSpawnersAPI(Plugin plugin, SpawnerDataBuilder spawnerDataBuilder, SpawnerTierBuilder spawnerTierBuilder) {
-        if (EpicSpawnersAPI.plugin != null) {
+    public EpicSpawnersApi(Plugin plugin, SpawnerDataBuilder spawnerDataBuilder, SpawnerTierBuilder spawnerTierBuilder) {
+        if (EpicSpawnersApi.plugin != null) {
             throw new IllegalStateException("EpicSpawnersAPI has already been initialized!");
         }
-        EpicSpawnersAPI.plugin = plugin;
-        EpicSpawnersAPI.spawnerDataBuilder = spawnerDataBuilder;
-        EpicSpawnersAPI.spawnerTierBuilder = spawnerTierBuilder;
+        EpicSpawnersApi.plugin = plugin;
+        EpicSpawnersApi.spawnerDataBuilder = spawnerDataBuilder;
+        EpicSpawnersApi.spawnerTierBuilder = spawnerTierBuilder;
     }
 
     /**
@@ -47,6 +46,7 @@ public class EpicSpawnersAPI {
 
     /**
      * Used to get the version of the plugin
+     *
      * @return The version of the plugin
      */
     public static String getVersion() {

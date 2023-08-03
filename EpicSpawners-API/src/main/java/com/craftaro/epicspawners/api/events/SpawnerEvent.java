@@ -9,7 +9,6 @@ import org.bukkit.event.player.PlayerEvent;
  * Represents an abstract {@link Event} given a {@link Player} and {@link PlacedSpawner} instance
  */
 public abstract class SpawnerEvent extends PlayerEvent {
-
     protected final PlacedSpawner spawner;
 
     public SpawnerEvent(Player who, PlacedSpawner spawner) {
@@ -23,7 +22,6 @@ public abstract class SpawnerEvent extends PlayerEvent {
      * @return the broken spawner
      */
     public PlacedSpawner getSpawner() {
-        return spawner;
+        return this.spawner;
     }
-
 }

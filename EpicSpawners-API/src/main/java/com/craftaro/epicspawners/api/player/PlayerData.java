@@ -6,7 +6,6 @@ import org.bukkit.entity.EntityType;
 import java.util.Map;
 
 public interface PlayerData {
-
     void save();
 
     OfflinePlayer getPlayer();

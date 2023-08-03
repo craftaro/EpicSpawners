@@ -10,20 +10,28 @@ import org.bukkit.event.entity.EntityEvent;
  * Called when a spawner spawns an entity.
  */
 public class SpawnerSpawnEvent extends EntityEvent implements Cancellable {
-
     private static final HandlerList HANDLERS = new HandlerList();
 
     private boolean canceled = false;
-
     private final PlacedSpawner spawner;
 
-    public SpawnerSpawnEvent(Entity entity, PlacedSpawner spawner) {
-        super(entity);
+    public SpawnerSpawnEvent(Entity what, PlacedSpawner spawner) {
+        super(what);
         this.spawner = spawner;
     }
 
     public PlacedSpawner getSpawner() {
-        return spawner;
+        return this.spawner;
+    }
+
+    @Override
+    public boolean isCancelled() {
+        return this.canceled;
+    }
+
+    @Override
+    public void setCancelled(boolean cancel) {
+        this.canceled = cancel;
     }
 
     public HandlerList getHandlers() {
@@ -33,15 +41,4 @@ public class SpawnerSpawnEvent extends EntityEvent implements Cancellable {
     public static HandlerList getHandlerList() {
         return HANDLERS;
     }
-
-    @Override
-    public boolean isCancelled() {
-        return canceled;
-    }
-
-    @Override
-    public void setCancelled(boolean canceled) {
-        this.canceled = canceled;
-    }
-
 }

@@ -33,7 +33,7 @@
                     <injections>
                         <injection>
                             <value>${project.version}</value>
-                            <pointCut>com.craftaro.epicspawners.api.EpicSpawnersAPI.getVersion</pointCut>
+                            <pointCut>com.craftaro.epicspawners.api.EpicSpawnersApi.getVersion</pointCut>
                         </injection>
                     </injections>
                 </configuration>

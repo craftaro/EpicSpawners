@@ -15,7 +15,6 @@ import org.bukkit.inventory.ItemStack;
 import java.util.List;
 
 public final class SpawnerTierBuilderImpl implements SpawnerTierBuilder {
-
     private final SpawnerTier spawnerTier;
 
     public SpawnerTierBuilderImpl() {
@@ -24,7 +23,7 @@ public final class SpawnerTierBuilderImpl implements SpawnerTierBuilder {
 
     public SpawnerTierBuilderImpl(SpawnerData data) {
         this.spawnerTier = new SpawnerTierImpl(data);
-        spawnerTier.reloadSpawnMethods();
+        this.spawnerTier.reloadSpawnMethods();
     }
 
     @Override
@@ -154,6 +153,6 @@ public final class SpawnerTierBuilderImpl implements SpawnerTierBuilder {
 
     @Override
     public SpawnerTier build() {
-        return spawnerTier;
+        return this.spawnerTier;
     }
 }

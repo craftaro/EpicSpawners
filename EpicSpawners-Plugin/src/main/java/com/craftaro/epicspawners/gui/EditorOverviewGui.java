@@ -1,18 +1,17 @@
 package com.craftaro.epicspawners.gui;
 
-import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.gui.AnvilGui;
 import com.craftaro.core.gui.Gui;
 import com.craftaro.core.gui.GuiUtils;
 import com.craftaro.core.input.ChatPrompt;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.utils.TextUtils;
 import com.craftaro.epicspawners.EpicSpawners;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerData;
-import com.craftaro.epicspawners.settings.Settings;
-import com.craftaro.epicspawners.spawners.spawner.SpawnerDataImpl;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerTier;
 import com.craftaro.epicspawners.api.utils.HeadType;
 import com.craftaro.epicspawners.api.utils.HeadUtils;
+import com.craftaro.epicspawners.settings.Settings;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
@@ -21,7 +20,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 
 public class EditorOverviewGui extends Gui {
-
     private final EpicSpawners plugin;
     private final Player player;
     private final SpawnerTier spawnerTier;
@@ -84,12 +82,13 @@ public class EditorOverviewGui extends Gui {
         setItem(53, glass3);
 
         setButton(8, GuiUtils.createButtonItem(XMaterial.OAK_DOOR,
-                plugin.getLocale().getMessage("general.nametag.back").getMessage()),
-                (event) -> EditorTiersGui.openTiersInReverse(plugin, player, spawnerTier));
+                        this.plugin.getLocale().getMessage("general.nametag.back").getMessage()),
+                (event) -> EditorTiersGui.openTiersInReverse(this.plugin, this.player, this.spawnerTier));
 
-        ItemStack item = HeadUtils.getTexturedSkull(spawnerTier);
-        if (spawnerTier.getDisplayItem() != null && !spawnerTier.getDisplayItem().equals(XMaterial.AIR))
-            item = spawnerTier.getDisplayItem().parseItem();
+        ItemStack item = HeadUtils.getTexturedSkull(this.spawnerTier);
+        if (this.spawnerTier.getDisplayItem() != null && !this.spawnerTier.getDisplayItem().equals(XMaterial.AIR)) {
+            item = this.spawnerTier.getDisplayItem().parseItem();
+        }
 
         ItemMeta itemmeta = item.getItemMeta();
         ArrayList<String> lore = new ArrayList<>();
@@ -97,81 +96,85 @@ public class EditorOverviewGui extends Gui {
         lore.add(TextUtils.formatText("&7Right-Click to &bChange Tier Display Item&7."));
         lore.add(TextUtils.formatText("&6-----------------------------"));
 
-        lore.add(TextUtils.formatText("&6Display Name: &7" + spawnerTier.getDisplayName() + "&7."));
-        if (spawnerTier.getDisplayItem() != null) {
-            lore.add(TextUtils.formatText("&6Display Item: &7" + spawnerTier.getDisplayItem().name() + "&7."));
+        lore.add(TextUtils.formatText("&6Display Name: &7" + this.spawnerTier.getDisplayName() + "&7."));
+        if (this.spawnerTier.getDisplayItem() != null) {
+            lore.add(TextUtils.formatText("&6Display Item: &7" + this.spawnerTier.getDisplayItem().name() + "&7."));
         } else {
-            if (!spawnerData.isCustom()) {
+            if (!this.spawnerData.isCustom()) {
                 lore.add(TextUtils.formatText("&6Display Item: &7Unavailable&7."));
             } else {
                 lore.add(TextUtils.formatText("&6Display Item: &7Dirt&7."));
             }
         }
-        lore.add(TextUtils.formatText("&6Config Name: &7" + spawnerTier.getIdentifyingName() + "&7."));
+        lore.add(TextUtils.formatText("&6Config Name: &7" + this.spawnerTier.getIdentifyingName() + "&7."));
         itemmeta.setLore(lore);
-        itemmeta.setDisplayName(spawnerTier.getCompiledDisplayName());
+        itemmeta.setDisplayName(this.spawnerTier.getCompiledDisplayName());
         item.setItemMeta(itemmeta);
         setButton(11, item, event -> {
             if (event.clickType == ClickType.RIGHT) {
-                spawnerTier.setDisplayItem(XMaterial.matchXMaterial(player.getInventory().getItemInHand()));
-                plugin.getLocale().newMessage("&7Display Item for &6" + spawnerTier.getIdentifyingName() + " &7set to &6" + player.getInventory().getItemInHand().getType().toString() + "&7.")
-                        .sendPrefixedMessage(player);
+                this.spawnerTier.setDisplayItem(XMaterial.matchXMaterial(this.player.getInventory().getItemInHand()));
+                this.plugin.getLocale().newMessage("&7Display Item for &6" + this.spawnerTier.getIdentifyingName() + " &7set to &6" + this.player.getInventory().getItemInHand().getType() + "&7.")
+                        .sendPrefixedMessage(this.player);
                 paint();
             } else if (event.clickType == ClickType.LEFT) {
-                AnvilGui gui = new AnvilGui(player, this);
+                AnvilGui gui = new AnvilGui(this.player, this);
                 gui.setTitle("Enter a display name.");
                 gui.setAction(evnt -> {
-                    spawnerTier.setDisplayName(gui.getInputText().trim());
-                    player.closeInventory();
-                }).setOnClose(e -> setTitle(spawnerTier.getGuiTitle()));
+                    this.spawnerTier.setDisplayName(gui.getInputText().trim());
+                    this.player.closeInventory();
+                }).setOnClose(e -> setTitle(this.spawnerTier.getGuiTitle()));
 
-                plugin.getGuiManager().showGUI(player, gui);
+                this.plugin.getGuiManager().showGUI(this.player, gui);
             }
         });
 
-        if (spawnerData.getTiers().size() != 1 || spawnerData.isCustom())
+        if (this.spawnerData.getTiers().size() != 1 || this.spawnerData.isCustom()) {
             setButton(29, GuiUtils.createButtonItem(XMaterial.TNT, TextUtils.formatText("&7Click to: &cDestroy This Tier")),
                     (event) -> {
-                        player.sendMessage("Type \"yes\" to confirm this action.");
-                        ChatPrompt.showPrompt(plugin, player, evnt -> {
+                        this.player.sendMessage("Type \"yes\" to confirm this action.");
+                        ChatPrompt.showPrompt(this.plugin, this.player, evnt -> {
                             if (evnt.getMessage().equalsIgnoreCase("yes")) {
-                                player.sendMessage(TextUtils.formatText("&6" + spawnerTier.getIdentifyingName() + " Spawner &7 has been destroyed successfully"));
-                                spawnerData.removeTier(spawnerTier);
-                                if (spawnerData.getTiers().isEmpty())
-                                    plugin.getSpawnerManager().removeSpawnerData(spawnerData.getIdentifyingName());
-                                plugin.getLootablesManager().getLootManager().removeLootable(spawnerTier.getFullyIdentifyingName());
+                                this.player.sendMessage(TextUtils.formatText("&6" + this.spawnerTier.getIdentifyingName() + " Spawner &7 has been destroyed successfully"));
+                                this.spawnerData.removeTier(this.spawnerTier);
+                                if (this.spawnerData.getTiers().isEmpty()) {
+                                    this.plugin.getSpawnerManager().removeSpawnerData(this.spawnerData.getIdentifyingName());
+                                }
+                                this.plugin.getLootablesManager().getLootManager().removeLootable(this.spawnerTier.getFullyIdentifyingName());
                             }
                         }).setOnClose(() -> {
-                            if (plugin.getSpawnerManager().isSpawnerData(spawnerData.getIdentifyingName()))
-                                plugin.getGuiManager().showGUI(player, new EditorTiersGui(plugin, player, spawnerData));
-                            else
-                                plugin.getGuiManager().showGUI(player, new EditorSelectorGui(plugin, player));
-                        }).setTimeOut(player, 20L * 15L);
+                            if (this.plugin.getSpawnerManager().isSpawnerData(this.spawnerData.getIdentifyingName())) {
+                                this.plugin.getGuiManager().showGUI(this.player, new EditorTiersGui(this.plugin, this.player, this.spawnerData));
+                            } else {
+                                this.plugin.getGuiManager().showGUI(this.player, new EditorSelectorGui(this.plugin, this.player));
+                            }
+                        }).setTimeOut(this.player, 20L * 15L);
                     });
+        }
 
         setButton(23, GuiUtils.createButtonItem(XMaterial.LEVER, TextUtils.formatText("&9&lGeneral Settings")),
-                event -> guiManager.showGUI(player, new EditorGeneralGui(plugin, this, spawnerTier)));
+                event -> this.guiManager.showGUI(this.player, new EditorGeneralGui(this.plugin, this, this.spawnerTier)));
 
         setButton(24, GuiUtils.createButtonItem(XMaterial.BONE, TextUtils.formatText("&e&lDrop Settings")),
-                event -> plugin.getGuiManager().showGUI(player, new EditorDropsGui(plugin, spawnerTier, this)));
+                event -> this.plugin.getGuiManager().showGUI(this.player, new EditorDropsGui(this.plugin, this.spawnerTier, this)));
 
         setButton(25, GuiUtils.createButtonItem(HeadUtils.getTexturedSkull(HeadType.OMNI), TextUtils.formatText("&a&lEntity Settings")),
-                event -> guiManager.showGUI(player, new EditorEditGui(plugin, this, spawnerTier, EditorEditGui.EditType.ENTITY)));
+                event -> this.guiManager.showGUI(this.player, new EditorEditGui(this.plugin, this, this.spawnerTier, EditorEditGui.EditType.ENTITY)));
 
         setButton(41, GuiUtils.createButtonItem(XMaterial.CHEST, TextUtils.formatText("&5&lItem Settings")),
-                event -> guiManager.showGUI(player, new EditorEditGui(plugin, this, spawnerTier, EditorEditGui.EditType.ITEM)));
+                event -> this.guiManager.showGUI(this.player, new EditorEditGui(this.plugin, this, this.spawnerTier, EditorEditGui.EditType.ITEM)));
 
         setButton(32, GuiUtils.createButtonItem(XMaterial.GOLD_BLOCK, TextUtils.formatText("&c&lBlock Settings")),
-                event -> guiManager.showGUI(player, new EditorEditGui(plugin, this, spawnerTier, EditorEditGui.EditType.BLOCK)));
+                event -> this.guiManager.showGUI(this.player, new EditorEditGui(this.plugin, this, this.spawnerTier, EditorEditGui.EditType.BLOCK)));
 
         setButton(34, GuiUtils.createButtonItem(XMaterial.FIREWORK_ROCKET, TextUtils.formatText("&b&lParticle Settings")),
-                event -> guiManager.showGUI(player, new EditorParticleGui(plugin, this, spawnerTier)));
+                event -> this.guiManager.showGUI(this.player, new EditorParticleGui(this.plugin, this, this.spawnerTier)));
 
         setButton(43, GuiUtils.createButtonItem(XMaterial.PAPER, TextUtils.formatText("&6&lCommand Settings")),
-                event -> guiManager.showGUI(player, new EditorEditGui(plugin, this, spawnerTier, EditorEditGui.EditType.COMMAND)));
+                event -> this.guiManager.showGUI(this.player, new EditorEditGui(this.plugin, this, this.spawnerTier, EditorEditGui.EditType.COMMAND)));
 
-        if (spawnerData.getTiers().size() == 1)
+        if (this.spawnerData.getTiers().size() == 1) {
             setButton(5, 0, GuiUtils.createButtonItem(XMaterial.FIRE_CHARGE, TextUtils.formatText("&6Go to tiered view.")),
-                    event -> EditorTiersGui.openTiers(plugin, player, spawnerData, true));
+                    event -> EditorTiersGui.openTiers(this.plugin, this.player, this.spawnerData, true));
+        }
     }
 }

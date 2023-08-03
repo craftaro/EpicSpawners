@@ -10,7 +10,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class CommandEditor extends AbstractCommand {
-
     private final EpicSpawners plugin;
 
     public CommandEditor(EpicSpawners plugin) {

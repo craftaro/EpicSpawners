@@ -11,14 +11,10 @@ import org.bukkit.inventory.ItemStack;
 import java.util.List;
 
 public interface SpawnerTierBuilder {
-
-    /**
-     * Creates a new SpawnerDataBuilder
-     * @return a new SpawnerDataBuilder
-     */
     SpawnerTierBuilder newBuilder(String identifier);
 
     SpawnerTierBuilder setDisplayName(String name);
+
     SpawnerTierBuilder displayItem(XMaterial material);
 
     SpawnerTierBuilder setEntities(List<EntityType> entities);
@@ -36,6 +32,7 @@ public interface SpawnerTierBuilder {
     SpawnerTierBuilder setPickupCost(double pickupCost);
 
     SpawnerTierBuilder setPickDamage(short pickDamage);
+
     SpawnerTierBuilder setCostEconomy(double costEconomy);
 
     SpawnerTierBuilder setCostLevels(int levels);

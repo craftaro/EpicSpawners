@@ -6,7 +6,6 @@ import com.craftaro.epicspawners.EpicSpawners;
 import com.craftaro.epicspawners.api.spawners.condition.SpawnCondition;
 import com.craftaro.epicspawners.api.spawners.spawner.PlacedSpawner;
 import com.craftaro.epicspawners.settings.Settings;
-import com.craftaro.epicspawners.spawners.spawner.PlacedSpawnerImpl;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -15,7 +14,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SpawnConditionNearbyEntities implements SpawnCondition {
-
     private final int max;
 
     private static Map<Location, Integer> cachedAmounts = new HashMap<>();
@@ -32,17 +30,18 @@ public class SpawnConditionNearbyEntities implements SpawnCondition {
     @Override
     public String getDescription() {
         return EpicSpawners.getInstance().getLocale().getMessage("interface.spawner.conditionNearbyEntities")
-                .processPlaceholder("max", max).getMessage();
+                .processPlaceholder("max", this.max).getMessage();
     }
 
     @Override
     public boolean isMet(PlacedSpawner spawner) {
 
         // Should we skip the max entity amount on first spawn?
-        if (spawner.getSpawnCount() == 0 && Settings.IGNORE_MAX_ON_FIRST_SPAWN.getBoolean())
+        if (spawner.getSpawnCount() == 0 && Settings.IGNORE_MAX_ON_FIRST_SPAWN.getBoolean()) {
             return true;
+        }
 
-        return getEntitiesAroundSpawner(spawner.getLocation().add(0.5, 0.5, 0.5), false) < max;
+        return getEntitiesAroundSpawner(spawner.getLocation().add(0.5, 0.5, 0.5), false) < this.max;
     }
 
     public static int getEntitiesAroundSpawner(Location location, boolean cached) {
@@ -57,7 +56,7 @@ public class SpawnConditionNearbyEntities implements SpawnCondition {
 
         if (arr.length == 1) {
             if (NumberUtils.isNumeric(arr[0])) {
-                arr = new String[] {arr[0], arr[0], arr[0]};
+                arr = new String[]{arr[0], arr[0], arr[0]};
             }
         }
 
@@ -73,7 +72,9 @@ public class SpawnConditionNearbyEntities implements SpawnCondition {
                         e.getType() != EntityType.PLAYER &&
                         e.getType() != EntityType.ARMOR_STAND)
                 .mapToInt(e -> {
-                    if (EntityStackerManager.getStacker() == null) return 1;
+                    if (EntityStackerManager.getStacker() == null) {
+                        return 1;
+                    }
                     return EntityStackerManager.getStacker().getSize((LivingEntity) e);
                 }).sum();
 
@@ -82,6 +83,6 @@ public class SpawnConditionNearbyEntities implements SpawnCondition {
     }
 
     public int getMax() {
-        return max;
+        return this.max;
     }
 }

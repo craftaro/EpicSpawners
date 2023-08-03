@@ -9,9 +9,6 @@ import com.craftaro.epicspawners.api.spawners.spawner.SpawnerStack;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerTier;
 import com.craftaro.epicspawners.api.spawners.spawner.option.SpawnOption;
 import com.craftaro.epicspawners.api.spawners.spawner.option.SpawnOptionType;
-import com.craftaro.epicspawners.boost.types.BoostedImpl;
-import com.craftaro.epicspawners.spawners.spawner.PlacedSpawnerImpl;
-import com.craftaro.epicspawners.spawners.spawner.SpawnerStackImpl;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -21,7 +18,6 @@ import java.util.Collection;
 import java.util.Random;
 
 public class SpawnOptionBlock implements SpawnOption {
-
     private static final int MAX_SEARCH_COUNT = 250;
     private static final int SPAWN_RADIUS = 3;
 
@@ -34,24 +30,26 @@ public class SpawnOptionBlock implements SpawnOption {
     }
 
     public SpawnOptionBlock(Collection<XMaterial> blocks) {
-        this(blocks.toArray(new XMaterial[blocks.size()]));
+        this(blocks.toArray(new XMaterial[0]));
     }
 
     @Override
     public void spawn(SpawnerTier data, SpawnerStack stack, PlacedSpawner spawner) {
         Location location = spawner.getLocation();
-        if (location == null || location.getWorld() == null) return;
+        if (location == null || location.getWorld() == null) {
+            return;
+        }
 
         int spawnerBoost = spawner.getBoosts().stream().mapToInt(Boosted::getAmountBoosted).sum();
         for (int i = 0; i < stack.getStackSize() + spawnerBoost; i++) {
-            for (XMaterial material : blocks) {
+            for (XMaterial material : this.blocks) {
                 int searchIndex = 0;
                 while (searchIndex++ <= MAX_SEARCH_COUNT) {
                     spawner.setSpawnCount(spawner.getSpawnCount() + 1);
                     EpicSpawners.getInstance().getDataManager().save(spawner);
-                    double xOffset = random.nextInt((SPAWN_RADIUS * 2) + 1) - SPAWN_RADIUS;
-                    double yOffset = random.nextInt((SPAWN_RADIUS * 2) + 1) - SPAWN_RADIUS;
-                    double zOffset = random.nextInt((SPAWN_RADIUS * 2) + 1) - SPAWN_RADIUS;
+                    double xOffset = this.random.nextInt((SPAWN_RADIUS * 2) + 1) - SPAWN_RADIUS;
+                    double yOffset = this.random.nextInt((SPAWN_RADIUS * 2) + 1) - SPAWN_RADIUS;
+                    double zOffset = this.random.nextInt((SPAWN_RADIUS * 2) + 1) - SPAWN_RADIUS;
 
                     // Get block at offset
                     location.add(xOffset, yOffset, zOffset);
@@ -59,7 +57,9 @@ public class SpawnOptionBlock implements SpawnOption {
                     location.subtract(xOffset, yOffset, zOffset);
 
                     // If block isn't air, try for another block
-                    if (spawnBlock.getType() != Material.AIR) continue;
+                    if (spawnBlock.getType() != Material.AIR) {
+                        continue;
+                    }
 
                     // Set Type and data for valid air block
                     XBlock.setType(spawnBlock, material, true);
@@ -76,16 +76,19 @@ public class SpawnOptionBlock implements SpawnOption {
 
     @Override
     public int hashCode() {
-        return 31 * (blocks != null ? blocks.hashCode() : 0);
+        return 31 * (this.blocks != null ? Arrays.hashCode(this.blocks) : 0);
     }
 
     @Override
-    public boolean equals(Object object) {
-        if (object == this) return true;
-        if (!(object instanceof SpawnOptionBlock)) return false;
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof SpawnOptionBlock)) {
+            return false;
+        }
 
-        SpawnOptionBlock other = (SpawnOptionBlock) object;
-        return Arrays.equals(blocks, other.blocks);
+        SpawnOptionBlock other = (SpawnOptionBlock) obj;
+        return Arrays.equals(this.blocks, other.blocks);
     }
-
 }

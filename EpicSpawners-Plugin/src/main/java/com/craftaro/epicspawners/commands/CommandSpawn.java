@@ -11,7 +11,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class CommandSpawn extends AbstractCommand {
-
     private final EpicSpawners plugin;
 
     public CommandSpawn(EpicSpawners plugin) {
@@ -26,12 +25,12 @@ public class CommandSpawn extends AbstractCommand {
         Block block = player.getTargetBlock(null, 200);
 
         if (XMaterial.matchXMaterial(block.getType().name()).get() != XMaterial.SPAWNER) {
-            plugin.getLocale().newMessage("&cThat is not a spawner...").sendPrefixedMessage(player);
+            this.plugin.getLocale().newMessage("&cThat is not a spawner...").sendPrefixedMessage(player);
             return ReturnType.FAILURE;
         }
 
-        plugin.getSpawnerManager().getSpawnerFromWorld(block.getLocation()).spawn();
-        plugin.getLocale().newMessage("&aSpawning successful.").sendPrefixedMessage(player);
+        this.plugin.getSpawnerManager().getSpawnerFromWorld(block.getLocation()).spawn();
+        this.plugin.getLocale().newMessage("&aSpawning successful.").sendPrefixedMessage(player);
         return ReturnType.SUCCESS;
     }
 

@@ -1,16 +1,15 @@
 package com.craftaro.epicspawners.settings;
 
-import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.configuration.Config;
 import com.craftaro.core.configuration.ConfigSetting;
 import com.craftaro.core.hooks.EconomyManager;
 import com.craftaro.core.hooks.HologramManager;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.epicspawners.EpicSpawners;
 
 import java.util.stream.Collectors;
 
 public class Settings {
-
     private static final Config config = EpicSpawners.getInstance().getCoreConfig();
 
     public static final ConfigSetting SPAWNERS_MAX = new ConfigSetting(config, "Main.Spawner Max Stack", 5,
@@ -102,7 +101,7 @@ public class Settings {
     public static final ConfigSetting MAX_SPAWNERS = new ConfigSetting(config, "Main.Max Spawners Per Player", -1,
             "The maximum amount of spawners a player can place. Set to -1 to allow unlimited",
             "spawner placement.");
-    
+
     public static final ConfigSetting GIVE_OLD_EGG = new ConfigSetting(config, "Main.Give Previous Mob as Egg when replacing mob", true,
             "Should the previous mob of the spawner be given as an egg when changing the spawner's mob?");
 

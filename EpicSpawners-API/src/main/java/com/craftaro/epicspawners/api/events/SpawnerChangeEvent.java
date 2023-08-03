@@ -11,11 +11,10 @@ import org.bukkit.event.HandlerList;
  * well as a change in {@link SpawnerTier}
  */
 public class SpawnerChangeEvent extends SpawnerEvent implements Cancellable {
-
     private static final HandlerList HANDLERS = new HandlerList();
 
     public enum ChangeType {
-        STACK_SIZE, SPAWNER_DATA;
+        STACK_SIZE, SPAWNER_DATA
     }
 
     private boolean canceled = false;
@@ -24,21 +23,21 @@ public class SpawnerChangeEvent extends SpawnerEvent implements Cancellable {
     private final SpawnerTier spawnerTier, oldSpawnerTier;
     private final ChangeType type;
 
-    public SpawnerChangeEvent(Player player, PlacedSpawner spawner, int stackSize, int oldStackSize) {
-        super(player, spawner);
+    public SpawnerChangeEvent(Player who, PlacedSpawner spawner, int stackSize, int oldStackSize) {
+        super(who, spawner);
 
         this.stackSize = stackSize;
         this.oldStackSize = oldStackSize;
-        this.spawnerTier = oldSpawnerTier = null;
+        this.spawnerTier = this.oldSpawnerTier = null;
         this.type = ChangeType.STACK_SIZE;
     }
 
-    public SpawnerChangeEvent(Player player, PlacedSpawner spawner, SpawnerTier data, SpawnerTier oldSpawnerTier) {
-        super(player, spawner);
+    public SpawnerChangeEvent(Player who, PlacedSpawner spawner, SpawnerTier data, SpawnerTier oldSpawnerTier) {
+        super(who, spawner);
 
         this.spawnerTier = data;
         this.oldSpawnerTier = oldSpawnerTier;
-        this.stackSize = oldStackSize = spawner.getStackSize();
+        this.stackSize = this.oldStackSize = spawner.getStackSize();
         this.type = ChangeType.SPAWNER_DATA;
     }
 
@@ -50,7 +49,7 @@ public class SpawnerChangeEvent extends SpawnerEvent implements Cancellable {
      * @return the new stack size
      */
     public int getStackSize() {
-        return stackSize;
+        return this.stackSize;
     }
 
     /**
@@ -61,7 +60,7 @@ public class SpawnerChangeEvent extends SpawnerEvent implements Cancellable {
      * @return the old stack size
      */
     public int getOldStackSize() {
-        return oldStackSize;
+        return this.oldStackSize;
     }
 
     /**
@@ -71,7 +70,7 @@ public class SpawnerChangeEvent extends SpawnerEvent implements Cancellable {
      * @return the new spawner data
      */
     public SpawnerTier getSpawnerTier() {
-        return spawnerTier;
+        return this.spawnerTier;
     }
 
     /**
@@ -81,7 +80,7 @@ public class SpawnerChangeEvent extends SpawnerEvent implements Cancellable {
      * @return the old spawner data
      */
     public SpawnerTier getOldSpawnerTier() {
-        return oldSpawnerTier;
+        return this.oldSpawnerTier;
     }
 
     /**
@@ -90,7 +89,7 @@ public class SpawnerChangeEvent extends SpawnerEvent implements Cancellable {
      * @return the change type
      */
     public ChangeType getChange() {
-        return type;
+        return this.type;
     }
 
     @Override
@@ -104,12 +103,12 @@ public class SpawnerChangeEvent extends SpawnerEvent implements Cancellable {
 
     @Override
     public boolean isCancelled() {
-        return canceled;
+        return this.canceled;
     }
 
     @Override
-    public void setCancelled(boolean canceled) {
-        this.canceled = canceled;
+    public void setCancelled(boolean cancel) {
+        this.canceled = cancel;
     }
 
     /**
@@ -120,7 +119,7 @@ public class SpawnerChangeEvent extends SpawnerEvent implements Cancellable {
      */
     @Deprecated
     public int getCurrentMulti() {
-        return stackSize;
+        return this.stackSize;
     }
 
     /**
@@ -131,7 +130,7 @@ public class SpawnerChangeEvent extends SpawnerEvent implements Cancellable {
      */
     @Deprecated
     public int getOldMulti() {
-        return oldStackSize;
+        return this.oldStackSize;
     }
 
     /**
@@ -142,7 +141,7 @@ public class SpawnerChangeEvent extends SpawnerEvent implements Cancellable {
      */
     @Deprecated
     public String getType() {
-        return spawnerTier.getIdentifyingName();
+        return this.spawnerTier.getIdentifyingName();
     }
 
     /**
@@ -153,7 +152,6 @@ public class SpawnerChangeEvent extends SpawnerEvent implements Cancellable {
      */
     @Deprecated
     public String getOldType() {
-        return oldSpawnerTier.getIdentifyingName();
+        return this.oldSpawnerTier.getIdentifyingName();
     }
-
 }

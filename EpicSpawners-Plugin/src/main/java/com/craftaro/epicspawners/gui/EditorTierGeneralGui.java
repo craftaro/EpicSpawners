@@ -1,21 +1,19 @@
 package com.craftaro.epicspawners.gui;
 
-import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.gui.AnvilGui;
 import com.craftaro.core.gui.Gui;
 import com.craftaro.core.gui.GuiUtils;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.utils.NumberUtils;
 import com.craftaro.core.utils.PlayerUtils;
 import com.craftaro.core.utils.TextUtils;
 import com.craftaro.epicspawners.EpicSpawners;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerData;
 import com.craftaro.epicspawners.settings.Settings;
-import com.craftaro.epicspawners.spawners.spawner.SpawnerDataImpl;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public class EditorTierGeneralGui extends Gui {
-
     private final EpicSpawners plugin;
     private final Gui back;
     private final SpawnerData spawnerData;
@@ -47,21 +45,21 @@ public class EditorTierGeneralGui extends Gui {
         mirrorFill(1, 1, false, true, glass3);
 
         setButton(0, GuiUtils.createButtonItem(XMaterial.OAK_DOOR,
-                plugin.getLocale().getMessage("general.nametag.back").getMessage()),
-                (event) -> guiManager.showGUI(event.player, back));
+                        this.plugin.getLocale().getMessage("general.nametag.back").getMessage()),
+                (event) -> this.guiManager.showGUI(event.player, this.back));
 
         setButton(10, GuiUtils.createButtonItem(XMaterial.SUNFLOWER, TextUtils.formatText("&6&lIn Shop",
-                "&7Currently: &a" + spawnerData.isInShop(),
-                "&7If this is true this spawner",
-                "&7will show up in the shop GUI.")),
+                        "&7Currently: &a" + this.spawnerData.isInShop(),
+                        "&7If this is true this spawner",
+                        "&7will show up in the shop GUI.")),
                 event -> {
-                    spawnerData.setInShop(!spawnerData.isInShop());
+                    this.spawnerData.setInShop(!this.spawnerData.isInShop());
                     paint();
                 });
 
         setButton(16, GuiUtils.createButtonItem(XMaterial.FIRE_CHARGE, TextUtils.formatText("&a&lShop Price",
-                "&7Currently: &a" + spawnerData.getShopPrice(),
-                "&7This is the shop cost")),
+                        "&7Currently: &a" + this.spawnerData.getShopPrice(),
+                        "&7This is the shop cost")),
                 event -> {
                     Player player = event.player;
                     AnvilGui gui = new AnvilGui(player, this);
@@ -69,23 +67,23 @@ public class EditorTierGeneralGui extends Gui {
                     gui.setAction(evnt -> {
                         String msg = gui.getInputText().trim();
                         if (NumberUtils.isNumeric(msg)) {
-                            spawnerData.setShopPrice(Double.parseDouble(msg));
+                            this.spawnerData.setShopPrice(Double.parseDouble(msg));
                             player.closeInventory();
                         } else {
                             player.sendMessage(TextUtils.formatText("&CYou must enter a number."));
                         }
                     }).setOnClose(e -> paint());
-                    guiManager.showGUI(player, gui);
+                    this.guiManager.showGUI(player, gui);
 
-                    PlayerUtils.sendMessages(player, TextUtils.formatText("&7Enter a custom shop cost for " + spawnerData.getIdentifyingName() + "&7.",
+                    PlayerUtils.sendMessages(player, TextUtils.formatText("&7Enter a custom shop cost for " + this.spawnerData.getIdentifyingName() + "&7.",
                             "&7Use &60 &7to use the default cost.",
                             "&7Example: &619.99&7."));
                 });
 
         setButton(14, GuiUtils.createButtonItem(XMaterial.FIRE_CHARGE, TextUtils.formatText("&c&lCustom Kill Goal",
-                "&7Currently: &a" + spawnerData.getShopPrice(),
-                "&7This is the amount of kills",
-                "of this tiers ")),
+                        "&7Currently: &a" + this.spawnerData.getShopPrice(),
+                        "&7This is the amount of kills",
+                        "of this tiers ")),
                 event -> {
                     Player player = event.player;
                     AnvilGui gui = new AnvilGui(player, this);
@@ -93,15 +91,15 @@ public class EditorTierGeneralGui extends Gui {
                     gui.setAction(evnt -> {
                         String msg = gui.getInputText().trim();
                         if (NumberUtils.isNumeric(msg)) {
-                            spawnerData.setShopPrice(Double.parseDouble(msg));
+                            this.spawnerData.setShopPrice(Double.parseDouble(msg));
                             player.closeInventory();
                         } else {
                             player.sendMessage(TextUtils.formatText("&CYou must enter a number."));
                         }
                     }).setOnClose(e -> paint());
-                    guiManager.showGUI(player, gui);
+                    this.guiManager.showGUI(player, gui);
 
-                    PlayerUtils.sendMessages(player, TextUtils.formatText("&7Enter a custom shop cost for " + spawnerData.getIdentifyingName() + "&7.",
+                    PlayerUtils.sendMessages(player, TextUtils.formatText("&7Enter a custom shop cost for " + this.spawnerData.getIdentifyingName() + "&7.",
                             "&7Use &60 &7to use the default cost.",
                             "&7Example: &619.99&7."));
                 });

@@ -19,7 +19,6 @@ import java.util.Collection;
 import java.util.Random;
 
 public class SpawnOptionCommand implements SpawnOption {
-
     private static final int MAX_SEARCH_COUNT = 150;
     private static final int SPAWN_RADIUS = 3;
 
@@ -32,18 +31,20 @@ public class SpawnOptionCommand implements SpawnOption {
     }
 
     public SpawnOptionCommand(Collection<String> commands) {
-        this(commands.toArray(new String[commands.size()]));
+        this(commands.toArray(new String[0]));
     }
 
     @Override
     public void spawn(SpawnerTier data, SpawnerStack stack, PlacedSpawner spawner) {
         Location location = spawner.getLocation();
-        if (location == null || location.getWorld() == null) return;
+        if (location == null || location.getWorld() == null) {
+            return;
+        }
 
         int spawnerBoost = spawner.getBoosts().stream().mapToInt(Boosted::getAmountBoosted).sum();
 
         for (int i = 0; i < stack.getStackSize() + spawnerBoost; i++) {
-            for (String command : commands) {
+            for (String command : this.commands) {
                 String finalCommand = command;
                 String lowercaseCommand = finalCommand.toLowerCase();
 
@@ -53,9 +54,9 @@ public class SpawnOptionCommand implements SpawnOption {
                     while (searchIndex++ <= MAX_SEARCH_COUNT) {
                         spawner.setSpawnCount(spawner.getSpawnCount() + 1);
                         EpicSpawners.getInstance().getDataManager().save(spawner);
-                        double xOffset = random.nextInt((SPAWN_RADIUS * 2) + 1) - SPAWN_RADIUS;
-                        double yOffset = random.nextInt((SPAWN_RADIUS * 2) + 1) - SPAWN_RADIUS;
-                        double zOffset = random.nextInt((SPAWN_RADIUS * 2) + 1) - SPAWN_RADIUS;
+                        double xOffset = this.random.nextInt((SPAWN_RADIUS * 2) + 1) - SPAWN_RADIUS;
+                        double yOffset = this.random.nextInt((SPAWN_RADIUS * 2) + 1) - SPAWN_RADIUS;
+                        double zOffset = this.random.nextInt((SPAWN_RADIUS * 2) + 1) - SPAWN_RADIUS;
 
                         location.add(xOffset, yOffset, zOffset);
                         finalCommand = finalCommand.replaceAll("@[xX]", String.valueOf(location.getX()))
@@ -73,7 +74,9 @@ public class SpawnOptionCommand implements SpawnOption {
                 // Get nearest player if @p is present in command
                 if (lowercaseCommand.contains("@p")) {
                     Player nearbyPlayer = getNearestPlayer(location);
-                    if (nearbyPlayer == null) continue;
+                    if (nearbyPlayer == null) {
+                        continue;
+                    }
 
                     finalCommand = finalCommand.replaceAll("@[pP]", nearbyPlayer.getName());
                 }
@@ -95,9 +98,10 @@ public class SpawnOptionCommand implements SpawnOption {
     }
 
     private Player getNearestPlayer(Location location) {
-
         String[] playerRadius = EpicSpawners.getInstance().getConfig().getString("Main.Radius To Search Around Spawners").split("x");
-        if (playerRadius.length != 3) return null;
+        if (playerRadius.length != 3) {
+            return null;
+        }
 
         double xRadius = NumberUtils.toDouble(playerRadius[0], 8);
         double yRadius = NumberUtils.toDouble(playerRadius[1], 4);
@@ -109,16 +113,19 @@ public class SpawnOptionCommand implements SpawnOption {
 
     @Override
     public int hashCode() {
-        return 31 * (commands != null ? commands.hashCode() : 0);
+        return 31 * (this.commands != null ? Arrays.hashCode(this.commands) : 0);
     }
 
     @Override
-    public boolean equals(Object object) {
-        if (object == this) return true;
-        if (!(object instanceof SpawnOptionCommand)) return false;
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof SpawnOptionCommand)) {
+            return false;
+        }
 
-        SpawnOptionCommand other = (SpawnOptionCommand) object;
-        return Arrays.equals(commands, other.commands);
+        SpawnOptionCommand other = (SpawnOptionCommand) obj;
+        return Arrays.equals(this.commands, other.commands);
     }
-
 }

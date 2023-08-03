@@ -3,7 +3,6 @@ package com.craftaro.epicspawners.database.migrations;
 import com.craftaro.core.database.DataMigration;
 import com.craftaro.core.database.DatabaseConnector;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 

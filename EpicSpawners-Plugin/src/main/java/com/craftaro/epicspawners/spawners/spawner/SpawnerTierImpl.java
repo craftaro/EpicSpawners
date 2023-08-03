@@ -1,26 +1,26 @@
 package com.craftaro.epicspawners.spawners.spawner;
 
+import com.craftaro.core.gui.GuiUtils;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
+import com.craftaro.core.third_party.de.tr7zw.nbtapi.NBTItem;
+import com.craftaro.core.utils.TextUtils;
 import com.craftaro.epicspawners.EpicSpawners;
 import com.craftaro.epicspawners.api.particles.ParticleDensity;
 import com.craftaro.epicspawners.api.particles.ParticleEffect;
 import com.craftaro.epicspawners.api.particles.ParticleType;
+import com.craftaro.epicspawners.api.spawners.condition.SpawnCondition;
 import com.craftaro.epicspawners.api.spawners.spawner.PlacedSpawner;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerData;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerStack;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerTier;
 import com.craftaro.epicspawners.api.spawners.spawner.option.SpawnOption;
+import com.craftaro.epicspawners.api.utils.CostType;
 import com.craftaro.epicspawners.settings.Settings;
 import com.craftaro.epicspawners.spawners.spawner.option.SpawnOptionBlock;
 import com.craftaro.epicspawners.spawners.spawner.option.SpawnOptionCommand;
 import com.craftaro.epicspawners.spawners.spawner.option.SpawnOptionEntity;
 import com.craftaro.epicspawners.spawners.spawner.option.SpawnOptionItem;
 import com.google.common.base.Preconditions;
-import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
-import com.craftaro.core.gui.GuiUtils;
-import com.craftaro.core.third_party.de.tr7zw.nbtapi.NBTItem;
-import com.craftaro.core.utils.TextUtils;
-import com.craftaro.epicspawners.api.spawners.condition.SpawnCondition;
-import com.craftaro.epicspawners.api.utils.CostType;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
@@ -33,7 +33,6 @@ import java.util.Objects;
 import java.util.Set;
 
 public class SpawnerTierImpl implements SpawnerTier {
-
     private final SpawnerData spawnerData;
     private String identifyingName;
     private String displayName;
@@ -75,22 +74,30 @@ public class SpawnerTierImpl implements SpawnerTier {
         this.identifyingName = "Tier_" + (tiers.isEmpty() ? "1" : Integer.parseInt(tiers.get(tiers.size() - 1).getIdentifyingName().split("_")[1]) + 1);
         this.spawnerData = spawnerData;
 
-        this.displayName = identifyingName;
+        this.displayName = this.identifyingName;
         reloadSpawnMethods();
     }
 
     @Override
     public void reloadSpawnMethods() {
-        spawnOptions.clear();
-        if (!entities.isEmpty()) spawnOptions.add(new SpawnOptionEntity(entities));
-        if (!blocks.isEmpty()) spawnOptions.add(new SpawnOptionBlock(blocks));
-        if (!items.isEmpty()) spawnOptions.add(new SpawnOptionItem(items));
-        if (!commands.isEmpty()) spawnOptions.add(new SpawnOptionCommand(commands));
+        this.spawnOptions.clear();
+        if (!this.entities.isEmpty()) {
+            this.spawnOptions.add(new SpawnOptionEntity(this.entities));
+        }
+        if (!this.blocks.isEmpty()) {
+            this.spawnOptions.add(new SpawnOptionBlock(this.blocks));
+        }
+        if (!this.items.isEmpty()) {
+            this.spawnOptions.add(new SpawnOptionItem(this.items));
+        }
+        if (!this.commands.isEmpty()) {
+            this.spawnOptions.add(new SpawnOptionCommand(this.commands));
+        }
     }
 
     @Override
     public void spawn(PlacedSpawner spawner, SpawnerStack stack) {
-        for (SpawnOption spawnOption : spawnOptions) {
+        for (SpawnOption spawnOption : this.spawnOptions) {
             spawnOption.spawn(this, stack, spawner);
         }
     }
@@ -113,8 +120,8 @@ public class SpawnerTierImpl implements SpawnerTier {
         item.setAmount(amount);
 
         NBTItem nbtItem = new NBTItem(item);
-        nbtItem.setString("data", spawnerData.getIdentifyingName());
-        nbtItem.setString("tier", identifyingName);
+        nbtItem.setString("data", this.spawnerData.getIdentifyingName());
+        nbtItem.setString("tier", this.identifyingName);
         nbtItem.setInteger("size", stackSize);
 
         return nbtItem.getItem();
@@ -122,12 +129,12 @@ public class SpawnerTierImpl implements SpawnerTier {
 
     @Override
     public String getIdentifyingName() {
-        return identifyingName;
+        return this.identifyingName;
     }
 
     @Override
     public String getFullyIdentifyingName() {
-        return spawnerData.getIdentifyingName() + identifyingName;
+        return this.spawnerData.getIdentifyingName() + this.identifyingName;
     }
 
     @Override
@@ -137,7 +144,7 @@ public class SpawnerTierImpl implements SpawnerTier {
 
     @Override
     public double getPickupCost() {
-        return pickupCost;
+        return this.pickupCost;
     }
 
     @Override
@@ -147,7 +154,7 @@ public class SpawnerTierImpl implements SpawnerTier {
 
     @Override
     public XMaterial[] getSpawnBlocks() {
-        return spawnBlocks.toArray(new XMaterial[spawnBlocks.size()]);
+        return this.spawnBlocks.toArray(new XMaterial[0]);
     }
 
     @Override
@@ -157,12 +164,12 @@ public class SpawnerTierImpl implements SpawnerTier {
 
     @Override
     public List<XMaterial> getSpawnBlocksList() {
-        return Collections.unmodifiableList(spawnBlocks);
+        return Collections.unmodifiableList(this.spawnBlocks);
     }
 
     @Override
     public boolean isSpawnOnFire() {
-        return spawnOnFire;
+        return this.spawnOnFire;
     }
 
     @Override
@@ -172,7 +179,7 @@ public class SpawnerTierImpl implements SpawnerTier {
 
     @Override
     public double getCostEconomy() {
-        return costEconomy;
+        return this.costEconomy;
     }
 
     @Override
@@ -182,7 +189,7 @@ public class SpawnerTierImpl implements SpawnerTier {
 
     @Override
     public int getCostLevels() {
-        return CostLevels;
+        return this.CostLevels;
     }
 
     @Override
@@ -193,16 +200,17 @@ public class SpawnerTierImpl implements SpawnerTier {
     @Override
     public double getUpgradeCost(CostType type) {
         double cost = 0;
-        if (type == CostType.ECONOMY)
+        if (type == CostType.ECONOMY) {
             cost = getCostEconomy();
-        else if (type == CostType.LEVELS)
+        } else if (type == CostType.LEVELS) {
             cost = getCostLevels();
+        }
         return cost;
     }
 
     @Override
     public String getDisplayName() {
-        return displayName;
+        return this.displayName;
     }
 
     @Override
@@ -240,7 +248,7 @@ public class SpawnerTierImpl implements SpawnerTier {
 
     @Override
     public XMaterial getDisplayItem() {
-        return displayItem == null ? XMaterial.AIR : displayItem;
+        return this.displayItem == null ? XMaterial.AIR : this.displayItem;
     }
 
     @Override
@@ -250,7 +258,7 @@ public class SpawnerTierImpl implements SpawnerTier {
 
     @Override
     public List<EntityType> getEntities() {
-        return Collections.unmodifiableList(entities);
+        return Collections.unmodifiableList(this.entities);
     }
 
     @Override
@@ -260,7 +268,7 @@ public class SpawnerTierImpl implements SpawnerTier {
 
     @Override
     public List<XMaterial> getBlocks() {
-        return Collections.unmodifiableList(blocks);
+        return Collections.unmodifiableList(this.blocks);
     }
 
     @Override
@@ -270,7 +278,7 @@ public class SpawnerTierImpl implements SpawnerTier {
 
     @Override
     public List<ItemStack> getItems() {
-        return Collections.unmodifiableList(items);
+        return Collections.unmodifiableList(this.items);
     }
 
     @Override
@@ -280,7 +288,7 @@ public class SpawnerTierImpl implements SpawnerTier {
 
     @Override
     public List<String> getCommands() {
-        return Collections.unmodifiableList(commands);
+        return Collections.unmodifiableList(this.commands);
     }
 
     @Override
@@ -290,7 +298,7 @@ public class SpawnerTierImpl implements SpawnerTier {
 
     @Override
     public short getPickDamage() {
-        return pickDamage;
+        return this.pickDamage;
     }
 
     @Override
@@ -300,7 +308,7 @@ public class SpawnerTierImpl implements SpawnerTier {
 
     @Override
     public String getTickRate() {
-        return tickRate;
+        return this.tickRate;
     }
 
     @Override
@@ -310,7 +318,7 @@ public class SpawnerTierImpl implements SpawnerTier {
 
     @Override
     public ParticleEffect getParticleEffect() {
-        return particleEffect;
+        return this.particleEffect;
     }
 
     @Override
@@ -320,7 +328,7 @@ public class SpawnerTierImpl implements SpawnerTier {
 
     @Override
     public ParticleType getSpawnEffectParticle() {
-        return spawnEffectParticle;
+        return this.spawnEffectParticle;
     }
 
     @Override
@@ -335,12 +343,12 @@ public class SpawnerTierImpl implements SpawnerTier {
 
     @Override
     public int getSpawnLimit() {
-        return spawnLimit;
+        return this.spawnLimit;
     }
 
     @Override
     public ParticleType getEntitySpawnParticle() {
-        return entitySpawnParticle;
+        return this.entitySpawnParticle;
     }
 
     @Override
@@ -350,7 +358,7 @@ public class SpawnerTierImpl implements SpawnerTier {
 
     @Override
     public ParticleType getSpawnerSpawnParticle() {
-        return spawnerSpawnParticle;
+        return this.spawnerSpawnParticle;
     }
 
     @Override
@@ -360,7 +368,7 @@ public class SpawnerTierImpl implements SpawnerTier {
 
     @Override
     public ParticleDensity getParticleDensity() {
-        return particleDensity;
+        return this.particleDensity;
     }
 
     @Override
@@ -370,7 +378,7 @@ public class SpawnerTierImpl implements SpawnerTier {
 
     @Override
     public boolean isParticleEffectBoostedOnly() {
-        return particleEffectBoostedOnly;
+        return this.particleEffectBoostedOnly;
     }
 
     @Override
@@ -380,22 +388,22 @@ public class SpawnerTierImpl implements SpawnerTier {
 
     @Override
     public void addCondition(SpawnCondition spawnCondition) {
-        spawnConditions.add(spawnCondition);
+        this.spawnConditions.add(spawnCondition);
     }
 
     @Override
     public void removeCondition(SpawnCondition spawnCondition) {
-        spawnConditions.remove(spawnCondition);
+        this.spawnConditions.remove(spawnCondition);
     }
 
     @Override
     public List<SpawnCondition> getConditions() {
-        return Collections.unmodifiableList(spawnConditions);
+        return Collections.unmodifiableList(this.spawnConditions);
     }
 
     @Override
     public String toString() {
-        return "SpawnerData:{Name:\"" + identifyingName + "\"}";
+        return "SpawnerData:{Name:\"" + this.identifyingName + "\"}";
     }
 
     @Override
@@ -403,14 +411,19 @@ public class SpawnerTierImpl implements SpawnerTier {
         Preconditions.checkNotNull(item, "Cannot get stack size of null item");
         NBTItem nbtItem = new NBTItem(item);
 
-        if (nbtItem.hasKey("size"))
+        if (nbtItem.hasTag("size")) {
             return nbtItem.getInteger("size");
+        }
 
         // Legacy
-        if (!item.hasItemMeta() && !item.getItemMeta().hasDisplayName()) return 1;
+        if (!item.hasItemMeta() && !item.getItemMeta().hasDisplayName()) {
+            return 1;
+        }
 
         String name = item.getItemMeta().getDisplayName();
-        if (!name.contains(":")) return 1;
+        if (!name.contains(":")) {
+            return 1;
+        }
 
         String amount = name.replace(String.valueOf(ChatColor.COLOR_CHAR), "").replace(";", "").split(":")[1];
         if (amount == null) {
@@ -422,28 +435,33 @@ public class SpawnerTierImpl implements SpawnerTier {
 
     @Override
     public String getGuiTitle() {
-        if (spawnerData.getTiers().size() == 1)
-            return TextUtils.formatText("&e" + displayName);
-        else
-            return TextUtils.formatText("&e" + spawnerData.getIdentifyingName() + " &8(" + displayName + ")");
+        if (this.spawnerData.getTiers().size() == 1) {
+            return TextUtils.formatText("&e" + this.displayName);
+        } else {
+            return TextUtils.formatText("&e" + this.spawnerData.getIdentifyingName() + " &8(" + this.displayName + ")");
+        }
     }
 
     @Override
     public SpawnerData getSpawnerData() {
-        return spawnerData;
+        return this.spawnerData;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        SpawnerTierImpl tier = (SpawnerTierImpl) o;
-        return Objects.equals(spawnerData, tier.spawnerData) &&
-                Objects.equals(identifyingName, tier.identifyingName);
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        SpawnerTierImpl tier = (SpawnerTierImpl) obj;
+        return Objects.equals(this.spawnerData, tier.spawnerData) &&
+                Objects.equals(this.identifyingName, tier.identifyingName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(spawnerData, identifyingName);
+        return Objects.hash(this.spawnerData, this.identifyingName);
     }
 }

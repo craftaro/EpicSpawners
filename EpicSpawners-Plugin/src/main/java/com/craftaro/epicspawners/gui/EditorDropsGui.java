@@ -1,19 +1,18 @@
 package com.craftaro.epicspawners.gui;
 
-import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.gui.Gui;
 import com.craftaro.core.gui.GuiUtils;
 import com.craftaro.core.lootables.gui.GuiLootableEditor;
 import com.craftaro.core.lootables.loot.LootManager;
 import com.craftaro.core.lootables.loot.Lootable;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.utils.ItemUtils;
 import com.craftaro.epicspawners.EpicSpawners;
-import com.craftaro.epicspawners.settings.Settings;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerTier;
+import com.craftaro.epicspawners.settings.Settings;
 import org.bukkit.inventory.ItemStack;
 
 public class EditorDropsGui extends Gui {
-
     private final EpicSpawners plugin;
     private final SpawnerTier spawnerTier;
 
@@ -38,30 +37,31 @@ public class EditorDropsGui extends Gui {
         setTitle(spawnerTier.getGuiTitle());
 
         setButton(8, GuiUtils.createButtonItem(ItemUtils.getCustomHead("3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23"),
-                plugin.getLocale().getMessage("general.nametag.back").getMessage()),
-                (event) -> guiManager.showGUI(event.player, back));
+                        plugin.getLocale().getMessage("general.nametag.back").getMessage()),
+                (event) -> this.guiManager.showGUI(event.player, back));
 
         paint();
     }
 
     public void paint() {
-        LootManager lootManager = plugin.getLootablesManager().getLootManager();
+        LootManager lootManager = this.plugin.getLootablesManager().getLootManager();
 
         setButton(1, 3, GuiUtils.createButtonItem(XMaterial.BARRIER, "Remove & Reset Custom Drops"),
                 (event) -> {
-                    lootManager.removeLootable(spawnerTier.getFullyIdentifyingName());
+                    lootManager.removeLootable(this.spawnerTier.getFullyIdentifyingName());
                     paint();
                 });
 
-        boolean dropExists = lootManager.getRegisteredLootables().containsKey(spawnerTier.getFullyIdentifyingName());
+        boolean dropExists = lootManager.getRegisteredLootables().containsKey(this.spawnerTier.getFullyIdentifyingName());
 
         setButton(1, 5, GuiUtils.createButtonItem(XMaterial.LIME_DYE, dropExists ? "Edit Drops" : "Create & Enable Custom Drops"),
                 (event) -> {
-                    if (!dropExists)
-                        lootManager.addLootable(new Lootable(spawnerTier.getFullyIdentifyingName()));
-                    Lootable lootable = lootManager.getRegisteredLootables().get(spawnerTier.getFullyIdentifyingName());
-                    plugin.getGuiManager().showGUI(event.player,
-                            new GuiLootableEditor(plugin.getLootablesManager().getLootManager(), lootable, this));
+                    if (!dropExists) {
+                        lootManager.addLootable(new Lootable(this.spawnerTier.getFullyIdentifyingName()));
+                    }
+                    Lootable lootable = lootManager.getRegisteredLootables().get(this.spawnerTier.getFullyIdentifyingName());
+                    this.plugin.getGuiManager().showGUI(event.player,
+                            new GuiLootableEditor(this.plugin.getLootablesManager().getLootManager(), lootable, this));
                 });
     }
 }

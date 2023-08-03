@@ -10,7 +10,6 @@ import java.util.function.Predicate;
  * be permitted to perform a spawn or not.
  */
 public interface SpawnCondition {
-
     /**
      * Get the name of this spawn condition.
      *
@@ -42,5 +41,4 @@ public interface SpawnCondition {
     default Predicate<PlacedSpawner> asPredicate() {
         return this::isMet;
     }
-
 }

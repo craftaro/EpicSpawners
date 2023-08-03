@@ -1,10 +1,6 @@
 package com.craftaro.epicspawners.api.utils;
 
-/**
- * Created by songoda on 3/20/2017.
- */
 public enum HeadType {
-
     BAT("978862a56119227aaad4b7c246c8b2256db985db0951f55b0a1f8616c191f"),
     BLAZE("b78ef2e4cf2c41a2d14bfde9caff10219f5b1bf5b35a49eb51c6467882cb5f0"),
     CHICKEN("1638469a599ceef7207537603248a9ab11ff591fd378bea4735b346a7fae893"),
@@ -88,14 +84,21 @@ public enum HeadType {
     CAMEL("3642c9f71131b5df4a8c21c8c6f10684f22abafb8cd68a1d55ac4bf263a53a31"),
     SNIFFER("87ad920a66e38cc3426a5bff084667e8772116915e298098567c139f222e2c42");
 
-    private final String url;
+    private final String urlHash;
 
-    private HeadType(String url) {
-        this.url = url;
+    HeadType(String urlHash) {
+        this.urlHash = urlHash;
     }
 
+    /**
+     * @deprecated Use {@link #getUrlHash()} instead.
+     */
+    @Deprecated
     public String getUrl() {
-        return url;
+        return this.urlHash;
     }
 
+    public String getUrlHash() {
+        return this.urlHash;
+    }
 }

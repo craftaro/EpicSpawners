@@ -10,7 +10,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class CommandSpawnerStats extends AbstractCommand {
-
     private final EpicSpawners plugin;
 
     public CommandSpawnerStats(EpicSpawners plugin) {
@@ -22,12 +21,12 @@ public class CommandSpawnerStats extends AbstractCommand {
     protected ReturnType runCommand(CommandSender sender, String... args) {
         Player player = (Player) sender;
 
-        if (plugin.getPlayerDataManager().getPlayerData(player).getEntityKills().size() == 0) {
-            plugin.getLocale().getMessage("interface.spawnerstats.nokills").sendPrefixedMessage(player);
+        if (this.plugin.getPlayerDataManager().getPlayerData(player).getEntityKills().isEmpty()) {
+            this.plugin.getLocale().getMessage("interface.spawnerstats.nokills").sendPrefixedMessage(player);
             return AbstractCommand.ReturnType.SUCCESS;
         }
 
-        plugin.getGuiManager().showGUI(player, new SpawnerStatsGui(plugin, player));
+        this.plugin.getGuiManager().showGUI(player, new SpawnerStatsGui(this.plugin, player));
 
         return ReturnType.SUCCESS;
     }

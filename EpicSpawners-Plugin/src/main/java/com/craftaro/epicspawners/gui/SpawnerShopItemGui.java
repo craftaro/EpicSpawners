@@ -1,17 +1,16 @@
 package com.craftaro.epicspawners.gui;
 
-import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.gui.CustomizableGui;
 import com.craftaro.core.gui.Gui;
 import com.craftaro.core.gui.GuiUtils;
 import com.craftaro.core.hooks.EconomyManager;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.utils.ItemUtils;
 import com.craftaro.epicspawners.EpicSpawners;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerData;
-import com.craftaro.epicspawners.settings.Settings;
-import com.craftaro.epicspawners.spawners.spawner.SpawnerDataImpl;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerTier;
 import com.craftaro.epicspawners.api.utils.HeadUtils;
+import com.craftaro.epicspawners.settings.Settings;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -20,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public class SpawnerShopItemGui extends CustomizableGui {
-
     private final EpicSpawners plugin;
     private final SpawnerTier spawnerTier;
     private final SpawnerData spawnerData;
@@ -58,52 +56,52 @@ public class SpawnerShopItemGui extends CustomizableGui {
         mirrorFill("mirrorfill_4", 1, 0, true, true, glass2);
         mirrorFill("mirrorfill_5", 0, 1, true, true, glass2);
 
-        double price = spawnerData.getShopPrice() * amount;
+        double price = this.spawnerData.getShopPrice() * this.amount;
 
-        ItemStack item = HeadUtils.getTexturedSkull(spawnerData);
+        ItemStack item = HeadUtils.getTexturedSkull(this.spawnerData);
 
-        if (spawnerData.getDisplayItem() != null) {
-            XMaterial mat = spawnerData.getDisplayItem();
+        if (this.spawnerData.getDisplayItem() != null) {
+            XMaterial mat = this.spawnerData.getDisplayItem();
             if (!mat.equals(XMaterial.AIR))
                 item = mat.parseItem();
         }
 
-        item.setAmount(amount);
+        item.setAmount(this.amount);
         ItemMeta itemmeta = item.getItemMeta();
-        String name = spawnerData.getFirstTier().getCompiledDisplayName();
+        String name = this.spawnerData.getFirstTier().getCompiledDisplayName();
         itemmeta.setDisplayName(name);
         ArrayList<String> lore = new ArrayList<>();
-        lore.add(plugin.getLocale().getMessage("interface.shop.buyprice")
+        lore.add(this.plugin.getLocale().getMessage("interface.shop.buyprice")
                 .processPlaceholder("cost", EconomyManager.formatEconomy(price)).getMessage());
         itemmeta.setLore(lore);
         item.setItemMeta(itemmeta);
-        setItem("spawner",22, item);
+        setItem("spawner", 22, item);
 
         ItemStack plus = XMaterial.LIME_STAINED_GLASS_PANE.parseItem();
         ItemMeta plusmeta = plus.getItemMeta();
-        plusmeta.setDisplayName(plugin.getLocale().getMessage("interface.shop.add1").getMessage());
+        plusmeta.setDisplayName(this.plugin.getLocale().getMessage("interface.shop.add1").getMessage());
         plus.setItemMeta(plusmeta);
         if (item.getAmount() + 1 <= 64) {
             setButton("add1", 15, plus, event -> {
-                this.amount = amount + 1;
+                this.amount = this.amount + 1;
                 paint();
             });
         }
 
         plus = XMaterial.LIME_STAINED_GLASS_PANE.parseItem();
         plus.setAmount(10);
-        plusmeta.setDisplayName(plugin.getLocale().getMessage("interface.shop.add10").getMessage());
+        plusmeta.setDisplayName(this.plugin.getLocale().getMessage("interface.shop.add10").getMessage());
         plus.setItemMeta(plusmeta);
         if (item.getAmount() + 10 <= 64) {
             setButton("add10", 33, plus, event -> {
-                this.amount = amount + 10;
+                this.amount = this.amount + 10;
                 paint();
             });
         }
 
         plus = XMaterial.LIME_STAINED_GLASS_PANE.parseItem();
         plus.setAmount(64);
-        plusmeta.setDisplayName(plugin.getLocale().getMessage("interface.shop.set64").getMessage());
+        plusmeta.setDisplayName(this.plugin.getLocale().getMessage("interface.shop.set64").getMessage());
         plus.setItemMeta(plusmeta);
         if (item.getAmount() != 64) {
             setButton("set64", 25, plus, event -> {
@@ -115,29 +113,29 @@ public class SpawnerShopItemGui extends CustomizableGui {
         ItemStack minus = XMaterial.RED_STAINED_GLASS_PANE.parseItem();
         minus.setAmount(1);
         ItemMeta minusmeta = minus.getItemMeta();
-        minusmeta.setDisplayName(plugin.getLocale().getMessage("interface.shop.remove1").getMessage());
+        minusmeta.setDisplayName(this.plugin.getLocale().getMessage("interface.shop.remove1").getMessage());
         minus.setItemMeta(minusmeta);
         if (item.getAmount() != 1) {
             setButton("remove1", 11, minus, event -> {
-                this.amount = amount - 1;
+                this.amount = this.amount - 1;
                 paint();
             });
         }
 
         minus = XMaterial.RED_STAINED_GLASS_PANE.parseItem();
         minus.setAmount(10);
-        minusmeta.setDisplayName(plugin.getLocale().getMessage("interface.shop.remove10").getMessage());
+        minusmeta.setDisplayName(this.plugin.getLocale().getMessage("interface.shop.remove10").getMessage());
         minus.setItemMeta(minusmeta);
         if (item.getAmount() - 10 >= 0) {
             setButton("remove10", 29, minus, event -> {
-                this.amount = amount - 10;
+                this.amount = this.amount - 10;
                 paint();
             });
         }
 
         minus = XMaterial.RED_STAINED_GLASS_PANE.parseItem();
         minus.setAmount(1);
-        minusmeta.setDisplayName(plugin.getLocale().getMessage("interface.shop.set1").getMessage());
+        minusmeta.setDisplayName(this.plugin.getLocale().getMessage("interface.shop.set1").getMessage());
         minus.setItemMeta(minusmeta);
         if (item.getAmount() != 1) {
             setButton("set1", 19, minus, event -> {
@@ -147,16 +145,16 @@ public class SpawnerShopItemGui extends CustomizableGui {
         }
 
         setButton("exit", 8, GuiUtils.createButtonItem(Settings.EXIT_ICON.getMaterial(),
-                plugin.getLocale().getMessage("general.nametag.exit").getMessage()), event -> event.player.closeInventory());
+                this.plugin.getLocale().getMessage("general.nametag.exit").getMessage()), event -> event.player.closeInventory());
 
         setButton("back", 0, GuiUtils.createButtonItem(ItemUtils.getCustomHead("3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23"),
-                plugin.getLocale().getMessage("general.nametag.back").getMessage()),
-                event -> guiManager.showGUI(event.player, back));
+                        this.plugin.getLocale().getMessage("general.nametag.back").getMessage()),
+                event -> this.guiManager.showGUI(event.player, this.back));
 
         setButton("buy", 40, GuiUtils.createButtonItem(Settings.BUY_ICON.getMaterial(),
-                plugin.getLocale().getMessage("general.nametag.confirm").getMessage()), event -> {
+                        this.plugin.getLocale().getMessage("general.nametag.confirm").getMessage()), event -> {
                     Player player = event.player;
-                    confirm(player, amount);
+                    confirm(player, this.amount);
                     player.closeInventory();
                 }
         );
@@ -168,18 +166,18 @@ public class SpawnerShopItemGui extends CustomizableGui {
             return;
         }
 
-        double price = spawnerData.getShopPrice() * amount;
+        double price = this.spawnerData.getShopPrice() * amount;
         if (!EconomyManager.hasBalance(player, price)) {
-            plugin.getLocale().getMessage("event.shop.cannotafford").sendPrefixedMessage(player);
+            this.plugin.getLocale().getMessage("event.shop.cannotafford").sendPrefixedMessage(player);
             return;
         }
 
-        ItemStack item = spawnerTier.toItemStack(amount);
+        ItemStack item = this.spawnerTier.toItemStack(amount);
         Map<Integer, ItemStack> overfilled = player.getInventory().addItem(item);
         for (ItemStack item2 : overfilled.values()) {
             player.getWorld().dropItemNaturally(player.getLocation(), item2);
         }
-        plugin.getLocale().getMessage("event.shop.purchasesuccess").sendPrefixedMessage(player);
+        this.plugin.getLocale().getMessage("event.shop.purchasesuccess").sendPrefixedMessage(player);
         EconomyManager.withdrawBalance(player, price);
     }
 }

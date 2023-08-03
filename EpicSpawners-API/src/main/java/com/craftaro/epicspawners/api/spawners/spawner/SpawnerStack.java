@@ -5,7 +5,6 @@ import com.craftaro.epicspawners.api.utils.CostType;
 import org.bukkit.entity.Player;
 
 public interface SpawnerStack extends Data {
-
     PlacedSpawner getSpawner();
 
     int getStackSize();

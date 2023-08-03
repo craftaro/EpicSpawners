@@ -8,7 +8,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class CommandReload extends AbstractCommand {
-
     private final EpicSpawners plugin;
 
     public CommandReload(EpicSpawners plugin) {

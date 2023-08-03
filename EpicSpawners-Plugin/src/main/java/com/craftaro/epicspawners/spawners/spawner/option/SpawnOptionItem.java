@@ -9,12 +9,8 @@ import com.craftaro.epicspawners.api.spawners.spawner.SpawnerStack;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerTier;
 import com.craftaro.epicspawners.api.spawners.spawner.option.SpawnOption;
 import com.craftaro.epicspawners.api.spawners.spawner.option.SpawnOptionType;
-import com.craftaro.epicspawners.boost.types.BoostedImpl;
-import com.craftaro.epicspawners.spawners.spawner.PlacedSpawnerImpl;
-import com.craftaro.epicspawners.spawners.spawner.SpawnerStackImpl;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
@@ -25,7 +21,6 @@ import java.util.Collection;
 import java.util.Random;
 
 public class SpawnOptionItem implements SpawnOption {
-
     private final Random random;
     private final ItemStack[] items;
 
@@ -35,13 +30,15 @@ public class SpawnOptionItem implements SpawnOption {
     }
 
     public SpawnOptionItem(Collection<ItemStack> items) {
-        this(items.toArray(new ItemStack[items.size()]));
+        this(items.toArray(new ItemStack[0]));
     }
 
     @Override
     public void spawn(SpawnerTier data, SpawnerStack stack, PlacedSpawner spawner) {
         Location location = spawner.getLocation();
-        if (location == null || location.getWorld() == null) return;
+        if (location == null || location.getWorld() == null) {
+            return;
+        }
 
         World world = location.getWorld();
         Location spawnLocation = location.clone().add(0.5, 0.9, 0.5);
@@ -53,15 +50,17 @@ public class SpawnOptionItem implements SpawnOption {
 
         int spawnerBoost = spawner.getBoosts().stream().mapToInt(Boosted::getAmountBoosted).sum();
         for (int i = 0; i < stack.getStackSize() + spawnerBoost; i++) {
-            for (ItemStack item : items) {
-                if (item == null || item.getType() == Material.AIR) continue;
+            for (ItemStack item : this.items) {
+                if (item == null || item.getType() == Material.AIR) {
+                    continue;
+                }
                 Item droppedItem = world.dropItem(spawnLocation, item);
                 spawner.setSpawnCount(spawner.getSpawnCount() + 1);
                 EpicSpawners.getInstance().getDataManager().save(spawner);
 
-                double dx = -.2 + (.2 - -.2) * random.nextDouble();
-                double dy = 0 + (.5 - 0) * random.nextDouble();
-                double dz = -.2 + (.2 - -.2) * random.nextDouble();
+                double dx = -.2 + (.2 - -.2) * this.random.nextDouble();
+                double dy = 0 + (.5 - 0) * this.random.nextDouble();
+                double dz = -.2 + (.2 - -.2) * this.random.nextDouble();
 
                 droppedItem.setVelocity(new Vector(dx, dy, dz));
             }
@@ -73,15 +72,18 @@ public class SpawnOptionItem implements SpawnOption {
     }
 
     public int hashCode() {
-        return 31 * (items != null ? items.hashCode() : 0);
+        return 31 * (this.items != null ? Arrays.hashCode(this.items) : 0);
     }
 
-    public boolean equals(Object object) {
-        if (object == this) return true;
-        if (!(object instanceof SpawnOptionItem)) return false;
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof SpawnOptionItem)) {
+            return false;
+        }
 
-        SpawnOptionItem other = (SpawnOptionItem) object;
-        return Arrays.equals(items, other.items);
+        SpawnOptionItem other = (SpawnOptionItem) obj;
+        return Arrays.equals(this.items, other.items);
     }
-
 }

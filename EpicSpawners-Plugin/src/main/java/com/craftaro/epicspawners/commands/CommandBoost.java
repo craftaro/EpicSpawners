@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class CommandBoost extends AbstractCommand {
-
     private final EpicSpawners plugin;
 
     public CommandBoost(EpicSpawners plugin) {

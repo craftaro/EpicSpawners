@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.UUID;
 
 public class BoostedPlayerImpl extends BoostedImpl implements BoostedPlayer {
-
     private final UUID player;
 
     /**

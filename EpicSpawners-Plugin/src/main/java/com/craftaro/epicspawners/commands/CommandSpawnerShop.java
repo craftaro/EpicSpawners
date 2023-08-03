@@ -10,7 +10,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class CommandSpawnerShop extends AbstractCommand {
-
     private final EpicSpawners plugin;
 
     public CommandSpawnerShop(EpicSpawners plugin) {
@@ -20,7 +19,7 @@ public class CommandSpawnerShop extends AbstractCommand {
 
     @Override
     protected ReturnType runCommand(CommandSender sender, String... args) {
-        plugin.getGuiManager().showGUI((Player) sender, new SpawnerShopGui(plugin, (Player) sender));
+        this.plugin.getGuiManager().showGUI((Player) sender, new SpawnerShopGui(this.plugin, (Player) sender));
         return ReturnType.SUCCESS;
     }
 

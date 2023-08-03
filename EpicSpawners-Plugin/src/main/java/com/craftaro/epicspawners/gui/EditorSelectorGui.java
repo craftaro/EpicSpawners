@@ -1,14 +1,13 @@
 package com.craftaro.epicspawners.gui;
 
-import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.gui.Gui;
 import com.craftaro.core.gui.GuiUtils;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.utils.TextUtils;
 import com.craftaro.epicspawners.EpicSpawners;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerData;
-import com.craftaro.epicspawners.settings.Settings;
-import com.craftaro.epicspawners.spawners.spawner.SpawnerDataImpl;
 import com.craftaro.epicspawners.api.utils.HeadUtils;
+import com.craftaro.epicspawners.settings.Settings;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -17,7 +16,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class EditorSelectorGui extends Gui {
-
     private final EpicSpawners plugin;
     private final Player player;
     private Type shownType = Type.BOTH;
@@ -28,7 +26,7 @@ public class EditorSelectorGui extends Gui {
         this.plugin = plugin;
         this.player = player;
 
-        entities.addAll(plugin.getSpawnerManager().getAllEnabledSpawnerData());
+        this.entities.addAll(plugin.getSpawnerManager().getAllEnabledSpawnerData());
         setTitle("Spawner Selector");
 
         showPage();
@@ -50,20 +48,20 @@ public class EditorSelectorGui extends Gui {
         mirrorFill(1, 0, true, true, glass2);
         mirrorFill(0, 1, true, true, glass2);
 
-        pages = (int) Math.max(1, Math.ceil(entities.size() / ((double) 28)));
+        this.pages = (int) Math.max(1, Math.ceil(this.entities.size() / ((double) 28)));
 
         // enable page event
-        setNextPage(5, 7, GuiUtils.createButtonItem(XMaterial.ARROW, plugin.getLocale().getMessage("general.nametag.next").getMessage()));
-        setPrevPage(5, 1, GuiUtils.createButtonItem(XMaterial.ARROW, plugin.getLocale().getMessage("general.nametag.back").getMessage()));
+        setNextPage(5, 7, GuiUtils.createButtonItem(XMaterial.ARROW, this.plugin.getLocale().getMessage("general.nametag.next").getMessage()));
+        setPrevPage(5, 1, GuiUtils.createButtonItem(XMaterial.ARROW, this.plugin.getLocale().getMessage("general.nametag.back").getMessage()));
         setOnPage((event) -> showPage());
 
-        List<SpawnerData> data = entities.stream()
-                .filter(s -> shownType == Type.BOTH
-                        || shownType == Type.DEFAULT && !s.isCustom()
-                        || shownType == Type.CUSTOM && s.isCustom()).skip((page - 1) * 28).limit(28).collect(Collectors.toList());
+        List<SpawnerData> data = this.entities.stream()
+                .filter(s -> this.shownType == Type.BOTH
+                        || this.shownType == Type.DEFAULT && !s.isCustom()
+                        || this.shownType == Type.CUSTOM && s.isCustom()).skip((this.page - 1) * 28).limit(28).collect(Collectors.toList());
 
         setButton(8, GuiUtils.createButtonItem(XMaterial.OAK_DOOR,
-                plugin.getLocale().getMessage("general.nametag.exit").getMessage()), (event) -> close());
+                this.plugin.getLocale().getMessage("general.nametag.exit").getMessage()), (event) -> close());
 
         int num = 10;
         for (int i = 0; i < 28; i++) {
@@ -78,28 +76,24 @@ public class EditorSelectorGui extends Gui {
             }
             XMaterial mat = spawnerData.getDisplayItem();
             setButton(num, GuiUtils.createButtonItem(mat != null && !mat.equals(XMaterial.AIR) ? spawnerData.getDisplayItem().parseItem() : HeadUtils.getTexturedSkull(spawnerData),
-                    TextUtils.formatText("&6&l" + spawnerData.getIdentifyingName()), TextUtils.formatText("&7Click to &a&lEdit&7.")),
-                    (event) -> EditorTiersGui.openTiers(plugin, player, spawnerData));
+                            TextUtils.formatText("&6&l" + spawnerData.getIdentifyingName()), TextUtils.formatText("&7Click to &a&lEdit&7.")),
+                    (event) -> EditorTiersGui.openTiers(this.plugin, this.player, spawnerData));
         }
 
-        setButton(5, 5, GuiUtils.createButtonItem(XMaterial.COMPASS, TextUtils.formatText("&5&lShow: &7" + shownType.name())),
+        setButton(5, 5, GuiUtils.createButtonItem(XMaterial.COMPASS, TextUtils.formatText("&5&lShow: &7" + this.shownType.name())),
                 (event) -> {
-                    shownType = shownType.next();
+                    this.shownType = this.shownType.next();
                     showPage();
                 });
         setButton(5, 6, GuiUtils.createButtonItem(XMaterial.PAPER, TextUtils.formatText("&9&lNew Spawner")),
-                (event) -> EditorTiersGui.openTiers(plugin, player, null));
+                (event) -> EditorTiersGui.openTiers(this.plugin, this.player, null));
     }
 
     private enum Type {
-
         BOTH, CUSTOM, DEFAULT;
 
-        private static Type[] vals = values();
-
         public Type next() {
-            return vals[(this.ordinal() != vals.length - 1 ? this.ordinal() + 1 : 0)];
+            return values()[(this.ordinal() != values().length - 1 ? this.ordinal() + 1 : 0)];
         }
-
     }
 }

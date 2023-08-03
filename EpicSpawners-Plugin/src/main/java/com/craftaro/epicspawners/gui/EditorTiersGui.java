@@ -1,19 +1,17 @@
 package com.craftaro.epicspawners.gui;
 
-import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.gui.Gui;
 import com.craftaro.core.gui.GuiUtils;
 import com.craftaro.core.input.ChatPrompt;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.utils.TextUtils;
 import com.craftaro.epicspawners.EpicSpawners;
 import com.craftaro.epicspawners.api.spawners.spawner.PlacedSpawner;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerData;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerStack;
-import com.craftaro.epicspawners.settings.Settings;
-import com.craftaro.epicspawners.spawners.spawner.PlacedSpawnerImpl;
-import com.craftaro.epicspawners.spawners.spawner.SpawnerDataImpl;
-import com.craftaro.epicspawners.spawners.spawner.SpawnerStackImpl;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerTier;
+import com.craftaro.epicspawners.settings.Settings;
+import com.craftaro.epicspawners.spawners.spawner.SpawnerDataImpl;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
@@ -25,7 +23,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class EditorTiersGui extends Gui {
-
     private final EpicSpawners plugin;
     private final Player player;
     private final SpawnerData spawnerData;
@@ -60,32 +57,33 @@ public class EditorTiersGui extends Gui {
         mirrorFill(0, 1, true, true, glass2);
 
         setButton(8, GuiUtils.createButtonItem(XMaterial.OAK_DOOR, "Back to Selector"),
-                (event) -> plugin.getGuiManager().showGUI(player, new EditorSelectorGui(plugin, player)));
+                (event) -> this.plugin.getGuiManager().showGUI(this.player, new EditorSelectorGui(this.plugin, this.player)));
 
-        List<SpawnerTier> tiersSource = spawnerData.getTiers();
+        List<SpawnerTier> tiersSource = this.spawnerData.getTiers();
 
-        pages = (int) Math.max(1, Math.ceil(tiersSource.size() / ((double) 28)));
+        this.pages = (int) Math.max(1, Math.ceil(tiersSource.size() / ((double) 28)));
 
         // enable page event
-        setNextPage(5, 7, GuiUtils.createButtonItem(XMaterial.ARROW, plugin.getLocale().getMessage("general.nametag.next").getMessage()));
-        setPrevPage(5, 1, GuiUtils.createButtonItem(XMaterial.ARROW, plugin.getLocale().getMessage("general.nametag.back").getMessage()));
+        setNextPage(5, 7, GuiUtils.createButtonItem(XMaterial.ARROW, this.plugin.getLocale().getMessage("general.nametag.next").getMessage()));
+        setPrevPage(5, 1, GuiUtils.createButtonItem(XMaterial.ARROW, this.plugin.getLocale().getMessage("general.nametag.back").getMessage()));
         setOnPage((event) -> showPage());
 
-        List<SpawnerTier> tiers = tiersSource.stream().skip((page - 1) * 28).limit(28).collect(Collectors.toList());
+        List<SpawnerTier> tiers = tiersSource.stream().skip((this.page - 1) * 28).limit(28).collect(Collectors.toList());
 
         int num = 10;
         for (int i = 0; i < 28; i++) {
             num++;
             SpawnerTier tier = i < tiers.size() ? tiers.get(i) : null;
-            if (num == 16 || num == 36)
+            if (num == 16 || num == 36) {
                 num = num + 2;
+            }
 
             if (tier == null) {
                 setItem(num, null);
                 continue;
             }
 
-            if (acceptsItems) {
+            if (this.acceptsItems) {
                 setItem(num, GuiUtils.createButtonItem(tier.getDisplayItem() == XMaterial.AIR ? XMaterial.DIRT : tier.getDisplayItem(),
                         tier.getIdentifyingName()));
             } else {
@@ -93,25 +91,26 @@ public class EditorTiersGui extends Gui {
                 List<String> lore = new ArrayList<>();
                 lore.add(TextUtils.formatText("&6&l" + tier.getDisplayName() + " &7(" + tier.getIdentifyingName() + ")"));
                 lore.add(TextUtils.formatText("&7Left Click to &a&lEdit&7."));
-                boolean canDelete = spawnerData.getTiers().size() != 1 || spawnerData.isCustom();
-                if (canDelete)
+                boolean canDelete = this.spawnerData.getTiers().size() != 1 || this.spawnerData.isCustom();
+                if (canDelete) {
                     lore.add(TextUtils.formatText("&7Right Click to &c&lDestroy&7."));
+                }
 
 
                 setButton(num, GuiUtils.createButtonItem(tier.getDisplayItem() == XMaterial.AIR ? XMaterial.DIRT : tier.getDisplayItem(),
-                        lore),
+                                lore),
                         (event) -> {
-                            if (event.clickType == ClickType.LEFT)
-                                guiManager.showGUI(player, new EditorOverviewGui(plugin, player, tier));
-                            else if (canDelete) {
-                                player.sendMessage("Type \"yes\" to confirm this action.");
-                                ChatPrompt.showPrompt(plugin, player, evnt -> {
+                            if (event.clickType == ClickType.LEFT) {
+                                this.guiManager.showGUI(this.player, new EditorOverviewGui(this.plugin, this.player, tier));
+                            } else if (canDelete) {
+                                this.player.sendMessage("Type \"yes\" to confirm this action.");
+                                ChatPrompt.showPrompt(this.plugin, this.player, evnt -> {
                                     if (evnt.getMessage().equalsIgnoreCase("yes")) {
-                                        player.sendMessage(TextUtils.formatText("&6" + tier.getIdentifyingName() + " &7 has been destroyed successfully"));
-                                        spawnerData.removeTier(tier);
-                                        plugin.getLootablesManager().getLootManager().removeLootable(tier.getFullyIdentifyingName());
+                                        this.player.sendMessage(TextUtils.formatText("&6" + tier.getIdentifyingName() + " &7 has been destroyed successfully"));
+                                        this.spawnerData.removeTier(tier);
+                                        this.plugin.getLootablesManager().getLootManager().removeLootable(tier.getFullyIdentifyingName());
                                     }
-                                    plugin.getGuiManager().showGUI(player, new EditorTiersGui(plugin, player, spawnerData));
+                                    this.plugin.getGuiManager().showGUI(this.player, new EditorTiersGui(this.plugin, this.player, this.spawnerData));
                                 });
                             }
                         });
@@ -119,68 +118,75 @@ public class EditorTiersGui extends Gui {
         }
 
         setButton(5, 3, GuiUtils.createButtonItem(XMaterial.FIRE_CHARGE, TextUtils.formatText("&9&lEdit Settings")),
-                (event) -> guiManager.showGUI(player, new EditorTierGeneralGui(plugin, this, spawnerData)));
+                (event) -> this.guiManager.showGUI(this.player, new EditorTierGeneralGui(this.plugin, this, this.spawnerData)));
 
-        if (pages == 1)
+        if (this.pages == 1) {
             setButton(5, 4, GuiUtils.createButtonItem(XMaterial.CHEST, TextUtils.formatText("&a&lUnlock Tiers",
-                    "&7Currently: " + (acceptsItems ? "&aUnlocked" : "&cLocked") + "&7.",
-                    "&7Re-lock to save changed.")),
+                            "&7Currently: " + (this.acceptsItems ? "&aUnlocked" : "&cLocked") + "&7.",
+                            "&7Re-lock to save changed.")),
                     (event) -> {
-                        if (acceptsItems) {
+                        if (this.acceptsItems) {
                             Map<String, SpawnerTier> newTiers = new LinkedHashMap<>();
 
                             int slot = 10;
                             for (int i = 0; i < 28; i++) {
                                 slot++;
-                                if (slot == 16 || slot == 36)
+                                if (slot == 16 || slot == 36) {
                                     slot = slot + 2;
+                                }
 
                                 int finalSlot = slot;
                                 SpawnerTier tier = getItem(slot) != null ?
                                         tiers.stream().filter(t -> t.getIdentifyingName().equals(getItem(finalSlot).getItemMeta().getDisplayName())).findFirst().orElseGet(null) : null;
 
-                                if (tier != null)
+                                if (tier != null) {
                                     newTiers.put("Tier_" + (newTiers.size() + 1), tier);
+                                }
                             }
 
-                            for (PlacedSpawner spawner : plugin.getSpawnerManager().getSpawners()) {
+                            for (PlacedSpawner spawner : this.plugin.getSpawnerManager().getSpawners()) {
                                 boolean modified = false;
                                 for (SpawnerStack stack : spawner.getSpawnerStacks()) {
-                                    if (stack.getSpawnerData() != spawnerData)
+                                    if (stack.getSpawnerData() != this.spawnerData) {
                                         continue;
+                                    }
 
                                     modified = true;
 
                                     stack.setTier(newTiers.get(stack.getCurrentTier().getIdentifyingName()));
                                 }
                                 if (modified) {
-                                    plugin.updateHologram(spawner);
-                                    plugin.getDataManager().save(spawner);
+                                    this.plugin.updateHologram(spawner);
+                                    this.plugin.getDataManager().save(spawner);
                                 }
                             }
 
-                            for (Map.Entry<String, SpawnerTier> entry : newTiers.entrySet())
+                            for (Map.Entry<String, SpawnerTier> entry : newTiers.entrySet()) {
                                 entry.getValue().setIdentifyingName(entry.getKey());
+                            }
 
-                            if (newTiers.size() == tiers.size())
-                                spawnerData.replaceTiers(newTiers.values());
+                            if (newTiers.size() == tiers.size()) {
+                                this.spawnerData.replaceTiers(newTiers.values());
+                            }
 
-                            unlockedCells.clear();
+                            this.unlockedCells.clear();
                         } else {
                             setUnlockedRange(11, 38);
-                            unlockedCells.remove(16);
-                            unlockedCells.remove(17);
-                            unlockedCells.remove(26);
-                            unlockedCells.remove(27);
+                            this.unlockedCells.remove(16);
+                            this.unlockedCells.remove(17);
+                            this.unlockedCells.remove(26);
+                            this.unlockedCells.remove(27);
                         }
-                        setAcceptsItems(!acceptsItems);
+                        setAcceptsItems(!this.acceptsItems);
                         showPage();
                     });
-        else setItem(5, 4, null);
+        } else {
+            setItem(5, 4, null);
+        }
 
         setButton(5, 5, GuiUtils.createButtonItem(XMaterial.PAPER, TextUtils.formatText("&9&lNew Tier")),
                 (event) -> {
-                    spawnerData.addDefaultTier();
+                    this.spawnerData.addDefaultTier();
                     showPage();
                 });
     }
@@ -206,27 +212,29 @@ public class EditorTiersGui extends Gui {
         }
 
         int tierCount = spawnerData.getTiers().size();
-        if (tierCount == 0)
+        if (tierCount == 0) {
             spawnerData.addDefaultTier();
+        }
 
-        if (tierCount == 1 && !forced)
+        if (tierCount == 1 && !forced) {
             plugin.getGuiManager().showGUI(player, new EditorOverviewGui(plugin, player, spawnerData.getFirstTier()));
-        else
+        } else {
             plugin.getGuiManager().showGUI(player, new EditorTiersGui(plugin, player, spawnerData));
+        }
 
     }
 
     public static void openTiersInReverse(EpicSpawners plugin, Player player, SpawnerTier tier) {
         SpawnerData spawnerData = tier.getSpawnerData();
         int tierCount = spawnerData.getTiers().size();
-        if (tierCount == 0)
+        if (tierCount == 0) {
             spawnerData.addDefaultTier();
+        }
 
-        if (tierCount == 1)
+        if (tierCount == 1) {
             plugin.getGuiManager().showGUI(player, new EditorSelectorGui(plugin, player));
-        else
+        } else {
             plugin.getGuiManager().showGUI(player, new EditorTiersGui(plugin, player, spawnerData));
-
+        }
     }
-
 }

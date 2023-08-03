@@ -4,16 +4,12 @@ import com.craftaro.core.database.Data;
 import com.craftaro.core.database.SerializedLocation;
 import com.craftaro.epicspawners.EpicSpawners;
 import com.craftaro.epicspawners.api.boosts.types.BoostedSpawner;
-import com.craftaro.epicspawners.api.spawners.spawner.PlacedSpawner;
-import com.craftaro.epicspawners.spawners.spawner.PlacedSpawnerImpl;
 import org.bukkit.Location;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class BoostedSpawnerImpl extends BoostedImpl implements BoostedSpawner {
-
     private final Location location;
 
     /**

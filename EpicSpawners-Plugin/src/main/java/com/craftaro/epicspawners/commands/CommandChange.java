@@ -5,8 +5,6 @@ import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.epicspawners.EpicSpawners;
 import com.craftaro.epicspawners.api.spawners.spawner.PlacedSpawner;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerData;
-import com.craftaro.epicspawners.spawners.spawner.PlacedSpawnerImpl;
-import com.craftaro.epicspawners.spawners.spawner.SpawnerDataImpl;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -16,7 +14,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class CommandChange extends AbstractCommand {
-
     private final EpicSpawners plugin;
 
     public CommandChange(EpicSpawners plugin) {
@@ -26,7 +23,9 @@ public class CommandChange extends AbstractCommand {
 
     @Override
     protected ReturnType runCommand(CommandSender sender, String... args) {
-        if (args.length != 1) return ReturnType.SYNTAX_ERROR;
+        if (args.length != 1) {
+            return ReturnType.SYNTAX_ERROR;
+        }
         if (!sender.hasPermission("epicspawners.admin") && !sender.hasPermission("epicspawners.change.*") && !sender.hasPermission("epicspawners.change." + args[0].toUpperCase())) {
             plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
@@ -50,8 +49,9 @@ public class CommandChange extends AbstractCommand {
         for (SpawnerData spawnerData : plugin.getSpawnerManager().getAllSpawnerData()) {
             String input = args[0].toUpperCase().replace("_", "").replace(" ", "");
             String compare = spawnerData.getIdentifyingName().toUpperCase().replace("_", "").replace(" ", "");
-            if (input.equals(compare))
+            if (input.equals(compare)) {
                 data = spawnerData;
+            }
         }
 
         if (data == null) {

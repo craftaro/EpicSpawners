@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.UUID;
 
 public interface PlayerDataManager {
-
     PlayerData getPlayerData(UUID uuid);
 
     PlayerData getPlayerData(Player player);

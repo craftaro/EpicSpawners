@@ -8,19 +8,17 @@ import com.craftaro.epicspawners.api.events.SpawnerChangeEvent;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerData;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerStack;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerTier;
-import com.craftaro.epicspawners.settings.Settings;
 import com.craftaro.epicspawners.api.utils.CostType;
+import com.craftaro.epicspawners.settings.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class SpawnerStackImpl implements SpawnerStack {
-
     private PlacedSpawnerImpl spawner;
     private int stackSize;
 
@@ -58,14 +56,15 @@ public class SpawnerStackImpl implements SpawnerStack {
 
     public SpawnerStackImpl(PlacedSpawnerImpl spawner, SpawnerTier tier, int stackSize) {
         this.spawner = spawner;
-        if (tier != null)
+        if (tier != null) {
             this.currentTier = tier;
+        }
         this.stackSize = stackSize;
     }
 
     @Override
     public PlacedSpawnerImpl getSpawner() {
-        return spawner;
+        return this.spawner;
     }
 
     public void setSpawner(PlacedSpawnerImpl spawner) {
@@ -74,7 +73,7 @@ public class SpawnerStackImpl implements SpawnerStack {
 
     @Override
     public int getStackSize() {
-        return stackSize;
+        return this.stackSize;
     }
 
     @Override
@@ -84,12 +83,12 @@ public class SpawnerStackImpl implements SpawnerStack {
 
     @Override
     public SpawnerTier getCurrentTier() {
-        return currentTier;
+        return this.currentTier;
     }
 
     @Override
     public SpawnerData getSpawnerData() {
-        return currentTier.getSpawnerData();
+        return this.currentTier.getSpawnerData();
     }
 
     @Override
@@ -102,16 +101,16 @@ public class SpawnerStackImpl implements SpawnerStack {
     public void upgrade(Player player, CostType type) {
         EpicSpawners plugin = EpicSpawners.getInstance();
 
-        if (getSpawnerData().getNextTier(currentTier) == null) {
+        if (getSpawnerData().getNextTier(this.currentTier) == null) {
             plugin.getLocale().getMessage("event.upgrade.maxed").sendPrefixedMessage(player);
             return;
         }
 
-        SpawnerTier tier = getSpawnerData().getNextTier(currentTier);
-        SpawnerChangeEvent event = new SpawnerChangeEvent(player, spawner, tier, currentTier);
+        SpawnerTier tier = getSpawnerData().getNextTier(this.currentTier);
+        SpawnerChangeEvent event = new SpawnerChangeEvent(player, this.spawner, tier, this.currentTier);
 
         double cost = tier.getUpgradeCost(type);
-        SpawnerTier oldTier = currentTier;
+        SpawnerTier oldTier = this.currentTier;
 
         if (type == CostType.ECONOMY) {
             if (!EconomyManager.isEnabled()) {
@@ -124,27 +123,33 @@ public class SpawnerStackImpl implements SpawnerStack {
             }
 
             Bukkit.getPluginManager().callEvent(event);
-            if (event.isCancelled()) return;
+            if (event.isCancelled()) {
+                return;
+            }
 
-            if (!player.isOp())
+            if (!player.isOp()) {
                 EconomyManager.withdrawBalance(player, cost);
+            }
 
-            currentTier = tier;
+            this.currentTier = tier;
         } else if (type == CostType.LEVELS) {
             Bukkit.getPluginManager().callEvent(event);
-            if (event.isCancelled()) return;
+            if (event.isCancelled()) {
+                return;
+            }
 
             if (player.getLevel() >= cost || player.getGameMode() == GameMode.CREATIVE && !Settings.CHARGE_FOR_CREATIVE.getBoolean()) {
-                if (player.getGameMode() != GameMode.CREATIVE || Settings.CHARGE_FOR_CREATIVE.getBoolean())
+                if (player.getGameMode() != GameMode.CREATIVE || Settings.CHARGE_FOR_CREATIVE.getBoolean()) {
                     player.setLevel(player.getLevel() - Math.toIntExact(Math.round(cost)));
+                }
 
-                currentTier = tier;
-                spawner.upgradeEffects(player, tier, false);
+                this.currentTier = tier;
+                this.spawner.upgradeEffects(player, tier, false);
             } else {
                 plugin.getLocale().getMessage("event.upgrade.cannotafford").sendPrefixedMessage(player);
             }
         }
-        if (!spawner.merge(this, oldTier)) {
+        if (!this.spawner.merge(this, oldTier)) {
             plugin.getDataManager().getDatabaseConnector().connectDSL(dslContext -> {
                 //Update tier
                 dslContext.update(DSL.table(plugin.getDataManager().getTablePrefix() + "spawner_stacks"))
@@ -160,7 +165,7 @@ public class SpawnerStackImpl implements SpawnerStack {
     @Override
     public void convert(SpawnerData data, Player player, boolean forced) {
         EpicSpawners plugin = EpicSpawners.getInstance();
-        SpawnerTier oldTier = currentTier;
+        SpawnerTier oldTier = this.currentTier;
 
         if (!EconomyManager.isEnabled()) {
             player.sendMessage("Economy not enabled.");
@@ -173,30 +178,31 @@ public class SpawnerStackImpl implements SpawnerStack {
             return;
         }
 
-        SpawnerChangeEvent event = new SpawnerChangeEvent(player, spawner, currentTier, data.getFirstTier());
+        SpawnerChangeEvent event = new SpawnerChangeEvent(player, this.spawner, this.currentTier, data.getFirstTier());
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
             return;
         }
 
-        currentTier = data.getFirstTier();
-        if (!spawner.merge(this, oldTier)) {
-            plugin.getDataManager().save(this, "spawner_id", spawner.getId());
+        this.currentTier = data.getFirstTier();
+        if (!this.spawner.merge(this, oldTier)) {
+            plugin.getDataManager().save(this, "spawner_id", this.spawner.getId());
         }
         try {
-            spawner.getCreatureSpawner().setSpawnedType(EntityType.valueOf(data.getIdentifyingName().toUpperCase()));
+            this.spawner.getCreatureSpawner().setSpawnedType(EntityType.valueOf(data.getIdentifyingName().toUpperCase()));
         } catch (Exception e) {
-            spawner.getCreatureSpawner().setSpawnedType(EntityType.DROPPED_ITEM);
+            this.spawner.getCreatureSpawner().setSpawnedType(EntityType.DROPPED_ITEM);
         }
-        spawner.getCreatureSpawner().update();
+        this.spawner.getCreatureSpawner().update();
 
         plugin.getLocale().getMessage("event.convert.success").sendPrefixedMessage(player);
 
-        plugin.updateHologram(spawner);
-        plugin.getAppearanceTask().updateDisplayItem(spawner, currentTier);
+        plugin.updateHologram(this.spawner);
+        plugin.getAppearanceTask().updateDisplayItem(this.spawner, this.currentTier);
         player.closeInventory();
-        if (!forced)
+        if (!forced) {
             EconomyManager.withdrawBalance(player, price);
+        }
     }
 
     @Override

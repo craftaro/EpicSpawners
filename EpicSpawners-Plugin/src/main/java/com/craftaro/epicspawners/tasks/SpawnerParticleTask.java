@@ -8,7 +8,6 @@ import com.craftaro.epicspawners.api.particles.ParticleEffect;
 import com.craftaro.epicspawners.api.particles.ParticleType;
 import com.craftaro.epicspawners.api.spawners.spawner.PlacedSpawner;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerTier;
-import com.craftaro.epicspawners.spawners.spawner.PlacedSpawnerImpl;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -17,7 +16,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 
 public class SpawnerParticleTask extends BukkitRunnable {
-
     private static final double THETA_INCREMENT = Math.PI / 18.0; // 10 degrees
     private static final int HALO_RADIUS = 1;
 
@@ -40,29 +38,37 @@ public class SpawnerParticleTask extends BukkitRunnable {
 
     @Override
     public void run() {
-        for (PlacedSpawner spawner : new ArrayList<>(plugin.getSpawnerManager().getSpawners())) {
+        for (PlacedSpawner spawner : new ArrayList<>(this.plugin.getSpawnerManager().getSpawners())) {
             if (spawner == null || spawner.getLocation() == null ||
-                    spawner.getStackSize() == 0 || spawner.getFirstStack().getSpawnerData() == null)
+                    spawner.getStackSize() == 0 || spawner.getFirstStack().getSpawnerData() == null) {
                 continue;
+            }
 
             SpawnerTier data = spawner.getFirstStack().getCurrentTier();
-            if (data == null) continue;
+            if (data == null) {
+                continue;
+            }
 
             ParticleEffect effect = data.getParticleEffect();
-            if (effect == null || effect == ParticleEffect.NONE || (data.isParticleEffectBoostedOnly() && spawner.getBoosts().isEmpty()))
+            if (effect == null || effect == ParticleEffect.NONE || (data.isParticleEffectBoostedOnly() && spawner.getBoosts().isEmpty())) {
                 continue;
+            }
 
             Location centre = spawner.getLocation().add(0.5, 0.5, 0.5);
 
             ParticleType particle = data.getSpawnEffectParticle();
-            if (particle == null || particle.getEffect() == null) continue;
+            if (particle == null || particle.getEffect() == null) {
+                continue;
+            }
             ParticleDensity density = data.getParticleDensity();
-            if (density == null) continue;
+            if (density == null) {
+                continue;
+            }
 
             // Particle effects
             if (effect == ParticleEffect.HALO) {
-                double x = HALO_RADIUS * Math.cos(theta);
-                double z = HALO_RADIUS * Math.sin(theta);
+                double x = HALO_RADIUS * Math.cos(this.theta);
+                double z = HALO_RADIUS * Math.sin(this.theta);
 
                 centre.add(x, 0.2, z);
                 spawnParticles(centre, particle, density);
@@ -90,7 +96,7 @@ public class SpawnerParticleTask extends BukkitRunnable {
             }
         }
 
-        if ((theta += THETA_INCREMENT) > 360) {
+        if ((this.theta += THETA_INCREMENT) > 360) {
             this.theta = 0;
         }
     }

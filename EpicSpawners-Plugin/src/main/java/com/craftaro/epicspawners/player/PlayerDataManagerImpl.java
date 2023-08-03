@@ -11,12 +11,11 @@ import java.util.Map;
 import java.util.UUID;
 
 public class PlayerDataManagerImpl implements PlayerDataManager {
-
     private final Map<UUID, PlayerDataImpl> registeredPlayers = new HashMap<>();
 
     @Override
     public PlayerDataImpl getPlayerData(UUID uuid) {
-        return (uuid != null) ? registeredPlayers.computeIfAbsent(uuid, PlayerDataImpl::new) : null;
+        return (uuid != null) ? this.registeredPlayers.computeIfAbsent(uuid, PlayerDataImpl::new) : null;
     }
 
     @Override
@@ -26,12 +25,11 @@ public class PlayerDataManagerImpl implements PlayerDataManager {
 
     @Override
     public boolean isPlayerData(Player player) {
-        return registeredPlayers.containsKey(player.getUniqueId());
+        return this.registeredPlayers.containsKey(player.getUniqueId());
     }
 
     @Override
     public Collection<PlayerData> getRegisteredPlayers() {
-        return Collections.unmodifiableCollection(registeredPlayers.values());
+        return Collections.unmodifiableCollection(this.registeredPlayers.values());
     }
-
 }

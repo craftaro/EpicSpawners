@@ -1,6 +1,5 @@
 package com.craftaro.epicspawners.boost;
 
-import com.craftaro.epicspawners.EpicSpawners;
 import com.craftaro.epicspawners.api.boosts.BoostManager;
 import com.craftaro.epicspawners.api.boosts.types.Boosted;
 import com.craftaro.epicspawners.api.boosts.types.BoostedPlayer;
@@ -17,7 +16,6 @@ import java.util.Set;
 import java.util.UUID;
 
 public class BoostManagerImpl implements BoostManager {
-
     private final Set<Boosted> registeredBoosts = new HashSet<>();
 
     @Override

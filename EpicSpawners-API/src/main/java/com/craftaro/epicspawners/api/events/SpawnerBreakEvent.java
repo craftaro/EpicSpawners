@@ -9,13 +9,22 @@ import org.bukkit.event.HandlerList;
  * Called when a spawner has been broken in the world
  */
 public class SpawnerBreakEvent extends SpawnerEvent implements Cancellable {
-
     private static final HandlerList HANDLERS = new HandlerList();
 
     private boolean cancelled = false;
 
-    public SpawnerBreakEvent(Player player, PlacedSpawner spawner) {
-        super(player, spawner);
+    public SpawnerBreakEvent(Player who, PlacedSpawner spawner) {
+        super(who, spawner);
+    }
+
+    @Override
+    public boolean isCancelled() {
+        return this.cancelled;
+    }
+
+    @Override
+    public void setCancelled(boolean cancel) {
+        this.cancelled = cancel;
     }
 
     @Override
@@ -26,15 +35,4 @@ public class SpawnerBreakEvent extends SpawnerEvent implements Cancellable {
     public static HandlerList getHandlerList() {
         return HANDLERS;
     }
-
-    @Override
-    public boolean isCancelled() {
-        return cancelled;
-    }
-
-    @Override
-    public void setCancelled(boolean canceled) {
-        this.cancelled = canceled;
-    }
-
 }

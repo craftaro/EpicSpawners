@@ -4,7 +4,6 @@ package com.craftaro.epicspawners.api.particles;
  * All possible types of particle patterns to be displayed around a spawner
  */
 public enum ParticleEffect {
-
     /**
      * No particle effect
      */
@@ -20,5 +19,4 @@ public enum ParticleEffect {
      * small circle)
      */
     TARGET
-
 }

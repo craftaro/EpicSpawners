@@ -10,11 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Created by songoda on 2/25/2017.
- */
 public class BlacklistHandler {
-
     private final Config blackConfig = new Config(EpicSpawners.getInstance(), "blacklist.yml");
     private final List<String> list;
 
@@ -27,8 +23,9 @@ public class BlacklistHandler {
 
     public boolean isBlacklisted(Player player, boolean notify) {
         if (list.contains(player.getWorld().getName().toLowerCase())) {
-            if (notify)
+            if (notify) {
                 EpicSpawners.getInstance().getLocale().getMessage("event.block.blacklisted").sendPrefixedMessage(player);
+            }
             return true;
         }
         return false;

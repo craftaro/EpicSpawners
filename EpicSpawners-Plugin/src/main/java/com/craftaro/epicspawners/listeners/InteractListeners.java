@@ -2,9 +2,9 @@ package com.craftaro.epicspawners.listeners;
 
 import com.craftaro.core.compatibility.CompatibleHand;
 import com.craftaro.core.compatibility.CompatibleMaterial;
-import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.compatibility.ServerVersion;
 import com.craftaro.core.hooks.ProtectionManager;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.utils.ItemUtils;
 import com.craftaro.epicspawners.EpicSpawners;
 import com.craftaro.epicspawners.api.events.SpawnerAccessEvent;
@@ -13,9 +13,7 @@ import com.craftaro.epicspawners.api.spawners.spawner.PlacedSpawner;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerStack;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerTier;
 import com.craftaro.epicspawners.settings.Settings;
-import com.craftaro.epicspawners.spawners.spawner.PlacedSpawnerImpl;
 import com.craftaro.epicspawners.spawners.spawner.SpawnerManager;
-import com.craftaro.epicspawners.spawners.spawner.SpawnerStackImpl;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -35,11 +33,7 @@ import org.bukkit.material.SpawnEgg;
 
 import java.util.Optional;
 
-/**
- * Created by songoda on 2/25/2017.
- */
 public class InteractListeners implements Listener {
-
     private final EpicSpawners plugin;
 
     public InteractListeners(EpicSpawners plugin) {
@@ -48,7 +42,7 @@ public class InteractListeners implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void playerInteractEventEgg(PlayerInteractEvent event) {
-        if (!event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
             return;
         }
         Player player = event.getPlayer();
@@ -57,7 +51,7 @@ public class InteractListeners implements Listener {
 
         int radius = Settings.LIQUID_REPEL_RADIUS.getInt();
         if (item != null
-                && item.getType().equals(Material.WATER_BUCKET)
+                && item.getType() == Material.WATER_BUCKET
                 && radius != 0) {
             int bx = block.getX();
             int by = block.getY();
@@ -74,9 +68,13 @@ public class InteractListeners implements Listener {
             }
         }
 
-        if (item == null || item.getType() == Material.AIR) return;
+        if (item == null || item.getType() == Material.AIR) {
+            return;
+        }
 
-        if (block == null || block.getType() != XMaterial.SPAWNER.parseMaterial()) return;
+        if (block == null || block.getType() != XMaterial.SPAWNER.parseMaterial()) {
+            return;
+        }
 
         //Check if the item is a spawn egg
         try {
@@ -87,12 +85,14 @@ public class InteractListeners implements Listener {
 
         event.setCancelled(true);
 
-        if (plugin.getBlacklistHandler().isBlacklisted(player, true)) return;
+        if (this.plugin.getBlacklistHandler().isBlacklisted(player, true)) {
+            return;
+        }
 
-        SpawnerManager spawnerManager = plugin.getSpawnerManager();
+        SpawnerManager spawnerManager = this.plugin.getSpawnerManager();
 
         //Fixme: Why we want to handle non player placed spawners?
-        if (!plugin.getSpawnerManager().isSpawner(block.getLocation())) {
+        if (!this.plugin.getSpawnerManager().isSpawner(block.getLocation())) {
             //createMissingSpawner(block.getLocation(), player);
             return;
         }
@@ -120,14 +120,14 @@ public class InteractListeners implements Listener {
             itype = ((SpawnEgg) item.getData()).getSpawnedType();
         }
 
-        SpawnerTier itemType = plugin.getSpawnerManager().getSpawnerData(itype).getFirstTier();
+        SpawnerTier itemType = this.plugin.getSpawnerManager().getSpawnerData(itype).getFirstTier();
 
         if (!player.hasPermission("epicspawners.egg." + itype) && !player.hasPermission("epicspawners.egg.*")) {
             event.setCancelled(true);
             return;
         }
         if (amt < bmulti) {
-            plugin.getLocale().getMessage("event.egg.needmore")
+            this.plugin.getLocale().getMessage("event.egg.needmore")
                     .processPlaceholder("amount", bmulti).sendPrefixedMessage(player);
             event.setCancelled(true);
             return;
@@ -139,12 +139,12 @@ public class InteractListeners implements Listener {
         }
 
         if (Settings.USE_PROTECTION_PLUGINS.getBoolean() && !ProtectionManager.canInteract(player, block.getLocation())) {
-            player.sendMessage(plugin.getLocale().getMessage("event.general.protected").getPrefixedMessage());
+            player.sendMessage(this.plugin.getLocale().getMessage("event.general.protected").getPrefixedMessage());
             return;
         }
 
         if (blockType.equals(itemType)) {
-            plugin.getLocale().getMessage("event.egg.sametype")
+            this.plugin.getLocale().getMessage("event.egg.sametype")
                     .processPlaceholder("type", blockType.getIdentifyingName()).sendPrefixedMessage(player);
             return;
         }
@@ -156,40 +156,44 @@ public class InteractListeners implements Listener {
             oldEgg.ifPresent(xMaterial -> player.getInventory().addItem(xMaterial.parseItem()));
         }
 
-        SpawnerStack stack = spawner.getFirstStack().setTier(plugin.getSpawnerManager().getSpawnerData(itype).getFirstTier());
-        plugin.getDataManager().save(stack);
+        SpawnerStack stack = spawner.getFirstStack().setTier(this.plugin.getSpawnerManager().getSpawnerData(itype).getFirstTier());
+        this.plugin.getDataManager().save(stack);
         try {
-            spawner.getCreatureSpawner().setSpawnedType(EntityType.valueOf(plugin.getSpawnerManager().getSpawnerData(itype).getIdentifyingName().toUpperCase()));
+            spawner.getCreatureSpawner().setSpawnedType(EntityType.valueOf(this.plugin.getSpawnerManager().getSpawnerData(itype).getIdentifyingName().toUpperCase()));
         } catch (Exception e2) {
             spawner.getCreatureSpawner().setSpawnedType(EntityType.DROPPED_ITEM);
         }
         spawner.getCreatureSpawner().update();
-        
-        plugin.processChange(block);
+
+        this.plugin.processChange(block);
         ItemUtils.takeActiveItem(player, CompatibleHand.getHand(event), bmulti);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void playerInteractEvent(PlayerArmorStandManipulateEvent event) {
-        if (plugin.getSpawnerManager().isSpawner(event.getRightClicked().getLocation().getBlock().getRelative(BlockFace.UP).getLocation())) {
+        if (this.plugin.getSpawnerManager().isSpawner(event.getRightClicked().getLocation().getBlock().getRelative(BlockFace.UP).getLocation())) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void playerInteractEvent(PlayerInteractEvent event) {
-        if (CompatibleHand.getHand(event) == CompatibleHand.OFF_HAND) return;
+        if (CompatibleHand.getHand(event) == CompatibleHand.OFF_HAND) {
+            return;
+        }
 
         Player player = event.getPlayer();
         Block block = event.getClickedBlock();
-        if (block == null) return;
+        if (block == null) {
+            return;
+        }
         Location location = block.getLocation();
         ItemStack item = event.getItem();
 
         boolean isSpawner = block.getType() == XMaterial.SPAWNER.parseMaterial();
 
         //Fixme: Why we want to handle non player placed spawners?
-        if (!isSpawner && !plugin.getSpawnerManager().isSpawner(location)) {
+        if (!isSpawner && !this.plugin.getSpawnerManager().isSpawner(location)) {
             //createMissingSpawner(location, player);
             return;
         }
@@ -202,28 +206,32 @@ public class InteractListeners implements Listener {
             return;
         }
 
-        if (isSpawner && item != null && XMaterial.SPAWNER.equals(XMaterial.matchXMaterial(item))) {
-            PlacedSpawner spawner = plugin.getSpawnerManager().getSpawnerFromWorld(location);
+        if (isSpawner && item != null && XMaterial.SPAWNER == XMaterial.matchXMaterial(item)) {
+            PlacedSpawner spawner = this.plugin.getSpawnerManager().getSpawnerFromWorld(location);
 
-            if (spawner.getPlacedBy() == null && Settings.DISABLE_NATURAL_SPAWNERS.getBoolean()) return;
+            if (spawner.getPlacedBy() == null && Settings.DISABLE_NATURAL_SPAWNERS.getBoolean()) {
+                return;
+            }
 
             if (!player.isSneaking()) {
-                SpawnerTier spawnerTier = plugin.getSpawnerManager().getSpawnerTier(item);
+                SpawnerTier spawnerTier = this.plugin.getSpawnerManager().getSpawnerTier(item);
                 if (player.hasPermission("epicspawners.stack." + spawnerTier.getIdentifyingName()) || player.hasPermission("epicspawners.stack.*")) {
                     if (Settings.USE_PROTECTION_PLUGINS.getBoolean() && !ProtectionManager.canInteract(player, block.getLocation())) {
-                        player.sendMessage(plugin.getLocale().getMessage("event.general.protected").getPrefixedMessage());
+                        player.sendMessage(this.plugin.getLocale().getMessage("event.general.protected").getPrefixedMessage());
                         return;
                     }
 
                     spawner.stack(player, spawnerTier, spawnerTier.getStackSize(item), CompatibleHand.getHand(event));
-                    plugin.updateHologram(spawner);
+                    this.plugin.updateHologram(spawner);
                     event.setCancelled(true);
                 }
             }
-        } else if (isSpawner && !plugin.getBlacklistHandler().isBlacklisted(player, false)) {
-            PlacedSpawner spawner = plugin.getSpawnerManager().getSpawnerFromWorld(location);
+        } else if (isSpawner && !this.plugin.getBlacklistHandler().isBlacklisted(player, false)) {
+            PlacedSpawner spawner = this.plugin.getSpawnerManager().getSpawnerFromWorld(location);
             if (!player.isSneaking() && event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                if ((spawner == null ||spawner.getPlacedBy() == null) && Settings.DISABLE_NATURAL_SPAWNERS.getBoolean()) return;
+                if ((spawner == null || spawner.getPlacedBy() == null) && Settings.DISABLE_NATURAL_SPAWNERS.getBoolean()) {
+                    return;
+                }
 
                 SpawnerAccessEvent accessEvent = new SpawnerAccessEvent(player, spawner);
                 Bukkit.getPluginManager().callEvent(accessEvent);
@@ -232,12 +240,12 @@ public class InteractListeners implements Listener {
                 }
 
                 if (Settings.USE_PROTECTION_PLUGINS.getBoolean() && !ProtectionManager.canInteract(player, block.getLocation())) {
-                    player.sendMessage(plugin.getLocale().getMessage("event.general.protected").getPrefixedMessage());
+                    player.sendMessage(this.plugin.getLocale().getMessage("event.general.protected").getPrefixedMessage());
                     return;
                 }
 
                 spawner.overview(player);
-                plugin.processChange(block);
+                this.plugin.processChange(block);
                 event.setCancelled(true);
             }
         }

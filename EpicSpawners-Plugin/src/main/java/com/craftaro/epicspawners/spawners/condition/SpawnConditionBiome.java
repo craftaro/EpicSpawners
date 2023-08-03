@@ -1,18 +1,16 @@
 package com.craftaro.epicspawners.spawners.condition;
 
+import com.craftaro.core.third_party.org.apache.commons.text.WordUtils;
+import com.craftaro.epicspawners.EpicSpawners;
 import com.craftaro.epicspawners.api.spawners.condition.SpawnCondition;
 import com.craftaro.epicspawners.api.spawners.spawner.PlacedSpawner;
 import com.google.common.collect.Iterables;
-import com.craftaro.core.third_party.org.apache.commons.text.WordUtils;
-import com.craftaro.epicspawners.EpicSpawners;
-import com.craftaro.epicspawners.spawners.spawner.PlacedSpawnerImpl;
 import org.bukkit.block.Biome;
 
 import java.util.EnumSet;
 import java.util.Set;
 
 public class SpawnConditionBiome implements SpawnCondition {
-
     private final Set<Biome> biomes;
 
     public SpawnConditionBiome(Biome... biomes) {
@@ -30,7 +28,7 @@ public class SpawnConditionBiome implements SpawnCondition {
 
     @Override
     public String getDescription() {
-        return (biomes.size() == 1)
+        return (this.biomes.size() == 1)
                 ? EpicSpawners.getInstance().getLocale().getMessage("interface.spawner.conditionBiome1")
                 .processPlaceholder("biome", getFriendlyBiomeName()).getMessage()
                 : EpicSpawners.getInstance().getLocale().getMessage("interface.spawner.conditionBiome2")
@@ -39,14 +37,14 @@ public class SpawnConditionBiome implements SpawnCondition {
 
     @Override
     public boolean isMet(PlacedSpawner spawner) {
-        return biomes.contains(spawner.getLocation().getBlock().getBiome());
+        return this.biomes.contains(spawner.getLocation().getBlock().getBiome());
     }
 
     private String getFriendlyBiomeName() {
-        return WordUtils.capitalizeFully(Iterables.get(biomes, 0).name().replace("_", " "));
+        return WordUtils.capitalizeFully(Iterables.get(this.biomes, 0).name().replace("_", " "));
     }
 
     public Set<Biome> getBiomes() {
-        return biomes;
+        return this.biomes;
     }
 }

@@ -4,7 +4,6 @@ package com.craftaro.epicspawners.api.particles;
  * All possible types of particles supported by EpicSpawners
  */
 public enum ParticleType {
-
     /**
      * A small explosion effect. Not to be confused with the smoke particle
      * effect. This is a poorly named constant. This constant's true particle
@@ -31,7 +30,7 @@ public enum ParticleType {
 
     private final String effect;
 
-    private ParticleType(String effect) {
+    ParticleType(String effect) {
         this.effect = effect;
     }
 
@@ -41,8 +40,6 @@ public enum ParticleType {
      * @return the particle name
      */
     public String getEffect() {
-        return effect;
+        return this.effect;
     }
-
 }
-

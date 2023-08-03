@@ -1,15 +1,14 @@
 package com.craftaro.epicspawners.gui;
 
-import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.gui.CustomizableGui;
 import com.craftaro.core.gui.GuiUtils;
 import com.craftaro.core.hooks.EconomyManager;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.utils.TextUtils;
 import com.craftaro.epicspawners.EpicSpawners;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerData;
-import com.craftaro.epicspawners.settings.Settings;
-import com.craftaro.epicspawners.spawners.spawner.SpawnerDataImpl;
 import com.craftaro.epicspawners.api.utils.HeadUtils;
+import com.craftaro.epicspawners.settings.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -21,7 +20,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class SpawnerShopGui extends CustomizableGui {
-
     private final EpicSpawners plugin;
     private final Player player;
     private final List<SpawnerData> entities = new ArrayList<>();
@@ -35,9 +33,10 @@ public class SpawnerShopGui extends CustomizableGui {
         for (SpawnerData spawnerData : plugin.getSpawnerManager().getAllSpawnerData()) {
             if (!spawnerData.isInShop()
                     || !spawnerData.isActive()
-                    || !player.hasPermission("epicspawners.shop." + spawnerData.getIdentifyingName().replace(" ", "_")))
+                    || !player.hasPermission("epicspawners.shop." + spawnerData.getIdentifyingName().replace(" ", "_"))) {
                 continue;
-            entities.add(spawnerData);
+            }
+            this.entities.add(spawnerData);
         }
 
         setTitle(plugin.getLocale().getMessage("interface.shop.title").getMessage());
@@ -60,52 +59,54 @@ public class SpawnerShopGui extends CustomizableGui {
         mirrorFill("mirrorfill_4", 1, 0, true, true, glass2);
         mirrorFill("mirrorfill_5", 0, 1, true, true, glass2);
 
-        pages = (int) Math.max(1, Math.ceil(entities.size() / ((double) 28)));
+        this.pages = (int) Math.max(1, Math.ceil(this.entities.size() / ((double) 28)));
 
         // enable page event
-        setNextPage(5, 7, GuiUtils.createButtonItem(XMaterial.ARROW, plugin.getLocale().getMessage("general.nametag.next").getMessage()));
-        setPrevPage(5, 1, GuiUtils.createButtonItem(XMaterial.ARROW, plugin.getLocale().getMessage("general.nametag.back").getMessage()));
+        setNextPage(5, 7, GuiUtils.createButtonItem(XMaterial.ARROW, this.plugin.getLocale().getMessage("general.nametag.next").getMessage()));
+        setPrevPage(5, 1, GuiUtils.createButtonItem(XMaterial.ARROW, this.plugin.getLocale().getMessage("general.nametag.back").getMessage()));
         setOnPage((event) -> showPage());
 
         // Sort entities by their shopOrder val
-        entities.sort(Comparator.comparingInt(SpawnerData::getShopOrder));
+        this.entities.sort(Comparator.comparingInt(SpawnerData::getShopOrder));
 
-        List<SpawnerData> data = entities.stream().skip((page - 1) * 28).limit(28).collect(Collectors.toList());
+        List<SpawnerData> data = this.entities.stream().skip((this.page - 1) * 28).limit(28).collect(Collectors.toList());
 
         int num = 11;
         for (SpawnerData spawnerData : data) {
-            if (num == 16 || num == 36)
+            if (num == 16 || num == 36) {
                 num = num + 2;
+            }
 
             ItemStack item = HeadUtils.getTexturedSkull(spawnerData);
 
             if (spawnerData.getDisplayItem() != null) {
                 XMaterial mat = spawnerData.getDisplayItem();
-                if (!mat.equals(XMaterial.AIR))
+                if (mat != XMaterial.AIR) {
                     item = mat.parseItem();
+                }
             }
 
             ItemMeta itemmeta = item.getItemMeta();
             String name = spawnerData.getFirstTier().getCompiledDisplayName();
             ArrayList<String> lore = new ArrayList<>();
             double price = spawnerData.getShopPrice();
-            lore.add(TextUtils.formatText(plugin.getLocale().getMessage("interface.shop.buyprice")
+            lore.add(TextUtils.formatText(this.plugin.getLocale().getMessage("interface.shop.buyprice")
                     .processPlaceholder("cost", EconomyManager.formatEconomy(price)).getMessage()));
-            String loreString = plugin.getLocale().getMessage("interface.shop.lore").getMessage();
+            String loreString = this.plugin.getLocale().getMessage("interface.shop.lore").getMessage();
             if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-                loreString = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, loreString.replace(" ", "_")).replace("_", " ");
+                loreString = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(this.player, loreString.replace(" ", "_")).replace("_", " ");
             }
             lore.add(loreString);
             itemmeta.setLore(lore);
             itemmeta.setDisplayName(name);
             item.setItemMeta(itemmeta);
             setButton(num, item, event ->
-                    guiManager.showGUI(player, new SpawnerShopItemGui(plugin, spawnerData.getFirstTier(), this)));
+                    this.guiManager.showGUI(this.player, new SpawnerShopItemGui(this.plugin, spawnerData.getFirstTier(), this)));
             num++;
         }
 
         setButton("exit", 8, GuiUtils.createButtonItem(Settings.EXIT_ICON.getMaterial(),
-                plugin.getLocale().getMessage("general.nametag.exit").getMessage()),
-                event -> player.closeInventory());
+                        this.plugin.getLocale().getMessage("general.nametag.exit").getMessage()),
+                event -> this.player.closeInventory());
     }
 }

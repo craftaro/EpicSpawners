@@ -1,20 +1,19 @@
 package com.craftaro.epicspawners.gui;
 
-import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.gui.Gui;
 import com.craftaro.core.gui.GuiUtils;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.utils.TextUtils;
 import com.craftaro.epicspawners.EpicSpawners;
 import com.craftaro.epicspawners.api.particles.ParticleDensity;
 import com.craftaro.epicspawners.api.particles.ParticleEffect;
 import com.craftaro.epicspawners.api.particles.ParticleType;
-import com.craftaro.epicspawners.settings.Settings;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerTier;
+import com.craftaro.epicspawners.settings.Settings;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 
 public class EditorParticleGui extends Gui {
-
     private final EpicSpawners plugin;
     private final Gui back;
     private final SpawnerTier spawnerTier;
@@ -60,25 +59,25 @@ public class EditorParticleGui extends Gui {
         setItem(44, glass2);
 
         setButton(0, GuiUtils.createButtonItem(XMaterial.OAK_DOOR,
-                plugin.getLocale().getMessage("general.nametag.back").getMessage()),
-                (event) -> guiManager.showGUI(event.player, back));
+                        this.plugin.getLocale().getMessage("general.nametag.back").getMessage()),
+                (event) -> this.guiManager.showGUI(event.player, this.back));
 
         setButton(20, GuiUtils.createButtonItem(XMaterial.ENDER_PEARL, TextUtils.formatText("&5&lParticle Types",
-                "&7Entity Spawn Particle: &a" + spawnerTier.getEntitySpawnParticle().name(),
+                "&7Entity Spawn Particle: &a" + this.spawnerTier.getEntitySpawnParticle().name(),
                 "&cLeft-Click to change.",
-                "&7Spawner Spawn Particle: &a" + spawnerTier.getSpawnerSpawnParticle().name(),
+                "&7Spawner Spawn Particle: &a" + this.spawnerTier.getSpawnerSpawnParticle().name(),
                 "&cMiddle-Click to change.",
-                "&7Effect Particle: &a" + spawnerTier.getSpawnEffectParticle().name(),
+                "&7Effect Particle: &a" + this.spawnerTier.getSpawnEffectParticle().name(),
                 "&cRight-Click to change.")), event -> {
 
             ClickType type = event.clickType;
             ParticleType currentParticleType;
             if (type == ClickType.LEFT) {
-                currentParticleType = spawnerTier.getEntitySpawnParticle();
+                currentParticleType = this.spawnerTier.getEntitySpawnParticle();
             } else if (type == ClickType.RIGHT) {
-                currentParticleType = spawnerTier.getSpawnEffectParticle();
+                currentParticleType = this.spawnerTier.getSpawnEffectParticle();
             } else {
-                currentParticleType = spawnerTier.getSpawnerSpawnParticle();
+                currentParticleType = this.spawnerTier.getSpawnerSpawnParticle();
             }
 
             boolean next = false;
@@ -96,20 +95,20 @@ public class EditorParticleGui extends Gui {
 
 
             if (type == ClickType.LEFT) {
-                spawnerTier.setEntitySpawnParticle(currentParticleType);
+                this.spawnerTier.setEntitySpawnParticle(currentParticleType);
             } else if (type == ClickType.RIGHT) {
-                spawnerTier.setSpawnEffectParticle(currentParticleType);
+                this.spawnerTier.setSpawnEffectParticle(currentParticleType);
             } else {
-                spawnerTier.setSpawnerSpawnParticle(currentParticleType);
+                this.spawnerTier.setSpawnerSpawnParticle(currentParticleType);
             }
         }).setOnClose(event -> paint());
 
         setButton(22, GuiUtils.createButtonItem(XMaterial.FIREWORK_ROCKET, TextUtils.formatText("&6&lSpawner Effect",
-                "&7Particle Effect: &a" + spawnerTier.getParticleEffect().name(),
+                "&7Particle Effect: &a" + this.spawnerTier.getParticleEffect().name(),
                 "&cLeft-Click to change.",
-                "&7Particle Effect For Boosted Only: &a" + spawnerTier.isParticleEffectBoostedOnly(),
+                "&7Particle Effect For Boosted Only: &a" + this.spawnerTier.isParticleEffectBoostedOnly(),
                 "&cRight-Click to change.")), event -> {
-            ParticleEffect currentParticleEffect = spawnerTier.getParticleEffect();
+            ParticleEffect currentParticleEffect = this.spawnerTier.getParticleEffect();
             ClickType type = event.clickType;
             if (type == ClickType.LEFT) {
                 boolean next = false;
@@ -124,16 +123,16 @@ public class EditorParticleGui extends Gui {
                 if (next) {
                     currentParticleEffect = ParticleEffect.values()[0];
                 }
-                spawnerTier.setParticleEffect(currentParticleEffect);
+                this.spawnerTier.setParticleEffect(currentParticleEffect);
             } else if (type == ClickType.RIGHT) {
-                spawnerTier.setParticleEffectBoostedOnly(!spawnerTier.isParticleEffectBoostedOnly());
+                this.spawnerTier.setParticleEffectBoostedOnly(!this.spawnerTier.isParticleEffectBoostedOnly());
             }
         }).setOnClose(event -> paint());
 
         setButton(24, GuiUtils.createButtonItem(XMaterial.COMPARATOR, TextUtils.formatText("&6&lPerformance",
-                "&7Currently: &a" + spawnerTier.getParticleDensity().name() + " &cClick to change.")),
+                        "&7Currently: &a" + this.spawnerTier.getParticleDensity().name() + " &cClick to change.")),
                 event -> {
-                    ParticleDensity currentParticleDensity = spawnerTier.getParticleDensity();
+                    ParticleDensity currentParticleDensity = this.spawnerTier.getParticleDensity();
 
                     boolean next = false;
                     for (ParticleDensity particleDensity : ParticleDensity.values()) {
@@ -147,8 +146,7 @@ public class EditorParticleGui extends Gui {
                     if (next) {
                         currentParticleDensity = ParticleDensity.values()[0];
                     }
-                    spawnerTier.setParticleDensity(currentParticleDensity);
+                    this.spawnerTier.setParticleDensity(currentParticleDensity);
                 }).setOnClose(event -> paint());
-
     }
 }

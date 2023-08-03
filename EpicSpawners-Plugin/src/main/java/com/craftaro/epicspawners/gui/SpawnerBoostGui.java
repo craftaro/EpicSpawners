@@ -1,11 +1,10 @@
 package com.craftaro.epicspawners.gui;
 
 import com.craftaro.core.database.DataManager;
-import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
-import com.craftaro.core.compatibility.CompatibleSound;
 import com.craftaro.core.gui.CustomizableGui;
 import com.craftaro.core.gui.GuiUtils;
 import com.craftaro.core.hooks.EconomyManager;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.third_party.com.cryptomorin.xseries.XSound;
 import com.craftaro.core.third_party.org.apache.commons.lang3.math.NumberUtils;
 import com.craftaro.core.third_party.org.apache.commons.text.WordUtils;
@@ -16,10 +15,8 @@ import com.craftaro.core.utils.ItemUtils;
 import com.craftaro.core.utils.TextUtils;
 import com.craftaro.epicspawners.EpicSpawners;
 import com.craftaro.epicspawners.api.spawners.spawner.PlacedSpawner;
-import com.craftaro.epicspawners.boost.types.BoostedImpl;
 import com.craftaro.epicspawners.boost.types.BoostedSpawnerImpl;
 import com.craftaro.epicspawners.settings.Settings;
-import com.craftaro.epicspawners.spawners.spawner.PlacedSpawnerImpl;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -29,7 +26,6 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class SpawnerBoostGui extends CustomizableGui {
-
     private final EpicSpawners plugin;
     private final PlacedSpawner spawner;
     private final Player player;
@@ -46,15 +42,15 @@ public class SpawnerBoostGui extends CustomizableGui {
     }
 
     private void setUp() {
-        if (amount > Settings.MAX_PLAYER_BOOST.getInt()) {
-            amount = Settings.MAX_PLAYER_BOOST.getInt();
+        if (this.amount > Settings.MAX_PLAYER_BOOST.getInt()) {
+            this.amount = Settings.MAX_PLAYER_BOOST.getInt();
             return;
-        } else if (amount < 1) {
-            amount = 1;
+        } else if (this.amount < 1) {
+            this.amount = 1;
         }
-        setTitle(plugin.getLocale().getMessage("interface.boost.title")
-                .processPlaceholder("spawner", spawner.getFirstTier().getCompiledDisplayName())
-                .processPlaceholder("amount", amount).getMessage());
+        setTitle(this.plugin.getLocale().getMessage("interface.boost.title")
+                .processPlaceholder("spawner", this.spawner.getFirstTier().getCompiledDisplayName())
+                .processPlaceholder("amount", this.amount).getMessage());
     }
 
     public void paint() {
@@ -72,55 +68,55 @@ public class SpawnerBoostGui extends CustomizableGui {
         mirrorFill("mirrorfill_4", 1, 0, false, true, glass2);
         mirrorFill("mirrorfill_5", 1, 1, false, true, glass3);
 
-        setButton("boost5", 10, GuiUtils.createButtonItem(XMaterial.COAL, plugin.getLocale().getMessage("interface.boost.boostfor")
-                        .processPlaceholder("amount", "5").getMessage(),
-                plugin.getLocale().getMessage("interface.boost.cost")
-                        .processPlaceholder("cost", getBoostCost(5, amount)).getMessage()),
-                event -> purchaseBoost(player, 5, amount));
+        setButton("boost5", 10, GuiUtils.createButtonItem(XMaterial.COAL, this.plugin.getLocale().getMessage("interface.boost.boostfor")
+                                .processPlaceholder("amount", "5").getMessage(),
+                        this.plugin.getLocale().getMessage("interface.boost.cost")
+                                .processPlaceholder("cost", getBoostCost(5, this.amount)).getMessage()),
+                event -> purchaseBoost(this.player, 5, this.amount));
 
-        setButton("boost15", 12, GuiUtils.createButtonItem(XMaterial.IRON_INGOT, plugin.getLocale().getMessage("interface.boost.boostfor")
-                        .processPlaceholder("amount", "15").getMessage(),
-                plugin.getLocale().getMessage("interface.boost.cost")
-                        .processPlaceholder("cost", getBoostCost(15, amount)).getMessage()),
-                event -> purchaseBoost(player, 15, amount));
+        setButton("boost15", 12, GuiUtils.createButtonItem(XMaterial.IRON_INGOT, this.plugin.getLocale().getMessage("interface.boost.boostfor")
+                                .processPlaceholder("amount", "15").getMessage(),
+                        this.plugin.getLocale().getMessage("interface.boost.cost")
+                                .processPlaceholder("cost", getBoostCost(15, this.amount)).getMessage()),
+                event -> purchaseBoost(this.player, 15, this.amount));
 
-        setButton("boost30", 14, GuiUtils.createButtonItem(XMaterial.DIAMOND, plugin.getLocale().getMessage("interface.boost.boostfor")
-                        .processPlaceholder("amount", "30").getMessage(),
-                plugin.getLocale().getMessage("interface.boost.cost")
-                        .processPlaceholder("cost", getBoostCost(30, amount)).getMessage()),
-                event -> purchaseBoost(player, 30, amount));
+        setButton("boost30", 14, GuiUtils.createButtonItem(XMaterial.DIAMOND, this.plugin.getLocale().getMessage("interface.boost.boostfor")
+                                .processPlaceholder("amount", "30").getMessage(),
+                        this.plugin.getLocale().getMessage("interface.boost.cost")
+                                .processPlaceholder("cost", getBoostCost(30, this.amount)).getMessage()),
+                event -> purchaseBoost(this.player, 30, this.amount));
 
-        setButton("boost60", 16, GuiUtils.createButtonItem(XMaterial.EMERALD, plugin.getLocale().getMessage("interface.boost.boostfor")
-                        .processPlaceholder("amount", "60").getMessage(),
-                plugin.getLocale().getMessage("interface.boost.cost")
-                        .processPlaceholder("cost", getBoostCost(60, amount)).getMessage()),
-                event -> purchaseBoost(player, 60, amount));
+        setButton("boost60", 16, GuiUtils.createButtonItem(XMaterial.EMERALD, this.plugin.getLocale().getMessage("interface.boost.boostfor")
+                                .processPlaceholder("amount", "60").getMessage(),
+                        this.plugin.getLocale().getMessage("interface.boost.cost")
+                                .processPlaceholder("cost", getBoostCost(60, this.amount)).getMessage()),
+                event -> purchaseBoost(this.player, 60, this.amount));
 
         setButton("back", 4, GuiUtils.createButtonItem(Settings.EXIT_ICON.getMaterial(),
-                plugin.getLocale().getMessage("general.nametag.back").getMessage()),
-                event -> spawner.overview(player));
+                        this.plugin.getLocale().getMessage("general.nametag.back").getMessage()),
+                event -> this.spawner.overview(this.player));
 
-        if (amount != 1)
+        if (this.amount != 1)
             setButton("minus1", 0, GuiUtils.createButtonItem(ItemUtils.getCustomHead("3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23"),
                     TextUtils.formatText("&6&l-1")), event -> {
-                amount--;
+                this.amount--;
                 setUp();
                 paint();
             });
 
-        if (amount < Settings.MAX_PLAYER_BOOST.getInt())
+        if (this.amount < Settings.MAX_PLAYER_BOOST.getInt())
             setButton("plus1", 8, GuiUtils.createButtonItem(ItemUtils.getCustomHead("1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b"),
                     TextUtils.formatText("&6&l+1")), event -> {
-                amount++;
+                this.amount++;
                 setUp();
                 paint();
             });
     }
 
     private void purchaseBoost(Player player, int time, int amt) {
-        Location location = spawner.getLocation();
+        Location location = this.spawner.getLocation();
         player.closeInventory();
-        EpicSpawners instance = plugin;
+        EpicSpawners instance = this.plugin;
 
         String un = Settings.BOOST_COST.getString();
 
@@ -134,7 +130,7 @@ public class SpawnerBoostGui extends CustomizableGui {
                 if (EconomyManager.hasBalance(player, cost)) {
                     EconomyManager.withdrawBalance(player, cost);
                 } else {
-                    plugin.getLocale().getMessage("event.upgrade.cannotafford").sendPrefixedMessage(player);
+                    this.plugin.getLocale().getMessage("event.upgrade.cannotafford").sendPrefixedMessage(player);
                     return;
                 }
             } else {
@@ -146,7 +142,7 @@ public class SpawnerBoostGui extends CustomizableGui {
                 if (player.getGameMode() != GameMode.CREATIVE || Settings.CHARGE_FOR_CREATIVE.getBoolean())
                     player.setLevel(player.getLevel() - cost);
             } else {
-                plugin.getLocale().getMessage("event.upgrade.cannotafford").sendPrefixedMessage(player);
+                this.plugin.getLocale().getMessage("event.upgrade.cannotafford").sendPrefixedMessage(player);
                 return;
             }
         } else {
@@ -155,7 +151,7 @@ public class SpawnerBoostGui extends CustomizableGui {
                 stack.setAmount(cost);
                 player.getInventory().removeItem(stack);
             } else {
-                plugin.getLocale().getMessage("event.upgrade.cannotafford").sendPrefixedMessage(player);
+                this.plugin.getLocale().getMessage("event.upgrade.cannotafford").sendPrefixedMessage(player);
                 return;
             }
         }
@@ -171,19 +167,19 @@ public class SpawnerBoostGui extends CustomizableGui {
         dataManager.getAsyncPool().execute(() -> {
             dataManager.getDatabaseConnector().connectDSL(context -> {
 
-                Result<Record> result = context.select().from(DSL.table(dataManager.getTablePrefix()+"boosted_spawners"))
+                Result<Record> result = context.select().from(DSL.table(dataManager.getTablePrefix() + "boosted_spawners"))
                         .where(DSL.field("world").eq(boost.getLocation().getWorld().getName()))
                         .and(DSL.field("x").eq(boost.getLocation().getX()))
                         .and(DSL.field("y").eq(boost.getLocation().getY()))
                         .and(DSL.field("z").eq(boost.getLocation().getZ()))
                         .fetch();
 
-                if (result.size() == 0) {
-                    context.insertInto(DSL.table(dataManager.getTablePrefix()+"boosted_spawners"))
+                if (result.isEmpty()) {
+                    context.insertInto(DSL.table(dataManager.getTablePrefix() + "boosted_spawners"))
                             .set(boost.serialize())
                             .execute();
                 } else {
-                    context.update(DSL.table(dataManager.getTablePrefix()+"boosted_spawners"))
+                    context.update(DSL.table(dataManager.getTablePrefix() + "boosted_spawners"))
                             .set(boost.serialize())
                             .where(DSL.field("world").eq(boost.getLocation().getWorld().getName()))
                             .and(DSL.field("x").eq(boost.getLocation().getX()))
@@ -193,7 +189,7 @@ public class SpawnerBoostGui extends CustomizableGui {
                 }
             });
         });
-        plugin.getLocale().getMessage("event.boost.applied").sendPrefixedMessage(player);
+        this.plugin.getLocale().getMessage("event.boost.applied").sendPrefixedMessage(player);
         XSound.ENTITY_VILLAGER_YES.play(player, 1.0f, 1.0f);
     }
 
@@ -223,5 +219,4 @@ public class SpawnerBoostGui extends CustomizableGui {
     public int boostCost(String multi, int time, int amt) {
         return (int) Math.ceil(NumberUtils.toDouble(multi, 1) * time * amt);
     }
-
 }

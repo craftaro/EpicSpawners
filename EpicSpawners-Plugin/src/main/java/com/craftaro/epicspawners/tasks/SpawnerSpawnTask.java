@@ -2,14 +2,13 @@ package com.craftaro.epicspawners.tasks;
 
 import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.epicspawners.EpicSpawners;
+import com.craftaro.epicspawners.api.spawners.spawner.PlacedSpawner;
 import com.craftaro.epicspawners.settings.Settings;
-import com.craftaro.epicspawners.spawners.spawner.PlacedSpawnerImpl;
 import com.craftaro.epicspawners.spawners.spawner.SpawnerManager;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class SpawnerSpawnTask extends BukkitRunnable {
-
     private static SpawnerSpawnTask instance;
     private static EpicSpawners plugin;
 
@@ -32,11 +31,13 @@ public class SpawnerSpawnTask extends BukkitRunnable {
 
     @Override
     public void run() {
-        for (PlacedSpawnerImpl spawner : manager.getSpawners().toArray(new PlacedSpawnerImpl[0])) {
+        for (PlacedSpawner spawner : this.manager.getSpawners().toArray(new PlacedSpawner[0])) {
             try {
                 if (spawner.getWorld() == null
                         || plugin.getBlacklistHandler().isBlacklisted(spawner.getWorld())
-                        || !spawner.getWorld().isChunkLoaded(spawner.getX() >> 4, spawner.getZ() >> 4)) continue;
+                        || !spawner.getWorld().isChunkLoaded(spawner.getX() >> 4, spawner.getZ() >> 4)) {
+                    continue;
+                }
 
                 if (spawner.getLocation().getBlock().getType() != XMaterial.SPAWNER.parseMaterial()
                         || !spawner.isValid()) {
@@ -46,14 +47,20 @@ public class SpawnerSpawnTask extends BukkitRunnable {
 
                 if (spawner.getStackSize() == 0
                         || (spawner.getPlacedBy() == null && Settings.DISABLE_NATURAL_SPAWNERS.getBoolean())
-                        || !spawner.checkConditions()) continue;
+                        || !spawner.checkConditions()) {
+                    continue;
+                }
 
                 CreatureSpawner cSpawner = spawner.getCreatureSpawner();
-                if (cSpawner == null) continue;
+                if (cSpawner == null) {
+                    continue;
+                }
                 int delay = spawner.getCreatureSpawner().getDelay();
                 delay = delay - Settings.CUSTOM_SPAWNER_TICK_RATE.getInt();
                 spawner.getCreatureSpawner().setDelay(delay);
-                if (delay >= 0) continue;
+                if (delay >= 0) {
+                    continue;
+                }
 
                 if (!spawner.spawn()) {
                     spawner.updateDelay();

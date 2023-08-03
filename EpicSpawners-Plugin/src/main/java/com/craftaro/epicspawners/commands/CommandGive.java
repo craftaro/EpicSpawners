@@ -1,14 +1,13 @@
 package com.craftaro.epicspawners.commands;
 
-import com.craftaro.epicspawners.api.spawners.spawner.SpawnerData;
-import com.craftaro.epicspawners.api.spawners.spawner.SpawnerTier;
-import com.google.common.collect.Iterables;
 import com.craftaro.core.commands.AbstractCommand;
 import com.craftaro.core.utils.NumberUtils;
 import com.craftaro.core.utils.TextUtils;
 import com.craftaro.epicspawners.EpicSpawners;
+import com.craftaro.epicspawners.api.spawners.spawner.SpawnerData;
+import com.craftaro.epicspawners.api.spawners.spawner.SpawnerTier;
 import com.craftaro.epicspawners.settings.Settings;
-import com.craftaro.epicspawners.spawners.spawner.SpawnerDataImpl;
+import com.google.common.collect.Iterables;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -23,7 +22,6 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 public class CommandGive extends AbstractCommand {
-
     private final EpicSpawners plugin;
 
     public CommandGive(EpicSpawners plugin) {
@@ -46,16 +44,18 @@ public class CommandGive extends AbstractCommand {
         for (SpawnerData spawnerData : plugin.getSpawnerManager().getAllSpawnerData()) {
             String input = args[1].toUpperCase().replace("_", "").replace(" ", "");
             String compare = spawnerData.getIdentifyingName().toUpperCase().replace("_", "").replace(" ", "");
-            if (input.equals(compare))
+            if (input.equals(compare)) {
                 data = spawnerData;
+            }
         }
 
         if (data == null && !args[1].equalsIgnoreCase("random")) {
             plugin.getLocale().newMessage("&7The entity Type &6" + args[1] + " &7does not exist. Try one of these:").sendPrefixedMessage(sender);
             StringBuilder list = new StringBuilder();
 
-            for (SpawnerData spawnerData : plugin.getSpawnerManager().getAllSpawnerData())
+            for (SpawnerData spawnerData : plugin.getSpawnerManager().getAllSpawnerData()) {
                 list.append(spawnerData.getIdentifyingName().toUpperCase().replace(" ", "_")).append("&7, &6");
+            }
 
             sender.sendMessage(TextUtils.formatText("&6" + list));
             return ReturnType.FAILURE;
@@ -74,8 +74,9 @@ public class CommandGive extends AbstractCommand {
 
         SpawnerTier tier = data.getFirstTier();
         SpawnerTier foundTier = data.getTier(args[2].trim());
-        if (foundTier != null)
+        if (foundTier != null) {
             tier = foundTier;
+        }
 
         if (args.length == 3) {
             giveSpawner(args[0], tier, 1, 1);
@@ -85,20 +86,21 @@ public class CommandGive extends AbstractCommand {
         int amount;
         int stackSize = 1;
 
-            if (!NumberUtils.isInt(args[3])) {
-                plugin.getLocale().newMessage("&6" + args[3] + "&7 is not a number.").sendPrefixedMessage(sender);
-                return ReturnType.FAILURE;
-            } else {
-                amount = Integer.parseInt(args[3]);
-            }
+        if (!NumberUtils.isInt(args[3])) {
+            plugin.getLocale().newMessage("&6" + args[3] + "&7 is not a number.").sendPrefixedMessage(sender);
+            return ReturnType.FAILURE;
+        } else {
+            amount = Integer.parseInt(args[3]);
+        }
 
-        if (args.length > 4)
+        if (args.length > 4) {
             if (!NumberUtils.isInt(args[4])) {
                 plugin.getLocale().newMessage("&6" + args[4] + "&7 is not a number.").sendPrefixedMessage(sender);
                 return ReturnType.FAILURE;
             } else {
                 stackSize = Integer.parseInt(args[4]);
             }
+        }
 
         if (stackSize > Settings.SPAWNERS_MAX.getInt()) {
             plugin.getLocale().newMessage("&7The stack size &6" + stackSize + "&7 is above this spawner types maximum.").sendPrefixedMessage(sender);
@@ -141,11 +143,14 @@ public class CommandGive extends AbstractCommand {
             for (SpawnerData spawnerData : plugin.getSpawnerManager().getAllSpawnerData()) {
                 String input = args[1].toUpperCase().replace("_", "").replace(" ", "");
                 String compare = spawnerData.getIdentifyingName().toUpperCase().replace("_", "").replace(" ", "");
-                if (input.equals(compare))
+                if (input.equals(compare)) {
                     data = spawnerData;
+                }
             }
 
-            if (data == null) return Collections.emptyList();
+            if (data == null) {
+                return Collections.emptyList();
+            }
             return data.getTiers().stream()
                     .map(spawnerTier -> spawnerTier.getIdentifyingName().replace(" ", "_"))
                     .collect(Collectors.toList());

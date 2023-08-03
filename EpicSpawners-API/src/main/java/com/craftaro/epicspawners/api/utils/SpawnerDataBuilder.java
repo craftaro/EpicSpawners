@@ -5,11 +5,6 @@ import com.craftaro.epicspawners.api.spawners.spawner.SpawnerData;
 import java.util.List;
 
 public interface SpawnerDataBuilder {
-
-    /**
-     * Creates a new SpawnerDataBuilder
-     * @return a new SpawnerDataBuilder
-     */
     SpawnerDataBuilder newBuilder(String identifier);
 
     SpawnerDataBuilder setCustom(boolean custom);

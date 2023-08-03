@@ -9,14 +9,12 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 
-/**
- * Created by songoda on 2/25/2017.
- */
 public class InventoryListeners implements Listener {
-
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
-        if (event.getCurrentItem() == null) return;
+        if (event.getCurrentItem() == null) {
+            return;
+        }
 
         if (event.getSlot() != 64537 &&
                 event.getInventory().getType() == InventoryType.ANVIL &&

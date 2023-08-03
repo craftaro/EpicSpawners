@@ -1,31 +1,21 @@
 package com.craftaro.epicspawners.api.utils;
 
-import com.craftaro.core.utils.ItemUtils;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.SkullUtils;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerData;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerTier;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.EnumMap;
 import java.util.Map;
 
-/**
- * Created by songoda on 3/19/2017.
- */
 public class HeadUtils {
-
-    private static final Map<HeadType, String> textureURL = new EnumMap<>(HeadType.class);
+    private static final Map<HeadType, String> TEXTURE_HASHES = new EnumMap<>(HeadType.class);
 
     static {
         for (HeadType type : HeadType.values()) {
-            textureURL.put(type, type.getUrl());
-        }
-    }
-
-    private static HeadType getHeadTypeOrDefault(String name) {
-        try {
-            return HeadType.valueOf(name);
-        } catch (IllegalArgumentException e) {
-            return HeadType.DROPPED_ITEM;
+            TEXTURE_HASHES.put(type, type.getUrlHash());
         }
     }
 
@@ -34,10 +24,29 @@ public class HeadUtils {
     }
 
     public static ItemStack getTexturedSkull(SpawnerData spawnerData) {
-        return ItemUtils.getCustomHead(textureURL.get(getHeadTypeOrDefault(spawnerData.getIdentifyingName().toUpperCase().replace(" ", "_"))));
+        HeadType headType = getHeadTypeOrDefault(spawnerData.getIdentifyingName().toUpperCase().replace(" ", "_"));
+        return createSkullForSkinHash(TEXTURE_HASHES.get(headType));
     }
 
     public static ItemStack getTexturedSkull(HeadType headType) {
-        return ItemUtils.getCustomHead(headType.getUrl());
+        return createSkullForSkinHash(headType.getUrlHash());
+    }
+
+    private static ItemStack createSkullForSkinHash(String textureHash) {
+        ItemStack head = XMaterial.PLAYER_HEAD.parseItem();
+
+        SkullMeta meta = (SkullMeta) head.getItemMeta();
+        SkullUtils.applySkin(meta, textureHash);
+        head.setItemMeta(meta);
+
+        return head;
+    }
+
+    private static HeadType getHeadTypeOrDefault(String name) {
+        try {
+            return HeadType.valueOf(name);
+        } catch (IllegalArgumentException ex) {
+            return HeadType.DROPPED_ITEM;
+        }
     }
 }

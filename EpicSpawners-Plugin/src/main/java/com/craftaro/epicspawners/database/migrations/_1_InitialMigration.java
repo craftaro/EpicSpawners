@@ -2,22 +2,18 @@ package com.craftaro.epicspawners.database.migrations;
 
 import com.craftaro.core.database.DataMigration;
 import com.craftaro.core.database.DatabaseConnector;
-import com.craftaro.core.database.MySQLConnector;
-import com.craftaro.epicspawners.EpicSpawners;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 public class _1_InitialMigration extends DataMigration {
-
     public _1_InitialMigration() {
         super(1);
     }
 
     @Override
     public void migrate(DatabaseConnector databaseConnector, String tablePrefix) throws SQLException {
-
         Connection connection = databaseConnector.getConnection();
 
         // Create spawners table
@@ -74,5 +70,4 @@ public class _1_InitialMigration extends DataMigration {
 
         connection.close();
     }
-
 }

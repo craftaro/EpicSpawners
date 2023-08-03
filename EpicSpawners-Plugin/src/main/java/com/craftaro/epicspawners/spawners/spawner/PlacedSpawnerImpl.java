@@ -1,14 +1,12 @@
 package com.craftaro.epicspawners.spawners.spawner;
 
 import com.craftaro.core.compatibility.CompatibleHand;
-import com.craftaro.core.database.DataManager;
-import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.compatibility.CompatibleParticleHandler;
-import com.craftaro.core.compatibility.CompatibleSound;
-import com.craftaro.core.compatibility.ServerVersion;
 import com.craftaro.core.database.Data;
+import com.craftaro.core.database.DataManager;
 import com.craftaro.core.database.SerializedLocation;
 import com.craftaro.core.nms.world.SpawnedEntity;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.third_party.com.cryptomorin.xseries.XSound;
 import com.craftaro.core.third_party.org.jooq.impl.DSL;
 import com.craftaro.core.utils.PlayerUtils;
@@ -17,21 +15,20 @@ import com.craftaro.epicspawners.EpicSpawners;
 import com.craftaro.epicspawners.api.boosts.types.Boosted;
 import com.craftaro.epicspawners.api.events.SpawnerChangeEvent;
 import com.craftaro.epicspawners.api.events.SpawnerDropEvent;
+import com.craftaro.epicspawners.api.particles.ParticleType;
+import com.craftaro.epicspawners.api.spawners.condition.SpawnCondition;
 import com.craftaro.epicspawners.api.spawners.spawner.PlacedSpawner;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerStack;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerTier;
 import com.craftaro.epicspawners.boost.types.BoostedPlayerImpl;
 import com.craftaro.epicspawners.boost.types.BoostedSpawnerImpl;
 import com.craftaro.epicspawners.gui.SpawnerTiersGui;
-import com.craftaro.epicspawners.api.particles.ParticleType;
 import com.craftaro.epicspawners.settings.Settings;
-import com.craftaro.epicspawners.api.spawners.condition.SpawnCondition;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.enchantments.Enchantment;
@@ -50,10 +47,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class PlacedSpawnerImpl implements PlacedSpawner {
-
     // This is the unique identifier for this hologram.
     // It is reset on every plugin load.
     // Used for holograms.
@@ -105,7 +100,7 @@ public class PlacedSpawnerImpl implements PlacedSpawner {
     /**
      * Constructor used for creating new spawners.
      *
-     * @param location   The location of the spawner
+     * @param location The location of the spawner
      */
     public PlacedSpawnerImpl(Location location) {
         this.location = location;
@@ -115,24 +110,29 @@ public class PlacedSpawnerImpl implements PlacedSpawner {
 
     @Override
     public boolean spawn() {
-        if (getFirstStack().getCurrentTier() == null) return false;
+        if (getFirstStack().getCurrentTier() == null) {
+            return false;
+        }
 
         EpicSpawners instance = EpicSpawners.getInstance();
 
         displaySpawnParticles();
 
-        if (!isRedstonePowered()) return false;
+        if (!isRedstonePowered()) {
+            return false;
+        }
 
-        for (SpawnerStack stack : getSpawnerStacks())
+        for (SpawnerStack stack : getSpawnerStacks()) {
             stack.getCurrentTier().spawn(this, stack);
+        }
 
         //ToDo: This is bad.
-        if (getFirstTier().getSpawnLimit() != -1 && spawnCount * spawnerStacks.size() > getFirstTier().getSpawnLimit()) {
-            location.getBlock().setType(Material.AIR);
+        if (getFirstTier().getSpawnLimit() != -1 && this.spawnCount * this.spawnerStacks.size() > getFirstTier().getSpawnLimit()) {
+            this.location.getBlock().setType(Material.AIR);
 
             CompatibleParticleHandler.spawnParticles(CompatibleParticleHandler.ParticleType.LAVA,
-                    location.clone().add(.5, .5, .5), 5, 0, 0, 0, 5);
-            XSound.ENTITY_GENERIC_EXPLODE.play(location, 10, 10);
+                    this.location.clone().add(.5, .5, .5), 5, 0, 0, 0, 5);
+            XSound.ENTITY_GENERIC_EXPLODE.play(this.location, 10, 10);
 
             instance.getSpawnerManager().removeSpawnerFromWorld(this);
             EpicSpawners.getInstance().getDataManager().delete(this);
@@ -147,9 +147,9 @@ public class PlacedSpawnerImpl implements PlacedSpawner {
 
     @Override
     public void displaySpawnParticles() {
-        Location particleLocation = location.clone();
+        Location particleLocation = this.location.clone();
         particleLocation.add(.5, .5, .5);
-        for (SpawnerStack spawnerStack : spawnerStacks) {
+        for (SpawnerStack spawnerStack : this.spawnerStacks) {
             SpawnerTier spawnerTier = spawnerStack.getCurrentTier();
             ParticleType particleType = spawnerTier.getSpawnerSpawnParticle();
             if (particleType != ParticleType.NONE) {
@@ -164,7 +164,7 @@ public class PlacedSpawnerImpl implements PlacedSpawner {
 
     @Override
     public int spawn(int amountToSpawn, String particle, Set<XMaterial> canSpawnOn, SpawnedEntity spawned, EntityType... types) {
-        return sSpawner.spawn(amountToSpawn, particle, canSpawnOn, spawned, types);
+        return this.sSpawner.spawn(amountToSpawn, particle, canSpawnOn, spawned, types);
     }
 
     @Override
@@ -176,54 +176,57 @@ public class PlacedSpawnerImpl implements PlacedSpawner {
 
     @Override
     public Location getLocation() {
-        return location.clone();
+        return this.location.clone();
     }
 
     @Override
     public int getX() {
-        return location.getBlockX();
+        return this.location.getBlockX();
     }
 
     @Override
     public int getY() {
-        return location.getBlockY();
+        return this.location.getBlockY();
     }
 
     @Override
     public int getZ() {
-        return location.getBlockZ();
+        return this.location.getBlockZ();
     }
 
     @Override
     public World getWorld() {
-        return location.getWorld();
+        return this.location.getWorld();
     }
 
     @Override
     public CreatureSpawner getCreatureSpawner() {
-        if (!getWorld().isChunkLoaded(getX() >> 4, getZ() >> 4))
+        if (!getWorld().isChunkLoaded(getX() >> 4, getZ() >> 4)) {
             return null;
-        if (creatureSpawner == null) {
-            if (location.getBlock().getType() != XMaterial.SPAWNER.parseMaterial()) {
+        }
+        if (this.creatureSpawner == null) {
+            if (this.location.getBlock().getType() != XMaterial.SPAWNER.parseMaterial()) {
                 EpicSpawners.getInstance().getSpawnerManager().removeSpawnerFromWorld(this);
                 EpicSpawners.getInstance().getDataManager().delete(this);
                 return null;
             }
-            this.creatureSpawner = (CreatureSpawner) location.getBlock().getState();
+            this.creatureSpawner = (CreatureSpawner) this.location.getBlock().getState();
         }
-        return creatureSpawner;
+        return this.creatureSpawner;
     }
 
     @Override
     public SpawnerStack getFirstStack() {
-        if (spawnerStacks.size() == 0) return null;
-        return spawnerStacks.getFirst();
+        if (this.spawnerStacks.isEmpty()) {
+            return null;
+        }
+        return this.spawnerStacks.getFirst();
     }
 
     @Override
     public int getStackSize() {
         int multi = 0;
-        for (SpawnerStack stack : spawnerStacks) {
+        for (SpawnerStack stack : this.spawnerStacks) {
             multi += stack.getStackSize();
         }
         return multi;
@@ -231,19 +234,24 @@ public class PlacedSpawnerImpl implements PlacedSpawner {
 
     @Override
     public boolean checkConditions() {
-        for (SpawnerStack stack : spawnerStacks) {
+        for (SpawnerStack stack : this.spawnerStacks) {
             SpawnerTier tier = stack.getCurrentTier();
-            if (tier == null) continue;
-            for (SpawnCondition spawnCondition : tier.getConditions())
-                if (!spawnCondition.isMet(this)) return false;
+            if (tier == null) {
+                continue;
+            }
+            for (SpawnCondition spawnCondition : tier.getConditions()) {
+                if (!spawnCondition.isMet(this)) {
+                    return false;
+                }
+            }
         }
         return true;
     }
 
     @Override
     public boolean isRedstonePowered() {
-        return (!location.getBlock().isBlockPowered()
-                && !location.getBlock().isBlockIndirectlyPowered())
+        return (!this.location.getBlock().isBlockPowered()
+                && !this.location.getBlock().isBlockIndirectlyPowered())
                 || !Settings.REDSTONE_ACTIVATE.getBoolean();
     }
 
@@ -251,7 +259,9 @@ public class PlacedSpawnerImpl implements PlacedSpawner {
     public void overview(Player player) {
         EpicSpawners plugin = EpicSpawners.getInstance();
         if (!player.hasPermission("epicspawners.overview")
-                || (getPlacedBy() == null && Settings.DISABLE_NATURAL_SPAWNERS.getBoolean())) return;
+                || (getPlacedBy() == null && Settings.DISABLE_NATURAL_SPAWNERS.getBoolean())) {
+            return;
+        }
         SpawnerTiersGui.openTiers(plugin, player, this);
     }
 
@@ -259,7 +269,9 @@ public class PlacedSpawnerImpl implements PlacedSpawner {
     public boolean unstack(Player player, CompatibleHand hand) {
         EpicSpawners instance = EpicSpawners.getInstance();
         SpawnerStack stack = getFirstStack();
-        if (stack == null || stack.getSpawner().getId() == -1) return false; //Not a stack
+        if (stack == null || stack.getSpawner().getId() == -1) {
+            return false; //Not a stack
+        }
 
         int stackSize = 1;
 
@@ -292,8 +304,8 @@ public class PlacedSpawnerImpl implements PlacedSpawner {
                 for (ItemStack itemStack : leftOver) {
                     player.getWorld().dropItemNaturally(player.getLocation(), itemStack);
                 }
-            } else if (!Settings.ONLY_DROP_PLACED.getBoolean() || placedBy != null) {
-                int ch = Integer.parseInt((placedBy != null
+            } else if (!Settings.ONLY_DROP_PLACED.getBoolean() || this.placedBy != null) {
+                int ch = Integer.parseInt((this.placedBy != null
                         ? Settings.SILKTOUCH_PLACED_SPAWNER_DROP_CHANCE.getString() : Settings.SILKTOUCH_NATURAL_SPAWNER_DROP_CHANCE.getString()).replace("%", ""));
 
                 double rand = Math.random() * 100;
@@ -305,10 +317,11 @@ public class PlacedSpawnerImpl implements PlacedSpawner {
                         return false;
                     }
 
-                    if (Settings.SPAWNERS_TO_INVENTORY.getBoolean() && player.getInventory().firstEmpty() != -1)
+                    if (Settings.SPAWNERS_TO_INVENTORY.getBoolean() && player.getInventory().firstEmpty() != -1) {
                         player.getInventory().addItem(item);
-                    else
-                        location.getWorld().dropItemNaturally(location.clone().add(.5, 0, .5), item);
+                    } else {
+                        this.location.getWorld().dropItemNaturally(this.location.clone().add(.5, 0, .5), item);
+                    }
                 }
             }
         }
@@ -319,12 +332,14 @@ public class PlacedSpawnerImpl implements PlacedSpawner {
             return true;
         }
 
-        spawnerStacks.remove(stack);
+        this.spawnerStacks.remove(stack);
         EpicSpawners.getInstance().getDataManager().delete(stack);
 
-        if (spawnerStacks.size() != 0) return true;
+        if (this.spawnerStacks.size() != 0) {
+            return true;
+        }
 
-        location.getBlock().setType(Material.AIR);
+        this.location.getBlock().setType(Material.AIR);
         EpicSpawners.getInstance().getSpawnerManager().removeSpawnerFromWorld(this);
         EpicSpawners.getInstance().getDataManager().delete(this);
         instance.clearHologram(this);
@@ -344,20 +359,25 @@ public class PlacedSpawnerImpl implements PlacedSpawner {
         }
 
         if (tier != getFirstTier()
-                && (!Settings.OMNI_SPAWNERS.getBoolean() || !player.hasPermission("epicspawners.omni")))
+                && (!Settings.OMNI_SPAWNERS.getBoolean() || !player.hasPermission("epicspawners.omni"))) {
             return false;
+        }
 
         SpawnerChangeEvent event = new SpawnerChangeEvent(player, this, currentStackSize + amount, currentStackSize);
         Bukkit.getPluginManager().callEvent(event);
-        if (event.isCancelled()) return false;
+        if (event.isCancelled()) {
+            return false;
+        }
 
         if ((getStackSize() + amount) > max) {
             PlayerUtils.giveItem(player, tier.toItemStack(1, (getStackSize() + amount) - max));
             amount = max - currentStackSize;
         }
 
-        for (SpawnerStack spawnerStack: spawnerStacks) {
-            if (!spawnerStack.getCurrentTier().equals(tier)) continue;
+        for (SpawnerStack spawnerStack : this.spawnerStacks) {
+            if (!spawnerStack.getCurrentTier().equals(tier)) {
+                continue;
+            }
             spawnerStack.setStackSize(spawnerStack.getStackSize() + amount);
             //plugin.getDataManager().saveSync(spawnerStack, "spawner_id", spawnerStack.getSpawner().getId());
             // Not sure why this is not working. Maybe no key defined?
@@ -378,7 +398,6 @@ public class PlacedSpawnerImpl implements PlacedSpawner {
             });
 
 
-
             upgradeEffects(player, tier, true);
 
             if (player.getGameMode() != GameMode.CREATIVE || Settings.CHARGE_FOR_CREATIVE.getBoolean()) {
@@ -391,15 +410,16 @@ public class PlacedSpawnerImpl implements PlacedSpawner {
         addSpawnerStack(stack);
         plugin.getDataManager().save(stack, "spawner_id", stack.getSpawner().getId());
 
-        if (player.getGameMode() != GameMode.CREATIVE || Settings.CHARGE_FOR_CREATIVE.getBoolean())
+        if (player.getGameMode() != GameMode.CREATIVE || Settings.CHARGE_FOR_CREATIVE.getBoolean()) {
             hand.takeItem(player);
+        }
 
         return true;
     }
 
     @Override
     public SpawnerTier getFirstTier() {
-        return spawnerStacks.getFirst().getCurrentTier();
+        return this.spawnerStacks.getFirst().getCurrentTier();
     }
 
     @Override
@@ -407,17 +427,19 @@ public class PlacedSpawnerImpl implements PlacedSpawner {
         EpicSpawners plugin = EpicSpawners.getInstance();
         int currentStackSize = getStackSize();
 
-        if (stacked)
-            if (getStackSize() != Settings.SPAWNERS_MAX.getInt())
+        if (stacked) {
+            if (getStackSize() != Settings.SPAWNERS_MAX.getInt()) {
                 plugin.getLocale().getMessage("event.upgrade.success")
                         .processPlaceholder("size", currentStackSize).sendPrefixedMessage(player);
-            else
+            } else {
                 plugin.getLocale().getMessage("event.upgrade.successmaxed")
                         .processPlaceholder("size", currentStackSize).sendPrefixedMessage(player);
-        else
+            }
+        } else {
             plugin.getLocale().getMessage("event.tierup.success").processPlaceholder("tier", tier.getCompiledDisplayName());
+        }
 
-        Location loc = location.clone();
+        Location loc = this.location.clone();
         loc.setX(loc.getX() + .5);
         loc.setY(loc.getY() + .5);
         loc.setZ(loc.getZ() + .5);
@@ -449,7 +471,9 @@ public class PlacedSpawnerImpl implements PlacedSpawner {
 
         List<Boosted> found = new ArrayList<>();
         for (Boosted boost : new ArrayList<>(boosts)) {
-            if (boost instanceof BoostedPlayerImpl && placedBy == null) continue;
+            if (boost instanceof BoostedPlayerImpl && this.placedBy == null) {
+                continue;
+            }
             BoostedSpawnerImpl boostedSpawner = (BoostedSpawnerImpl) boost;
             if (System.currentTimeMillis() >= boost.getEndTime()) {
                 instance.getBoostManager().removeBoost(boost);
@@ -467,9 +491,13 @@ public class PlacedSpawnerImpl implements PlacedSpawner {
             }
 
             if (boost instanceof BoostedSpawnerImpl) {
-                if (!location.equals(((BoostedSpawnerImpl) boost).getLocation())) continue;
+                if (!this.location.equals(((BoostedSpawnerImpl) boost).getLocation())) {
+                    continue;
+                }
             } else if (boost instanceof BoostedPlayerImpl) {
-                if (!placedBy.equals(((BoostedPlayerImpl) boost).getPlayer().getUniqueId())) continue;
+                if (!this.placedBy.equals(((BoostedPlayerImpl) boost).getPlayer().getUniqueId())) {
+                    continue;
+                }
             }
             found.add(boost);
         }
@@ -480,7 +508,7 @@ public class PlacedSpawnerImpl implements PlacedSpawner {
     public int updateDelay() {
         int max = 0;
         int min = 0;
-        for (SpawnerStack stack : spawnerStacks) {
+        for (SpawnerStack stack : this.spawnerStacks) {
             String tickRate = stack.getCurrentTier().getTickRate();
 
             String[] tick = tickRate.contains(":") ? tickRate.split(":") : new String[]{tickRate, tickRate};
@@ -499,7 +527,9 @@ public class PlacedSpawnerImpl implements PlacedSpawner {
         }
         int extraTicks = Settings.EXTRA_SPAWN_TICKS.getInt();
 
-        if (getStackSize() == 0) return 0;
+        if (getStackSize() == 0) {
+            return 0;
+        }
 
         int delay = (int) (Math.random() * (max - min)) + min + extraTicks;
 
@@ -511,43 +541,46 @@ public class PlacedSpawnerImpl implements PlacedSpawner {
 
     @Override
     public String getIdentifyingName() {
-        String name = spawnerStacks.getFirst().getSpawnerData().getIdentifyingName();
+        String name = this.spawnerStacks.getFirst().getSpawnerData().getIdentifyingName();
 
-        if (spawnerStacks.size() > 1)
+        if (this.spawnerStacks.size() > 1) {
             name = EpicSpawners.getInstance().getSpawnerManager().getSpawnerData("omni").getIdentifyingName();
+        }
 
         return name;
     }
 
     @Override
     public List<SpawnerStack> getSpawnerStacks() {
-        return new LinkedList<>(spawnerStacks);
+        return new LinkedList<>(this.spawnerStacks);
     }
 
     @Override
     public void replaceStacks(List<SpawnerStack> stacks) {
-        spawnerStacks.clear();
-        spawnerStacks.addAll(stacks);
+        this.spawnerStacks.clear();
+        this.spawnerStacks.addAll(stacks);
     }
 
     @Override
     public OfflinePlayer getPlacedBy() {
-        if (placedBy == null) return null;
-        return Bukkit.getOfflinePlayer(placedBy);
+        if (this.placedBy == null) {
+            return null;
+        }
+        return Bukkit.getOfflinePlayer(this.placedBy);
     }
 
     @Override
     public int getId() {
-        return id;
+        return this.id;
     }
 
     @Override
     public Map<String, Object> serialize() {
         Map<String, Object> map = new HashMap<>();
-        map.put("id", id);
-        map.put("spawn_count", spawnCount);
-        map.put("placed_by", placedBy.toString());
-        map.putAll(SerializedLocation.of(location));
+        map.put("id", this.id);
+        map.put("spawn_count", this.spawnCount);
+        map.put("placed_by", this.placedBy.toString());
+        map.putAll(SerializedLocation.of(this.location));
         return map;
     }
 
@@ -582,7 +615,7 @@ public class PlacedSpawnerImpl implements PlacedSpawner {
 
     @Override
     public int getSpawnCount() {
-        return spawnCount;
+        return this.spawnCount;
     }
 
     @Override
@@ -592,7 +625,7 @@ public class PlacedSpawnerImpl implements PlacedSpawner {
 
     @Override
     public String getOmniState() {
-        return omniState;
+        return this.omniState;
     }
 
     @Override
@@ -611,7 +644,7 @@ public class PlacedSpawnerImpl implements PlacedSpawner {
 
     @Override
     public boolean isValid() {
-        return !spawnerStacks.isEmpty()
+        return !this.spawnerStacks.isEmpty()
                 && getFirstStack() != null
                 && getFirstStack().getCurrentTier() != null
                 && getFirstStack().getSpawnerData() != null;
@@ -625,12 +658,14 @@ public class PlacedSpawnerImpl implements PlacedSpawner {
 
         for (SpawnerStack stack : getSpawnerStacks()) {
             if (stack == toMerge
-                    || !stack.getCurrentTier().equals(toMerge.getCurrentTier())) continue;
+                    || !stack.getCurrentTier().equals(toMerge.getCurrentTier())) {
+                continue;
+            }
             stack.setStackSize(toMerge.getStackSize() + stack.getStackSize());
-            spawnerStacks.remove(toMerge);
+            this.spawnerStacks.remove(toMerge);
             plugin.getDataManager().getDatabaseConnector().connectDSL(dslContext -> {
                 //Delete the old stack
-                dslContext.update(DSL.table(tablePrefix+"spawner_stacks"))
+                dslContext.update(DSL.table(tablePrefix + "spawner_stacks"))
                         .set(toMerge.serialize())
                         .where(DSL.field("spawner_id").eq(getId()))
                         .and(DSL.field("data_type").eq(oldTier.getSpawnerData().getIdentifyingName()))
@@ -649,36 +684,40 @@ public class PlacedSpawnerImpl implements PlacedSpawner {
 
     @Override
     public String getHologramId() {
-        return "EpicSpawners-" + uniqueHologramId;
+        return "EpicSpawners-" + this.uniqueHologramId;
     }
 
     @Override
     public int hashCode() {
-        int result = 31 * (location == null ? 0 : location.hashCode());
-        result = 31 * result + (placedBy == null ? 0 : placedBy.hashCode());
+        int result = 31 * (this.location == null ? 0 : this.location.hashCode());
+        result = 31 * result + (this.placedBy == null ? 0 : this.placedBy.hashCode());
         return result;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (!(obj instanceof PlacedSpawnerImpl)) return false;
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof PlacedSpawnerImpl)) {
+            return false;
+        }
 
         PlacedSpawnerImpl other = (PlacedSpawnerImpl) obj;
-        return Objects.equals(location, other.location) && Objects.equals(placedBy, other.placedBy);
+        return Objects.equals(this.location, other.location) && Objects.equals(this.placedBy, other.placedBy);
     }
 
     @Override
     public String toString() {
         return "Spawner:{"
-                + "Owner:\"" + placedBy + "\","
+                + "Owner:\"" + this.placedBy + "\","
                 + "Location:{"
-                + "World:\"" + location.getWorld().getName() + "\","
-                + "X:" + location.getBlockX() + ","
-                + "Y:" + location.getBlockY() + ","
-                + "Z:" + location.getBlockZ()
+                + "World:\"" + this.location.getWorld().getName() + "\","
+                + "X:" + this.location.getBlockX() + ","
+                + "Y:" + this.location.getBlockY() + ","
+                + "Z:" + this.location.getBlockZ()
                 + "},"
-                + "StackCount:" + spawnerStacks.size()
+                + "StackCount:" + this.spawnerStacks.size()
                 + "}";
     }
 }

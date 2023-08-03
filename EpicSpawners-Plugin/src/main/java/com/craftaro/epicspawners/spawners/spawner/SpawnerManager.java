@@ -1,27 +1,27 @@
 package com.craftaro.epicspawners.spawners.spawner;
 
 import com.craftaro.core.compatibility.CompatibleBiome;
-import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.configuration.Config;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.third_party.de.tr7zw.nbtapi.NBTItem;
 import com.craftaro.core.third_party.org.apache.commons.text.WordUtils;
 import com.craftaro.core.utils.EntityUtils;
 import com.craftaro.epicspawners.EpicSpawners;
-import com.craftaro.epicspawners.api.spawners.spawner.PlacedSpawner;
-import com.craftaro.epicspawners.api.spawners.spawner.SpawnerData;
 import com.craftaro.epicspawners.api.particles.ParticleDensity;
 import com.craftaro.epicspawners.api.particles.ParticleEffect;
 import com.craftaro.epicspawners.api.particles.ParticleType;
 import com.craftaro.epicspawners.api.spawners.condition.SpawnCondition;
+import com.craftaro.epicspawners.api.spawners.spawner.PlacedSpawner;
+import com.craftaro.epicspawners.api.spawners.spawner.SpawnerData;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerStack;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerTier;
+import com.craftaro.epicspawners.api.utils.SpawnerTierBuilder;
 import com.craftaro.epicspawners.spawners.condition.SpawnConditionBiome;
 import com.craftaro.epicspawners.spawners.condition.SpawnConditionHeight;
 import com.craftaro.epicspawners.spawners.condition.SpawnConditionLightDark;
 import com.craftaro.epicspawners.spawners.condition.SpawnConditionNearbyEntities;
 import com.craftaro.epicspawners.spawners.condition.SpawnConditionNearbyPlayers;
 import com.craftaro.epicspawners.spawners.condition.SpawnConditionStorm;
-import com.craftaro.epicspawners.api.utils.SpawnerTierBuilder;
 import com.craftaro.epicspawners.utils.SpawnerDataBuilderImpl;
 import com.craftaro.epicspawners.utils.SpawnerTierBuilderImpl;
 import org.bukkit.Location;
@@ -50,7 +50,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class SpawnerManager {
-
     private final EpicSpawners plugin;
 
     // These are the spawner types loaded into memory.
@@ -68,7 +67,7 @@ public class SpawnerManager {
 
     public SpawnerManager(EpicSpawners plugin) {
         this.plugin = plugin;
-        spawnerConfig.load();
+        this.spawnerConfig.load();
         Arrays.stream(EntityType.values()).filter(entityType -> entityType.isSpawnable()
                 && entityType.isAlive()
                 && entityType != EntityType.ARMOR_STAND).forEach(this::processDefaultSpawner);
@@ -79,8 +78,11 @@ public class SpawnerManager {
     }
 
     public SpawnerData getSpawnerData(String name) {
-        return registeredSpawnerData.values().stream().filter(spawnerData -> spawnerData.getIdentifyingName()
-                .equalsIgnoreCase(name)).findFirst().orElse(null);
+        return this.registeredSpawnerData.values()
+                .stream()
+                .filter(spawnerData -> spawnerData.getIdentifyingName().equalsIgnoreCase(name))
+                .findFirst()
+                .orElse(null);
     }
 
     public SpawnerData getSpawnerData(EntityType type) {
@@ -88,14 +90,17 @@ public class SpawnerManager {
     }
 
     public SpawnerTier getSpawnerTier(ItemStack item) {
-        if (item == null) return null;
+        if (item == null) {
+            return null;
+        }
 
         NBTItem nbtItem = new NBTItem(item);
-        if (nbtItem.hasKey("data")) {
+        if (nbtItem.hasTag("data")) {
             String type = nbtItem.getString("data");
             SpawnerData data = getSpawnerData(type);
-            if (data != null && nbtItem.hasKey("tier"))
+            if (data != null && nbtItem.hasTag("tier")) {
                 return data.getTierOrFirst(nbtItem.getString("tier"));
+            }
         }
 
         BlockStateMeta bsm = (BlockStateMeta) item.getItemMeta();
@@ -103,78 +108,78 @@ public class SpawnerManager {
         return getSpawnerData(cs.getSpawnedType()).getFirstTier();
     }
 
-    public SpawnerData addSpawnerData(String name, SpawnerData SpawnerData) {
-        this.registeredSpawnerData.put(name.toLowerCase(), SpawnerData);
-        SpawnerData.reloadSpawnMethods();
-        return SpawnerData;
+    public SpawnerData addSpawnerData(String name, SpawnerData spawnerData) {
+        this.registeredSpawnerData.put(name.toLowerCase(), spawnerData);
+        spawnerData.reloadSpawnMethods();
+        return spawnerData;
     }
 
-    public void addSpawnerData(SpawnerData SpawnerData) {
-        this.registeredSpawnerData.put(SpawnerData.getIdentifyingName().toLowerCase(), SpawnerData);
+    public void addSpawnerData(SpawnerData spawnerData) {
+        this.registeredSpawnerData.put(spawnerData.getIdentifyingName().toLowerCase(), spawnerData);
     }
 
     public void removeSpawnerData(String name) {
-        registeredSpawnerData.remove(name.toLowerCase());
+        this.registeredSpawnerData.remove(name.toLowerCase());
     }
 
     public Collection<SpawnerData> getAllSpawnerData() {
-        return Collections.unmodifiableCollection(registeredSpawnerData.values());
+        return Collections.unmodifiableCollection(this.registeredSpawnerData.values());
     }
 
     public Collection<SpawnerData> getAllEnabledSpawnerData() {
-        return registeredSpawnerData.values().stream().filter(SpawnerData::isActive).collect(Collectors.toList());
+        return this.registeredSpawnerData.values().stream().filter(SpawnerData::isActive).collect(Collectors.toList());
     }
 
     public boolean isSpawner(Location location) {
-        return spawnersInWorld.containsKey(location);
+        return this.spawnersInWorld.containsKey(location);
     }
 
     public boolean isSpawnerData(String type) {
-        return registeredSpawnerData.containsKey(type.toLowerCase());
+        return this.registeredSpawnerData.containsKey(type.toLowerCase());
     }
 
     public PlacedSpawner getSpawnerFromWorld(Location location) {
-        return spawnersInWorld.get(location);
+        return this.spawnersInWorld.get(location);
     }
 
     public void addSpawnerToWorld(Location location, PlacedSpawner spawner) {
-        spawnersInWorld.put(location, spawner);
+        this.spawnersInWorld.put(location, spawner);
     }
 
     public PlacedSpawner removeSpawnerFromWorld(Location location) {
-        return spawnersInWorld.remove(location);
+        return this.spawnersInWorld.remove(location);
     }
 
     public PlacedSpawner removeSpawnerFromWorld(PlacedSpawner spawner) {
-        return spawnersInWorld.remove(spawner.getLocation());
+        return this.spawnersInWorld.remove(spawner.getLocation());
     }
 
     public Collection<PlacedSpawner> getSpawners() {
-        return Collections.unmodifiableCollection(spawnersInWorld.values());
+        return Collections.unmodifiableCollection(this.spawnersInWorld.values());
     }
 
     public void addSpawners(Map<Location, PlacedSpawner> spawners) {
-        spawnersInWorld.putAll(spawners);
+        this.spawnersInWorld.putAll(spawners);
     }
 
     public void addSpawners(List<PlacedSpawner> spawners) {
-        spawners.forEach(spawner -> spawnersInWorld.put(spawner.getLocation(), (PlacedSpawnerImpl) spawner));
+        spawners.forEach(spawner -> this.spawnersInWorld.put(spawner.getLocation(), (PlacedSpawnerImpl) spawner));
     }
 
     public void addCooldown(PlacedSpawner spawner) {
-        pickingUp.add(spawner);
+        this.pickingUp.add(spawner);
     }
 
     public void removeCooldown(PlacedSpawner spawner) {
-        pickingUp.remove(spawner);
+        this.pickingUp.remove(spawner);
     }
 
     public boolean hasCooldown(PlacedSpawner spawner) {
-        return pickingUp.contains(spawner);
+        return this.pickingUp.contains(spawner);
     }
 
     public int getAmountPlaced(Player player) {
-        return Math.toIntExact(spawnersInWorld.values().stream().filter(spawner -> spawner.getPlacedBy() != null
+        return Math.toIntExact(this.spawnersInWorld.values().stream().filter(spawner -> spawner.getPlacedBy() != null
                 && player.getUniqueId().equals(spawner.getPlacedBy().getUniqueId())).count()) + 1;
     }
 
@@ -182,8 +187,9 @@ public class SpawnerManager {
         String typeString = type.name();
         FileConfiguration spawnerConfig = this.spawnerConfig.getFileConfig();
 
-        if (spawnerConfig.isConfigurationSection("Spawners." + typeString))
+        if (spawnerConfig.isConfigurationSection("Spawners." + typeString)) {
             return;
+        }
 
         SpawnerData spawnerData = new SpawnerDataBuilderImpl(typeString).setCustom(false)
                 .setActive(true)
@@ -243,18 +249,20 @@ public class SpawnerManager {
 
         spawnerData.addTier(tier);
 
-        registeredSpawnerData.put(typeString, spawnerData);
+        this.registeredSpawnerData.put(typeString, spawnerData);
     }
 
     @SuppressWarnings("unchecked")
     public void loadSpawnerDataFromFile() {
-        registeredSpawnerData.clear();
+        this.registeredSpawnerData.clear();
         // Register spawner data into SpawnerRegistry from configuration.
         FileConfiguration spawnerConfig = this.spawnerConfig.getFileConfig();
 
-        lastLoad = spawnerConfig.saveToString();
+        this.lastLoad = spawnerConfig.saveToString();
 
-        if (!spawnerConfig.contains("Spawners")) return;
+        if (!spawnerConfig.contains("Spawners")) {
+            return;
+        }
         for (String key : spawnerConfig.getConfigurationSection("Spawners").getKeys(false)) {
             ConfigurationSection currentSection = spawnerConfig.getConfigurationSection("Spawners." + key);
 
@@ -320,13 +328,14 @@ public class SpawnerManager {
                 if (currentSection2.contains("Conditions")) {
                     String biomeString = currentSection2.getString("Conditions.Biomes");
                     Set<Biome> biomes;
-                    if (biomeString.toUpperCase().equals("ALL"))
+                    if ("ALL".equalsIgnoreCase(biomeString)) {
                         biomes = EnumSet.allOf(Biome.class);
-                    else {
+                    } else {
                         biomes = new HashSet<>();
                         for (String string : biomeString.split(", ")) {
-                            if (!string.trim().equals(""))
+                            if (!string.trim().isEmpty()) {
                                 biomes.add(CompatibleBiome.getBiome(string).getBiome());
+                            }
                         }
                     }
 
@@ -349,11 +358,11 @@ public class SpawnerManager {
     }
 
     public void reloadSpawnerData() {
-        for (PlacedSpawner spawner : spawnersInWorld.values()) {
+        for (PlacedSpawner spawner : this.spawnersInWorld.values()) {
             for (SpawnerStack stack : spawner.getSpawnerStacks()) {
-                stack.setTier(registeredSpawnerData.get(stack.getSpawnerData().getIdentifyingName().toLowerCase())
+                stack.setTier(this.registeredSpawnerData.get(stack.getSpawnerData().getIdentifyingName().toLowerCase())
                         .getTierOrFirst(stack.getCurrentTier().getIdentifyingName()));
-                plugin.getDataManager().save(stack);
+                this.plugin.getDataManager().save(stack);
             }
         }
     }
@@ -364,11 +373,13 @@ public class SpawnerManager {
 
         ConfigurationSection spawnersSection = spawnerConfig.createSection("Spawners");
 
-        if (spawnerConfig.contains("Spawners"))
+        if (spawnerConfig.contains("Spawners")) {
             for (String spawnerName : spawnersSection.getKeys(false)) {
-                if (registeredSpawnerData.containsKey(spawnerName))
+                if (this.registeredSpawnerData.containsKey(spawnerName)) {
                     spawnersSection.set(spawnerName, null);
+                }
             }
+        }
 
 
         for (SpawnerData spawnerData : getAllSpawnerData()) {
@@ -422,16 +433,21 @@ public class SpawnerManager {
                             currentSection2.set("Conditions.Biomes", String.join(", ", ((SpawnConditionBiome) spawnCondition).getBiomes().stream().map(Enum::name).collect(Collectors.toSet())));
                         }
                     }
-                    if (spawnCondition instanceof SpawnConditionHeight)
+                    if (spawnCondition instanceof SpawnConditionHeight) {
                         currentSection2.set("Conditions.Height", ((SpawnConditionHeight) spawnCondition).getMin() + ":" + ((SpawnConditionHeight) spawnCondition).getMax());
-                    if (spawnCondition instanceof SpawnConditionLightDark)
+                    }
+                    if (spawnCondition instanceof SpawnConditionLightDark) {
                         currentSection2.set("Conditions.Light", ((SpawnConditionLightDark) spawnCondition).getType().name());
-                    if (spawnCondition instanceof SpawnConditionStorm)
+                    }
+                    if (spawnCondition instanceof SpawnConditionStorm) {
                         currentSection2.set("Conditions.Storm Only", ((SpawnConditionStorm) spawnCondition).isStormOnly());
-                    if (spawnCondition instanceof SpawnConditionNearbyEntities)
+                    }
+                    if (spawnCondition instanceof SpawnConditionNearbyEntities) {
                         currentSection2.set("Conditions.Max Entities Around Spawner", ((SpawnConditionNearbyEntities) spawnCondition).getMax());
-                    if (spawnCondition instanceof SpawnConditionNearbyPlayers)
+                    }
+                    if (spawnCondition instanceof SpawnConditionNearbyPlayers) {
                         currentSection2.set("Conditions.Required Player Distance And Amount", ((SpawnConditionNearbyPlayers) spawnCondition).getDistance() + ":" + ((SpawnConditionNearbyPlayers) spawnCondition).getAmount());
+                    }
                 }
 
                 if (spawnerTier.getDisplayItem() != null) {
@@ -444,11 +460,11 @@ public class SpawnerManager {
 
     public boolean wasConfigModified() {
         getSpawnerConfig().load();
-        return !this.spawnerConfig.getFileConfig().saveToString().equals(lastLoad);
+        return !this.spawnerConfig.getFileConfig().saveToString().equals(this.lastLoad);
     }
 
     public Config getSpawnerConfig() {
-        return spawnerConfig;
+        return this.spawnerConfig;
     }
 
     public void reloadFromFile() {
@@ -457,10 +473,10 @@ public class SpawnerManager {
     }
 
     public PlacedSpawner getSpawner(int id) {
-        return spawnersInWorld.values().stream().filter(spawner -> spawner.getId() == id).findFirst().orElse(null);
+        return this.spawnersInWorld.values().stream().filter(spawner -> spawner.getId() == id).findFirst().orElse(null);
     }
 
     public PlacedSpawner getSpawner(Location location) {
-        return spawnersInWorld.get(location);
+        return this.spawnersInWorld.get(location);
     }
 }

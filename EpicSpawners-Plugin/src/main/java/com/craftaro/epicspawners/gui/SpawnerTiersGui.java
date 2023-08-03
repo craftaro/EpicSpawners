@@ -1,18 +1,17 @@
 package com.craftaro.epicspawners.gui;
 
-import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.gui.CustomizableGui;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.utils.NumberUtils;
 import com.craftaro.core.utils.TextUtils;
 import com.craftaro.epicspawners.EpicSpawners;
 import com.craftaro.epicspawners.api.spawners.spawner.PlacedSpawner;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerStack;
+import com.craftaro.epicspawners.api.spawners.spawner.SpawnerTier;
+import com.craftaro.epicspawners.api.utils.HeadUtils;
 import com.craftaro.epicspawners.settings.Settings;
 import com.craftaro.epicspawners.spawners.spawner.PlacedSpawnerImpl;
-import com.craftaro.epicspawners.spawners.spawner.SpawnerStackImpl;
-import com.craftaro.epicspawners.api.spawners.spawner.SpawnerTier;
 import com.craftaro.epicspawners.utils.GuiUtils;
-import com.craftaro.epicspawners.api.utils.HeadUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -20,7 +19,6 @@ import org.bukkit.inventory.ItemStack;
 import java.util.List;
 
 public class SpawnerTiersGui extends CustomizableGui {
-
     private final EpicSpawners plugin;
     private final Player player;
     private final PlacedSpawner spawner;
@@ -36,7 +34,7 @@ public class SpawnerTiersGui extends CustomizableGui {
 
         setTitle(plugin.getLocale().getMessage("interface.tiers.title").getMessage());
         setOnClose(event -> {
-            Bukkit.getScheduler().cancelTask(task);
+            Bukkit.getScheduler().cancelTask(this.task);
             plugin.getSpawnerManager().saveSpawnerDataToFile();
         });
         setDefaultItem(null);
@@ -61,49 +59,52 @@ public class SpawnerTiersGui extends CustomizableGui {
         mirrorFill("mirrorfill_4", 1, 0, true, true, glass2);
         mirrorFill("mirrorfill_5", 0, 1, true, true, glass2);
 
-        List<SpawnerStack> stacks = spawner.getSpawnerStacks();
+        List<SpawnerStack> stacks = this.spawner.getSpawnerStacks();
 
         int num = 10;
         for (int i = 0; i < 28; i++) {
             num++;
             SpawnerTier tier = i < stacks.size() ? stacks.get(i).getCurrentTier() : null;
-            if (num == 16 || num == 36)
+            if (num == 16 || num == 36) {
                 num = num + 2;
+            }
 
-            if (tier == null)
+            if (tier == null) {
                 continue;
+            }
 
-            if (acceptsItems) {
+            if (this.acceptsItems) {
                 setItem(num, GuiUtils.createButtonItem(tier.getDisplayItem() == XMaterial.AIR ? XMaterial.DIRT : tier.getDisplayItem(),
                         tier.getIdentifyingName()));
             } else {
                 SpawnerStack stack = stacks.get(i);
                 XMaterial material = tier.getDisplayItem();
-                setButton(num, GuiUtils.createButtonItem(material == null || material.equals(XMaterial.AIR) ? HeadUtils.getTexturedSkull(tier) : tier.getDisplayItem().parseItem(),
-                        TextUtils.formatText(tier.getCompiledDisplayName(false, stack.getStackSize()))),
-                        (event) -> plugin.getGuiManager().showGUI(player, new SpawnerOverviewGui(plugin, stack, player)));
+                setButton(num, GuiUtils.createButtonItem(material == null || material == XMaterial.AIR ? HeadUtils.getTexturedSkull(tier) : tier.getDisplayItem().parseItem(),
+                                TextUtils.formatText(tier.getCompiledDisplayName(false, stack.getStackSize()))),
+                        (event) -> this.plugin.getGuiManager().showGUI(this.player, new SpawnerOverviewGui(this.plugin, stack, this.player)));
             }
         }
 
-        GuiUtils.applyBoosted(5, this, plugin, player, spawner);
+        GuiUtils.applyBoosted(5, this, this.plugin, this.player, this.spawner);
 
-        setItem("stats", 3, GuiUtils.createButtonItem(XMaterial.PAPER, plugin.getLocale().getMessage("interface.spawner.statstitle").getMessage(),
-                plugin.getLocale().getMessage("interface.spawner.stats")
-                        .processPlaceholder("amount", NumberUtils.formatNumber(spawner.getSpawnCount())).getMessage()));
+        setItem("stats", 3, GuiUtils.createButtonItem(XMaterial.PAPER, this.plugin.getLocale().getMessage("interface.spawner.statstitle").getMessage(),
+                this.plugin.getLocale().getMessage("interface.spawner.stats")
+                        .processPlaceholder("amount", NumberUtils.formatNumber(this.spawner.getSpawnCount())).getMessage()));
     }
 
     private void runTask() {
-        task = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
-            if (inventory != null && inventory.getViewers().size() != 0)
+        this.task = Bukkit.getScheduler().scheduleSyncRepeatingTask(this.plugin, () -> {
+            if (this.inventory != null && !this.inventory.getViewers().isEmpty()) {
                 paint();
+            }
         }, 5L, 5L);
     }
 
     public static void openTiers(EpicSpawners plugin, Player player, PlacedSpawnerImpl spawner) {
-        if (spawner.getSpawnerStacks().size() == 1)
+        if (spawner.getSpawnerStacks().size() == 1) {
             plugin.getGuiManager().showGUI(player, new SpawnerOverviewGui(plugin, spawner.getFirstStack(), player));
-        else
+        } else {
             plugin.getGuiManager().showGUI(player, new SpawnerTiersGui(plugin, player, spawner));
+        }
     }
-
 }

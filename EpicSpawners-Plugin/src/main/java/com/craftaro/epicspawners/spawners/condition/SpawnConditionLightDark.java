@@ -3,11 +3,9 @@ package com.craftaro.epicspawners.spawners.condition;
 import com.craftaro.epicspawners.EpicSpawners;
 import com.craftaro.epicspawners.api.spawners.condition.SpawnCondition;
 import com.craftaro.epicspawners.api.spawners.spawner.PlacedSpawner;
-import com.craftaro.epicspawners.spawners.spawner.PlacedSpawnerImpl;
 import org.bukkit.Location;
 
 public class SpawnConditionLightDark implements SpawnCondition {
-
     private final Type lightDark;
 
     public SpawnConditionLightDark(Type lightDark) {
@@ -21,7 +19,7 @@ public class SpawnConditionLightDark implements SpawnCondition {
 
     @Override
     public String getDescription() {
-        switch (lightDark) {
+        switch (this.lightDark) {
             case LIGHT:
                 return EpicSpawners.getInstance().getLocale().getMessage("interface.spawner.conditionLight").getMessage();
             case DARK:
@@ -34,7 +32,7 @@ public class SpawnConditionLightDark implements SpawnCondition {
     @Override
     public boolean isMet(PlacedSpawner spawner) {
         Location location = spawner.getLocation();
-        switch (lightDark) {
+        switch (this.lightDark) {
             case LIGHT:
                 return !isDark(location);
             case DARK:
@@ -48,7 +46,7 @@ public class SpawnConditionLightDark implements SpawnCondition {
     }
 
     public Type getType() {
-        return lightDark;
+        return this.lightDark;
     }
 
     public enum Type {LIGHT, DARK, BOTH}

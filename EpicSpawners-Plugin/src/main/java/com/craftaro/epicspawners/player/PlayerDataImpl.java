@@ -10,15 +10,11 @@ import org.bukkit.entity.EntityType;
 
 import java.util.Collections;
 import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.UUID;
 
 public class PlayerDataImpl implements PlayerData {
-
     private final UUID playerUUID;
 
     private final Map<EntityType, Integer> entityKills;
@@ -30,36 +26,36 @@ public class PlayerDataImpl implements PlayerData {
 
     @Override
     public OfflinePlayer getPlayer() {
-        return Bukkit.getOfflinePlayer(playerUUID);
+        return Bukkit.getOfflinePlayer(this.playerUUID);
     }
 
     @Override
     public int addKilledEntity(EntityType type, int amount) {
-        return entityKills.merge(type, amount, Integer::sum);
+        return this.entityKills.merge(type, amount, Integer::sum);
     }
 
     @Override
     public void removeEntity(EntityType entity) {
-        entityKills.remove(entity);
+        this.entityKills.remove(entity);
     }
 
     @Override
     public Map<EntityType, Integer> getEntityKills() {
-        return Collections.unmodifiableMap(entityKills);
+        return Collections.unmodifiableMap(this.entityKills);
     }
 
     @Override
     public void deleteEntityKills(EntityType entityType) {
-        entityKills.remove(entityType);
+        this.entityKills.remove(entityType);
     }
 
     @Override
     public void save() {
         DataManager dataManager = EpicSpawners.getInstance().getDataManager();
         dataManager.getDatabaseConnector().connectDSL(context -> {
-            for (Map.Entry<EntityType, Integer> entry : entityKills.entrySet()) {
+            for (Map.Entry<EntityType, Integer> entry : this.entityKills.entrySet()) {
                 context.insertInto(DSL.table(dataManager.getTablePrefix() + "entity_kills"))
-                        .set(DSL.field("player"), playerUUID.toString())
+                        .set(DSL.field("player"), this.playerUUID.toString())
                         .set(DSL.field("entity_type"), entry.getKey().name())
                         .set(DSL.field("count"), entry.getValue())
                         .onDuplicateKeyUpdate()
@@ -71,15 +67,19 @@ public class PlayerDataImpl implements PlayerData {
 
     @Override
     public int hashCode() {
-        return 31 * (playerUUID == null ? 0 : playerUUID.hashCode());
+        return 31 * (this.playerUUID == null ? 0 : this.playerUUID.hashCode());
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (!(obj instanceof PlayerDataImpl)) return false;
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof PlayerDataImpl)) {
+            return false;
+        }
 
         PlayerDataImpl other = (PlayerDataImpl) obj;
-        return Objects.equals(playerUUID, other.playerUUID);
+        return Objects.equals(this.playerUUID, other.playerUUID);
     }
 }

@@ -7,12 +7,11 @@ import com.craftaro.epicspawners.spawners.spawner.SpawnerDataImpl;
 import java.util.List;
 
 public final class SpawnerDataBuilderImpl implements SpawnerDataBuilder {
-
     private final SpawnerData spawnerData;
 
     public SpawnerDataBuilderImpl(String identifier) {
         this.spawnerData = new SpawnerDataImpl(identifier);
-        spawnerData.reloadSpawnMethods();
+        this.spawnerData.reloadSpawnMethods();
     }
 
     @Override
@@ -81,7 +80,6 @@ public final class SpawnerDataBuilderImpl implements SpawnerDataBuilder {
     }
 
     public SpawnerData build() {
-        return spawnerData;
+        return this.spawnerData;
     }
-
 }
