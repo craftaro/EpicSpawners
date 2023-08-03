@@ -1,19 +1,25 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.craftaro</groupId>
     <artifactId>EpicSpawners-Parent</artifactId>
-    <version>8.0.0-SNAPSHOT-b4</version>
-
     <packaging>pom</packaging>
+    <version>8.0.0-SNAPSHOT-b4</version>
 
     <modules>
         <module>EpicSpawners-API</module>
         <module>EpicSpawners-Plugin</module>
     </modules>
 
+    <name>EpicSpawners</name>
+    <description>Bring together item spawners, custom drops, spawning combining, silk-touch spawners and a spawner shop all in a simple and easy to use and configure plugin</description>
+    <url>https://craftaro.com/marketplace/product/13</url>
+
     <properties>
-        <core.version>3.0.0-SNAPSHOT</core.version>
+        <craftaro.coreVersion>3.0.0-SNAPSHOT</craftaro.coreVersion>
 
         <maven.compiler.release>8</maven.compiler.release>
         <maven.compiler.target>1.8</maven.compiler.target>
@@ -22,25 +28,34 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <issueManagement>
+        <url>https://discord.gg/craftaro</url>
+        <system>Discord server</system>
+    </issueManagement>
+
+    <scm>
+        <url>https://github.com/craftaro/EpicSpawners</url>
+        <connection>scm:git:git://github.com/craftaro/EpicSpawners.git</connection>
+    </scm>
+
     <repositories>
         <repository>
-            <id>spigotmc-repo</id>
+            <id>craftaro-minecraft-plugins</id>
+            <url>https://repo.craftaro.com/repository/minecraft-plugins/</url>
+        </repository>
+
+        <repository>
+            <id>SpigotMC</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
-
-        <repository>
-            <id>songoda-public</id>
-            <url>https://repo.songoda.com/repository/public/</url>
-        </repository>
-
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
-
-        <repository>
-            <id>placeholderapi</id>
-            <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
-        </repository>
     </repositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>24.0.1</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
 </project>

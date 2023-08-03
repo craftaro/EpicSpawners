@@ -8,66 +8,49 @@
         <groupId>com.craftaro</groupId>
         <artifactId>EpicSpawners-Parent</artifactId>
         <version>8.0.0-SNAPSHOT-b4</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
-
-    <artifactId>EpicSpawners</artifactId>
+    <artifactId>EpicSpawners-Plugin</artifactId>
 
     <build>
-        <defaultGoal>clean install</defaultGoal>
-        <finalName>EpicSpawners-${project.version}</finalName>
         <plugins>
-            <plugin>
-                <groupId>com.google.code.maven-replacer-plugin</groupId>
-                <artifactId>replacer</artifactId>
-                <version>1.5.3</version>
-                <executions>
-                    <execution>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>replace</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <file>${project.build.directory}/classes/plugin.yml</file>
-                    <replacements>
-                        <replacement>
-                            <token>maven-version-number</token>
-                            <value>${project.version}</value>
-                        </replacement>
-                    </replacements>
-                </configuration>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.3.0</version>
+                <version>3.5.0</version>
+
                 <executions>
                     <execution>
-                        <id>shaded</id>
                         <phase>package</phase>
                         <goals>
                             <goal>shade</goal>
                         </goals>
+
                         <configuration>
+                            <finalName>${project.parent.name}-${project.version}</finalName>
+
                             <shadedArtifactAttached>false</shadedArtifactAttached>
-                            <createDependencyReducedPom>true</createDependencyReducedPom>
+                            <useDependencyReducedPomInJar>true</useDependencyReducedPomInJar>
                             <minimizeJar>true</minimizeJar>
-                            <artifactSet>
-                                <includes>
-                                    <include>com.craftaro:CraftaroCore</include>
-                                    <include>com.craftaro:EpicSpawners-API</include>
-                                </includes>
-                            </artifactSet>
+
+                            <relocations>
+                                <relocation>
+                                    <pattern>com.craftaro.core</pattern>
+                                    <shadedPattern>com.craftaro.epicspawners.core</shadedPattern>
+                                </relocation>
+                            </relocations>
+
                             <filters>
                                 <filter>
                                     <artifact>*:*</artifact>
+
                                     <excludes>
-                                        <exclude>META-INF/*.SF</exclude>
-                                        <exclude>META-INF/*.DSA</exclude>
-                                        <exclude>META-INF/*.RSA</exclude>
+                                        <exclude>META-INF/**</exclude>
+                                        <exclude>LICENSE</exclude>
+                                        <exclude>LICENSE.**</exclude>
                                     </excludes>
                                 </filter>
+
                                 <filter>
                                     <artifact>com.craftaro:CraftaroCore</artifact>
                                     <excludeDefaults>false</excludeDefaults>
@@ -77,31 +60,42 @@
                                     </includes>
                                 </filter>
                             </filters>
-                            <relocations>
-                                <relocation>
-                                    <pattern>com.craftaro.core</pattern>
-                                    <shadedPattern>${project.groupId}.epicspawners.core</shadedPattern>
-                                </relocation>
-                            </relocations>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
         </plugins>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
     </build>
+
+    <repositories>
+        <repository>
+            <id>songoda-public</id>
+            <url>https://repo.songoda.com/repository/public/</url>
+        </repository>
+
+        <repository>
+            <id>placeholderapi</id>
+            <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
+        </repository>
+
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io/</url>
+        </repository>
+    </repositories>
 
     <dependencies>
         <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
-            <version>1.19.4-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
             <groupId>com.craftaro</groupId>
             <artifactId>CraftaroCore</artifactId>
-            <version>${core.version}</version>
+            <version>${craftaro.coreVersion}</version>
             <scope>compile</scope>
         </dependency>
 
@@ -110,6 +104,13 @@
             <artifactId>EpicSpawners-API</artifactId>
             <version>1.0.0-SNAPSHOT</version>
             <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
+            <version>1.19.4-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -139,13 +140,5 @@
             <version>1.0.0</version>
             <scope>provided</scope>
         </dependency>
-
-        <dependency>
-            <groupId>org.jetbrains</groupId>
-            <artifactId>annotations</artifactId>
-            <version>24.0.1</version>
-            <scope>provided</scope>
-        </dependency>
     </dependencies>
-
 </project>

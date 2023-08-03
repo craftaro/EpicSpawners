@@ -1,10 +1,38 @@
-name: EpicSpawners
-description: EpicSpawners
-version: maven-version-number
-softdepend: [ Holograms, HolographicDisplays, CMI, Vault, PlayerPoints, UltimateStacker, StackMob, SkyBlock, Towny, RedProtect, Kingdoms, PlotSquared, GriefPrevention, USkyBlock, ASkyBlock, WorldGuard, Factions, PlaceholderAPI, ShopGUIPlus, UltimateClaims, Lands, BentoBox, EpicAnchors ]
-main: com.craftaro.epicspawners.EpicSpawners
-author: Craftaro
+name: ${project.parent.name}
+description: ${project.parent.description}
+version: ${project.version}
 api-version: 1.13
+
+main: com.craftaro.epicspawners.EpicSpawners
+softdepend:
+  - ASkyBlock
+  - BentoBox
+  - CMI
+  - DecentHolograms
+  - EpicAnchors
+  - Factions
+  - GriefPrevention
+  - Holograms
+  - HolographicDisplays
+  - Kingdoms
+  - Lands
+  - PlaceholderAPI
+  - PlayerPoints
+  - PlotSquared
+  - RedProtect
+  - ShopGUIPlus
+  - SkyBlock
+  - StackMob
+  - Towny
+  - UltimateClaims
+  - UltimateStacker
+  - USkyBlock
+  - Vault
+  - WorldGuard
+
+author: Craftaro
+website: ${project.parent.url}
+
 commands:
   es:
     description: I have no idea.
