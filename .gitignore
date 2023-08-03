@@ -1,35 +1,10 @@
-# Compiled class file
-*.class
-
-# Log file
-*.log
-
-# BlueJ files
-*.ctxt
-
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
-# Package Files #
-*.jar
-*.war
-*.nar
-*.settings
-*.ear
-*.zip
-*.tar.gz
-*.rar
-
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
-
-/.gradle/
-/.settings/
+## JetBrains IDEs
 /.idea/
-/build/
-/bin/
-**/target/
 *.iml
-dependency-reduced-pom.xml
-.DS_Store
 
+## Maven
+/**/target/
+dependency-reduced-pom.xml
+
+## Misc.
+.DS_Store
