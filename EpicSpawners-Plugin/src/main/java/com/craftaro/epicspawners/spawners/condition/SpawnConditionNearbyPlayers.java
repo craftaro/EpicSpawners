@@ -1,32 +1,24 @@
 package com.craftaro.epicspawners.spawners.condition;
 
+import com.craftaro.epicanchors.EpicAnchorsApi;
+import com.craftaro.epicanchors.api.AnchorManager;
 import com.craftaro.epicspawners.EpicSpawners;
 import com.craftaro.epicspawners.api.spawners.condition.SpawnCondition;
 import com.craftaro.epicspawners.api.spawners.spawner.PlacedSpawner;
 import com.craftaro.epicspawners.settings.Settings;
-import com.craftaro.epicspawners.spawners.spawner.PlacedSpawnerImpl;
-import com.songoda.epicanchors.EpicAnchors;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
-import org.bukkit.plugin.java.JavaPlugin;
 
 public class SpawnConditionNearbyPlayers implements SpawnCondition {
     private final int distance;
     private final int amount;
-
-    private EpicAnchors epicAnchors;
-
-    /** -1 = unknown, 0 = unsupported version, 1 = supported version */
-    static int epicAnchorsState = -1;
+    private final boolean epicAnchorsAvailable;
 
     public SpawnConditionNearbyPlayers(int distance, int amount) {
         this.amount = amount;
         this.distance = distance;
-
-        if (getEpicAnchorsState() == 1) {
-            this.epicAnchors = JavaPlugin.getPlugin(EpicAnchors.class);
-        }
+        this.epicAnchorsAvailable = Bukkit.getPluginManager().isPluginEnabled("EpicAnchors");
     }
 
     @Override
@@ -37,8 +29,8 @@ public class SpawnConditionNearbyPlayers implements SpawnCondition {
     @Override
     public String getDescription() {
         return EpicSpawners.getInstance().getLocale().getMessage("interface.spawner.conditionNearbyPlayers")
-                .processPlaceholder("amount", amount)
-                .processPlaceholder("distance", distance)
+                .processPlaceholder("amount", this.amount)
+                .processPlaceholder("distance", this.distance)
                 .getMessage();
     }
 
@@ -49,51 +41,41 @@ public class SpawnConditionNearbyPlayers implements SpawnCondition {
 
         long count = 0;
 
-        if (epicAnchors != null) {
+        if (this.epicAnchorsAvailable) {
             long anchorWeight = Settings.EPIC_ANCHORS_PLAYER_WEIGHT.getLong();
 
-            if (anchorWeight < 0 && epicAnchors.getAnchorManager().hasAnchor(location.getChunk())) {
+
+            if (anchorWeight < 0 && getAnchorManager().hasAnchor(location.getChunk())) {
                 return true;
             }
 
             if (anchorWeight > 0) {
-                count += epicAnchors.getAnchorManager().searchAnchors(location, distance).size() * anchorWeight;
+                count += getAnchorManager().searchAnchors(location, this.distance).size() * anchorWeight;
             }
         }
 
-        if (count >= amount) {
+        if (count >= this.amount) {
             return true;
         }
 
-        count += location.getWorld().getNearbyEntities(location, distance, distance, distance)
-                .stream().filter(e -> e.getType() == EntityType.PLAYER).count();
+        count += location.getWorld()
+                .getNearbyEntities(location, this.distance, this.distance, this.distance)
+                .stream()
+                .filter(e -> e.getType() == EntityType.PLAYER)
+                .count();
 
-        return count >= amount;
+        return count >= this.amount;
     }
 
     public int getDistance() {
-        return distance;
+        return this.distance;
     }
 
     public int getAmount() {
-        return amount;
+        return this.amount;
     }
 
-    private static int getEpicAnchorsState() {
-        if (epicAnchorsState == -1) {
-            epicAnchorsState = 0;
-
-            if (Bukkit.getPluginManager().isPluginEnabled("EpicAnchors")) {
-                EpicAnchors epicAnchors = JavaPlugin.getPlugin(EpicAnchors.class);
-
-                char majorVersionChar = epicAnchors.getDescription().getVersion().charAt(0);
-
-                if (Character.isDigit(majorVersionChar) && majorVersionChar - '0' >= 2) {
-                    epicAnchorsState = 1;
-                }
-            }
-        }
-
-        return epicAnchorsState;
+    private AnchorManager getAnchorManager() {
+        return EpicAnchorsApi.getApi().getAnchorManager();
     }
 }
