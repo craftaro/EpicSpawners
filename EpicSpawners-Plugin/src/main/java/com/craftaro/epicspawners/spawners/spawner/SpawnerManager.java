@@ -362,7 +362,7 @@ public class SpawnerManager {
             for (SpawnerStack stack : spawner.getSpawnerStacks()) {
                 stack.setTier(this.registeredSpawnerData.get(stack.getSpawnerData().getIdentifyingName().toLowerCase())
                         .getTierOrFirst(stack.getCurrentTier().getIdentifyingName()));
-                this.plugin.getDataManager().save(stack);
+                this.plugin.getDataManager().save(stack, "spawner_id", spawner.getId());
             }
         }
     }

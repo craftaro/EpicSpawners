@@ -326,14 +326,35 @@ public class PlacedSpawnerImpl implements PlacedSpawner {
             }
         }
 
+        DataManager dataManager = EpicSpawners.getInstance().getDataManager();
         if (stack.getStackSize() > 1 && stackSize == 1) {
             stack.setStackSize(stack.getStackSize() - 1);
-            EpicSpawners.getInstance().getDataManager().save(stack);
+            dataManager.getAsyncPool().execute(() -> {
+                dataManager.getDatabaseConnector().connectDSL(dslContext -> {
+                    int deleted = dslContext.deleteFrom(DSL.table(dataManager.getTablePrefix()+"spawner_stacks"))
+                            .where(DSL.field("spawner_id").eq(this.getId()))
+                            .and(DSL.field("data_type").eq(stack.getSpawnerData().getIdentifyingName()))
+                            .and(DSL.field("amount").eq(stack.getStackSize()+1))
+                            .and(DSL.field("tier").eq(stack.getCurrentTier().getIdentifyingName()))
+                            .execute();
+                });
+            });
+            EpicSpawners.getInstance().getDataManager().save(stack, "spawner_id", this.id);
             return true;
         }
 
         this.spawnerStacks.remove(stack);
-        EpicSpawners.getInstance().getDataManager().delete(stack);
+
+        dataManager.getAsyncPool().execute(() -> {
+            dataManager.getDatabaseConnector().connectDSL(dslContext -> {
+                dslContext.deleteFrom(DSL.table(dataManager.getTablePrefix()+"spawner_stacks"))
+                        .where(DSL.field("spawner_id").eq(this.getId()))
+                        .and(DSL.field("data_type").eq(stack.getSpawnerData().getIdentifyingName()))
+                        .and(DSL.field("amount").eq(stack.getStackSize()))
+                        .and(DSL.field("tier").eq(stack.getCurrentTier().getIdentifyingName()))
+                        .execute();
+            });
+        });
 
         if (this.spawnerStacks.size() != 0) {
             return true;

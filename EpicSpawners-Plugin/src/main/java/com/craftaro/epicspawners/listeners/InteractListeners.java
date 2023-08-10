@@ -157,7 +157,7 @@ public class InteractListeners implements Listener {
         }
 
         SpawnerStack stack = spawner.getFirstStack().setTier(this.plugin.getSpawnerManager().getSpawnerData(itype).getFirstTier());
-        this.plugin.getDataManager().save(stack);
+        this.plugin.getDataManager().save(stack, "spawner_id", spawner.getId());
         try {
             spawner.getCreatureSpawner().setSpawnedType(EntityType.valueOf(this.plugin.getSpawnerManager().getSpawnerData(itype).getIdentifyingName().toUpperCase()));
         } catch (Exception e2) {
