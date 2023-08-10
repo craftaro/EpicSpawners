@@ -217,7 +217,12 @@ public class EpicSpawners extends SongodaPlugin {
             results.stream().iterator().forEachRemaining(record -> {
                 UUID uuid = UUID.fromString(record.get("player").toString());
                 EntityType entityType = EntityType.valueOf(record.get("entity_type").toString());
-                int amount = Integer.parseInt(record.get("count").toString());
+                int amount = 0;
+                try {
+                    amount = Integer.parseInt(record.get("count").toString());
+                } catch (NumberFormatException ex) {
+                    amount = Double.valueOf(record.get("count").toString()).intValue();
+                }
                 PlayerData playerData = this.playerActionManager.getPlayerData(uuid);
                 playerData.addKilledEntity(entityType, amount);
             });
