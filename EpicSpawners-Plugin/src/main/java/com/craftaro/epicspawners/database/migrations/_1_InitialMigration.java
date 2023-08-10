@@ -61,7 +61,7 @@ public class _1_InitialMigration extends DataMigration {
             statement.execute("CREATE TABLE IF NOT EXISTS " + tablePrefix + "entity_kills (" +
                     "player VARCHAR(36) NOT NULL, " +
                     "entity_type VARCHAR(100) NOT NULL, " +
-                    "count DOUBLE NOT NULL " +
+                    "count INTEGER NOT NULL " +
                     ")");
         }
     }
