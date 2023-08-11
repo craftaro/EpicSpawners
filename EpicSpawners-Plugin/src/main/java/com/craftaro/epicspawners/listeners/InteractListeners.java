@@ -215,6 +215,9 @@ public class InteractListeners implements Listener {
 
             if (!player.isSneaking()) {
                 SpawnerTier spawnerTier = this.plugin.getSpawnerManager().getSpawnerTier(item);
+                if (spawnerTier == null) {
+                    return;
+                }
                 if (player.hasPermission("epicspawners.stack." + spawnerTier.getIdentifyingName()) || player.hasPermission("epicspawners.stack.*")) {
                     if (Settings.USE_PROTECTION_PLUGINS.getBoolean() && !ProtectionManager.canInteract(player, block.getLocation())) {
                         player.sendMessage(this.plugin.getLocale().getMessage("event.general.protected").getPrefixedMessage());

@@ -104,6 +104,9 @@ public class SpawnerManager {
         }
 
         BlockStateMeta bsm = (BlockStateMeta) item.getItemMeta();
+        if (bsm == null) {
+            return null;
+        }
         CreatureSpawner cs = (CreatureSpawner) bsm.getBlockState();
         return getSpawnerData(cs.getSpawnedType()).getFirstTier();
     }
