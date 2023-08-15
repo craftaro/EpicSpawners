@@ -4,7 +4,7 @@ import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.epicspawners.EpicSpawners;
 import com.craftaro.epicspawners.api.spawners.spawner.PlacedSpawner;
 import com.craftaro.epicspawners.settings.Settings;
-import com.craftaro.epicspawners.spawners.spawner.SpawnerManager;
+import com.craftaro.epicspawners.api.spawners.spawner.SpawnerManager;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.scheduler.BukkitRunnable;
 

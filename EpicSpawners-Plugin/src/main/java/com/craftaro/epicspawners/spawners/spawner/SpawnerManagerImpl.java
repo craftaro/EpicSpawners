@@ -13,6 +13,7 @@ import com.craftaro.epicspawners.api.particles.ParticleType;
 import com.craftaro.epicspawners.api.spawners.condition.SpawnCondition;
 import com.craftaro.epicspawners.api.spawners.spawner.PlacedSpawner;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerData;
+import com.craftaro.epicspawners.api.spawners.spawner.SpawnerManager;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerStack;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerTier;
 import com.craftaro.epicspawners.api.utils.SpawnerTierBuilder;
@@ -49,7 +50,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class SpawnerManager {
+public class SpawnerManagerImpl implements SpawnerManager {
     private final EpicSpawners plugin;
 
     // These are the spawner types loaded into memory.
@@ -65,7 +66,7 @@ public class SpawnerManager {
 
     private String lastLoad = null;
 
-    public SpawnerManager(EpicSpawners plugin) {
+    public SpawnerManagerImpl(EpicSpawners plugin) {
         this.plugin = plugin;
         this.spawnerConfig.load();
         Arrays.stream(EntityType.values()).filter(entityType -> entityType.isSpawnable()
@@ -77,6 +78,7 @@ public class SpawnerManager {
         loadSpawnerDataFromFile();
     }
 
+    @Override
     public SpawnerData getSpawnerData(String name) {
         return this.registeredSpawnerData.values()
                 .stream()
@@ -85,10 +87,12 @@ public class SpawnerManager {
                 .orElse(null);
     }
 
+    @Override
     public SpawnerData getSpawnerData(EntityType type) {
         return getSpawnerData(type.name());
     }
 
+    @Override
     public SpawnerTier getSpawnerTier(ItemStack item) {
         if (item == null) {
             return null;
@@ -111,76 +115,94 @@ public class SpawnerManager {
         return getSpawnerData(cs.getSpawnedType()).getFirstTier();
     }
 
+    @Override
     public SpawnerData addSpawnerData(String name, SpawnerData spawnerData) {
         this.registeredSpawnerData.put(name.toLowerCase(), spawnerData);
         spawnerData.reloadSpawnMethods();
         return spawnerData;
     }
 
+    @Override
     public void addSpawnerData(SpawnerData spawnerData) {
         this.registeredSpawnerData.put(spawnerData.getIdentifyingName().toLowerCase(), spawnerData);
     }
 
+    @Override
     public void removeSpawnerData(String name) {
         this.registeredSpawnerData.remove(name.toLowerCase());
     }
 
+    @Override
     public Collection<SpawnerData> getAllSpawnerData() {
         return Collections.unmodifiableCollection(this.registeredSpawnerData.values());
     }
 
+    @Override
     public Collection<SpawnerData> getAllEnabledSpawnerData() {
         return this.registeredSpawnerData.values().stream().filter(SpawnerData::isActive).collect(Collectors.toList());
     }
 
+    @Override
     public boolean isSpawner(Location location) {
         return this.spawnersInWorld.containsKey(location);
     }
 
+    @Override
     public boolean isSpawnerData(String type) {
         return this.registeredSpawnerData.containsKey(type.toLowerCase());
     }
 
+    @Override
     public PlacedSpawner getSpawnerFromWorld(Location location) {
         return this.spawnersInWorld.get(location);
     }
 
+    @Override
     public void addSpawnerToWorld(Location location, PlacedSpawner spawner) {
         this.spawnersInWorld.put(location, spawner);
     }
 
+    @Override
     public PlacedSpawner removeSpawnerFromWorld(Location location) {
         return this.spawnersInWorld.remove(location);
     }
 
+    @Override
     public PlacedSpawner removeSpawnerFromWorld(PlacedSpawner spawner) {
         return this.spawnersInWorld.remove(spawner.getLocation());
     }
 
+    @Override
     public Collection<PlacedSpawner> getSpawners() {
         return Collections.unmodifiableCollection(this.spawnersInWorld.values());
     }
 
+    @Override
     public void addSpawners(Map<Location, PlacedSpawner> spawners) {
         this.spawnersInWorld.putAll(spawners);
     }
 
+    @Override
     public void addSpawners(List<PlacedSpawner> spawners) {
         spawners.forEach(spawner -> this.spawnersInWorld.put(spawner.getLocation(), (PlacedSpawnerImpl) spawner));
     }
 
+    @Override
     public void addCooldown(PlacedSpawner spawner) {
         this.pickingUp.add(spawner);
     }
 
+    @Override
     public void removeCooldown(PlacedSpawner spawner) {
         this.pickingUp.remove(spawner);
     }
 
+    @Override
     public boolean hasCooldown(PlacedSpawner spawner) {
         return this.pickingUp.contains(spawner);
     }
 
+    @Override
     public int getAmountPlaced(Player player) {
         return Math.toIntExact(this.spawnersInWorld.values().stream().filter(spawner -> spawner.getPlacedBy() != null
                 && player.getUniqueId().equals(spawner.getPlacedBy().getUniqueId())).count()) + 1;
@@ -255,6 +277,7 @@ public class SpawnerManager {
         this.registeredSpawnerData.put(typeString, spawnerData);
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public void loadSpawnerDataFromFile() {
         this.registeredSpawnerData.clear();
@@ -360,6 +383,7 @@ public class SpawnerManager {
         reloadSpawnerData();
     }
 
+    @Override
     public void reloadSpawnerData() {
         for (PlacedSpawner spawner : this.spawnersInWorld.values()) {
             for (SpawnerStack stack : spawner.getSpawnerStacks()) {
@@ -370,6 +394,7 @@ public class SpawnerManager {
         }
     }
 
+    @Override
     public void saveSpawnerDataToFile() {
         // Save spawner settings
         FileConfiguration spawnerConfig = this.spawnerConfig.getFileConfig();
@@ -461,24 +486,29 @@ public class SpawnerManager {
         this.spawnerConfig.save();
     }
 
+    @Override
     public boolean wasConfigModified() {
         getSpawnerConfig().load();
         return !this.spawnerConfig.getFileConfig().saveToString().equals(this.lastLoad);
     }
 
+    @Override
     public Config getSpawnerConfig() {
         return this.spawnerConfig;
     }
 
+    @Override
     public void reloadFromFile() {
         getSpawnerConfig().load();
         loadSpawnerDataFromFile();
     }
 
+    @Override
     public PlacedSpawner getSpawner(int id) {
         return this.spawnersInWorld.values().stream().filter(spawner -> spawner.getId() == id).findFirst().orElse(null);
     }
 
+    @Override
     public PlacedSpawner getSpawner(Location location) {
         return this.spawnersInWorld.get(location);
     }

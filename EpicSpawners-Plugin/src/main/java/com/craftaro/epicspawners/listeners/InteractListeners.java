@@ -13,7 +13,7 @@ import com.craftaro.epicspawners.api.spawners.spawner.PlacedSpawner;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerStack;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerTier;
 import com.craftaro.epicspawners.settings.Settings;
-import com.craftaro.epicspawners.spawners.spawner.SpawnerManager;
+import com.craftaro.epicspawners.api.spawners.spawner.SpawnerManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;

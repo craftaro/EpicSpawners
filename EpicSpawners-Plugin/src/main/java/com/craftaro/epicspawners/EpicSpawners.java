@@ -47,7 +47,8 @@ import com.craftaro.epicspawners.player.PlayerDataManagerImpl;
 import com.craftaro.epicspawners.settings.Settings;
 import com.craftaro.epicspawners.spawners.SpawnManager;
 import com.craftaro.epicspawners.spawners.spawner.PlacedSpawnerImpl;
-import com.craftaro.epicspawners.spawners.spawner.SpawnerManager;
+import com.craftaro.epicspawners.api.spawners.spawner.SpawnerManager;
+import com.craftaro.epicspawners.spawners.spawner.SpawnerManagerImpl;
 import com.craftaro.epicspawners.spawners.spawner.SpawnerStackImpl;
 import com.craftaro.epicspawners.tasks.AppearanceTask;
 import com.craftaro.epicspawners.tasks.SpawnerParticleTask;
@@ -147,7 +148,7 @@ public class EpicSpawners extends SongodaPlugin {
 
         this.boostManager = new BoostManagerImpl();
         this.spawnManager = new SpawnManager();
-        this.spawnerManager = new SpawnerManager(this);
+        this.spawnerManager = new SpawnerManagerImpl(this);
         this.blacklistHandler = new BlacklistHandler();
         this.playerActionManager = new PlayerDataManagerImpl();
 
@@ -174,7 +175,7 @@ public class EpicSpawners extends SongodaPlugin {
         this.appearanceTask = AppearanceTask.startTask(this);
 
         initDatabase(Arrays.asList(new _1_InitialMigration(), new _2_AddTiers()));
-        new EpicSpawnersApi(this, new SpawnerDataBuilderImpl(""), new SpawnerTierBuilderImpl());
+        new EpicSpawnersApi(this, this.spawnerManager, new SpawnerDataBuilderImpl(""), new SpawnerTierBuilderImpl());
     }
 
     @Override
