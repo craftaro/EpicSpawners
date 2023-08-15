@@ -1,6 +1,7 @@
 package com.craftaro.epicspawners.database.migrations;
 
 import com.craftaro.core.database.DataMigration;
+import com.craftaro.core.database.DatabaseConnector;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -12,7 +13,9 @@ public class _1_InitialMigration extends DataMigration {
     }
 
     @Override
-    public void migrate(Connection connection, String tablePrefix) throws SQLException {
+    public void migrate(DatabaseConnector connector, String tablePrefix) throws SQLException {
+        Connection connection = connector.getConnection();
+
         // Create spawners table
         try (Statement statement = connection.createStatement()) {
             statement.execute("CREATE TABLE IF NOT EXISTS " + tablePrefix + "placed_spawners (" +

@@ -1,8 +1,8 @@
 package com.craftaro.epicspawners.database.migrations;
 
 import com.craftaro.core.database.DataMigration;
+import com.craftaro.core.database.DatabaseConnector;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -12,8 +12,8 @@ public class _2_AddTiers extends DataMigration {
     }
 
     @Override
-    public void migrate(Connection connection, String tablePrefix) throws SQLException {
-        try (Statement statement = connection.createStatement()) {
+    public void migrate(DatabaseConnector connector, String tablePrefix) throws SQLException {
+        try (Statement statement = connector.getConnection().createStatement()) {
             statement.execute("ALTER TABLE " + tablePrefix + "spawner_stacks ADD COLUMN tier VARCHAR(100) DEFAULT 'Tier_1' NOT NULL");
         }
     }
