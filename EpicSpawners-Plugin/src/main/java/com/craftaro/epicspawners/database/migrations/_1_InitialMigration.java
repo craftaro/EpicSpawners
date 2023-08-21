@@ -18,7 +18,7 @@ public class _1_InitialMigration extends DataMigration {
             statement.execute("CREATE TABLE IF NOT EXISTS " + tablePrefix + "placed_spawners (" +
                     "id INTEGER PRIMARY KEY AUTO_INCREMENT" + ", " +
                     "spawn_count INTEGER NOT NULL, " +
-                    "placed_by VARCHAR(36) NOT NULL, " +
+                    "placed_by VARCHAR(36), " +
                     "world TEXT NOT NULL, " +
                     "x DOUBLE NOT NULL, " +
                     "y DOUBLE NOT NULL, " +
