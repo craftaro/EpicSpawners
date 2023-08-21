@@ -609,7 +609,8 @@ public class PlacedSpawnerImpl implements PlacedSpawner {
     public Data deserialize(Map<String, Object> map) {
         int id = (int) map.get("id");
         int spawnCount = (int) map.get("spawn_count");
-        UUID placedBy = UUID.fromString((String) map.get("placed_by"));
+        String placedByString = (String) map.get("placed_by");
+        UUID placedBy = placedByString != null ? UUID.fromString(placedByString) : null;
         Location location = SerializedLocation.of(map);
         return new PlacedSpawnerImpl(id, spawnCount, placedBy, location);
     }

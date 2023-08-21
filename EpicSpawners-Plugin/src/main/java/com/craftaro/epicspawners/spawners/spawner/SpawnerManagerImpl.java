@@ -89,6 +89,7 @@ public class SpawnerManagerImpl implements SpawnerManager {
 
     @Override
     public SpawnerData getSpawnerData(EntityType type) {
+        if (type == null) return null; //TODO fix this. Not sure why this is happening.
         return getSpawnerData(type.name());
     }
 

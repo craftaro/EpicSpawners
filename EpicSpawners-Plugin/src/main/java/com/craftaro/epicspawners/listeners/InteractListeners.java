@@ -209,7 +209,7 @@ public class InteractListeners implements Listener {
         if (isSpawner && item != null && XMaterial.SPAWNER == XMaterial.matchXMaterial(item)) {
             PlacedSpawner spawner = this.plugin.getSpawnerManager().getSpawnerFromWorld(location);
 
-            if (spawner.getPlacedBy() == null && Settings.DISABLE_NATURAL_SPAWNERS.getBoolean()) {
+            if (spawner == null || (spawner.getPlacedBy() == null && Settings.DISABLE_NATURAL_SPAWNERS.getBoolean())) {
                 return;
             }
 
