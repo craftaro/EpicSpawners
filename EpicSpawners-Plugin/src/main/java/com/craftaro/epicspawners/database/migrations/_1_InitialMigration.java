@@ -58,10 +58,12 @@ public class _1_InitialMigration extends DataMigration {
 
         // Create entity kills
         try (Statement statement = connection.createStatement()) {
+            //Make player primary key
             statement.execute("CREATE TABLE IF NOT EXISTS " + tablePrefix + "entity_kills (" +
                     "player VARCHAR(36) NOT NULL, " +
                     "entity_type VARCHAR(100) NOT NULL, " +
                     "count INTEGER NOT NULL " +
+                    "PRIMARY KEY (player)" +
                     ")");
         }
     }
