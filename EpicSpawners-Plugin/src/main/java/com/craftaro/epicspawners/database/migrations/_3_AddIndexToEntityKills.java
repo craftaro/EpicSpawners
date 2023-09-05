@@ -16,7 +16,7 @@ public class _3_AddIndexToEntityKills extends DataMigration {
     public void migrate(Connection connection, String tablePrefix) throws SQLException {
         try (Statement statement = connection.createStatement()) {
             //add "player" field as a primary key
-            statement.execute("ALTER TABLE " + tablePrefix + "entity_kills ADD IF NOT EXISTS PRIMARY KEY (player)");
-        }
+            statement.execute("ALTER TABLE " + tablePrefix + "entity_kills PRIMARY KEY (player)");
+        } catch (Exception ignored) {}
     }
 }
