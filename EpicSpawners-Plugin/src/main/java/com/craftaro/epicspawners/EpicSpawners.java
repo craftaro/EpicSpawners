@@ -104,8 +104,15 @@ public class EpicSpawners extends SongodaPlugin {
         if (!this.spawnerManager.wasConfigModified()) {
             this.saveToFile();
         }
-        this.particleTask.cancel();
-        this.spawnerCustomSpawnTask.cancel();
+
+        if (Bukkit.getScheduler().isCurrentlyRunning(this.particleTask.getTaskId())) {
+            this.particleTask.cancel();
+        }
+
+        if (Bukkit.getScheduler().isCurrentlyRunning(this.spawnerCustomSpawnTask.getTaskId())) {
+            this.spawnerCustomSpawnTask.cancel();
+        }
+
         HologramManager.removeAllHolograms();
     }
 
