@@ -246,6 +246,9 @@ public class EpicSpawners extends SongodaPlugin {
         if (this.spawnerManager.wasConfigModified()) {
             this.spawnerManager.reloadFromFile();
         }
+
+        // Should start or stop particle task based on config setting
+        this.particleTask = SpawnerParticleTask.startTask(this);
     }
 
     @Override

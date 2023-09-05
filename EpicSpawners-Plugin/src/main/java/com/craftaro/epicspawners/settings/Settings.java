@@ -90,6 +90,9 @@ public class Settings {
             "Should broken spawners be added directly to the players inventory?",
             "Alternatively they will drop to the ground?");
 
+    public static final ConfigSetting SHOW_PARTICLES = new ConfigSetting(config, "Main.Show Particles", true,
+            "Should particles be shown around spawners?");
+
     public static final ConfigSetting UPGRADE_PARTICLE_TYPE = new ConfigSetting(config, "Main.Upgrade Particle Type", "SPELL_WITCH",
             "The name of the particle shown when upgrading a spawner.");
 
