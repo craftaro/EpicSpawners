@@ -53,7 +53,7 @@ public class SpawnOptionCommand implements SpawnOption {
                     int searchIndex = 0;
                     while (searchIndex++ <= MAX_SEARCH_COUNT) {
                         spawner.setSpawnCount(spawner.getSpawnCount() + 1);
-                        EpicSpawners.getInstance().getDataManager().save(spawner);
+
                         double xOffset = this.random.nextInt((SPAWN_RADIUS * 2) + 1) - SPAWN_RADIUS;
                         double yOffset = this.random.nextInt((SPAWN_RADIUS * 2) + 1) - SPAWN_RADIUS;
                         double zOffset = this.random.nextInt((SPAWN_RADIUS * 2) + 1) - SPAWN_RADIUS;
@@ -90,6 +90,8 @@ public class SpawnOptionCommand implements SpawnOption {
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), finalCommand);
             }
         }
+
+        EpicSpawners.getInstance().getDataManager().save(spawner);
     }
 
     @Override
