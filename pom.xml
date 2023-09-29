@@ -7,7 +7,7 @@
     <groupId>com.craftaro</groupId>
     <artifactId>EpicSpawners-Parent</artifactId>
     <packaging>pom</packaging>
-    <version>8.0.0-b11-SNAPSHOT</version>
+    <version>8.0.0-b12-SNAPSHOT</version>
 
     <modules>
         <module>EpicSpawners-API</module>
