@@ -56,7 +56,7 @@ public class SpawnOptionItem implements SpawnOption {
                 }
                 Item droppedItem = world.dropItem(spawnLocation, item);
                 spawner.setSpawnCount(spawner.getSpawnCount() + 1);
-                EpicSpawners.getInstance().getDataManager().save(spawner);
+
 
                 double dx = -.2 + (.2 - -.2) * this.random.nextDouble();
                 double dy = 0 + (.5 - 0) * this.random.nextDouble();
@@ -65,6 +65,8 @@ public class SpawnOptionItem implements SpawnOption {
                 droppedItem.setVelocity(new Vector(dx, dy, dz));
             }
         }
+
+        EpicSpawners.getInstance().getDataManager().save(spawner);
     }
 
     public SpawnOptionType getType() {

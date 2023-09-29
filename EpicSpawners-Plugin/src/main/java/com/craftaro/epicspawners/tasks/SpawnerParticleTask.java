@@ -8,6 +8,7 @@ import com.craftaro.epicspawners.api.particles.ParticleEffect;
 import com.craftaro.epicspawners.api.particles.ParticleType;
 import com.craftaro.epicspawners.api.spawners.spawner.PlacedSpawner;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerTier;
+import com.craftaro.epicspawners.settings.Settings;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -23,6 +24,8 @@ public class SpawnerParticleTask extends BukkitRunnable {
     private final EpicSpawners plugin;
     private double theta = 0;
 
+    private boolean isRunning = false;
+
     private SpawnerParticleTask(EpicSpawners plugin) {
         this.plugin = plugin;
     }
@@ -30,7 +33,17 @@ public class SpawnerParticleTask extends BukkitRunnable {
     public static SpawnerParticleTask startTask(EpicSpawners plugin) {
         if (instance == null) {
             instance = new SpawnerParticleTask(plugin);
+        }
+
+        boolean shouldShowParticles = Settings.SHOW_PARTICLES.getBoolean();
+        if (!instance.isRunning && shouldShowParticles) {
             instance.runTaskTimerAsynchronously(plugin, 50L, 1);
+            instance.isRunning = true;
+        }
+
+        if (instance.isRunning && !shouldShowParticles) {
+            instance.cancel();
+            instance = new SpawnerParticleTask(plugin);
         }
 
         return instance;
