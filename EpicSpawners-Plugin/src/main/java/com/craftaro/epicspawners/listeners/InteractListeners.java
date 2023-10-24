@@ -190,7 +190,7 @@ public class InteractListeners implements Listener {
         Location location = block.getLocation();
         ItemStack item = event.getItem();
 
-        boolean isSpawner = block.getType() == XMaterial.SPAWNER.parseMaterial();
+        boolean isSpawner = block.getType() == XMaterial.SPAWNER.parseMaterial() && this.plugin.getSpawnerManager().isSpawner(location);
 
         //Fixme: Why we want to handle non player placed spawners?
         if (!isSpawner && !this.plugin.getSpawnerManager().isSpawner(location)) {
