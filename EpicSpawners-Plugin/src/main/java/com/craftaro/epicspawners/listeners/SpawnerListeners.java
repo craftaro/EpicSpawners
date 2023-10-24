@@ -1,6 +1,8 @@
 package com.craftaro.epicspawners.listeners;
 
 import com.craftaro.core.compatibility.ServerVersion;
+import com.craftaro.epicspawners.api.EpicSpawnersApi;
+import com.craftaro.epicspawners.api.spawners.spawner.SpawnerStack;
 import com.craftaro.epicspawners.settings.Settings;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -11,8 +13,14 @@ import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.entity.SpawnerSpawnEvent;
 
 public class SpawnerListeners implements Listener {
-    @EventHandler
+    //@EventHandler
     public void onSpawn(SpawnerSpawnEvent event) {
+
+        //Respect vanilla spawners
+        if (!EpicSpawnersApi.getSpawnerManager().isSpawner(event.getSpawner().getLocation())) {
+            return;
+        }
+
         Entity entity = event.getEntity();
         if (entity.getType() == EntityType.FIREWORK) {
             return;
