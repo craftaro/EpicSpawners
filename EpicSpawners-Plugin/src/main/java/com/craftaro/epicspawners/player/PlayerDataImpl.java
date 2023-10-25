@@ -58,7 +58,8 @@ public class PlayerDataImpl implements PlayerData {
                         .set(DSL.field("player"), this.playerUUID.toString())
                         .set(DSL.field("entity_type"), entry.getKey().name())
                         .set(DSL.field("count"), entry.getValue())
-                        .onDuplicateKeyUpdate()
+                        .onConflict(DSL.field("player"), DSL.field("entity_type"))
+                        .doUpdate()
                         .set(DSL.field("count"), entry.getValue())
                         .execute();
             }

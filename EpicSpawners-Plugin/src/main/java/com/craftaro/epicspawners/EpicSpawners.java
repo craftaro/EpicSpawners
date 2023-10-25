@@ -36,7 +36,6 @@ import com.craftaro.epicspawners.commands.CommandSpawnerShop;
 import com.craftaro.epicspawners.commands.CommandSpawnerStats;
 import com.craftaro.epicspawners.database.migrations._1_InitialMigration;
 import com.craftaro.epicspawners.database.migrations._2_AddTiers;
-import com.craftaro.epicspawners.database.migrations._3_AddIndexToEntityKills;
 import com.craftaro.epicspawners.listeners.BlockListeners;
 import com.craftaro.epicspawners.listeners.EntityListeners;
 import com.craftaro.epicspawners.listeners.InteractListeners;
@@ -182,7 +181,8 @@ public class EpicSpawners extends SongodaPlugin {
         this.spawnerCustomSpawnTask = SpawnerSpawnTask.startTask(this);
         this.appearanceTask = AppearanceTask.startTask(this);
 
-        initDatabase(Arrays.asList(new _1_InitialMigration(), new _2_AddTiers(), new _3_AddIndexToEntityKills()));
+        //Note: Next migration revision should be 4. There was a deleted migration with revision 3.
+        initDatabase(Arrays.asList(new _1_InitialMigration(), new _2_AddTiers()));
         new EpicSpawnersApi(this, this.spawnerManager, new SpawnerDataBuilderImpl(""), new SpawnerTierBuilderImpl());
     }
 
