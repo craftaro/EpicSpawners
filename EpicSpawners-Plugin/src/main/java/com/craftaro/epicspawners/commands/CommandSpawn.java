@@ -2,8 +2,11 @@ package com.craftaro.epicspawners.commands;
 
 import com.craftaro.core.commands.AbstractCommand;
 import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
+import com.craftaro.core.world.SSpawner;
 import com.craftaro.epicspawners.EpicSpawners;
+import com.craftaro.epicspawners.api.spawners.spawner.PlacedSpawner;
 import org.bukkit.block.Block;
+import org.bukkit.block.CreatureSpawner;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -29,7 +32,16 @@ public class CommandSpawn extends AbstractCommand {
             return ReturnType.FAILURE;
         }
 
-        this.plugin.getSpawnerManager().getSpawnerFromWorld(block.getLocation()).spawn();
+        PlacedSpawner spawner = this.plugin.getSpawnerManager().getSpawnerFromWorld(block.getLocation());
+        if (spawner == null) {
+            //it is a vanilla spawner
+            CreatureSpawner vanillaSpawner = (CreatureSpawner) block.getState();
+            SSpawner creatureSpawner = new SSpawner(block.getLocation());
+            creatureSpawner.spawn(vanillaSpawner.getSpawnCount(), vanillaSpawner.getSpawnedType());
+        } else {
+            //it is an epic spawner
+            spawner.spawn();
+        }
         this.plugin.getLocale().newMessage("&aSpawning successful.").sendPrefixedMessage(player);
         return ReturnType.SUCCESS;
     }
