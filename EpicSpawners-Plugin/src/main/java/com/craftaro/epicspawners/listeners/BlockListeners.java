@@ -10,8 +10,10 @@ import com.craftaro.core.world.SItemStack;
 import com.craftaro.epicspawners.EpicSpawners;
 import com.craftaro.epicspawners.api.events.SpawnerBreakEvent;
 import com.craftaro.epicspawners.api.events.SpawnerChangeEvent;
+import com.craftaro.epicspawners.api.events.SpawnerDropEvent;
 import com.craftaro.epicspawners.api.events.SpawnerPlaceEvent;
 import com.craftaro.epicspawners.api.spawners.spawner.PlacedSpawner;
+import com.craftaro.epicspawners.api.spawners.spawner.SpawnerData;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerStack;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerTier;
 import com.craftaro.epicspawners.settings.Settings;
@@ -23,6 +25,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.CreatureSpawner;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -31,6 +34,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.Collection;
+import java.util.Random;
 
 public class BlockListeners implements Listener {
     private final EpicSpawners plugin;
@@ -242,15 +249,50 @@ public class BlockListeners implements Listener {
             Location location = block.getLocation();
 
             if (!this.plugin.getSpawnerManager().isSpawner(location)) {
-                //Fixme: Why we want to handle non player placed spawners?
-//                PlacedSpawnerImpl spawner = new PlacedSpawnerImpl(location);
-//
-//                CreatureSpawner creatureSpawner = spawner.getCreatureSpawner();
-//                if (creatureSpawner == null) return;
-//
-//                spawner.addSpawnerStack(new SpawnerStackImpl(spawner, plugin.getSpawnerManager().getSpawnerData(creatureSpawner.getSpawnedType()).getFirstTier()));
-//                plugin.getSpawnerManager().addSpawnerToWorld(location, spawner);
-//                EpicSpawners.getInstance().getDataManager().save(spawner);
+
+
+
+                CreatureSpawner creatureSpawner = (CreatureSpawner) block.getState();
+                EntityType entityType = creatureSpawner.getSpawnedType();
+
+                SpawnerData data = null;
+                for (SpawnerData spawnerData : plugin.getSpawnerManager().getAllSpawnerData()) {
+                    String input = entityType.name().toUpperCase().replace("_", "").replace(" ", "");
+                    String compare = spawnerData.getIdentifyingName().toUpperCase().replace("_", "").replace(" ", "");
+                    if (input.equals(compare)) {
+                        data = spawnerData;
+                    }
+                }
+                if (data == null) {
+                    return;
+                }
+                SpawnerTier tier = data.getFirstTier();
+                ItemStack spawnerItem = tier.toItemStack(1, 1);
+
+                //Check chance
+                double dropChance = Double.parseDouble(Settings.SILKTOUCH_NATURAL_SPAWNER_DROP_CHANCE.getString().replace("%", ""));
+                //Roll chance
+                Random random = new Random();
+                double roll = random.nextDouble() * 100;
+                if (roll > dropChance) {
+                    return;
+                }
+
+                CompatibleHand hand = CompatibleHand.getHand(event);
+                ItemStack inHand = hand.getItem(player);
+                if (Settings.SILKTOUCH_SPAWNERS.getBoolean()
+                        && inHand.hasItemMeta()
+                        && inHand.getItemMeta().hasEnchant(Enchantment.SILK_TOUCH)
+                        && inHand.getEnchantmentLevel(Enchantment.SILK_TOUCH) >= Settings.SILKTOUCH_MIN_LEVEL.getInt()
+                        && player.hasPermission("epicspawners.silkdrop." + data.getIdentifyingName().replace(' ', '_'))
+                        || player.hasPermission("epicspawners.no-silk-drop")) {
+                    if (Settings.SPAWNERS_TO_INVENTORY.getBoolean()) {
+                        player.getInventory().addItem(spawnerItem);
+                    } else {
+                        player.getWorld().dropItemNaturally(player.getLocation(), spawnerItem);
+                    }
+                }
+
                 return;
             }
 
