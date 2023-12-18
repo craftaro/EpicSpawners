@@ -316,6 +316,10 @@ public class BlockListeners implements Listener {
                     event.setCancelled(true);
                     return;
                 }
+
+                plugin.logCoreProtect(coreProtectAPI -> {
+                    coreProtectAPI.logRemoval(player.getName(), block.getLocation(), block.getType(), block.getBlockData());
+                });
             } else {
                 SpawnerChangeEvent changeEvent = new SpawnerChangeEvent(player, spawner, currentStackSize - 1, currentStackSize);
                 Bukkit.getPluginManager().callEvent(changeEvent);
