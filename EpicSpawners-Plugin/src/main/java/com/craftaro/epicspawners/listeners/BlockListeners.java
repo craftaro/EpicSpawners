@@ -323,6 +323,10 @@ public class BlockListeners implements Listener {
                     event.setCancelled(true);
                     return;
                 }
+
+                plugin.logCoreProtect(coreProtectAPI -> {
+                    coreProtectAPI.logRemoval(player.getName(), block.getLocation(), block.getType(), block.getBlockData());
+                });
             }
 
             boolean naturalOnly = Settings.ONLY_CHARGE_NATURAL.getBoolean();

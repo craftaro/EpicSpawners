@@ -390,6 +390,10 @@ public class PlacedSpawnerImpl implements PlacedSpawner {
             return false;
         }
 
+        plugin.logCoreProtect(coreProtectAPI -> {
+            coreProtectAPI.logPlacement(player.getName(), this.location, XMaterial.SPAWNER.parseMaterial(), XMaterial.SPAWNER.parseMaterial().createBlockData());
+        });
+
         if ((getStackSize() + amount) > max) {
             PlayerUtils.giveItem(player, tier.toItemStack(1, (getStackSize() + amount) - max));
             amount = max - currentStackSize;

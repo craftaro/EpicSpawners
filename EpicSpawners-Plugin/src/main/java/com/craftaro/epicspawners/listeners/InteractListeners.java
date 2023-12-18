@@ -247,6 +247,8 @@ public class InteractListeners implements Listener {
                     return;
                 }
 
+                plugin.logCoreProtect(coreProtectAPI -> coreProtectAPI.logInteraction(player.getName(), block.getLocation()));
+
                 spawner.overview(player);
                 this.plugin.processChange(block);
                 event.setCancelled(true);

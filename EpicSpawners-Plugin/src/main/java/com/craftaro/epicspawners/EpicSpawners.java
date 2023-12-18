@@ -55,6 +55,8 @@ import com.craftaro.epicspawners.tasks.SpawnerParticleTask;
 import com.craftaro.epicspawners.tasks.SpawnerSpawnTask;
 import com.craftaro.epicspawners.utils.SpawnerDataBuilderImpl;
 import com.craftaro.epicspawners.utils.SpawnerTierBuilderImpl;
+import net.coreprotect.CoreProtect;
+import net.coreprotect.CoreProtectAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -70,6 +72,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 public class EpicSpawners extends SongodaPlugin {
     private final GuiManager guiManager = new GuiManager(this);
@@ -85,6 +88,7 @@ public class EpicSpawners extends SongodaPlugin {
     private AppearanceTask appearanceTask;
     private SpawnerParticleTask particleTask;
     private SpawnerSpawnTask spawnerCustomSpawnTask;
+    private CoreProtectAPI coreProtectAPI;
 
     /**
      * @deprecated Use {@link org.bukkit.plugin.java.JavaPlugin#getPlugin(Class)} instead
@@ -184,6 +188,16 @@ public class EpicSpawners extends SongodaPlugin {
         //Note: Next migration revision should be 4. There was a deleted migration with revision 3.
         initDatabase(Arrays.asList(new _1_InitialMigration(), new _2_AddTiers()));
         new EpicSpawnersApi(this, this.spawnerManager, new SpawnerDataBuilderImpl(""), new SpawnerTierBuilderImpl());
+
+        //Hook into CoreProtect
+        if (Bukkit.getPluginManager().isPluginEnabled("CoreProtect")) {
+            CoreProtect coreProtect = (CoreProtect) Bukkit.getPluginManager().getPlugin("CoreProtect");
+            if (coreProtect.getAPI().APIVersion() < 9) {
+                Bukkit.getLogger().warning("CoreProtect version is too old. Please update to the latest version.");
+            } else {
+                this.coreProtectAPI = coreProtect.getAPI();
+            }
+        }
     }
 
     @Override
@@ -388,6 +402,17 @@ public class EpicSpawners extends SongodaPlugin {
             }
             getServer().addRecipe(spawnerRecipe);
         }
+    }
+
+    private boolean isCoreProtectEnabled() {
+        return this.coreProtectAPI != null;
+    }
+
+    public void logCoreProtect(Consumer<CoreProtectAPI> coreProtectAPI) {
+        if (!isCoreProtectEnabled()) {
+            return;
+        }
+        coreProtectAPI.accept(this.coreProtectAPI);
     }
 
     public SpawnManager getSpawnManager() {
