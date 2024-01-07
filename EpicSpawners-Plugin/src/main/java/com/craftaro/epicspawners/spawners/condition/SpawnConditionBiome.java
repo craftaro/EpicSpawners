@@ -1,6 +1,6 @@
 package com.craftaro.epicspawners.spawners.condition;
 
-import com.craftaro.core.third_party.org.apache.commons.text.WordUtils;
+import com.craftaro.third_party.org.apache.commons.text.WordUtils;
 import com.craftaro.epicspawners.EpicSpawners;
 import com.craftaro.epicspawners.api.spawners.condition.SpawnCondition;
 import com.craftaro.epicspawners.api.spawners.spawner.PlacedSpawner;

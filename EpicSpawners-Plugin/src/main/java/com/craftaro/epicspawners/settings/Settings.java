@@ -4,7 +4,7 @@ import com.craftaro.core.configuration.Config;
 import com.craftaro.core.configuration.ConfigSetting;
 import com.craftaro.core.hooks.EconomyManager;
 import com.craftaro.core.hooks.HologramManager;
-import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
+import com.craftaro.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.epicspawners.EpicSpawners;
 
 import java.util.stream.Collectors;

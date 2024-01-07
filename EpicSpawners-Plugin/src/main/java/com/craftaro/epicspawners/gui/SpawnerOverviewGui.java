@@ -2,7 +2,7 @@ package com.craftaro.epicspawners.gui;
 
 import com.craftaro.core.gui.CustomizableGui;
 import com.craftaro.core.hooks.EconomyManager;
-import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
+import com.craftaro.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.utils.NumberUtils;
 import com.craftaro.core.utils.TextUtils;
 import com.craftaro.epicspawners.EpicSpawners;

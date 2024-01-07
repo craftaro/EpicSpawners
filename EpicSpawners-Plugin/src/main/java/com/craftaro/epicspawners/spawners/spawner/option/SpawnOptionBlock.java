@@ -1,7 +1,7 @@
 package com.craftaro.epicspawners.spawners.spawner.option;
 
-import com.craftaro.core.third_party.com.cryptomorin.xseries.XBlock;
-import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
+import com.craftaro.third_party.com.cryptomorin.xseries.XBlock;
+import com.craftaro.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.epicspawners.EpicSpawners;
 import com.craftaro.epicspawners.api.boosts.types.Boosted;
 import com.craftaro.epicspawners.api.spawners.spawner.PlacedSpawner;

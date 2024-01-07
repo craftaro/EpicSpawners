@@ -3,7 +3,7 @@ package com.craftaro.epicspawners.listeners;
 import com.craftaro.core.compatibility.CompatibleHand;
 import com.craftaro.core.compatibility.ServerVersion;
 import com.craftaro.core.hooks.EconomyManager;
-import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
+import com.craftaro.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.utils.ItemUtils;
 import com.craftaro.core.utils.PlayerUtils;
 import com.craftaro.core.world.SItemStack;

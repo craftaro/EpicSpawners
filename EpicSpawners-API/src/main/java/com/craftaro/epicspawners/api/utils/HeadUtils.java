@@ -1,7 +1,7 @@
 package com.craftaro.epicspawners.api.utils;
 
-import com.craftaro.core.third_party.com.cryptomorin.xseries.SkullUtils;
-import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
+import com.craftaro.third_party.com.cryptomorin.xseries.SkullUtils;
+import com.craftaro.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerData;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerTier;
 import org.bukkit.inventory.ItemStack;

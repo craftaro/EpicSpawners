@@ -2,9 +2,9 @@ package com.craftaro.epicspawners.spawners.spawner;
 
 import com.craftaro.core.compatibility.CompatibleBiome;
 import com.craftaro.core.configuration.Config;
-import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
+import com.craftaro.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.third_party.de.tr7zw.nbtapi.NBTItem;
-import com.craftaro.core.third_party.org.apache.commons.text.WordUtils;
+import com.craftaro.third_party.org.apache.commons.text.WordUtils;
 import com.craftaro.core.utils.EntityUtils;
 import com.craftaro.epicspawners.EpicSpawners;
 import com.craftaro.epicspawners.api.particles.ParticleDensity;

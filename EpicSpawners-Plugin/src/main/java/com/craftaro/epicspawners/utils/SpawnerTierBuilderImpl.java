@@ -1,6 +1,6 @@
 package com.craftaro.epicspawners.utils;
 
-import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
+import com.craftaro.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.epicspawners.api.particles.ParticleDensity;
 import com.craftaro.epicspawners.api.particles.ParticleEffect;
 import com.craftaro.epicspawners.api.particles.ParticleType;

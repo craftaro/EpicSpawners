@@ -2,7 +2,7 @@ package com.craftaro.epicspawners.spawners.spawner;
 
 import com.craftaro.core.database.Data;
 import com.craftaro.core.hooks.EconomyManager;
-import com.craftaro.core.third_party.org.jooq.impl.DSL;
+import com.craftaro.third_party.org.jooq.impl.DSL;
 import com.craftaro.epicspawners.EpicSpawners;
 import com.craftaro.epicspawners.api.events.SpawnerChangeEvent;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerData;

@@ -7,7 +7,7 @@ import com.craftaro.core.lootables.loot.Drop;
 import com.craftaro.core.lootables.loot.Loot;
 import com.craftaro.core.lootables.loot.LootManager;
 import com.craftaro.core.lootables.loot.Lootable;
-import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
+import com.craftaro.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.epicspawners.EpicSpawners;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerTier;
 import org.bukkit.enchantments.Enchantment;

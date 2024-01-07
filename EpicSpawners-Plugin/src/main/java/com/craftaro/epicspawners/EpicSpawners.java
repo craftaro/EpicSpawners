@@ -5,15 +5,14 @@ import com.craftaro.core.SongodaPlugin;
 import com.craftaro.core.commands.CommandManager;
 import com.craftaro.core.configuration.Config;
 import com.craftaro.core.database.DataManager;
+import com.craftaro.core.dependency.Dependency;
 import com.craftaro.core.gui.GuiManager;
 import com.craftaro.core.hooks.EconomyManager;
 import com.craftaro.core.hooks.EntityStackerManager;
 import com.craftaro.core.hooks.HologramManager;
 import com.craftaro.core.hooks.ProtectionManager;
-import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
-import com.craftaro.core.third_party.org.jooq.Record;
-import com.craftaro.core.third_party.org.jooq.Result;
-import com.craftaro.core.third_party.org.jooq.impl.DSL;
+import com.craftaro.epicspawners.database.DataHelper;
+import com.craftaro.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.epicspawners.api.EpicSpawnersApi;
 import com.craftaro.epicspawners.api.boosts.types.Boosted;
 import com.craftaro.epicspawners.api.player.PlayerData;
@@ -70,7 +69,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
 
@@ -96,6 +97,11 @@ public class EpicSpawners extends SongodaPlugin {
     @Deprecated
     public static EpicSpawners getInstance() {
         return getPlugin(EpicSpawners.class);
+    }
+
+    @Override
+    protected Set<Dependency> getDependencies() {
+        return new HashSet<>();
     }
 
     @Override
@@ -208,48 +214,7 @@ public class EpicSpawners extends SongodaPlugin {
         List<SpawnerStack> stacks = dataManager.loadBatch(SpawnerStackImpl.class, "spawner_stacks");
         loadHolograms();
 
-        List<Boosted> boosted = new ArrayList<>();
-        String prefix = dataManager.getTablePrefix();
-        dataManager.getDatabaseConnector().connectDSL(dslContext -> {
-            dslContext.select().from(DSL.table(prefix + "boosted_players")).fetch().forEach(record -> {
-                boosted.add(new BoostedPlayerImpl(
-                        UUID.fromString(record.get("player").toString()),
-                        Integer.parseInt(record.get("amount").toString()),
-                        Long.parseLong(record.get("end_time").toString())
-                ));
-            });
-
-            dslContext.select().from(DSL.table(prefix + "boosted_spawners")).fetch().forEach(record -> {
-                Location location = new Location(
-                        Bukkit.getWorld(record.get("world").toString()),
-                        Double.parseDouble(record.get("x").toString()),
-                        Double.parseDouble(record.get("y").toString()),
-                        Double.parseDouble(record.get("z").toString()));
-                boosted.add(new BoostedSpawnerImpl(
-                        location,
-                        Integer.parseInt(record.get("amount").toString()),
-                        Long.parseLong(record.get("end_time").toString())
-                ));
-            });
-        });
-        this.boostManager.addBoosts(boosted);
-
-        //Load entity kills
-        dataManager.getDatabaseConnector().connectDSL(dslContext -> {
-            @NotNull Result<Record> results = dslContext.select().from(dataManager.getTablePrefix() + "entity_kills").fetch();
-            results.stream().iterator().forEachRemaining(record -> {
-                UUID uuid = UUID.fromString(record.get("player").toString());
-                EntityType entityType = EntityType.valueOf(record.get("entity_type").toString());
-                int amount = 0;
-                try {
-                    amount = Integer.parseInt(record.get("count").toString());
-                } catch (NumberFormatException ex) {
-                    amount = Double.valueOf(record.get("count").toString()).intValue();
-                }
-                PlayerData playerData = this.playerActionManager.getPlayerData(uuid);
-                playerData.addKilledEntity(entityType, amount);
-            });
-        });
+        DataHelper.loadData(dataManager, this.boostManager, this.playerActionManager);
     }
 
     @Override
@@ -404,16 +369,7 @@ public class EpicSpawners extends SongodaPlugin {
         }
     }
 
-    private boolean isCoreProtectEnabled() {
-        return this.coreProtectAPI != null;
-    }
 
-    public void logCoreProtect(Consumer<CoreProtectAPI> coreProtectAPI) {
-        if (!isCoreProtectEnabled()) {
-            return;
-        }
-        coreProtectAPI.accept(this.coreProtectAPI);
-    }
 
     public SpawnManager getSpawnManager() {
         return this.spawnManager;
