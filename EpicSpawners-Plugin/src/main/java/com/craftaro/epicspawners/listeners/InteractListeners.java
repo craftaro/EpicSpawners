@@ -4,6 +4,7 @@ import com.craftaro.core.compatibility.CompatibleHand;
 import com.craftaro.core.compatibility.CompatibleMaterial;
 import com.craftaro.core.compatibility.ServerVersion;
 import com.craftaro.core.hooks.ProtectionManager;
+import com.craftaro.epicspawners.utils.CoreProtectLogger;
 import com.craftaro.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.utils.ItemUtils;
 import com.craftaro.epicspawners.EpicSpawners;
@@ -247,7 +248,7 @@ public class InteractListeners implements Listener {
                     return;
                 }
 
-                plugin.logCoreProtect(coreProtectAPI -> coreProtectAPI.logInteraction(player.getName(), block.getLocation()));
+                CoreProtectLogger.logInteraction(player.getName(), block.getLocation());
 
                 spawner.overview(player);
                 this.plugin.processChange(block);

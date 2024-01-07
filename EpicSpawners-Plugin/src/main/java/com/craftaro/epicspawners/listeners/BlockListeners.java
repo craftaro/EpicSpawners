@@ -3,6 +3,7 @@ package com.craftaro.epicspawners.listeners;
 import com.craftaro.core.compatibility.CompatibleHand;
 import com.craftaro.core.compatibility.ServerVersion;
 import com.craftaro.core.hooks.EconomyManager;
+import com.craftaro.epicspawners.utils.CoreProtectLogger;
 import com.craftaro.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.utils.ItemUtils;
 import com.craftaro.core.utils.PlayerUtils;
@@ -149,7 +150,6 @@ public class BlockListeners implements Listener {
             int spawnerStackSize = spawnerTier.getStackSize(event.getItemInHand());
             SpawnerStack stack = new SpawnerStackImpl(spawner, spawnerTier, spawnerStackSize);
             spawner.addSpawnerStack(stack);
-            EpicSpawners.getInstance().getDataManager().save(stack, "spawner_id", spawner.getId());
 
             Player player = event.getPlayer();
 
@@ -193,7 +193,6 @@ public class BlockListeners implements Listener {
                 return;
             }
 
-
             this.plugin.getSpawnerManager().addSpawnerToWorld(location, spawner);
 
             if (Settings.ALERT_PLACE_BREAK.getBoolean()) {
@@ -214,7 +213,9 @@ public class BlockListeners implements Listener {
 
             spawner.updateDelay();
             spawner.setPlacedBy(player);
+            spawner.setId(EpicSpawners.getInstance().getDataManager().getNextId(spawner.getTableName()));
             EpicSpawners.getInstance().getDataManager().save(spawner);
+            EpicSpawners.getInstance().getDataManager().save(stack, "spawner_id", spawner.getId());
 
             this.plugin.processChange(block);
             this.plugin.createHologram(spawner);
@@ -317,9 +318,7 @@ public class BlockListeners implements Listener {
                     return;
                 }
 
-                plugin.logCoreProtect(coreProtectAPI -> {
-                    coreProtectAPI.logRemoval(player.getName(), block.getLocation(), block.getType(), block.getBlockData());
-                });
+                CoreProtectLogger.logRemoval(player.getName(), block);
             } else {
                 SpawnerChangeEvent changeEvent = new SpawnerChangeEvent(player, spawner, currentStackSize - 1, currentStackSize);
                 Bukkit.getPluginManager().callEvent(changeEvent);
@@ -328,9 +327,7 @@ public class BlockListeners implements Listener {
                     return;
                 }
 
-                plugin.logCoreProtect(coreProtectAPI -> {
-                    coreProtectAPI.logRemoval(player.getName(), block.getLocation(), block.getType(), block.getBlockData());
-                });
+                CoreProtectLogger.logRemoval(player.getName(), block);
             }
 
             boolean naturalOnly = Settings.ONLY_CHARGE_NATURAL.getBoolean();
