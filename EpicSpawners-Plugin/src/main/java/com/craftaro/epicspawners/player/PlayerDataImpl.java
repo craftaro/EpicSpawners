@@ -1,15 +1,26 @@
 package com.craftaro.epicspawners.player;
 
 import com.craftaro.core.database.DataManager;
+import com.craftaro.third_party.org.jooq.InsertOnDuplicateSetMoreStep;
+import com.craftaro.third_party.org.jooq.InsertResultStep;
+import com.craftaro.third_party.org.jooq.Query;
+import com.craftaro.third_party.org.jooq.Record;
+import com.craftaro.third_party.org.jooq.TableRecord;
+import com.craftaro.third_party.org.jooq.UpdatableRecord;
 import com.craftaro.third_party.org.jooq.impl.DSL;
 import com.craftaro.epicspawners.EpicSpawners;
 import com.craftaro.epicspawners.api.player.PlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.EntityType;
+import org.jetbrains.annotations.NotNull;
 
+import java.sql.PreparedStatement;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
@@ -53,16 +64,19 @@ public class PlayerDataImpl implements PlayerData {
     public void save() {
         DataManager dataManager = EpicSpawners.getInstance().getDataManager();
         dataManager.getDatabaseConnector().connectDSL(context -> {
+            List<Query> statements = new ArrayList<>();
             for (Map.Entry<EntityType, Integer> entry : this.entityKills.entrySet()) {
-                context.insertInto(DSL.table(dataManager.getTablePrefix() + "entity_kills"))
+                Query query = DSL.insertInto(DSL.table(dataManager.getTablePrefix() + "entity_kills"))
                         .set(DSL.field("player"), this.playerUUID.toString())
                         .set(DSL.field("entity_type"), entry.getKey().name())
                         .set(DSL.field("count"), entry.getValue())
                         .onConflict(DSL.field("player"), DSL.field("entity_type"))
                         .doUpdate()
-                        .set(DSL.field("count"), entry.getValue())
-                        .execute();
+                        .set(DSL.field("count"), entry.getValue());
+                statements.add(query);
             }
+
+            context.batch(statements).execute();
         });
     }
 

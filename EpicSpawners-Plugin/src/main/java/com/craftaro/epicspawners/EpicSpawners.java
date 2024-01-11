@@ -12,6 +12,7 @@ import com.craftaro.core.hooks.EntityStackerManager;
 import com.craftaro.core.hooks.HologramManager;
 import com.craftaro.core.hooks.ProtectionManager;
 import com.craftaro.epicspawners.database.DataHelper;
+import com.craftaro.epicspawners.database.migrations._3_AddUniqueIndex;
 import com.craftaro.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.epicspawners.api.EpicSpawnersApi;
 import com.craftaro.epicspawners.api.boosts.types.Boosted;
@@ -66,6 +67,7 @@ import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
 
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -192,7 +194,7 @@ public class EpicSpawners extends SongodaPlugin {
         this.appearanceTask = AppearanceTask.startTask(this);
 
         //Note: Next migration revision should be 4. There was a deleted migration with revision 3.
-        initDatabase(Arrays.asList(new _1_InitialMigration(), new _2_AddTiers()));
+        initDatabase(new _1_InitialMigration(), new _2_AddTiers(), new _3_AddUniqueIndex());
         new EpicSpawnersApi(this, this.spawnerManager, new SpawnerDataBuilderImpl(""), new SpawnerTierBuilderImpl());
 
         //Hook into CoreProtect
