@@ -5,25 +5,18 @@ import com.craftaro.core.SongodaPlugin;
 import com.craftaro.core.commands.CommandManager;
 import com.craftaro.core.configuration.Config;
 import com.craftaro.core.database.DataManager;
-import com.craftaro.core.dependency.Dependency;
 import com.craftaro.core.gui.GuiManager;
 import com.craftaro.core.hooks.EconomyManager;
 import com.craftaro.core.hooks.EntityStackerManager;
 import com.craftaro.core.hooks.HologramManager;
 import com.craftaro.core.hooks.ProtectionManager;
-import com.craftaro.epicspawners.database.DataHelper;
-import com.craftaro.epicspawners.database.migrations._3_AddUniqueIndex;
-import com.craftaro.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.epicspawners.api.EpicSpawnersApi;
-import com.craftaro.epicspawners.api.boosts.types.Boosted;
-import com.craftaro.epicspawners.api.player.PlayerData;
 import com.craftaro.epicspawners.api.spawners.spawner.PlacedSpawner;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerData;
+import com.craftaro.epicspawners.api.spawners.spawner.SpawnerManager;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerStack;
 import com.craftaro.epicspawners.blacklist.BlacklistHandler;
 import com.craftaro.epicspawners.boost.BoostManagerImpl;
-import com.craftaro.epicspawners.boost.types.BoostedPlayerImpl;
-import com.craftaro.epicspawners.boost.types.BoostedSpawnerImpl;
 import com.craftaro.epicspawners.commands.CommandBoost;
 import com.craftaro.epicspawners.commands.CommandChange;
 import com.craftaro.epicspawners.commands.CommandEditor;
@@ -34,8 +27,10 @@ import com.craftaro.epicspawners.commands.CommandSettings;
 import com.craftaro.epicspawners.commands.CommandSpawn;
 import com.craftaro.epicspawners.commands.CommandSpawnerShop;
 import com.craftaro.epicspawners.commands.CommandSpawnerStats;
+import com.craftaro.epicspawners.database.DataHelper;
 import com.craftaro.epicspawners.database.migrations._1_InitialMigration;
 import com.craftaro.epicspawners.database.migrations._2_AddTiers;
+import com.craftaro.epicspawners.database.migrations._3_AddUniqueIndex;
 import com.craftaro.epicspawners.listeners.BlockListeners;
 import com.craftaro.epicspawners.listeners.EntityListeners;
 import com.craftaro.epicspawners.listeners.InteractListeners;
@@ -47,7 +42,6 @@ import com.craftaro.epicspawners.player.PlayerDataManagerImpl;
 import com.craftaro.epicspawners.settings.Settings;
 import com.craftaro.epicspawners.spawners.SpawnManager;
 import com.craftaro.epicspawners.spawners.spawner.PlacedSpawnerImpl;
-import com.craftaro.epicspawners.api.spawners.spawner.SpawnerManager;
 import com.craftaro.epicspawners.spawners.spawner.SpawnerManagerImpl;
 import com.craftaro.epicspawners.spawners.spawner.SpawnerStackImpl;
 import com.craftaro.epicspawners.tasks.AppearanceTask;
@@ -55,27 +49,19 @@ import com.craftaro.epicspawners.tasks.SpawnerParticleTask;
 import com.craftaro.epicspawners.tasks.SpawnerSpawnTask;
 import com.craftaro.epicspawners.utils.SpawnerDataBuilderImpl;
 import com.craftaro.epicspawners.utils.SpawnerTierBuilderImpl;
+import com.craftaro.third_party.com.cryptomorin.xseries.XMaterial;
 import net.coreprotect.CoreProtect;
 import net.coreprotect.CoreProtectAPI;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
-import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.plugin.PluginManager;
-import org.jetbrains.annotations.NotNull;
 
-import java.sql.ResultSet;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-import java.util.function.Consumer;
 
 public class EpicSpawners extends SongodaPlugin {
     private final GuiManager guiManager = new GuiManager(this);
@@ -99,11 +85,6 @@ public class EpicSpawners extends SongodaPlugin {
     @Deprecated
     public static EpicSpawners getInstance() {
         return getPlugin(EpicSpawners.class);
-    }
-
-    @Override
-    protected Set<Dependency> getDependencies() {
-        return new HashSet<>();
     }
 
     @Override
@@ -370,7 +351,6 @@ public class EpicSpawners extends SongodaPlugin {
             getServer().addRecipe(spawnerRecipe);
         }
     }
-
 
 
     public SpawnManager getSpawnManager() {
