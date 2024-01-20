@@ -218,7 +218,8 @@ public class PlacedSpawnerImpl implements PlacedSpawner {
     @Override
     public SpawnerStack getFirstStack() {
         if (this.spawnerStacks.isEmpty()) {
-            return null;
+            CreatureSpawner creatureSpawner = getCreatureSpawner();
+            return new SpawnerStackImpl(this, EpicSpawners.getInstance().getSpawnerManager().getSpawnerData(creatureSpawner.getSpawnedType().name()).getFirstTier(), 1);
         }
         return this.spawnerStacks.getFirst();
     }

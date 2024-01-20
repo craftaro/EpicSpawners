@@ -249,10 +249,9 @@ public class BlockListeners implements Listener {
 
             Location location = block.getLocation();
 
+            //Vanilla spawners
             if (!this.plugin.getSpawnerManager().isSpawner(location)) {
-
-
-
+                PlacedSpawner placedSpawner = new PlacedSpawnerImpl(location);
                 CreatureSpawner creatureSpawner = (CreatureSpawner) block.getState();
                 EntityType entityType = creatureSpawner.getSpawnedType();
 
@@ -287,6 +286,12 @@ public class BlockListeners implements Listener {
                         && inHand.getEnchantmentLevel(Enchantment.SILK_TOUCH) >= Settings.SILKTOUCH_MIN_LEVEL.getInt()
                         && player.hasPermission("epicspawners.silkdrop." + data.getIdentifyingName().replace(' ', '_'))
                         || player.hasPermission("epicspawners.no-silk-drop")) {
+
+                    if (handleCost(event, placedSpawner, player)) {
+                        //Failed cost check
+                        return;
+                    }
+
                     if (Settings.SPAWNERS_TO_INVENTORY.getBoolean()) {
                         player.getInventory().addItem(spawnerItem);
                     } else {
@@ -330,29 +335,10 @@ public class BlockListeners implements Listener {
                 CoreProtectLogger.logRemoval(player.getName(), block);
             }
 
-            boolean naturalOnly = Settings.ONLY_CHARGE_NATURAL.getBoolean();
-
-            double cost = spawner.getFirstStack().getCurrentTier().getPickupCost();
-            if (cost != 0.0 && (!naturalOnly || spawner.getPlacedBy() == null)) {
-                if (!this.plugin.getSpawnerManager().hasCooldown(spawner)) {
-                    this.plugin.getLocale().getMessage("event.block.chargebreak")
-                            .processPlaceholder("cost", EconomyManager.formatEconomy(spawner.getFirstStack().getCurrentTier().getPickupCost()))
-                            .sendPrefixedMessage(player);
-                    this.plugin.getSpawnerManager().addCooldown(spawner);
-                    Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin, () -> this.plugin.getSpawnerManager().removeCooldown(spawner), 300L);
-                    event.setCancelled(true);
-                    return;
-                }
-
-                this.plugin.getSpawnerManager().removeCooldown(spawner);
-
-                if (EconomyManager.hasBalance(player, cost)) {
-                    EconomyManager.withdrawBalance(player, cost);
-                } else {
-                    this.plugin.getLocale().getMessage("event.block.cannotbreak").sendPrefixedMessage(player);
-                    event.setCancelled(true);
-                    return;
-                }
+            //Handle cost
+            if (handleCost(event, spawner, player)) {
+                //Failed cost check
+                return;
             }
 
             SpawnerTier firstTier = spawner.getFirstStack().getCurrentTier();
@@ -386,5 +372,43 @@ public class BlockListeners implements Listener {
 
         //ToDo: Probably remove this.
         Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin, () -> this.plugin.processChange(block), 10L);
+    }
+
+    private boolean handleCost(BlockBreakEvent event, PlacedSpawner spawner, Player player) {
+
+        boolean onlyChargeNatural = Settings.ONLY_CHARGE_NATURAL.getBoolean();
+
+        double cost = spawner.getFirstStack().getCurrentTier().getPickupCost();
+        if (cost != 0.0) {
+            if (!onlyChargeNatural || spawner.getPlacedBy() == null) {
+                if (!this.plugin.getSpawnerManager().hasCooldown(spawner)) {
+                    this.plugin.getLocale().getMessage("event.block.chargebreak")
+                            .processPlaceholder("cost", EconomyManager.formatEconomy(spawner.getFirstStack().getCurrentTier().getPickupCost()))
+                            .sendPrefixedMessage(player);
+                    this.plugin.getSpawnerManager().addCooldown(spawner);
+                    Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin, () -> this.plugin.getSpawnerManager().removeCooldown(spawner), 300L);
+                    event.setCancelled(true);
+                    return true;
+                }
+            }
+
+            this.plugin.getSpawnerManager().removeCooldown(spawner);
+
+            if (EconomyManager.hasBalance(player, cost)) {
+                if (onlyChargeNatural && spawner.getPlacedBy() != null) {
+                    return false;
+                }
+                EconomyManager.withdrawBalance(player, cost);
+                return false;
+            } else {
+                if (onlyChargeNatural && spawner.getPlacedBy() != null) {
+                    return false;
+                }
+                this.plugin.getLocale().getMessage("event.block.cannotbreak").sendPrefixedMessage(player);
+                event.setCancelled(true);
+                return true;
+            }
+        }
+        return false;
     }
 }
