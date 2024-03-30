@@ -215,6 +215,10 @@ public class InteractListeners implements Listener {
             }
 
             if (!player.isSneaking()) {
+                if (!spawner.getPlacedBy().getUniqueId().equals(event.getPlayer().getUniqueId())) {
+                    player.sendMessage(this.plugin.getLocale().getMessage("event.general.protected").getPrefixedMessage());
+                    return;
+                }
                 SpawnerTier spawnerTier = this.plugin.getSpawnerManager().getSpawnerTier(item);
                 if (spawnerTier == null) {
                     return;

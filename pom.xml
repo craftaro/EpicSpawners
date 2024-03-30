@@ -7,7 +7,7 @@
     <groupId>com.craftaro</groupId>
     <artifactId>EpicSpawners-Parent</artifactId>
     <packaging>pom</packaging>
-    <version>8.2.0</version>
+    <version>8.2.1</version>
 
     <modules>
         <module>EpicSpawners-API</module>
@@ -59,14 +59,14 @@
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
-            <version>24.0.1</version>
+            <version>24.1.0</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>net.coreprotect</groupId>
             <artifactId>coreprotect</artifactId>
-            <version>22.2</version>
+            <version>22.3</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

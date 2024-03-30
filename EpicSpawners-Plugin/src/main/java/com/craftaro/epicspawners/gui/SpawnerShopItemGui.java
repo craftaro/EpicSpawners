@@ -147,7 +147,7 @@ public class SpawnerShopItemGui extends CustomizableGui {
         setButton("exit", 8, GuiUtils.createButtonItem(Settings.EXIT_ICON.getMaterial(),
                 this.plugin.getLocale().getMessage("general.nametag.exit").getMessage()), event -> event.player.closeInventory());
 
-        setButton("back", 0, GuiUtils.createButtonItem(ItemUtils.getCustomHead("3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23"),
+        setButton("back", 0, GuiUtils.createButtonItem(XMaterial.ARROW,
                         this.plugin.getLocale().getMessage("general.nametag.back").getMessage()),
                 event -> this.guiManager.showGUI(event.player, this.back));
 
