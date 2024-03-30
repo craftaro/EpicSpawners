@@ -97,7 +97,7 @@ public class SpawnerBoostGui extends CustomizableGui {
                 event -> this.spawner.overview(this.player));
 
         if (this.amount != 1)
-            setButton("minus1", 0, GuiUtils.createButtonItem(ItemUtils.getCustomHead("3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23"),
+            setButton("minus1", 0, GuiUtils.createButtonItem(XMaterial.ARROW,
                     TextUtils.formatText("&6&l-1")), event -> {
                 this.amount--;
                 setUp();
