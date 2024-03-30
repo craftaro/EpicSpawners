@@ -113,7 +113,7 @@ public class SpawnerManagerImpl implements SpawnerManager {
             return null;
         }
         CreatureSpawner cs = (CreatureSpawner) bsm.getBlockState();
-        return getSpawnerData(cs.getSpawnedType()).getFirstTier();
+        return getSpawnerData(cs.getSpawnedType() == null ? EntityType.PIG : cs.getSpawnedType()).getFirstTier();
     }
 
     @Override

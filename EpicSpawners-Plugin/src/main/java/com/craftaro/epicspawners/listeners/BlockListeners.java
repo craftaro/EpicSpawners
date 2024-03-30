@@ -255,6 +255,9 @@ public class BlockListeners implements Listener {
                 CreatureSpawner creatureSpawner = (CreatureSpawner) block.getState();
                 EntityType entityType = creatureSpawner.getSpawnedType();
 
+                if (entityType == null)
+                    entityType = EntityType.PIG;
+
                 SpawnerData data = null;
                 for (SpawnerData spawnerData : plugin.getSpawnerManager().getAllSpawnerData()) {
                     String input = entityType.name().toUpperCase().replace("_", "").replace(" ", "");
