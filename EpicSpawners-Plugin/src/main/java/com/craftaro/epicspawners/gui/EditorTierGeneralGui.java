@@ -59,7 +59,7 @@ public class EditorTierGeneralGui extends Gui {
 
         setButton(16, GuiUtils.createButtonItem(XMaterial.FIRE_CHARGE, TextUtils.formatText("&a&lShop Price",
                         "&7Currently: &a" + this.spawnerData.getShopPrice(),
-                        "&7This is the shop cost")),
+                        "&7The price of this spawner in the shop.")),
                 event -> {
                     Player player = event.player;
                     AnvilGui gui = new AnvilGui(player, this);
@@ -83,7 +83,7 @@ public class EditorTierGeneralGui extends Gui {
         setButton(14, GuiUtils.createButtonItem(XMaterial.FIRE_CHARGE, TextUtils.formatText("&c&lCustom Kill Goal",
                         "&7Currently: &a" + this.spawnerData.getShopPrice(),
                         "&7This is the amount of kills",
-                        "of this tiers ")),
+                        "&7required to unlock this tear.")),
                 event -> {
                     Player player = event.player;
                     AnvilGui gui = new AnvilGui(player, this);
