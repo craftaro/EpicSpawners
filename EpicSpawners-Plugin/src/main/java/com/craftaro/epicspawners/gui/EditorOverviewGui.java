@@ -106,7 +106,7 @@ public class EditorOverviewGui extends Gui {
                 lore.add(TextUtils.formatText("&6Display Item: &7Dirt&7."));
             }
         }
-        lore.add(TextUtils.formatText("&6Config Name: &7" + this.spawnerTier.getIdentifyingName() + "&7."));
+        lore.add(TextUtils.formatText("&6Config Location: &7" + spawnerData.getIdentifyingName() + "." + this.spawnerTier.getIdentifyingName() + "&7."));
         itemmeta.setLore(lore);
         itemmeta.setDisplayName(this.spawnerTier.getCompiledDisplayName());
         item.setItemMeta(itemmeta);

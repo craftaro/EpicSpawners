@@ -76,7 +76,7 @@ public class EditorSelectorGui extends Gui {
             }
             XMaterial mat = spawnerData.getDisplayItem();
             setButton(num, GuiUtils.createButtonItem(mat != null && !mat.equals(XMaterial.AIR) ? spawnerData.getDisplayItem().parseItem() : HeadUtils.getTexturedSkull(spawnerData),
-                            TextUtils.formatText("&6&l" + spawnerData.getIdentifyingName()), TextUtils.formatText("&7Click to &a&lEdit&7.")),
+                            TextUtils.formatText("&6&l" + spawnerData.getFirstTier().getDisplayName()), TextUtils.formatText("&7Click to &a&lEdit&7.")),
                     (event) -> EditorTiersGui.openTiers(this.plugin, this.player, spawnerData));
         }
 
