@@ -1,6 +1,7 @@
 package com.craftaro.epicspawners.spawners.spawner;
 
 import com.craftaro.core.compatibility.CompatibleBiome;
+import com.craftaro.core.compatibility.ServerVersion;
 import com.craftaro.core.configuration.Config;
 import com.craftaro.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.third_party.de.tr7zw.nbtapi.NBTItem;
@@ -262,7 +263,11 @@ public class SpawnerManagerImpl implements SpawnerManager {
         } else {
             tier.addCondition(new SpawnConditionBiome(Biome.values()));
             // TODO: These values should probably be *world* dependent as even in older versions, the max build height could be higher (vanilla spawners probably work up there too?)
-            tier.addCondition(new SpawnConditionHeight(-64, 320));
+            if (ServerVersion.isServerVersionBelow(ServerVersion.V1_17)) {
+                tier.addCondition(new SpawnConditionHeight(0, 265));
+            } else {
+                tier.addCondition(new SpawnConditionHeight(-64, 320));
+            }
         }
         if (Monster.class.isAssignableFrom(type.getEntityClass())) {
             tier.addCondition(new SpawnConditionLightDark(SpawnConditionLightDark.Type.DARK));
