@@ -1,5 +1,6 @@
 package com.craftaro.epicspawners.spawners.spawner;
 
+import com.craftaro.core.compatibility.ServerVersion;
 import com.craftaro.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerData;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerTier;
@@ -238,7 +239,11 @@ public class SpawnerDataImpl implements SpawnerData {
     public void addDefaultTier() {
         SpawnerTier tier = new SpawnerTierImpl(this);
         tier.addCondition(new SpawnConditionNearbyPlayers(16, 1));
-        tier.addCondition(new SpawnConditionHeight(0, 265));
+        if (ServerVersion.isServerVersionBelow(ServerVersion.V1_17)) {
+            tier.addCondition(new SpawnConditionHeight(0, 265));
+        } else {
+            tier.addCondition(new SpawnConditionHeight(-64, 320));
+        }
         tier.addCondition(new SpawnConditionBiome(Biome.values()));
         tier.addCondition(new SpawnConditionLightDark(SpawnConditionLightDark.Type.BOTH));
         tier.addCondition(new SpawnConditionStorm(false));
