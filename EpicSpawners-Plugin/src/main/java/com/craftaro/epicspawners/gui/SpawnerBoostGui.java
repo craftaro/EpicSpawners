@@ -1,9 +1,11 @@
 package com.craftaro.epicspawners.gui;
 
+import com.craftaro.core.chat.AdventureUtils;
 import com.craftaro.core.database.DataManager;
 import com.craftaro.core.gui.CustomizableGui;
 import com.craftaro.core.gui.GuiUtils;
 import com.craftaro.core.hooks.EconomyManager;
+import com.craftaro.third_party.com.cryptomorin.xseries.SkullUtils;
 import com.craftaro.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.third_party.com.cryptomorin.xseries.XSound;
 import com.craftaro.third_party.org.apache.commons.lang3.math.NumberUtils;
@@ -17,13 +19,17 @@ import com.craftaro.epicspawners.EpicSpawners;
 import com.craftaro.epicspawners.api.spawners.spawner.PlacedSpawner;
 import com.craftaro.epicspawners.boost.types.BoostedSpawnerImpl;
 import com.craftaro.epicspawners.settings.Settings;
+import com.craftaro.ultimatestacker.api.stack.item.ItemMergeCallback;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Objects;
 
 public class SpawnerBoostGui extends CustomizableGui {
     private final EpicSpawners plugin;
@@ -104,13 +110,19 @@ public class SpawnerBoostGui extends CustomizableGui {
                 paint();
             });
 
-        if (this.amount < Settings.MAX_PLAYER_BOOST.getInt())
-            setButton("plus1", 8, GuiUtils.createButtonItem(ItemUtils.getCustomHead("1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b"),
-                    TextUtils.formatText("&6&l+1")), event -> {
+        if (this.amount < Settings.MAX_PLAYER_BOOST.getInt()) {
+            ItemStack head = Objects.requireNonNull(XMaterial.PLAYER_HEAD.parseItem());
+            AdventureUtils.formatItemName(head, "&6&l+1");
+            ItemMeta meta = head.getItemMeta();
+            SkullUtils.applySkin(meta, "19bf3292e126a105b54eba713aa1b152d541a1d8938829c56364d178ed22bf");
+            head.setItemMeta(meta);
+
+            setButton("plus1", 8, head, event -> {
                 this.amount++;
                 setUp();
                 paint();
             });
+        }
     }
 
     private void purchaseBoost(Player player, int time, int amt) {
