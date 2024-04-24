@@ -23,7 +23,7 @@ public class _3_AddUniqueIndex extends DataMigration {
 
         try (Statement statement = connection.createStatement()) {
             //MySQL and MariaDB
-            statement.execute("ALTER TABLE " + tablePrefix + "entity_kills ADD UNIQUE INDEX IF NOT EXISTS player_uuid_entity_type (player, entity_type))");
+            statement.execute("ALTER TABLE " + tablePrefix + "entity_kills ADD UNIQUE INDEX IF NOT EXISTS player_uuid_entity_type (player, entity_type)");
         } catch (Exception ignored) {
             //H2
             try (Statement statement = connection.createStatement()) {
