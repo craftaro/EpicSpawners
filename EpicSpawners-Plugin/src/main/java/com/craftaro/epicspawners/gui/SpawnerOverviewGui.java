@@ -151,8 +151,8 @@ public class SpawnerOverviewGui extends CustomizableGui {
         itemmeta.setLore(lore);
         spawnerItem.setItemMeta(itemmeta);
 
-        double levelsCost = this.nextTier == null ? -1 : this.nextTier.getUpgradeCost(CostType.LEVELS);
-        double economyCost = this.nextTier == null ? -1 : this.nextTier.getUpgradeCost(CostType.ECONOMY);
+        double levelsCost = this.nextTier == null ? -1 : this.nextTier.getUpgradeCost(CostType.LEVELS) * this.spawner.getStackSize();
+        double economyCost = this.nextTier == null ? -1 : this.nextTier.getUpgradeCost(CostType.ECONOMY) * this.spawner.getStackSize();
 
         ItemStack itemLevels = Settings.XP_ICON.getMaterial().parseItem();
         ItemMeta itemmetaXP = itemLevels.getItemMeta();
