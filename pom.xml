@@ -19,7 +19,7 @@
     <url>https://craftaro.com/marketplace/product/13</url>
 
     <properties>
-        <craftaro.coreVersion>3.0.5-SNAPSHOT</craftaro.coreVersion>
+        <craftaro.coreVersion>3.0.7-SNAPSHOT</craftaro.coreVersion>
 
         <maven.compiler.release>8</maven.compiler.release>
         <maven.compiler.target>1.8</maven.compiler.target>
