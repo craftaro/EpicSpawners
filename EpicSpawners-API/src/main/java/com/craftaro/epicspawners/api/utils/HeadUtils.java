@@ -1,12 +1,12 @@
 package com.craftaro.epicspawners.api.utils;
 
 import com.craftaro.core.utils.HeadType;
-import com.craftaro.third_party.com.cryptomorin.xseries.SkullUtils;
-import com.craftaro.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerData;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerTier;
+import com.craftaro.third_party.com.cryptomorin.xseries.profiles.builder.XSkull;
+import com.craftaro.third_party.com.cryptomorin.xseries.profiles.objects.ProfileInputType;
+import com.craftaro.third_party.com.cryptomorin.xseries.profiles.objects.Profileable;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -34,13 +34,7 @@ public class HeadUtils {
     }
 
     private static ItemStack createSkullForSkinHash(String textureHash) {
-        ItemStack head = XMaterial.PLAYER_HEAD.parseItem();
-
-        SkullMeta meta = (SkullMeta) head.getItemMeta();
-        SkullUtils.applySkin(meta, textureHash);
-        head.setItemMeta(meta);
-
-        return head;
+        return XSkull.createItem().profile(new Profileable.StringProfileable(textureHash, ProfileInputType.TEXTURE_HASH)).apply();
     }
 
     private static HeadType getHeadTypeOrDefault(String name) {
