@@ -175,6 +175,11 @@ public class SpawnerManagerImpl implements SpawnerManager {
     }
 
     @Override
+    public void removeSpawnersFromWorld(List<PlacedSpawner> spawners) {
+        spawners.forEach(spawner -> this.spawnersInWorld.remove(spawner.getLocation()));
+    }
+
+    @Override
     public Collection<PlacedSpawner> getSpawners() {
         return Collections.unmodifiableCollection(this.spawnersInWorld.values());
     }
@@ -185,7 +190,7 @@ public class SpawnerManagerImpl implements SpawnerManager {
     }
 
     @Override
-    public void addSpawners(List<PlacedSpawner> spawners) {
+    public <T extends PlacedSpawner> void addSpawners(List<T> spawners) {
         spawners.forEach(spawner -> this.spawnersInWorld.put(spawner.getLocation(), (PlacedSpawnerImpl) spawner));
     }
 

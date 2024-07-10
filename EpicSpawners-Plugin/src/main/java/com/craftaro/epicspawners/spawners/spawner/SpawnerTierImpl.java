@@ -229,7 +229,7 @@ public class SpawnerTierImpl implements SpawnerTier {
         String displayName = getDisplayName();
 
         nameFormat = nameFormat.replace("{TYPE}", omni ?
-                EpicSpawners.getInstance().getLocale().getMessage("general.nametag.omni").getMessage() : displayName);
+                EpicSpawners.getInstance().getLocale().getMessage("general.nametag.omni").toText() : displayName);
 
         if (stackSize > 1 || Settings.DISPLAY_TIER_ONE.getBoolean() && stackSize >= 0) {
             nameFormat = nameFormat.replace("{AMT}", Integer.toString(stackSize))

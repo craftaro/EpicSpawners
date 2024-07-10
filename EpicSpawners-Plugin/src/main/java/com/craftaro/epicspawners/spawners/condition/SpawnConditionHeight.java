@@ -22,7 +22,7 @@ public class SpawnConditionHeight implements SpawnCondition {
         return EpicSpawners.getInstance().getLocale().getMessage("interface.spawner.conditionHeight")
                 .processPlaceholder("min", this.min)
                 .processPlaceholder("max", this.max)
-                .getMessage();
+                .toString();
     }
 
     @Override

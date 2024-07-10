@@ -134,7 +134,7 @@ public class EditorEditGui extends Gui {
         }, 1L);
 
         setButton(0, GuiUtils.createButtonItem(XMaterial.OAK_DOOR,
-                        TextUtils.formatText(this.plugin.getLocale().getMessage("general.nametag.back").getMessage())),
+                        this.plugin.getLocale().getMessage("general.nametag.back")),
                 (event) -> this.guiManager.showGUI(event.player, this.back));
 
         if (this.editType != EditType.ITEM && this.editType != EditType.BLOCK) {

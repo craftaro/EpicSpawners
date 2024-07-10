@@ -1,6 +1,7 @@
 package com.craftaro.epicspawners.spawners.spawner.option;
 
 import com.craftaro.core.compatibility.ServerVersion;
+import com.craftaro.epicspawners.spawners.spawner.PlacedSpawnerImpl;
 import com.craftaro.third_party.com.cryptomorin.xseries.XSound;
 import com.craftaro.epicspawners.EpicSpawners;
 import com.craftaro.epicspawners.api.boosts.types.Boosted;
@@ -66,7 +67,7 @@ public class SpawnOptionItem implements SpawnOption {
             }
         }
 
-        EpicSpawners.getInstance().getDataManager().save(spawner);
+        EpicSpawners.getInstance().getDataManager().save((PlacedSpawnerImpl)spawner);
     }
 
     public SpawnOptionType getType() {

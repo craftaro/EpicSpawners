@@ -59,7 +59,7 @@ public class EditorParticleGui extends Gui {
         setItem(44, glass2);
 
         setButton(0, GuiUtils.createButtonItem(XMaterial.OAK_DOOR,
-                        this.plugin.getLocale().getMessage("general.nametag.back").getMessage()),
+                        this.plugin.getLocale().getMessage("general.nametag.back")),
                 (event) -> this.guiManager.showGUI(event.player, this.back));
 
         setButton(20, GuiUtils.createButtonItem(XMaterial.ENDER_PEARL, TextUtils.formatText("&5&lParticle Types",

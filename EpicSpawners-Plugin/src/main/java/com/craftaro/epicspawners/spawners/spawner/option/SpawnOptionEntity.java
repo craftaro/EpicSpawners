@@ -14,6 +14,7 @@ import com.craftaro.epicspawners.api.spawners.spawner.option.SpawnOption;
 import com.craftaro.epicspawners.api.spawners.spawner.option.SpawnOptionType;
 import com.craftaro.epicspawners.settings.Settings;
 import com.craftaro.epicspawners.spawners.condition.SpawnConditionNearbyEntities;
+import com.craftaro.epicspawners.spawners.spawner.PlacedSpawnerImpl;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
@@ -115,7 +116,7 @@ public class SpawnOptionEntity implements SpawnOption {
                 }, this.types);
 
         spawner.setSpawnCount(spawner.getSpawnCount() + amountSpawned);
-        EpicSpawners.getInstance().getDataManager().save(spawner);
+        EpicSpawners.getInstance().getDataManager().save((PlacedSpawnerImpl)spawner);
     }
 
     @Override

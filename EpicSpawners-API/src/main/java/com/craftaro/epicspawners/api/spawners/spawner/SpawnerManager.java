@@ -42,11 +42,13 @@ public interface SpawnerManager {
 
     PlacedSpawner removeSpawnerFromWorld(PlacedSpawner spawner);
 
+    void removeSpawnersFromWorld(List<PlacedSpawner> spawners);
+
     Collection<PlacedSpawner> getSpawners();
 
     void addSpawners(Map<Location, PlacedSpawner> spawners);
 
-    void addSpawners(List<PlacedSpawner> spawners);
+    <T extends PlacedSpawner> void addSpawners(List<T> spawners);
 
     void addCooldown(PlacedSpawner spawner);
 

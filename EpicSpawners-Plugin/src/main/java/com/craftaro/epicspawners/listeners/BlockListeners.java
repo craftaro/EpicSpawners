@@ -176,7 +176,7 @@ public class BlockListeners implements Listener {
 
             if (maxSpawners != -1 && amountPlaced > maxSpawners) {
                 player.sendMessage(this.plugin.getLocale().getMessage("event.spawner.toomany")
-                        .processPlaceholder("amount", maxSpawners).getMessage());
+                        .processPlaceholder("amount", maxSpawners).toString());
                 event.setCancelled(true);
                 return;
             }

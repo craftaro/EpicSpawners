@@ -32,7 +32,7 @@ public class SpawnerTiersGui extends CustomizableGui {
         this.player = player;
         this.spawner = spawner;
 
-        setTitle(plugin.getLocale().getMessage("interface.tiers.title").getMessage());
+        setTitle(plugin.getLocale().getMessage("interface.tiers.title").toString());
         setOnClose(event -> {
             Bukkit.getScheduler().cancelTask(this.task);
             plugin.getSpawnerManager().saveSpawnerDataToFile();
@@ -87,9 +87,9 @@ public class SpawnerTiersGui extends CustomizableGui {
 
         GuiUtils.applyBoosted(5, this, this.plugin, this.player, this.spawner);
 
-        setItem("stats", 3, GuiUtils.createButtonItem(XMaterial.PAPER, this.plugin.getLocale().getMessage("interface.spawner.statstitle").getMessage(),
+        setItem("stats", 3, GuiUtils.createButtonItem(XMaterial.PAPER, this.plugin.getLocale().getMessage("interface.spawner.statstitle").toString(),
                 this.plugin.getLocale().getMessage("interface.spawner.stats")
-                        .processPlaceholder("amount", NumberUtils.formatNumber(this.spawner.getSpawnCount())).getMessage()));
+                        .processPlaceholder("amount", NumberUtils.formatNumber(this.spawner.getSpawnCount())).toString()));
     }
 
     private void runTask() {

@@ -37,7 +37,7 @@ public class GuiUtils extends com.craftaro.core.gui.GuiUtils {
                     .processPlaceholder("time", boostEnd == Long.MAX_VALUE
                             ? plugin.getLocale().getMessage("interface.spawner.boostednever")
                             : TimeUtils.makeReadable(boostEnd - System.currentTimeMillis()))
-                    .getMessage().split("\\|");
+                    .toString().split("\\|");
 
             lore.addAll(TextUtils.formatText(parts));
 
@@ -45,8 +45,8 @@ public class GuiUtils extends com.craftaro.core.gui.GuiUtils {
         } else {
             gui.setButton("boost", slot, createButtonItem(Settings.BOOST_ICON.getMaterial(),
                     spawner.getBoosts().stream().mapToInt(Boosted::getAmountBoosted).sum() == 0
-                            ? plugin.getLocale().getMessage("interface.spawner.boost").getMessage()
-                            : plugin.getLocale().getMessage("interface.spawner.cantboost").getMessage(), lore), event ->
+                            ? plugin.getLocale().getMessage("interface.spawner.boost").toString()
+                            : plugin.getLocale().getMessage("interface.spawner.cantboost").toString(), lore), event ->
                     plugin.getGuiManager().showGUI(player, new SpawnerBoostGui(plugin, spawner, player)));
         }
     }

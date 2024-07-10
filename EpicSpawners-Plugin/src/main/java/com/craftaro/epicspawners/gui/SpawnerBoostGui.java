@@ -25,6 +25,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -71,32 +72,34 @@ public class SpawnerBoostGui extends CustomizableGui {
         mirrorFill("mirrorfill_4", 1, 0, false, true, glass2);
         mirrorFill("mirrorfill_5", 1, 1, false, true, glass3);
 
-        setButton("boost5", 10, GuiUtils.createButtonItem(XMaterial.COAL, this.plugin.getLocale().getMessage("interface.boost.boostfor")
-                                .processPlaceholder("amount", "5").getMessage(),
+        setButton("boost5", 10, GuiUtils.createButtonItem(XMaterial.COAL,
+                        this.plugin.getLocale().getMessage("interface.boost.boostfor")
+                                .processPlaceholder("amount", "5"),
                         this.plugin.getLocale().getMessage("interface.boost.cost")
-                                .processPlaceholder("cost", getBoostCost(5, this.amount)).getMessage()),
+                                .processPlaceholder("cost", getBoostCost(5, this.amount))
+                ),
                 event -> purchaseBoost(this.player, 5, this.amount));
 
         setButton("boost15", 12, GuiUtils.createButtonItem(XMaterial.IRON_INGOT, this.plugin.getLocale().getMessage("interface.boost.boostfor")
-                                .processPlaceholder("amount", "15").getMessage(),
+                                .processPlaceholder("amount", "15"),
                         this.plugin.getLocale().getMessage("interface.boost.cost")
-                                .processPlaceholder("cost", getBoostCost(15, this.amount)).getMessage()),
+                                .processPlaceholder("cost", getBoostCost(15, this.amount))),
                 event -> purchaseBoost(this.player, 15, this.amount));
 
         setButton("boost30", 14, GuiUtils.createButtonItem(XMaterial.DIAMOND, this.plugin.getLocale().getMessage("interface.boost.boostfor")
-                                .processPlaceholder("amount", "30").getMessage(),
+                                .processPlaceholder("amount", "30"),
                         this.plugin.getLocale().getMessage("interface.boost.cost")
-                                .processPlaceholder("cost", getBoostCost(30, this.amount)).getMessage()),
+                                .processPlaceholder("cost", getBoostCost(30, this.amount))),
                 event -> purchaseBoost(this.player, 30, this.amount));
 
         setButton("boost60", 16, GuiUtils.createButtonItem(XMaterial.EMERALD, this.plugin.getLocale().getMessage("interface.boost.boostfor")
-                                .processPlaceholder("amount", "60").getMessage(),
+                                .processPlaceholder("amount", "60"),
                         this.plugin.getLocale().getMessage("interface.boost.cost")
-                                .processPlaceholder("cost", getBoostCost(60, this.amount)).getMessage()),
+                                .processPlaceholder("cost", getBoostCost(60, this.amount))),
                 event -> purchaseBoost(this.player, 60, this.amount));
 
         setButton("back", 4, GuiUtils.createButtonItem(Settings.EXIT_ICON.getMaterial(),
-                        this.plugin.getLocale().getMessage("general.nametag.back").getMessage()),
+                        this.plugin.getLocale().getMessage("general.nametag.back")),
                 event -> this.spawner.overview(this.player));
 
         if (this.amount != 1)

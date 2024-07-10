@@ -127,7 +127,7 @@ public class EpicSpawners extends SongodaPlugin {
 
         // Set Economy & Hologram preference
         EconomyManager.getManager().setPreferredHook(Settings.ECONOMY_PLUGIN.getString());
-        EconomyManager.setCurrencySymbol(getLocale().getMessage("general.nametag.currency").getMessage());
+        EconomyManager.setCurrencySymbol(getLocale().getMessage("general.nametag.currency").toText());
         HologramManager.getManager().setPreferredHook(Settings.HOLOGRAM_PLUGIN.getString());
 
         // Register commands

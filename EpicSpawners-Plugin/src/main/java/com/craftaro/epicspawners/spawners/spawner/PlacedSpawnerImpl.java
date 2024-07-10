@@ -49,7 +49,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
-public class PlacedSpawnerImpl implements PlacedSpawner {
+public class PlacedSpawnerImpl implements PlacedSpawner, Data {
     // This is the unique identifier for this hologram.
     // It is reset on every plugin load.
     // Used for holograms.
@@ -497,24 +497,25 @@ public class PlacedSpawnerImpl implements PlacedSpawner {
             if (boost instanceof BoostedPlayerImpl && this.placedBy == null) {
                 continue;
             }
-            BoostedSpawnerImpl boostedSpawner = (BoostedSpawnerImpl) boost;
-            if (System.currentTimeMillis() >= boost.getEndTime()) {
-                instance.getBoostManager().removeBoost(boost);
-                instance.getDataManager().getAsyncPool().execute(() -> {
-                    instance.getDataManager().getDatabaseConnector().connectDSL(dslContext -> {
-                        dslContext.deleteFrom(DSL.table(instance.getDataManager().getTablePrefix() + "boosted_spawners"))
-                                .where(DSL.field("world").eq(boostedSpawner.getLocation().getWorld().getName()))
-                                .and(DSL.field("x").eq(boostedSpawner.getLocation().getBlockX()))
-                                .and(DSL.field("y").eq(boostedSpawner.getLocation().getBlockY()))
-                                .and(DSL.field("z").eq(boostedSpawner.getLocation().getBlockZ()))
-                                .execute();
-                    });
-                });
-                continue;
-            }
+            Boosted boosted = boost;
 
             if (boost instanceof BoostedSpawnerImpl) {
-                if (!this.location.equals(((BoostedSpawnerImpl) boost).getLocation())) {
+                BoostedSpawnerImpl boostedSpawner = (BoostedSpawnerImpl) boost;
+                if (System.currentTimeMillis() >= boost.getEndTime()) {
+                    instance.getBoostManager().removeBoost(boost);
+                    instance.getDataManager().getAsyncPool().execute(() -> {
+                        instance.getDataManager().getDatabaseConnector().connectDSL(dslContext -> {
+                            dslContext.deleteFrom(DSL.table(instance.getDataManager().getTablePrefix() + "boosted_spawners"))
+                                    .where(DSL.field("world").eq(boostedSpawner.getLocation().getWorld().getName()))
+                                    .and(DSL.field("x").eq(boostedSpawner.getLocation().getBlockX()))
+                                    .and(DSL.field("y").eq(boostedSpawner.getLocation().getBlockY()))
+                                    .and(DSL.field("z").eq(boostedSpawner.getLocation().getBlockZ()))
+                                    .execute();
+                        });
+                    });
+                    continue;
+                }
+                if (!this.location.equals(boostedSpawner.getLocation())) {
                     continue;
                 }
             } else if (boost instanceof BoostedPlayerImpl) {

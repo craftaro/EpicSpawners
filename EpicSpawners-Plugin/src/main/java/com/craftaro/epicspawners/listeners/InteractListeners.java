@@ -140,7 +140,7 @@ public class InteractListeners implements Listener {
         }
 
         if (Settings.USE_PROTECTION_PLUGINS.getBoolean() && !ProtectionManager.canInteract(player, block.getLocation())) {
-            player.sendMessage(this.plugin.getLocale().getMessage("event.general.protected").getPrefixedMessage());
+            this.plugin.getLocale().getMessage("event.general.protected").sendPrefixedMessage(player);
             return;
         }
 
@@ -216,7 +216,7 @@ public class InteractListeners implements Listener {
 
             if (!player.isSneaking()) {
                 if (!spawner.getPlacedBy().getUniqueId().equals(event.getPlayer().getUniqueId())) {
-                    player.sendMessage(this.plugin.getLocale().getMessage("event.general.protected").getPrefixedMessage());
+                    this.plugin.getLocale().getMessage("event.general.protected").sendPrefixedMessage(player);
                     return;
                 }
                 SpawnerTier spawnerTier = this.plugin.getSpawnerManager().getSpawnerTier(item);
@@ -225,7 +225,7 @@ public class InteractListeners implements Listener {
                 }
                 if (player.hasPermission("epicspawners.stack." + spawnerTier.getIdentifyingName()) || player.hasPermission("epicspawners.stack.*")) {
                     if (Settings.USE_PROTECTION_PLUGINS.getBoolean() && !ProtectionManager.canInteract(player, block.getLocation())) {
-                        player.sendMessage(this.plugin.getLocale().getMessage("event.general.protected").getPrefixedMessage());
+                        this.plugin.getLocale().getMessage("event.general.protected").sendPrefixedMessage(player);
                         return;
                     }
 
@@ -248,7 +248,7 @@ public class InteractListeners implements Listener {
                 }
 
                 if (Settings.USE_PROTECTION_PLUGINS.getBoolean() && !ProtectionManager.canInteract(player, block.getLocation())) {
-                    player.sendMessage(this.plugin.getLocale().getMessage("event.general.protected").getPrefixedMessage());
+                    this.plugin.getLocale().getMessage("event.general.protected").sendPrefixedMessage(player);
                     return;
                 }
 

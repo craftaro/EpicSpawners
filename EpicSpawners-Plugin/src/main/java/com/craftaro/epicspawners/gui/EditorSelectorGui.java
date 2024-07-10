@@ -51,8 +51,8 @@ public class EditorSelectorGui extends Gui {
         this.pages = (int) Math.max(1, Math.ceil(this.entities.size() / ((double) 28)));
 
         // enable page event
-        setNextPage(5, 7, GuiUtils.createButtonItem(XMaterial.ARROW, this.plugin.getLocale().getMessage("general.nametag.next").getMessage()));
-        setPrevPage(5, 1, GuiUtils.createButtonItem(XMaterial.ARROW, this.plugin.getLocale().getMessage("general.nametag.back").getMessage()));
+        setNextPage(5, 7, GuiUtils.createButtonItem(XMaterial.ARROW, this.plugin.getLocale().getMessage("general.nametag.next")));
+        setPrevPage(5, 1, GuiUtils.createButtonItem(XMaterial.ARROW, this.plugin.getLocale().getMessage("general.nametag.back")));
         setOnPage((event) -> showPage());
 
         List<SpawnerData> data = this.entities.stream()
@@ -61,7 +61,7 @@ public class EditorSelectorGui extends Gui {
                         || this.shownType == Type.CUSTOM && s.isCustom()).skip((this.page - 1) * 28).limit(28).collect(Collectors.toList());
 
         setButton(8, GuiUtils.createButtonItem(XMaterial.OAK_DOOR,
-                this.plugin.getLocale().getMessage("general.nametag.exit").getMessage()), (event) -> close());
+                this.plugin.getLocale().getMessage("general.nametag.exit")), (event) -> close());
 
         int num = 10;
         for (int i = 0; i < 28; i++) {

@@ -82,7 +82,7 @@ public class EditorOverviewGui extends Gui {
         setItem(53, glass3);
 
         setButton(8, GuiUtils.createButtonItem(XMaterial.OAK_DOOR,
-                        this.plugin.getLocale().getMessage("general.nametag.back").getMessage()),
+                        this.plugin.getLocale().getMessage("general.nametag.back")),
                 (event) -> EditorTiersGui.openTiersInReverse(this.plugin, this.player, this.spawnerTier));
 
         ItemStack item = HeadUtils.getTexturedSkull(this.spawnerTier);

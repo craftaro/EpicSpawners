@@ -39,7 +39,7 @@ public class SpawnerShopGui extends CustomizableGui {
             this.entities.add(spawnerData);
         }
 
-        setTitle(plugin.getLocale().getMessage("interface.shop.title").getMessage());
+        setTitle(plugin.getLocale().getMessage("interface.shop.title").toString());
         showPage();
     }
 
@@ -62,8 +62,8 @@ public class SpawnerShopGui extends CustomizableGui {
         this.pages = (int) Math.max(1, Math.ceil(this.entities.size() / ((double) 28)));
 
         // enable page event
-        setNextPage(5, 7, GuiUtils.createButtonItem(XMaterial.ARROW, this.plugin.getLocale().getMessage("general.nametag.next").getMessage()));
-        setPrevPage(5, 1, GuiUtils.createButtonItem(XMaterial.ARROW, this.plugin.getLocale().getMessage("general.nametag.back").getMessage()));
+        setNextPage(5, 7, GuiUtils.createButtonItem(XMaterial.ARROW, this.plugin.getLocale().getMessage("general.nametag.next").toString()));
+        setPrevPage(5, 1, GuiUtils.createButtonItem(XMaterial.ARROW, this.plugin.getLocale().getMessage("general.nametag.back").toString()));
         setOnPage((event) -> showPage());
 
         // Sort entities by their shopOrder val
@@ -91,8 +91,8 @@ public class SpawnerShopGui extends CustomizableGui {
             ArrayList<String> lore = new ArrayList<>();
             double price = spawnerData.getShopPrice();
             lore.add(TextUtils.formatText(this.plugin.getLocale().getMessage("interface.shop.buyprice")
-                    .processPlaceholder("cost", EconomyManager.formatEconomy(price)).getMessage()));
-            String loreString = this.plugin.getLocale().getMessage("interface.shop.lore").getMessage();
+                    .processPlaceholder("cost", EconomyManager.formatEconomy(price)).toString()));
+            String loreString = this.plugin.getLocale().getMessage("interface.shop.lore").toString();
             if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
                 loreString = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(this.player, loreString.replace(" ", "_")).replace("_", " ");
             }
@@ -106,7 +106,7 @@ public class SpawnerShopGui extends CustomizableGui {
         }
 
         setButton("exit", 8, GuiUtils.createButtonItem(Settings.EXIT_ICON.getMaterial(),
-                        this.plugin.getLocale().getMessage("general.nametag.exit").getMessage()),
+                        this.plugin.getLocale().getMessage("general.nametag.exit").toString()),
                 event -> this.player.closeInventory());
     }
 }

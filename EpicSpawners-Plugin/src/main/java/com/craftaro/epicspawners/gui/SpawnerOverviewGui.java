@@ -1,5 +1,6 @@
 package com.craftaro.epicspawners.gui;
 
+import com.craftaro.core.chat.AdventureUtils;
 import com.craftaro.core.gui.CustomizableGui;
 import com.craftaro.core.hooks.EconomyManager;
 import com.craftaro.third_party.com.cryptomorin.xseries.XMaterial;
@@ -80,7 +81,7 @@ public class SpawnerOverviewGui extends CustomizableGui {
 
         if (this.spawner.getSpawnerStacks().size() != 1) {
             setButton("back", 0, com.craftaro.core.gui.GuiUtils.createButtonItem(Settings.EXIT_ICON.getMaterial(),
-                            this.plugin.getLocale().getMessage("general.nametag.back").getMessage()),
+                            this.plugin.getLocale().getMessage("general.nametag.back")),
                     (event) -> this.guiManager.showGUI(event.player, new SpawnerTiersGui(this.plugin, this.player, this.spawner)));
         }
 
@@ -105,8 +106,7 @@ public class SpawnerOverviewGui extends CustomizableGui {
             }
         }
 
-        ItemMeta itemmeta = spawnerItem.getItemMeta();
-        itemmeta.setDisplayName(this.plugin.getLocale().getMessage("interface.spawner.statstitle").getMessage());
+        AdventureUtils.formatItemName(spawnerItem, this.plugin.getLocale().getMessage("interface.spawner.statstitle").getMessage());
         ArrayList<String> lore = new ArrayList<>();
 
         List<XMaterial> blocks = this.tier.getSpawnBlocksList();
@@ -126,7 +126,7 @@ public class SpawnerOverviewGui extends CustomizableGui {
         }
 
         String onlyStr = this.plugin.getLocale().getMessage("interface.spawner.onlyspawnson")
-                .processPlaceholder("block", only.toString()).getMessage();
+                .processPlaceholder("block", only.toString()).toString();
 
         lore.addAll(TextUtils.wrap("7", onlyStr));
 
@@ -136,7 +136,7 @@ public class SpawnerOverviewGui extends CustomizableGui {
                 if (met) {
                     met = false;
                     lore.add("");
-                    lore.add(this.plugin.getLocale().getMessage("interface.spawner.paused").getMessage());
+                    lore.add(this.plugin.getLocale().getMessage("interface.spawner.paused").toString());
                 }
                 lore.addAll(TextUtils.wrap("7", " » " + condition.getDescription()));
             }
@@ -145,37 +145,36 @@ public class SpawnerOverviewGui extends CustomizableGui {
         if (this.spawner.getSpawnerStacks().size() == 1) {
             lore.add("");
             lore.add(this.plugin.getLocale().getMessage("interface.spawner.stats")
-                    .processPlaceholder("amount", NumberUtils.formatNumber(this.spawner.getSpawnCount())).getMessage());
+                    .processPlaceholder("amount", NumberUtils.formatNumber(this.spawner.getSpawnCount())).toString());
         }
 
-        itemmeta.setLore(lore);
-        spawnerItem.setItemMeta(itemmeta);
+        AdventureUtils.formatItemLore(spawnerItem, lore);
 
         double levelsCost = this.nextTier == null ? -1 : this.nextTier.getUpgradeCost(CostType.LEVELS);
         double economyCost = this.nextTier == null ? -1 : this.nextTier.getUpgradeCost(CostType.ECONOMY);
 
         ItemStack itemLevels = Settings.XP_ICON.getMaterial().parseItem();
         ItemMeta itemmetaXP = itemLevels.getItemMeta();
-        itemmetaXP.setDisplayName(this.plugin.getLocale().getMessage("interface.spawner.upgradewithlevels").getMessage());
+        itemmetaXP.setDisplayName(this.plugin.getLocale().getMessage("interface.spawner.upgradewithlevels").toString());
         ArrayList<String> loreXP = new ArrayList<>();
         if (this.nextTier != null) {
             loreXP.add(this.plugin.getLocale().getMessage("interface.spawner.upgradewithlevelslore")
-                    .processPlaceholder("cost", Double.toString(levelsCost)).getMessage());
+                    .processPlaceholder("cost", Double.toString(levelsCost)).toString());
         } else {
-            loreXP.add(this.plugin.getLocale().getMessage("event.upgrade.maxed").getMessage());
+            loreXP.add(this.plugin.getLocale().getMessage("event.upgrade.maxed").toString());
         }
         itemmetaXP.setLore(loreXP);
         itemLevels.setItemMeta(itemmetaXP);
 
         ItemStack itemECO = Settings.ECO_ICON.getMaterial().parseItem();
         ItemMeta itemmetaECO = itemECO.getItemMeta();
-        itemmetaECO.setDisplayName(this.plugin.getLocale().getMessage("interface.spawner.upgradewitheconomy").getMessage());
+        itemmetaECO.setDisplayName(this.plugin.getLocale().getMessage("interface.spawner.upgradewitheconomy").toString());
         ArrayList<String> loreECO = new ArrayList<>();
         if (this.nextTier != null) {
             loreECO.add(this.plugin.getLocale().getMessage("interface.spawner.upgradewitheconomylore")
-                    .processPlaceholder("cost", EconomyManager.formatEconomy(economyCost)).getMessage());
+                    .processPlaceholder("cost", EconomyManager.formatEconomy(economyCost)).toString());
         } else {
-            loreECO.add(this.plugin.getLocale().getMessage("event.upgrade.maxed").getMessage());
+            loreECO.add(this.plugin.getLocale().getMessage("event.upgrade.maxed").toString());
         }
         itemmetaECO.setLore(loreECO);
         itemECO.setItemMeta(itemmetaECO);
@@ -184,7 +183,7 @@ public class SpawnerOverviewGui extends CustomizableGui {
 
         if (this.player.hasPermission("epicspawners.convert") && this.data.isConvertible()) {
             setButton("convert", 4, GuiUtils.createButtonItem(Settings.CONVERT_ICON.getMaterial(),
-                            this.plugin.getLocale().getMessage("interface.spawner.convert").getMessage()),
+                            this.plugin.getLocale().getMessage("interface.spawner.convert").toString()),
                     (event) -> this.guiManager.showGUI(this.player, new SpawnerConvertGui(this.plugin, this.stack, this.player)));
         }
 
@@ -195,9 +194,9 @@ public class SpawnerOverviewGui extends CustomizableGui {
         if (Settings.DISPLAY_HELP_BUTTON.getBoolean()) {
             ItemStack itemO = new ItemStack(Material.PAPER, 1);
             ItemMeta itemmetaO = itemO.getItemMeta();
-            itemmetaO.setDisplayName(this.plugin.getLocale().getMessage("interface.spawner.tutorialtitle").getMessage());
+            itemmetaO.setDisplayName(this.plugin.getLocale().getMessage("interface.spawner.tutorialtitle").toString());
             ArrayList<String> loreO = new ArrayList<>();
-            String text = this.plugin.getLocale().getMessage("interface.spawner.tutorial").getMessage();
+            String text = this.plugin.getLocale().getMessage("interface.spawner.tutorial").toString();
 
             int start = (14 * this.infoPage) - 14;
             int li = 1; // 12
@@ -232,9 +231,9 @@ public class SpawnerOverviewGui extends CustomizableGui {
             }
 
             if (max) {
-                loreO.add(this.plugin.getLocale().getMessage("interface.spawner.howtonext").getMessage());
+                loreO.add(this.plugin.getLocale().getMessage("interface.spawner.howtonext").toString());
             } else {
-                loreO.add(this.plugin.getLocale().getMessage("interface.spawner.howtoback").getMessage());
+                loreO.add(this.plugin.getLocale().getMessage("interface.spawner.howtoback").toString());
             }
 
             itemmetaO.setLore(loreO);
@@ -272,9 +271,9 @@ public class SpawnerOverviewGui extends CustomizableGui {
     private void addInfo() {
         ItemStack itemO = new ItemStack(Material.PAPER, 1);
         ItemMeta itemmetaO = itemO.getItemMeta();
-        itemmetaO.setDisplayName(this.plugin.getLocale().getMessage("interface.spawner.tutorialtitle").getMessage());
+        itemmetaO.setDisplayName(this.plugin.getLocale().getMessage("interface.spawner.tutorialtitle").toString());
         List<String> loreO = new ArrayList<>();
-        String text = this.plugin.getLocale().getMessage("interface.spawner.tutorial").getMessage();
+        String text = this.plugin.getLocale().getMessage("interface.spawner.tutorial").toString();
 
         int start = (14 * this.infoPage) - 14;
         int li = 1; // 12
@@ -309,9 +308,9 @@ public class SpawnerOverviewGui extends CustomizableGui {
         }
 
         if (max) {
-            loreO.add(this.plugin.getLocale().getMessage("interface.spawner.howtonext").getMessage());
+            loreO.add(this.plugin.getLocale().getMessage("interface.spawner.howtonext").toString());
         } else {
-            loreO.add(this.plugin.getLocale().getMessage("interface.spawner.howtoback").getMessage());
+            loreO.add(this.plugin.getLocale().getMessage("interface.spawner.howtoback").toString());
         }
 
         itemmetaO.setLore(loreO);

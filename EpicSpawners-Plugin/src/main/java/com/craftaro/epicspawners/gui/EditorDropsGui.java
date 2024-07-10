@@ -37,7 +37,7 @@ public class EditorDropsGui extends Gui {
         setTitle(spawnerTier.getGuiTitle());
 
         setButton(8, GuiUtils.createButtonItem(XMaterial.ARROW,
-                        plugin.getLocale().getMessage("general.nametag.back").getMessage()),
+                        plugin.getLocale().getMessage("general.nametag.back")),
                 (event) -> this.guiManager.showGUI(event.player, back));
 
         paint();
