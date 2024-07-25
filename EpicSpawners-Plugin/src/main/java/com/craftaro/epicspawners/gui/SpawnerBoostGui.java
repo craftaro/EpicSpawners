@@ -80,6 +80,11 @@ public class SpawnerBoostGui extends CustomizableGui {
                 ),
                 event -> purchaseBoost(this.player, 5, this.amount));
 
+        System.err.println(this.plugin.getLocale().getMessage("interface.boost.cost").toText());
+
+        System.err.println(this.plugin.getLocale().getMessage("interface.boost.cost")
+                .processPlaceholder("cost", getBoostCost(5, this.amount)).toText());
+
         setButton("boost15", 12, GuiUtils.createButtonItem(XMaterial.IRON_INGOT, this.plugin.getLocale().getMessage("interface.boost.boostfor")
                                 .processPlaceholder("amount", "15"),
                         this.plugin.getLocale().getMessage("interface.boost.cost")
@@ -203,7 +208,7 @@ public class SpawnerBoostGui extends CustomizableGui {
     }
 
     public String getBoostCost(int time, int amount) {
-        StringBuilder cost = new StringBuilder("&6&l");
+        StringBuilder cost = new StringBuilder();
         String[] parts = Settings.BOOST_COST.getString().split(":");
 
         String type = parts[0];
@@ -212,7 +217,7 @@ public class SpawnerBoostGui extends CustomizableGui {
         int co = boostCost(multi, time, amount);
 
         if (type.equals("ECO")) {
-            cost.append('$').append(EconomyManager.formatEconomy(co));
+            cost.append(EconomyManager.formatEconomy(co));
         } else if (type.equals("XP")) {
             cost.append(co).append(" &7Levels");
         } else {
