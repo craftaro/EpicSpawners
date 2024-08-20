@@ -2,9 +2,6 @@ package com.craftaro.epicspawners.spawners.spawner.option;
 
 import com.craftaro.core.math.MathUtils;
 import com.craftaro.core.nms.Nms;
-import com.craftaro.core.nms.entity.NmsEntity;
-import com.craftaro.core.nms.v1_8_R1.entity.NmsEntityImpl;
-import com.craftaro.core.utils.EntityUtils;
 import com.craftaro.epicspawners.EpicSpawners;
 import com.craftaro.epicspawners.api.boosts.types.Boosted;
 import com.craftaro.epicspawners.api.events.SpawnerSpawnEvent;
