@@ -1,6 +1,9 @@
 package com.craftaro.epicspawners.spawners.spawner.option;
 
 import com.craftaro.core.math.MathUtils;
+import com.craftaro.core.nms.Nms;
+import com.craftaro.core.nms.entity.NmsEntity;
+import com.craftaro.core.nms.v1_8_R1.entity.NmsEntityImpl;
 import com.craftaro.core.utils.EntityUtils;
 import com.craftaro.epicspawners.EpicSpawners;
 import com.craftaro.epicspawners.api.boosts.types.Boosted;
@@ -63,7 +66,8 @@ public class SpawnOptionEntity implements SpawnOption {
             equation = equation.replace("{RAND}", Integer.toString(randomAmt));
             equation = equation.replace("{STACK_SIZE}", Integer.toString(stack.getStackSize()));
 
-            spawnCount += MathUtils.eval(equation, "EpicSpawners (Mobs Spawned Per Single Spawn) Equation");
+            spawnCount += (int) MathUtils.eval(equation, "EpicSpawners (Mobs Spawned Per Single Spawn) Equation");
+            System.out.println(spawnCount);
         }
 
         // Get the max entities allowed around a spawner.
@@ -108,7 +112,7 @@ public class SpawnOptionEntity implements SpawnOption {
                     }
 
                     if (Settings.NO_AI.getBoolean()) {
-                        EntityUtils.setUnaware(entity);
+                        Nms.getImplementations().getEntity().setMobAware(entity,false);
                     }
 
                     this.plugin.getSpawnManager().addUnnaturalSpawn(entity.getUniqueId());
