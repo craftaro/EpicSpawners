@@ -80,11 +80,6 @@ public class SpawnerBoostGui extends CustomizableGui {
                 ),
                 event -> purchaseBoost(this.player, 5, this.amount));
 
-        System.err.println(this.plugin.getLocale().getMessage("interface.boost.cost").toText());
-
-        System.err.println(this.plugin.getLocale().getMessage("interface.boost.cost")
-                .processPlaceholder("cost", getBoostCost(5, this.amount)).toText());
-
         setButton("boost15", 12, GuiUtils.createButtonItem(XMaterial.IRON_INGOT, this.plugin.getLocale().getMessage("interface.boost.boostfor")
                                 .processPlaceholder("amount", "15"),
                         this.plugin.getLocale().getMessage("interface.boost.cost")
