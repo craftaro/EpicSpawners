@@ -64,7 +64,6 @@ public class SpawnOptionEntity implements SpawnOption {
             equation = equation.replace("{STACK_SIZE}", Integer.toString(stack.getStackSize()));
 
             spawnCount += (int) MathUtils.eval(equation, "EpicSpawners (Mobs Spawned Per Single Spawn) Equation");
-            System.out.println(spawnCount);
         }
 
         // Get the max entities allowed around a spawner.
