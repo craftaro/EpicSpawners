@@ -109,7 +109,7 @@ public class SpawnerStackImpl implements SpawnerStack {
         SpawnerTier tier = getSpawnerData().getNextTier(this.currentTier);
         SpawnerChangeEvent event = new SpawnerChangeEvent(player, this.spawner, tier, this.currentTier);
 
-        double cost = tier.getUpgradeCost(type);
+        double cost = tier.getUpgradeCost(type) * this.getSpawner().getStackSize();
         SpawnerTier oldTier = this.currentTier;
 
         if (type == CostType.ECONOMY) {
