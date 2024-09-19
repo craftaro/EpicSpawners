@@ -35,7 +35,7 @@ public class GuiUtils extends com.craftaro.core.gui.GuiUtils {
             String[] parts = plugin.getLocale().getMessage("interface.spawner.boostedstats")
                     .processPlaceholder("amount", Integer.toString(boostTotal))
                     .processPlaceholder("time", boostEnd == Long.MAX_VALUE
-                            ? plugin.getLocale().getMessage("interface.spawner.boostednever")
+                            ? plugin.getLocale().getMessage("interface.spawner.boostednever").toString()
                             : TimeUtils.makeReadable(boostEnd - System.currentTimeMillis()))
                     .toString().split("\\|");
 
