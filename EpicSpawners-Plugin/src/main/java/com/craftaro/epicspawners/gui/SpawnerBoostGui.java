@@ -5,6 +5,7 @@ import com.craftaro.core.database.DataManager;
 import com.craftaro.core.gui.CustomizableGui;
 import com.craftaro.core.gui.GuiUtils;
 import com.craftaro.core.hooks.EconomyManager;
+import com.craftaro.core.utils.SkullItemCreator;
 import com.craftaro.core.utils.TextUtils;
 import com.craftaro.epicspawners.EpicSpawners;
 import com.craftaro.epicspawners.api.spawners.spawner.PlacedSpawner;
@@ -12,9 +13,6 @@ import com.craftaro.epicspawners.boost.types.BoostedSpawnerImpl;
 import com.craftaro.epicspawners.settings.Settings;
 import com.craftaro.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.third_party.com.cryptomorin.xseries.XSound;
-import com.craftaro.third_party.com.cryptomorin.xseries.profiles.builder.XSkull;
-import com.craftaro.third_party.com.cryptomorin.xseries.profiles.objects.ProfileInputType;
-import com.craftaro.third_party.com.cryptomorin.xseries.profiles.objects.Profileable;
 import com.craftaro.third_party.org.apache.commons.lang3.math.NumberUtils;
 import com.craftaro.third_party.org.apache.commons.text.WordUtils;
 import com.craftaro.third_party.org.jooq.Record;
@@ -25,7 +23,6 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -111,7 +108,7 @@ public class SpawnerBoostGui extends CustomizableGui {
             });
 
         if (this.amount < Settings.MAX_PLAYER_BOOST.getInt()) {
-            ItemStack head = XSkull.createItem().profile(new Profileable.StringProfileable("19bf3292e126a105b54eba713aa1b152d541a1d8938829c56364d178ed22bf", ProfileInputType.TEXTURE_HASH)).apply();
+            ItemStack head = SkullItemCreator.byTextureUrlHash("19bf3292e126a105b54eba713aa1b152d541a1d8938829c56364d178ed22bf");
             AdventureUtils.formatItemName(head, "&6&l+1");
 
             setButton("plus1", 8, head, event -> {
