@@ -35,7 +35,7 @@ public class SpawnerShopItemGui extends CustomizableGui {
 
         setTitle(plugin.getLocale().getMessage("interface.shop.spawnershoptitle")
                 .processPlaceholder("type", spawnerTier.getCompiledDisplayName())
-                .getMessage());
+                .toString());
 
         paint();
     }
@@ -72,14 +72,14 @@ public class SpawnerShopItemGui extends CustomizableGui {
         itemmeta.setDisplayName(name);
         ArrayList<String> lore = new ArrayList<>();
         lore.add(this.plugin.getLocale().getMessage("interface.shop.buyprice")
-                .processPlaceholder("cost", EconomyManager.formatEconomy(price)).getMessage());
+                .processPlaceholder("cost", EconomyManager.formatEconomy(price)).toString());
         itemmeta.setLore(lore);
         item.setItemMeta(itemmeta);
         setItem("spawner", 22, item);
 
         ItemStack plus = XMaterial.LIME_STAINED_GLASS_PANE.parseItem();
         ItemMeta plusmeta = plus.getItemMeta();
-        plusmeta.setDisplayName(this.plugin.getLocale().getMessage("interface.shop.add1").getMessage());
+        plusmeta.setDisplayName(this.plugin.getLocale().getMessage("interface.shop.add1").toString());
         plus.setItemMeta(plusmeta);
         if (item.getAmount() + 1 <= 64) {
             setButton("add1", 15, plus, event -> {
@@ -90,7 +90,7 @@ public class SpawnerShopItemGui extends CustomizableGui {
 
         plus = XMaterial.LIME_STAINED_GLASS_PANE.parseItem();
         plus.setAmount(10);
-        plusmeta.setDisplayName(this.plugin.getLocale().getMessage("interface.shop.add10").getMessage());
+        plusmeta.setDisplayName(this.plugin.getLocale().getMessage("interface.shop.add10").toString());
         plus.setItemMeta(plusmeta);
         if (item.getAmount() + 10 <= 64) {
             setButton("add10", 33, plus, event -> {
@@ -101,7 +101,7 @@ public class SpawnerShopItemGui extends CustomizableGui {
 
         plus = XMaterial.LIME_STAINED_GLASS_PANE.parseItem();
         plus.setAmount(64);
-        plusmeta.setDisplayName(this.plugin.getLocale().getMessage("interface.shop.set64").getMessage());
+        plusmeta.setDisplayName(this.plugin.getLocale().getMessage("interface.shop.set64").toString());
         plus.setItemMeta(plusmeta);
         if (item.getAmount() != 64) {
             setButton("set64", 25, plus, event -> {
@@ -113,7 +113,7 @@ public class SpawnerShopItemGui extends CustomizableGui {
         ItemStack minus = XMaterial.RED_STAINED_GLASS_PANE.parseItem();
         minus.setAmount(1);
         ItemMeta minusmeta = minus.getItemMeta();
-        minusmeta.setDisplayName(this.plugin.getLocale().getMessage("interface.shop.remove1").getMessage());
+        minusmeta.setDisplayName(this.plugin.getLocale().getMessage("interface.shop.remove1").toString());
         minus.setItemMeta(minusmeta);
         if (item.getAmount() != 1) {
             setButton("remove1", 11, minus, event -> {
@@ -124,7 +124,7 @@ public class SpawnerShopItemGui extends CustomizableGui {
 
         minus = XMaterial.RED_STAINED_GLASS_PANE.parseItem();
         minus.setAmount(10);
-        minusmeta.setDisplayName(this.plugin.getLocale().getMessage("interface.shop.remove10").getMessage());
+        minusmeta.setDisplayName(this.plugin.getLocale().getMessage("interface.shop.remove10").toString());
         minus.setItemMeta(minusmeta);
         if (item.getAmount() - 10 >= 0) {
             setButton("remove10", 29, minus, event -> {
@@ -135,7 +135,7 @@ public class SpawnerShopItemGui extends CustomizableGui {
 
         minus = XMaterial.RED_STAINED_GLASS_PANE.parseItem();
         minus.setAmount(1);
-        minusmeta.setDisplayName(this.plugin.getLocale().getMessage("interface.shop.set1").getMessage());
+        minusmeta.setDisplayName(this.plugin.getLocale().getMessage("interface.shop.set1").toString());
         minus.setItemMeta(minusmeta);
         if (item.getAmount() != 1) {
             setButton("set1", 19, minus, event -> {
@@ -145,14 +145,14 @@ public class SpawnerShopItemGui extends CustomizableGui {
         }
 
         setButton("exit", 8, GuiUtils.createButtonItem(Settings.EXIT_ICON.getMaterial(),
-                this.plugin.getLocale().getMessage("general.nametag.exit").getMessage()), event -> event.player.closeInventory());
+                this.plugin.getLocale().getMessage("general.nametag.exit").toString()), event -> event.player.closeInventory());
 
         setButton("back", 0, GuiUtils.createButtonItem(XMaterial.ARROW,
-                        this.plugin.getLocale().getMessage("general.nametag.back").getMessage()),
+                        this.plugin.getLocale().getMessage("general.nametag.back").toString()),
                 event -> this.guiManager.showGUI(event.player, this.back));
 
         setButton("buy", 40, GuiUtils.createButtonItem(Settings.BUY_ICON.getMaterial(),
-                        this.plugin.getLocale().getMessage("general.nametag.confirm").getMessage()), event -> {
+                        this.plugin.getLocale().getMessage("general.nametag.confirm").toString()), event -> {
                     Player player = event.player;
                     confirm(player, this.amount);
                     player.closeInventory();

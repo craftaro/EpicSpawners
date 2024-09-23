@@ -1,5 +1,6 @@
 package com.craftaro.epicspawners.spawners.spawner.option;
 
+import com.craftaro.epicspawners.spawners.spawner.PlacedSpawnerImpl;
 import com.craftaro.third_party.org.apache.commons.lang3.math.NumberUtils;
 import com.craftaro.epicspawners.EpicSpawners;
 import com.craftaro.epicspawners.api.boosts.types.Boosted;
@@ -91,7 +92,7 @@ public class SpawnOptionCommand implements SpawnOption {
             }
         }
 
-        EpicSpawners.getInstance().getDataManager().save(spawner);
+        EpicSpawners.getInstance().getDataManager().save((PlacedSpawnerImpl)spawner);
     }
 
     @Override

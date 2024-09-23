@@ -1,9 +1,16 @@
 package com.craftaro.epicspawners.gui;
 
+import com.craftaro.core.chat.AdventureUtils;
 import com.craftaro.core.database.DataManager;
 import com.craftaro.core.gui.CustomizableGui;
 import com.craftaro.core.gui.GuiUtils;
 import com.craftaro.core.hooks.EconomyManager;
+import com.craftaro.core.utils.SkullItemCreator;
+import com.craftaro.core.utils.TextUtils;
+import com.craftaro.epicspawners.EpicSpawners;
+import com.craftaro.epicspawners.api.spawners.spawner.PlacedSpawner;
+import com.craftaro.epicspawners.boost.types.BoostedSpawnerImpl;
+import com.craftaro.epicspawners.settings.Settings;
 import com.craftaro.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.third_party.com.cryptomorin.xseries.XSound;
 import com.craftaro.third_party.org.apache.commons.lang3.math.NumberUtils;
@@ -11,12 +18,6 @@ import com.craftaro.third_party.org.apache.commons.text.WordUtils;
 import com.craftaro.third_party.org.jooq.Record;
 import com.craftaro.third_party.org.jooq.Result;
 import com.craftaro.third_party.org.jooq.impl.DSL;
-import com.craftaro.core.utils.ItemUtils;
-import com.craftaro.core.utils.TextUtils;
-import com.craftaro.epicspawners.EpicSpawners;
-import com.craftaro.epicspawners.api.spawners.spawner.PlacedSpawner;
-import com.craftaro.epicspawners.boost.types.BoostedSpawnerImpl;
-import com.craftaro.epicspawners.settings.Settings;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -68,32 +69,34 @@ public class SpawnerBoostGui extends CustomizableGui {
         mirrorFill("mirrorfill_4", 1, 0, false, true, glass2);
         mirrorFill("mirrorfill_5", 1, 1, false, true, glass3);
 
-        setButton("boost5", 10, GuiUtils.createButtonItem(XMaterial.COAL, this.plugin.getLocale().getMessage("interface.boost.boostfor")
-                                .processPlaceholder("amount", "5").getMessage(),
+        setButton("boost5", 10, GuiUtils.createButtonItem(XMaterial.COAL,
+                        this.plugin.getLocale().getMessage("interface.boost.boostfor")
+                                .processPlaceholder("amount", "5"),
                         this.plugin.getLocale().getMessage("interface.boost.cost")
-                                .processPlaceholder("cost", getBoostCost(5, this.amount)).getMessage()),
+                                .processPlaceholder("cost", getBoostCost(5, this.amount))
+                ),
                 event -> purchaseBoost(this.player, 5, this.amount));
 
         setButton("boost15", 12, GuiUtils.createButtonItem(XMaterial.IRON_INGOT, this.plugin.getLocale().getMessage("interface.boost.boostfor")
-                                .processPlaceholder("amount", "15").getMessage(),
+                                .processPlaceholder("amount", "15"),
                         this.plugin.getLocale().getMessage("interface.boost.cost")
-                                .processPlaceholder("cost", getBoostCost(15, this.amount)).getMessage()),
+                                .processPlaceholder("cost", getBoostCost(15, this.amount))),
                 event -> purchaseBoost(this.player, 15, this.amount));
 
         setButton("boost30", 14, GuiUtils.createButtonItem(XMaterial.DIAMOND, this.plugin.getLocale().getMessage("interface.boost.boostfor")
-                                .processPlaceholder("amount", "30").getMessage(),
+                                .processPlaceholder("amount", "30"),
                         this.plugin.getLocale().getMessage("interface.boost.cost")
-                                .processPlaceholder("cost", getBoostCost(30, this.amount)).getMessage()),
+                                .processPlaceholder("cost", getBoostCost(30, this.amount))),
                 event -> purchaseBoost(this.player, 30, this.amount));
 
         setButton("boost60", 16, GuiUtils.createButtonItem(XMaterial.EMERALD, this.plugin.getLocale().getMessage("interface.boost.boostfor")
-                                .processPlaceholder("amount", "60").getMessage(),
+                                .processPlaceholder("amount", "60"),
                         this.plugin.getLocale().getMessage("interface.boost.cost")
-                                .processPlaceholder("cost", getBoostCost(60, this.amount)).getMessage()),
+                                .processPlaceholder("cost", getBoostCost(60, this.amount))),
                 event -> purchaseBoost(this.player, 60, this.amount));
 
         setButton("back", 4, GuiUtils.createButtonItem(Settings.EXIT_ICON.getMaterial(),
-                        this.plugin.getLocale().getMessage("general.nametag.back").getMessage()),
+                        this.plugin.getLocale().getMessage("general.nametag.back")),
                 event -> this.spawner.overview(this.player));
 
         if (this.amount != 1)
@@ -104,13 +107,16 @@ public class SpawnerBoostGui extends CustomizableGui {
                 paint();
             });
 
-        if (this.amount < Settings.MAX_PLAYER_BOOST.getInt())
-            setButton("plus1", 8, GuiUtils.createButtonItem(ItemUtils.getCustomHead("1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b"),
-                    TextUtils.formatText("&6&l+1")), event -> {
+        if (this.amount < Settings.MAX_PLAYER_BOOST.getInt()) {
+            ItemStack head = SkullItemCreator.byTextureUrlHash("19bf3292e126a105b54eba713aa1b152d541a1d8938829c56364d178ed22bf");
+            AdventureUtils.formatItemName(head, "&6&l+1");
+
+            setButton("plus1", 8, head, event -> {
                 this.amount++;
                 setUp();
                 paint();
             });
+        }
     }
 
     private void purchaseBoost(Player player, int time, int amt) {
@@ -194,7 +200,7 @@ public class SpawnerBoostGui extends CustomizableGui {
     }
 
     public String getBoostCost(int time, int amount) {
-        StringBuilder cost = new StringBuilder("&6&l");
+        StringBuilder cost = new StringBuilder();
         String[] parts = Settings.BOOST_COST.getString().split(":");
 
         String type = parts[0];
@@ -203,7 +209,7 @@ public class SpawnerBoostGui extends CustomizableGui {
         int co = boostCost(multi, time, amount);
 
         if (type.equals("ECO")) {
-            cost.append('$').append(EconomyManager.formatEconomy(co));
+            cost.append(EconomyManager.formatEconomy(co));
         } else if (type.equals("XP")) {
             cost.append(co).append(" &7Levels");
         } else {

@@ -1,7 +1,7 @@
 package com.craftaro.epicspawners.spawners.spawner.option;
 
 import com.craftaro.core.math.MathUtils;
-import com.craftaro.core.utils.EntityUtils;
+import com.craftaro.core.nms.Nms;
 import com.craftaro.epicspawners.EpicSpawners;
 import com.craftaro.epicspawners.api.boosts.types.Boosted;
 import com.craftaro.epicspawners.api.events.SpawnerSpawnEvent;
@@ -14,6 +14,7 @@ import com.craftaro.epicspawners.api.spawners.spawner.option.SpawnOption;
 import com.craftaro.epicspawners.api.spawners.spawner.option.SpawnOptionType;
 import com.craftaro.epicspawners.settings.Settings;
 import com.craftaro.epicspawners.spawners.condition.SpawnConditionNearbyEntities;
+import com.craftaro.epicspawners.spawners.spawner.PlacedSpawnerImpl;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
@@ -62,7 +63,7 @@ public class SpawnOptionEntity implements SpawnOption {
             equation = equation.replace("{RAND}", Integer.toString(randomAmt));
             equation = equation.replace("{STACK_SIZE}", Integer.toString(stack.getStackSize()));
 
-            spawnCount += MathUtils.eval(equation, "EpicSpawners (Mobs Spawned Per Single Spawn) Equation");
+            spawnCount += (int) MathUtils.eval(equation, "EpicSpawners (Mobs Spawned Per Single Spawn) Equation");
         }
 
         // Get the max entities allowed around a spawner.
@@ -107,7 +108,7 @@ public class SpawnOptionEntity implements SpawnOption {
                     }
 
                     if (Settings.NO_AI.getBoolean()) {
-                        EntityUtils.setUnaware(entity);
+                        Nms.getImplementations().getEntity().setMobAware(entity,false);
                     }
 
                     this.plugin.getSpawnManager().addUnnaturalSpawn(entity.getUniqueId());
@@ -115,7 +116,7 @@ public class SpawnOptionEntity implements SpawnOption {
                 }, this.types);
 
         spawner.setSpawnCount(spawner.getSpawnCount() + amountSpawned);
-        EpicSpawners.getInstance().getDataManager().save(spawner);
+        EpicSpawners.getInstance().getDataManager().save((PlacedSpawnerImpl)spawner);
     }
 
     @Override

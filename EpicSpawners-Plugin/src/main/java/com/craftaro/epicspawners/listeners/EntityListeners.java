@@ -173,11 +173,11 @@ public class EntityListeners implements Listener {
             if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9)) {
                 player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(this.plugin.getLocale().getMessage("event.goal.alert")
                         .processPlaceholder("goal", goal - amt)
-                        .processPlaceholder("type", spawnerTier.getDisplayName()).getMessage()));
+                        .processPlaceholder("type", spawnerTier.getDisplayName()).toString()));
             } else {
                 player.sendTitle("", this.plugin.getLocale().getMessage("event.goal.alert")
                         .processPlaceholder("goal", goal - amt)
-                        .processPlaceholder("type", spawnerTier.getDisplayName()).getMessage());
+                        .processPlaceholder("type", spawnerTier.getDisplayName()).toString());
             }
         }
 
@@ -200,7 +200,7 @@ public class EntityListeners implements Listener {
 
             if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9)) {
                 player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(this.plugin.getLocale().getMessage("event.goal.reached")
-                        .processPlaceholder("type", spawnerTier.getIdentifyingName()).getMessage()));
+                        .processPlaceholder("type", spawnerTier.getIdentifyingName()).toString()));
             }
         }
     }

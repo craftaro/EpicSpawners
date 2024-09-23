@@ -37,7 +37,7 @@ public class SpawnerStatsGui extends CustomizableGui {
             }
         }
 
-        setTitle(plugin.getLocale().getMessage("interface.spawnerstats.title").getMessage());
+        setTitle(plugin.getLocale().getMessage("interface.spawnerstats.title").toString());
         showPage();
     }
 
@@ -60,12 +60,12 @@ public class SpawnerStatsGui extends CustomizableGui {
         this.pages = (int) Math.max(1, Math.ceil(this.entities.size() / ((double) 28)));
 
         // enable page event
-        setNextPage(5, 7, GuiUtils.createButtonItem(XMaterial.ARROW, this.plugin.getLocale().getMessage("general.nametag.next").getMessage()));
-        setPrevPage(5, 1, GuiUtils.createButtonItem(XMaterial.ARROW, this.plugin.getLocale().getMessage("general.nametag.back").getMessage()));
+        setNextPage(5, 7, GuiUtils.createButtonItem(XMaterial.ARROW, this.plugin.getLocale().getMessage("general.nametag.next").toString()));
+        setPrevPage(5, 1, GuiUtils.createButtonItem(XMaterial.ARROW, this.plugin.getLocale().getMessage("general.nametag.back").toString()));
         setOnPage((event) -> showPage());
 
         setButton("exit", 8, GuiUtils.createButtonItem(XMaterial.valueOf(this.plugin.getConfig().getString("Interfaces.Exit Icon")),
-                this.plugin.getLocale().getMessage("general.nametag.exit").getMessage()), (event) -> this.player.closeInventory());
+                this.plugin.getLocale().getMessage("general.nametag.exit").toString()), (event) -> this.player.closeInventory());
 
         Set<Map.Entry<SpawnerData, Integer>> entries = this.entities.entrySet().stream().skip((this.page - 1) * 28).limit(28)
                 .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder())).collect(Collectors.toCollection(LinkedHashSet::new));

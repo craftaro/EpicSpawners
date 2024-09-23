@@ -4,12 +4,12 @@ import com.craftaro.core.gui.AnvilGui;
 import com.craftaro.core.gui.Gui;
 import com.craftaro.core.gui.GuiUtils;
 import com.craftaro.core.input.ChatPrompt;
+import com.craftaro.core.utils.HeadType;
 import com.craftaro.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.utils.TextUtils;
 import com.craftaro.epicspawners.EpicSpawners;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerData;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerTier;
-import com.craftaro.epicspawners.api.utils.HeadType;
 import com.craftaro.epicspawners.api.utils.HeadUtils;
 import com.craftaro.epicspawners.settings.Settings;
 import org.bukkit.entity.Player;
@@ -82,7 +82,7 @@ public class EditorOverviewGui extends Gui {
         setItem(53, glass3);
 
         setButton(8, GuiUtils.createButtonItem(XMaterial.OAK_DOOR,
-                        this.plugin.getLocale().getMessage("general.nametag.back").getMessage()),
+                        this.plugin.getLocale().getMessage("general.nametag.back")),
                 (event) -> EditorTiersGui.openTiersInReverse(this.plugin, this.player, this.spawnerTier));
 
         ItemStack item = HeadUtils.getTexturedSkull(this.spawnerTier);

@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-public interface PlacedSpawner extends Data {
+public interface PlacedSpawner {
     int spawn(int amountToSpawn, String particle, Set<XMaterial> canSpawnOn, SpawnedEntity spawned, EntityType... types);
 
     SpawnerStack addSpawnerStack(SpawnerStack spawnerStack);

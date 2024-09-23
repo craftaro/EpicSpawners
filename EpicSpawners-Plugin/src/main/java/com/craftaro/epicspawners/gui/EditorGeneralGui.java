@@ -48,7 +48,7 @@ public class EditorGeneralGui extends Gui {
         mirrorFill(0, 1, true, true, glass2);
 
         setButton(0, GuiUtils.createButtonItem(XMaterial.OAK_DOOR,
-                        this.plugin.getLocale().getMessage("general.nametag.back").getMessage()),
+                        this.plugin.getLocale().getMessage("general.nametag.back")),
                 (event) -> this.guiManager.showGUI(event.player, this.back));
 
         setButton(22, GuiUtils.createButtonItem(XMaterial.FIRE_CHARGE, TextUtils.formatText("&c&lSpawn On Fire",

@@ -45,7 +45,7 @@ public class EditorTierGeneralGui extends Gui {
         mirrorFill(1, 1, false, true, glass3);
 
         setButton(0, GuiUtils.createButtonItem(XMaterial.OAK_DOOR,
-                        this.plugin.getLocale().getMessage("general.nametag.back").getMessage()),
+                        this.plugin.getLocale().getMessage("general.nametag.back")),
                 (event) -> this.guiManager.showGUI(event.player, this.back));
 
         setButton(10, GuiUtils.createButtonItem(XMaterial.SUNFLOWER, TextUtils.formatText("&6&lIn Shop",

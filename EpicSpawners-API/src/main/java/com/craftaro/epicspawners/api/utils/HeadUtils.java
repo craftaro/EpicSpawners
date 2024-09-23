@@ -1,11 +1,10 @@
 package com.craftaro.epicspawners.api.utils;
 
-import com.craftaro.third_party.com.cryptomorin.xseries.SkullUtils;
-import com.craftaro.third_party.com.cryptomorin.xseries.XMaterial;
+import com.craftaro.core.utils.HeadType;
+import com.craftaro.core.utils.SkullItemCreator;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerData;
 import com.craftaro.epicspawners.api.spawners.spawner.SpawnerTier;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -32,14 +31,8 @@ public class HeadUtils {
         return createSkullForSkinHash(headType.getUrlHash());
     }
 
-    private static ItemStack createSkullForSkinHash(String textureHash) {
-        ItemStack head = XMaterial.PLAYER_HEAD.parseItem();
-
-        SkullMeta meta = (SkullMeta) head.getItemMeta();
-        SkullUtils.applySkin(meta, textureHash);
-        head.setItemMeta(meta);
-
-        return head;
+    private static ItemStack createSkullForSkinHash(String textureUrlHash) {
+        return SkullItemCreator.byTextureUrlHash(textureUrlHash);
     }
 
     private static HeadType getHeadTypeOrDefault(String name) {

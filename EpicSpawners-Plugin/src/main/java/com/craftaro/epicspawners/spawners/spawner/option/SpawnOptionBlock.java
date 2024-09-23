@@ -1,5 +1,6 @@
 package com.craftaro.epicspawners.spawners.spawner.option;
 
+import com.craftaro.epicspawners.spawners.spawner.PlacedSpawnerImpl;
 import com.craftaro.third_party.com.cryptomorin.xseries.XBlock;
 import com.craftaro.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.epicspawners.EpicSpawners;
@@ -68,7 +69,7 @@ public class SpawnOptionBlock implements SpawnOption {
             }
         }
 
-        EpicSpawners.getInstance().getDataManager().save(spawner);
+        EpicSpawners.getInstance().getDataManager().save((PlacedSpawnerImpl)spawner);
     }
 
     @Override

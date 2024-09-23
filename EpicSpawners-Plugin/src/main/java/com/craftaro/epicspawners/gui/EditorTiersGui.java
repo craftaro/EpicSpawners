@@ -3,6 +3,7 @@ package com.craftaro.epicspawners.gui;
 import com.craftaro.core.gui.Gui;
 import com.craftaro.core.gui.GuiUtils;
 import com.craftaro.core.input.ChatPrompt;
+import com.craftaro.epicspawners.spawners.spawner.PlacedSpawnerImpl;
 import com.craftaro.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.core.utils.TextUtils;
 import com.craftaro.epicspawners.EpicSpawners;
@@ -64,8 +65,8 @@ public class EditorTiersGui extends Gui {
         this.pages = (int) Math.max(1, Math.ceil(tiersSource.size() / ((double) 28)));
 
         // enable page event
-        setNextPage(5, 7, GuiUtils.createButtonItem(XMaterial.ARROW, this.plugin.getLocale().getMessage("general.nametag.next").getMessage()));
-        setPrevPage(5, 1, GuiUtils.createButtonItem(XMaterial.ARROW, this.plugin.getLocale().getMessage("general.nametag.back").getMessage()));
+        setNextPage(5, 7, GuiUtils.createButtonItem(XMaterial.ARROW, this.plugin.getLocale().getMessage("general.nametag.next")));
+        setPrevPage(5, 1, GuiUtils.createButtonItem(XMaterial.ARROW, this.plugin.getLocale().getMessage("general.nametag.back")));
         setOnPage((event) -> showPage());
 
         List<SpawnerTier> tiers = tiersSource.stream().skip((this.page - 1) * 28).limit(28).collect(Collectors.toList());
@@ -157,7 +158,7 @@ public class EditorTiersGui extends Gui {
                                 }
                                 if (modified) {
                                     this.plugin.updateHologram(spawner);
-                                    this.plugin.getDataManager().save(spawner);
+                                    this.plugin.getDataManager().save((PlacedSpawnerImpl)spawner);
                                 }
                             }
 
